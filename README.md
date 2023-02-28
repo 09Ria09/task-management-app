@@ -10,7 +10,7 @@ Add your own name (do not add the names for others!) to the section below.
 | Profile Picture | Name               | Email                            |
 |---|--------------------|----------------------------------|
 | ![](https://secure.gravatar.com/avatar/0b901440ea4da305f152738cbf0c9960?s=192&d=identicon&size=40&length=5) | Alexandru Tabacaru | A.I.Tabacaru@student.tudelft.nl  |
-| ![](https://eu.ui-avatars.com/api/?name=OOPP&length=4&size=50&color=DDD&background=777&font-size=0.325) | Rares              | R.Iordan@student.tudelft.nl      |
+| ![](https://secure.gravatar.com/avatar/826db0baf93abf9ea95f292538e8fb3c?s=800&d=identicon&size=40&length=5) | Rares Iordan       | R.Iordan@student.tudelft.nl      |
 | ![](https://secure.gravatar.com/avatar/4596376aba730e571a21ef8544b588d3?s=800&d=identicon&size=40&length=5) | Dorian Herbiet     | D.N.G.Herbiet@student.tudelft.nl |
 
 <!-- Instructions (remove once assignment has been completed -->
