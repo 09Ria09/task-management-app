@@ -12,7 +12,8 @@ Add your own name (do not add the names for others!) to the section below.
 | ![](https://secure.gravatar.com/avatar/0b901440ea4da305f152738cbf0c9960?s=192&d=identicon&size=40&length=5) | Alexandru Tabacaru | A.I.Tabacaru@student.tudelft.nl  |
 | ![](https://secure.gravatar.com/avatar/826db0baf93abf9ea95f292538e8fb3c?s=800&d=identicon&size=40&length=5) | Rares Iordan       | R.Iordan@student.tudelft.nl      |
 | ![](https://secure.gravatar.com/avatar/4596376aba730e571a21ef8544b588d3?s=800&d=identicon&size=40&length=5) | Dorian Herbiet     | D.N.G.Herbiet@student.tudelft.nl |
-| ![](https://secure.gravatar.com/avatar/a4d2d588f039b02367b4abfc14c7564f?s=800&d=identicon&size=40&length=5) | Teun Bosch    | T.G.H.Bosch@student.tudelft.nl |
+| ![](https://secure.gravatar.com/avatar/a4d2d588f039b02367b4abfc14c7564f?s=800&d=identicon&size=40&length=5) | Teun Bosch         | T.G.H.Bosch@student.tudelft.nl   |
+| ![](https://secure.gravatar.com/avatar/4b5a802e3c635c17b513106423cd8a0c?s=800&d=identicon&size=40&length=5) | Matej Bavec        | M.Bavec@student.tudelft.nl       |
 
 <!-- Instructions (remove once assignment has been completed -->
 <!-- - Add (only!) your own name to the table above (use Markdown formatting) -->
