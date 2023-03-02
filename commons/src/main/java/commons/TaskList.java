@@ -3,16 +3,32 @@ package commons;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import javax.persistence.*;
 import java.util.*;
 
 
+@Entity
 public class TaskList {
-    String name;
-    ArrayList<Task> tasks;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public long id;
+    private String name;
+    @OneToMany
+    private List<Task> tasks;
 
     public TaskList(String name) {
         this.name = name;
         this.tasks = new ArrayList<Task>();
+    }
+
+    public TaskList(String name, List<Task> tasks) {
+        this.name = name;
+        this.tasks = tasks;
+    }
+
+    public TaskList(){
+
     }
 
     public String getName() {
@@ -23,7 +39,7 @@ public class TaskList {
         this.name = name;
     }
 
-    public ArrayList<Task> getTasks() {
+    public List<Task> getTasks() {
         return tasks;
     }
 
@@ -38,14 +54,10 @@ public class TaskList {
 
     @Override
     public String toString() {
-        String string = "";
-        for(int i = 0; i < tasks.size(); i++) {
-            string += tasks.get(i).toString();
-            if(i != tasks.size() -1){
-                string += "/n";
-            }
-        }
-        return string;
+        StringBuilder string = new StringBuilder("TaskList (" + id + ") :\n");
+        for (Task task : tasks)
+            string.append(task.toString()).append("\n");
+        return string.toString();
     }
 
     @Override
