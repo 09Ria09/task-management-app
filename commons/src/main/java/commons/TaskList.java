@@ -3,16 +3,27 @@ package commons;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import javax.persistence.*;
 import java.util.*;
 
 
+@Entity
 public class TaskList {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public long id;
     String name;
+    @OneToMany
     ArrayList<Task> tasks;
 
     public TaskList(String name) {
         this.name = name;
         this.tasks = new ArrayList<Task>();
+    }
+
+    public TaskList(){
+
     }
 
     public String getName() {
@@ -38,11 +49,11 @@ public class TaskList {
 
     @Override
     public String toString() {
-        String string = "";
-        for(int i = 0; i < tasks.size(); i++) {
-            string += tasks.get(i).toString() + "/n";
+        StringBuilder string = new StringBuilder();
+        for (Task task : tasks) {
+            string.append(task.toString()).append("/n");
         }
-        return string;
+        return string.toString();
     }
 
     @Override
