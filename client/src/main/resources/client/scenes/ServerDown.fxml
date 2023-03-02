@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ServerDownCtrl">
+   <children>
+      <Label alignment="CENTER" layoutX="201.0" layoutY="27.0" text="Ooh No !" textAlignment="CENTER" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="30.0">
+         <font>
+            <Font size="40.0" />
+         </font>
+      </Label>
+      <Button layoutX="269.0" layoutY="336.0" mnemonicParsing="false" text="Refresh" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" />
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="225.0" layoutY="125.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="85.0" AnchorPane.topAnchor="165.0">
+         <image>
+            <Image url="@../images/server-down.png" />
+         </image>
+      </ImageView>
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="164.0" layoutY="96.0" text="The server is down, please try again later" textAlignment="CENTER" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="282.0" layoutY="123.0" text="If the problem persists, please contact the administrator" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" />
+   </children>
+</AnchorPane>
