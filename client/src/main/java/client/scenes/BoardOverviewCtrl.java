@@ -22,6 +22,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.input.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 import java.net.URL;
@@ -48,7 +49,7 @@ public class BoardOverviewCtrl implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         for (int i = 0; i < 3; ++i)
-            addList();
+            addList("title " + i);
     }
 
     public void addCard(String text, int list) {
@@ -56,10 +57,10 @@ public class BoardOverviewCtrl implements Initializable {
     }
 
     public void addCard() {
-        addCard("test",1);
+        addCard("test"+Math.random(),0);
     }
 
-    public void addList() {
+    public void addList(String title) {
         var kids = listsContainer.getChildren();
         var newList = new ListView<String>();
         newList.setPrefWidth(200);
@@ -75,8 +76,16 @@ public class BoardOverviewCtrl implements Initializable {
             newList.setLayoutX(lx + lb.getMaxX());
         }
 
-        kids.add(newList);
+        VBox newVBox = new VBox();
+        newVBox.getChildren().add(new Text(title));
+        newVBox.getChildren().add(newList);
+
+        kids.add(newVBox);
         lists.add(newList);
+    }
+
+    public void addList() {
+        addList("test"+Math.random());
     }
 
     public void dragDetected(ListView<String> lv, MouseEvent event) {
