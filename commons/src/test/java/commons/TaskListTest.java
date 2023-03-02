@@ -3,6 +3,7 @@ package commons;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,7 +40,7 @@ class TaskListTest {
         Task task1 = new Task("task1", "desc1");
         Task task2 = new Task("task2", "desc2");
         TaskList taskList = new TaskList("List1");
-        ArrayList<Task> listBeforeAdding = taskList.getTasks();
+        List<Task> listBeforeAdding = taskList.getTasks();
         taskList.addTask(task1);
         taskList.addTask(task2);
         assertEquals(2, taskList.getTasks().size());
