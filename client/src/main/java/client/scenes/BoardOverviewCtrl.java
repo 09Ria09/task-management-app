@@ -91,18 +91,20 @@ public class BoardOverviewCtrl implements Initializable {
     public void dragDetected(ListView<String> lv, MouseEvent event) {
         Dragboard dragboard = lv.startDragAndDrop(TransferMode.MOVE);
         ClipboardContent cc = new ClipboardContent();
+        if(lv.getSelectionModel().getSelectedItem()==null)
+            return;
         cc.put(taskCustom, lv.getSelectionModel().getSelectedItem());
         dragboard.setContent(cc);
         event.consume();
     }
 
     public void dragEntered(ListView<String> lv, DragEvent event) {
-        lv.setStyle("-fx-background-color: blue");
+        lv.setStyle("-fx-effect: innershadow(gaussian, rgba(0,0,0,0.8), 20, 0, 0, 0);");
         event.consume();
     }
 
     public void dragExited(ListView<String> lv, DragEvent event) {
-        lv.setStyle("-fx-background-color: white");
+        lv.setStyle("-fx-effect: none;");
         event.consume();
     }
 
