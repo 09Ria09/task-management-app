@@ -40,7 +40,10 @@ public class TaskList {
     public String toString() {
         String string = "";
         for(int i = 0; i < tasks.size(); i++) {
-            string += tasks.get(i).toString() + "/n";
+            string += tasks.get(i).toString();
+            if(i != tasks.size() -1){
+                string += "/n";
+            }
         }
         return string;
     }
