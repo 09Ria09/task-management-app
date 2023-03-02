@@ -55,9 +55,8 @@ public class TaskList {
     @Override
     public String toString() {
         StringBuilder string = new StringBuilder();
-        for (Task task : tasks) {
+        for (Task task : tasks)
             string.append(task.toString()).append("/n");
-        }
         return string.toString();
     }
 
