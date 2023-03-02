@@ -63,14 +63,11 @@ class TaskListTest {
     void testToString() {
         Task task1 = new Task("task1", "desc1");
         Task task2 = new Task("task2", "desc2");
-        Task task3 = new Task("task3", "desc3");
         TaskList taskList = new TaskList("List1");
         taskList.addTask(task1);
         taskList.addTask(task2);
-//        taskList.addTask(task3);
         System.out.println(taskList.toString());
-        assertEquals("Task (" + task1.id + ") : " + task1.getName() + "\nDescription : " + task1.getDescription()
-                        + "/n" + "Task (" + task2.id + ") : " + task2.getName() + "\nDescription : " + task2.getDescription()
+        assertEquals("TaskList (" + taskList.id + ") :\n" + task1.toString() + "\n" + task2.toString() + "\n"
                 , taskList.toString());
     }
 
