@@ -13,13 +13,18 @@ public class TaskList {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long id;
-    String name;
+    private String name;
     @OneToMany
-    ArrayList<Task> tasks;
+    private List<Task> tasks;
 
     public TaskList(String name) {
         this.name = name;
         this.tasks = new ArrayList<Task>();
+    }
+
+    public TaskList(String name, List<Task> tasks) {
+        this.name = name;
+        this.tasks = tasks;
     }
 
     public TaskList(){
@@ -34,7 +39,7 @@ public class TaskList {
         this.name = name;
     }
 
-    public ArrayList<Task> getTasks() {
+    public List<Task> getTasks() {
         return tasks;
     }
 
