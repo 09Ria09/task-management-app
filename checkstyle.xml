@@ -61,7 +61,7 @@
             <property name="severity" value="warning"/>
         </module>
         <module name="AvoidStaticImport">
-            <property name="severity" value="info"/>
+            <property name="severity" value="ignore"/>
         </module>
         <module name="ModifierOrder">
             <property name="severity" value="warning"/>
@@ -70,7 +70,7 @@
             <property name="severity" value="warning"/>
         </module>
         <module name="AvoidInlineConditionals">
-            <property name="severity" value="info"/>
+            <property name="severity" value="ignore"/>
         </module>
         <module name="IllegalType">
             <property name="severity" value="warning"/>
