@@ -5,11 +5,13 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <TextField layoutX="41.0" layoutY="79.0" promptText="Task Name" />
-      <TextArea layoutX="41.0" layoutY="111.0" prefHeight="247.0" prefWidth="378.0" promptText="Task Description" />
+      <TextField layoutX="41.0" layoutY="69.0" promptText="Task Name" />
+      <TextArea layoutX="41.0" layoutY="102.0" prefHeight="247.0" prefWidth="378.0" promptText="Task Description" />
       <Label alignment="CENTER" layoutX="212.0" layoutY="14.0" prefHeight="41.0" prefWidth="178.0" style="-fx-font-size: 30;" text="Create Task" />
       <ListView editable="true" layoutX="429.0" layoutY="111.0" prefHeight="211.0" prefWidth="149.0" />
       <Button layoutX="469.0" layoutY="333.0" mnemonicParsing="false" text="Add Label" />
       <Label alignment="CENTER" layoutX="452.0" layoutY="81.0" prefHeight="21.0" prefWidth="104.0" style="-fx-font-size: 15;" text="Labels" />
+      <Button layoutX="13.0" layoutY="10.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="Cancel" />
+      <Button layoutX="260.0" layoutY="358.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="Confirm" />
    </children>
 </Pane>
