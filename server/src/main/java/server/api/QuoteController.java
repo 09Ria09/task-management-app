@@ -36,7 +36,7 @@ public class QuoteController {
     private final Random random;
     private final QuoteRepository repo;
 
-    public QuoteController(Random random, QuoteRepository repo) {
+    public QuoteController(final Random random, final QuoteRepository repo) {
         this.random = random;
         this.repo = repo;
     }
@@ -47,7 +47,7 @@ public class QuoteController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Quote> getById(@PathVariable("id") long id) {
+    public ResponseEntity<Quote> getById(@PathVariable("id") final long id) {
         if (id < 0 || !repo.existsById(id)) {
             return ResponseEntity.badRequest().build();
         }
@@ -55,9 +55,10 @@ public class QuoteController {
     }
 
     @PostMapping(path = { "", "/" })
-    public ResponseEntity<Quote> add(@RequestBody Quote quote) {
+    public ResponseEntity<Quote> add(@RequestBody final Quote quote) {
 
-        if (quote.person == null || isNullOrEmpty(quote.person.firstName) || isNullOrEmpty(quote.person.lastName)
+        if (quote.person == null || isNullOrEmpty(quote.person.firstName) ||
+            isNullOrEmpty(quote.person.lastName)
                 || isNullOrEmpty(quote.quote)) {
             return ResponseEntity.badRequest().build();
         }
@@ -66,7 +67,7 @@ public class QuoteController {
         return ResponseEntity.ok(saved);
     }
 
-    private static boolean isNullOrEmpty(String s) {
+    private static boolean isNullOrEmpty(final String s) {
         return s == null || s.isEmpty();
     }
 

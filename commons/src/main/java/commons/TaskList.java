@@ -17,12 +17,12 @@ public class TaskList {
     @OneToMany
     private List<Task> tasks;
 
-    public TaskList(String name) {
+    public TaskList(final String name) {
         this.name = name;
         this.tasks = new ArrayList<Task>();
     }
 
-    public TaskList(String name, List<Task> tasks) {
+    public TaskList(final String name, final List<Task> tasks) {
         this.name = name;
         this.tasks = tasks;
     }
@@ -35,7 +35,7 @@ public class TaskList {
         return this.name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -44,11 +44,11 @@ public class TaskList {
     }
 
 
-    public void addTask(Task task) {
+    public void addTask(final Task task) {
         tasks.add(task);
     }
 
-    public void removeTask(Task task) {
+    public void removeTask(final Task task) {
         tasks.remove(task);
     }
 
@@ -61,7 +61,7 @@ public class TaskList {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
     }
 

@@ -47,15 +47,17 @@ public class QuoteOverviewCtrl implements Initializable {
     private TableColumn<Quote, String> colQuote;
 
     @Inject
-    public QuoteOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public QuoteOverviewCtrl(final ServerUtils server, final MainCtrl mainCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        colFirstName.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().person.firstName));
-        colLastName.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().person.lastName));
+    public void initialize(final URL location, final ResourceBundle resources) {
+        colFirstName.setCellValueFactory(q ->
+            new SimpleStringProperty(q.getValue().person.firstName));
+        colLastName.setCellValueFactory(q ->
+            new SimpleStringProperty(q.getValue().person.lastName));
         colQuote.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().quote));
     }
 

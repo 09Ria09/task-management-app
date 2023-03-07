@@ -40,19 +40,19 @@ public class BoardOverviewCtrl implements Initializable {
     private HBox listsContainer;
 
     @Inject
-    public BoardOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public BoardOverviewCtrl(final ServerUtils server, final MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
         this.lists = new ArrayList<>();
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(final URL location, final ResourceBundle resources) {
         for (int i = 0; i < 3; ++i)
             addList("title " + i);
     }
 
-    public void addCard(String text, int list) {
+    public void addCard(final String text, final int list) {
         lists.get(list).getItems().add(text);
     }
 
@@ -60,7 +60,7 @@ public class BoardOverviewCtrl implements Initializable {
         addCard("test"+Math.random(),0);
     }
 
-    public void addList(String title) {
+    public void addList(final String title) {
         var kids = listsContainer.getChildren();
         var newList = new ListView<String>();
         newList.setPrefWidth(200);
@@ -88,7 +88,7 @@ public class BoardOverviewCtrl implements Initializable {
         addList("test"+Math.random());
     }
 
-    public void dragDetected(ListView<String> lv, MouseEvent event) {
+    public void dragDetected(final ListView<String> lv, final MouseEvent event) {
         Dragboard dragboard = lv.startDragAndDrop(TransferMode.MOVE);
         ClipboardContent cc = new ClipboardContent();
         if(lv.getSelectionModel().getSelectedItem()==null)
@@ -98,23 +98,23 @@ public class BoardOverviewCtrl implements Initializable {
         event.consume();
     }
 
-    public void dragEntered(ListView<String> lv, DragEvent event) {
+    public void dragEntered(final ListView<String> lv, final DragEvent event) {
         lv.setStyle("-fx-effect: innershadow(gaussian, rgba(0,0,0,0.8), 20, 0, 0, 0);");
         event.consume();
     }
 
-    public void dragExited(ListView<String> lv, DragEvent event) {
+    public void dragExited(final ListView<String> lv, final DragEvent event) {
         lv.setStyle("-fx-effect: none;");
         event.consume();
     }
 
-    public void dragOver(ListView<String> lv, DragEvent event) {
+    public void dragOver(final ListView<String> lv, final DragEvent event) {
         if (event.getDragboard().hasContent(taskCustom))
             event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
         event.consume();
     }
 
-    public void dragDropped(ListView<String> lv, DragEvent event) {
+    public void dragDropped(final ListView<String> lv, final DragEvent event) {
         if (event.getDragboard().hasContent(taskCustom)) {
             lv.getItems().add((String) event.getDragboard().getContent(taskCustom));
             event.setDropCompleted(true);
@@ -123,7 +123,7 @@ public class BoardOverviewCtrl implements Initializable {
         event.consume();
     }
 
-    public void dragDone(ListView<String> lv, DragEvent event) {
+    public void dragDone(final ListView<String> lv, final DragEvent event) {
         if (event.getTransferMode() == TransferMode.MOVE) {
             lv.getItems().remove(lv.getSelectionModel().getSelectedItem());
         }

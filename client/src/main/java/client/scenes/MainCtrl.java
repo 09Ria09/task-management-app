@@ -32,9 +32,9 @@ public class MainCtrl {
     private Scene boardOverview;
     private Scene add;
 
-    public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
-                           Pair<AddQuoteCtrl, Parent> add,
-                           Pair<BoardOverviewCtrl, Parent> boardOverview) {
+    public void initialize(final Stage primaryStage, final Pair<QuoteOverviewCtrl, Parent> overview,
+                           final Pair<AddQuoteCtrl, Parent> add,
+                           final Pair<BoardOverviewCtrl, Parent> boardOverview) {
         this.primaryStage = primaryStage;
         this.overviewCtrl = overview.getKey();
         this.overview = new Scene(overview.getValue());

@@ -15,7 +15,7 @@
  */
 package commons;
 
-import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -37,17 +37,17 @@ public class Person {
     public String lastName;
 
     @SuppressWarnings("unused")
-    private Person() {
+    public Person() {
         // for object mapper
     }
 
-    public Person(String firstName, String lastName) {
+    public Person(final String firstName,final  String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
     }
 
@@ -58,6 +58,6 @@ public class Person {
 
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this, MULTI_LINE_STYLE);
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
     }
 }

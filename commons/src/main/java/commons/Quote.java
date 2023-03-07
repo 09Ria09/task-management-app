@@ -40,17 +40,17 @@ public class Quote {
     public String quote;
 
     @SuppressWarnings("unused")
-    private Quote() {
+    public Quote() {
         // for object mappers
     }
 
-    public Quote(Person person, String quote) {
+    public Quote(final Person person, final String quote) {
         this.person = person;
         this.quote = quote;
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
     }
 

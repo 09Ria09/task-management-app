@@ -18,7 +18,7 @@ public class Tag {
     private String name;
     private int color;
 
-    public Tag(String name, int color) {
+    public Tag(final String name, final int color) {
         this.name = name;
         this.color = color;
     }
@@ -30,7 +30,7 @@ public class Tag {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -38,12 +38,12 @@ public class Tag {
         return color;
     }
 
-    public void setColor(int color) {
+    public void setColor(final int color) {
         this.color = color;
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
     }
 
