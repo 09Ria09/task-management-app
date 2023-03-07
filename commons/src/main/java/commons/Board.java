@@ -3,10 +3,7 @@ package commons;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.*;
 
 @Entity
@@ -14,13 +11,17 @@ public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long id;
+
     private String name;
-    private List<TaskList> listTaskList;
+
+    @OneToMany
+    private List<TaskList> taskLists;
+    @OneToMany
     private List<Tag> tags;
 
     public Board(String name, List<TaskList> listTaskList, List<Tag> tags) {
         this.name = name;
-        this.listTaskList = listTaskList;
+        this.taskLists = listTaskList;
         this.tags = tags;
     }
 
@@ -36,11 +37,11 @@ public class Board {
     }
 
     public List<TaskList> getListTaskList() {
-        return listTaskList;
+        return taskLists;
     }
 
     public void setListTaskList(List<TaskList> listTaskList) {
-        this.listTaskList = listTaskList;
+        this.taskLists = listTaskList;
     }
 
     public List<Tag> getTags() {
@@ -52,11 +53,11 @@ public class Board {
     }
 
     public void addTaskList(TaskList taskList) {
-        listTaskList.add(taskList);
+        taskLists.add(taskList);
     }
 
     public void removeTaskList(TaskList taskList) {
-        listTaskList.remove(taskList);
+        taskLists.remove(taskList);
     }
 
     public void addTask(Tag tag) {
@@ -80,12 +81,12 @@ public class Board {
     @Override
     public String toString() {
         String res = "Lists:\n";
-        for (TaskList taskList : listTaskList) {
+        for (TaskList taskList : this.taskLists) {
                 res = res + taskList.toString() + "\n";
         }
 
         res = res + "Tags:\n";
-        for(Tag tag : tags) {
+        for(Tag tag : this.tags) {
             res = res + tag.toString() + "\n";
         }
 
