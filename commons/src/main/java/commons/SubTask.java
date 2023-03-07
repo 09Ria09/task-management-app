@@ -17,7 +17,7 @@ public class SubTask {
     private String name;
     private boolean completed;
 
-    public SubTask(String name, boolean completed) {
+    public SubTask(final String name, final boolean completed) {
         this.name = name;
         this.completed = completed;
     }
@@ -29,7 +29,7 @@ public class SubTask {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -37,12 +37,12 @@ public class SubTask {
         return completed;
     }
 
-    public void setCompleted(boolean completed) {
+    public void setCompleted(final boolean completed) {
         this.completed = completed;
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
     }
 

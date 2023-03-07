@@ -15,9 +15,8 @@
  */
 package client.scenes;
 
-import com.google.inject.Inject;
-
 import client.utils.ServerUtils;
+import com.google.inject.Inject;
 import commons.Person;
 import commons.Quote;
 import jakarta.ws.rs.WebApplicationException;
@@ -42,7 +41,7 @@ public class AddQuoteCtrl {
     private TextField quote;
 
     @Inject
-    public AddQuoteCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public AddQuoteCtrl(final ServerUtils server, final MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
 
@@ -81,16 +80,16 @@ public class AddQuoteCtrl {
         quote.clear();
     }
 
-    public void keyPressed(KeyEvent e) {
+    public void keyPressed(final KeyEvent e) {
         switch (e.getCode()) {
-        case ENTER:
-            ok();
-            break;
-        case ESCAPE:
-            cancel();
-            break;
-        default:
-            break;
+            case ENTER:
+                ok();
+                break;
+            case ESCAPE:
+                cancel();
+                break;
+            default:
+                break;
         }
     }
 }

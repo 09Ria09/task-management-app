@@ -19,17 +19,17 @@ public class Task {
     @OneToMany
     private List<SubTask> subtasks;
 
-    private Task(){
+    public Task(){
 
     }
 
-    public Task(String name, String description) {
+    public Task(final String name, final String description) {
         this.name = name;
         this.description = description;
         this.subtasks = new ArrayList<>();
     }
 
-    public Task(String name, String description, List<SubTask> subtasks) {
+    public Task(final String name, final String description, final List<SubTask> subtasks) {
         this.name = name;
         this.description = description;
         this.subtasks = subtasks;
@@ -39,7 +39,7 @@ public class Task {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -47,12 +47,12 @@ public class Task {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
     }
 
@@ -70,11 +70,11 @@ public class Task {
         return subtasks;
     }
 
-    public void addSubtask(SubTask subtask){
+    public void addSubtask(final SubTask subtask){
         this.subtasks.add(subtask);
     }
 
-    public boolean removeSubtask(SubTask subTask){
+    public boolean removeSubtask(final SubTask subTask){
         return this.subtasks.remove(subTask);
     }
 }

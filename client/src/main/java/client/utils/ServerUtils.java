@@ -52,7 +52,7 @@ public class ServerUtils {
                 .get(new GenericType<List<Quote>>() {});
     }
 
-    public Quote addQuote(Quote quote) {
+    public Quote addQuote(final Quote quote) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/quotes") //
                 .request(APPLICATION_JSON) //
