@@ -34,7 +34,7 @@ public class TestQuoteRepository implements QuoteRepository {
     public final List<Quote> quotes = new ArrayList<>();
     public final List<String> calledMethods = new ArrayList<>();
 
-    private void call(String name) {
+    private void call(final String name) {
         calledMethods.add(name);
     }
 
@@ -45,19 +45,19 @@ public class TestQuoteRepository implements QuoteRepository {
     }
 
     @Override
-    public List<Quote> findAll(Sort sort) {
+    public List<Quote> findAll(final Sort sort) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public List<Quote> findAllById(Iterable<Long> ids) {
+    public List<Quote> findAllById(final Iterable<Long> ids) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public <S extends Quote> List<S> saveAll(Iterable<S> entities) {
+    public <S extends Quote> List<S> saveAll(final Iterable<S> entities) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -69,25 +69,25 @@ public class TestQuoteRepository implements QuoteRepository {
     }
 
     @Override
-    public <S extends Quote> S saveAndFlush(S entity) {
+    public <S extends Quote> S saveAndFlush(final S entity) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public <S extends Quote> List<S> saveAllAndFlush(Iterable<S> entities) {
+    public <S extends Quote> List<S> saveAllAndFlush(final Iterable<S> entities) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public void deleteAllInBatch(Iterable<Quote> entities) {
+    public void deleteAllInBatch(final Iterable<Quote> entities) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void deleteAllByIdInBatch(Iterable<Long> ids) {
+    public void deleteAllByIdInBatch(final Iterable<Long> ids) {
         // TODO Auto-generated method stub
 
     }
@@ -99,41 +99,41 @@ public class TestQuoteRepository implements QuoteRepository {
     }
 
     @Override
-    public Quote getOne(Long id) {
+    public Quote getOne(final Long id) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Quote getById(Long id) {
+    public Quote getById(final Long id) {
         call("getById");
         return find(id).get();
     }
 
-    private Optional<Quote> find(Long id) {
+    private Optional<Quote> find(final Long id) {
         return quotes.stream().filter(q -> q.id == id).findFirst();
     }
 
     @Override
-    public <S extends Quote> List<S> findAll(Example<S> example) {
+    public <S extends Quote> List<S> findAll(final Example<S> example) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public <S extends Quote> List<S> findAll(Example<S> example, Sort sort) {
+    public <S extends Quote> List<S> findAll(final Example<S> example, final Sort sort) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Page<Quote> findAll(Pageable pageable) {
+    public Page<Quote> findAll(final Pageable pageable) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public <S extends Quote> S save(S entity) {
+    public <S extends Quote> S save(final S entity) {
         call("save");
         entity.id = (long) quotes.size();
         quotes.add(entity);
@@ -141,13 +141,13 @@ public class TestQuoteRepository implements QuoteRepository {
     }
 
     @Override
-    public Optional<Quote> findById(Long id) {
+    public Optional<Quote> findById(final Long id) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public boolean existsById(Long id) {
+    public boolean existsById(final Long id) {
         call("existsById");
         return find(id).isPresent();
     }
@@ -158,25 +158,25 @@ public class TestQuoteRepository implements QuoteRepository {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(final Long id) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void delete(Quote entity) {
+    public void delete(final Quote entity) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void deleteAllById(Iterable<? extends Long> ids) {
+    public void deleteAllById(final Iterable<? extends Long> ids) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void deleteAll(Iterable<? extends Quote> entities) {
+    public void deleteAll(final Iterable<? extends Quote> entities) {
         // TODO Auto-generated method stub
 
     }
@@ -188,31 +188,32 @@ public class TestQuoteRepository implements QuoteRepository {
     }
 
     @Override
-    public <S extends Quote> Optional<S> findOne(Example<S> example) {
+    public <S extends Quote> Optional<S> findOne(final Example<S> example) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public <S extends Quote> Page<S> findAll(Example<S> example, Pageable pageable) {
+    public <S extends Quote> Page<S> findAll(final Example<S> example, final Pageable pageable) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public <S extends Quote> long count(Example<S> example) {
+    public <S extends Quote> long count(final Example<S> example) {
         // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
-    public <S extends Quote> boolean exists(Example<S> example) {
+    public <S extends Quote> boolean exists(final Example<S> example) {
         // TODO Auto-generated method stub
         return false;
     }
 
     @Override
-    public <S extends Quote, R> R findBy(Example<S> example, Function<FetchableFluentQuery<S>, R> queryFunction) {
+    public <S extends Quote, R> R findBy(final Example<S> example,
+                                         final Function<FetchableFluentQuery<S>, R> queryFunction) {
         // TODO Auto-generated method stub
         return null;
     }
