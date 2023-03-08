@@ -60,11 +60,15 @@ public class Board {
         taskLists.remove(taskList);
     }
 
-    public void addTask(final Tag tag) {
+    public Optional<TaskList> getTaskListById(final long id){
+        return taskLists.stream().filter(x -> x.id == id).findFirst();
+    }
+
+    public void addTag(final Tag tag) {
         tags.add(tag);
     }
 
-    public void removeTask(final Tag tag) {
+    public void removeTag(final Tag tag) {
         tags.remove(tag);
     }
 
