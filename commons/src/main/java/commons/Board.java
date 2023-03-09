@@ -14,9 +14,9 @@ public class Board {
 
     private String name;
 
-    @OneToMany
+    @OneToMany(cascade=CascadeType.ALL)
     private List<TaskList> taskLists;
-    @OneToMany
+    @OneToMany(cascade=CascadeType.ALL)
     private List<Tag> tags;
 
     public Board(final String name, final List<TaskList> listTaskList, final List<Tag> tags) {
@@ -84,7 +84,7 @@ public class Board {
 
     @Override
     public String toString() {
-        String res = "Lists:\n";
+        String res = "Board (" + id + ") : " + name + "\nLists:\n";
         for (TaskList taskList : this.taskLists) {
             res = res + taskList.toString() + "\n";
         }
