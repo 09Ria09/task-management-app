@@ -35,7 +35,8 @@ public class CreateTaskCtrl {
         mainCtrl.showOverview();
     }
 
-    //this is run when the confirm button is pressed, it is meant to inform the server to create a new task with the
+    //this is run when the confirm button is pressed,
+    //it is meant to inform the server to create a new task with the
     //appropriate name and description however this interface does not work yet
     public void confirm() {
         try {
@@ -55,7 +56,8 @@ public class CreateTaskCtrl {
         mainCtrl.showOverview();
     }
 
-    //this is run to get the description and name of the task out of the text boxes and to create a new Task object
+    //this is run to get the description and name of
+    //the task out of the text boxes and to create a new Task object
     private Task getTask() {
         var name = taskName.getText();
         var desc = taskDesc.getText();
