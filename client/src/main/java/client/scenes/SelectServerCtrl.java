@@ -27,6 +27,7 @@ public class SelectServerCtrl {
      */
     public void showServerBoards(){
         mainCtrl.showBoardOverview();
+        String serverAddress = addressField.getText();
     }
 
 }

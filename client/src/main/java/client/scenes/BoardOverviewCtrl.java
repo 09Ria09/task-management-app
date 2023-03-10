@@ -129,4 +129,13 @@ public class BoardOverviewCtrl implements Initializable {
         }
         event.consume();
     }
+
+    /*
+    This method is used for enabling clients to switch the server
+    It is attached to a button in the board overview scene
+    Currently all it does is switch the scene but
+     */
+    public void switchServer(){
+        mainCtrl.showSelectServer();
+    }
 }
