@@ -3,16 +3,16 @@ package client.scenes;
 import com.google.inject.Inject;
 
 import client.utils.ServerUtils;
-import commons.Person;
 import commons.Task;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 
-public class AddCreateTaskCtrl {
+public class CreateTaskCtrl {
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
@@ -24,7 +24,7 @@ public class AddCreateTaskCtrl {
     private TextField taskDesc;
 
     @Inject
-    public AddCreateTaskCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public CreateTaskCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
 
@@ -37,7 +37,9 @@ public class AddCreateTaskCtrl {
 
     public void confirm() {
         try {
-            server.addTask(getTask());
+            //PLACEHOLDER CODE: WILL SOON BE SOMETHING LIKE THE LINE BELOW
+            //server.addTask(getTask());
+            System.out.println("hello world");
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);
@@ -60,17 +62,5 @@ public class AddCreateTaskCtrl {
     private void clearFields() {
         taskDesc.clear();
         taskName.clear();
-    }
-
-    EventHandler<ActionEvent> buttonEventHandler(){
-        return event -> {
-            Button clickedButton = (Button) event.getTarget();
-            if (clickedButton.getText().equals("Cancel")) {
-                cancel();
-            }
-            else if (clickedButton.getText().equals("Confirm")) {
-                confirm();
-            }
-        };
     }
 }
