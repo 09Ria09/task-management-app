@@ -15,10 +15,7 @@
  */
 package client;
 
-import client.scenes.AddQuoteCtrl;
-import client.scenes.BoardOverviewCtrl;
-import client.scenes.MainCtrl;
-import client.scenes.QuoteOverviewCtrl;
+import client.scenes.*;
 import com.google.inject.Injector;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -43,8 +40,10 @@ public class Main extends Application {
         var overview = FXML.load(QuoteOverviewCtrl.class, "client", "scenes", "QuoteOverview.fxml");
         var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
         var lists = FXML.load(BoardOverviewCtrl.class, "client", "scenes", "BoardOverview.fxml");
+        var serverSelection = FXML
+                .load(SelectServerCtrl.class, "client", "scenes", "SelectServer.fxml");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, overview, add, lists);
+        mainCtrl.initialize(primaryStage, overview, add, lists, serverSelection);
     }
 }
