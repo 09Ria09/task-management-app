@@ -21,6 +21,7 @@ public class CreateTaskCtrl {
     @FXML
     private TextField taskDesc;
 
+    //this sets up the server and mainctrl variables
     @Inject
     public CreateTaskCtrl(final ServerUtils server, final MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
@@ -28,11 +29,14 @@ public class CreateTaskCtrl {
 
     }
 
+    //this is run when the cancel button is pressed, it sends the user back to the overview
     public void cancel() {
         clearFields();
         mainCtrl.showOverview();
     }
 
+    //this is run when the confirm button is pressed, it is meant to inform the server to create a new task with the
+    //appropriate name and description however this interface does not work yet
     public void confirm() {
         try {
             //PLACEHOLDER CODE: WILL SOON BE SOMETHING LIKE THE LINE BELOW
@@ -51,12 +55,14 @@ public class CreateTaskCtrl {
         mainCtrl.showOverview();
     }
 
+    //this is run to get the description and name of the task out of the text boxes and to create a new Task object
     private Task getTask() {
         var name = taskName.getText();
         var desc = taskDesc.getText();
         return new Task(name, desc);
     }
 
+    //this clears the text fields of the UI to allow them to be reusable
     private void clearFields() {
         taskDesc.clear();
         taskName.clear();
