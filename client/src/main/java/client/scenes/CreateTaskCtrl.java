@@ -7,9 +7,7 @@ import commons.Task;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 
 public class CreateTaskCtrl {
@@ -24,7 +22,7 @@ public class CreateTaskCtrl {
     private TextField taskDesc;
 
     @Inject
-    public CreateTaskCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public CreateTaskCtrl(final ServerUtils server, final MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
 
