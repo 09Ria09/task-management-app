@@ -24,7 +24,7 @@ public class MainCtrlTest {
 
     @BeforeEach
     public void setup() {
-        sut = new MainCtrl(creatList);
+        sut = new MainCtrl();
     }
 
     @Test
