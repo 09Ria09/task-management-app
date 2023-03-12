@@ -32,9 +32,14 @@ public class MainCtrl {
     private Scene boardOverview;
     private Scene add;
 
+    private SelectServerCtrl selectServerCtrl;
+
+    private Scene selectServer;
+
     public void initialize(final Stage primaryStage, final Pair<QuoteOverviewCtrl, Parent> overview,
                            final Pair<AddQuoteCtrl, Parent> add,
-                           final Pair<BoardOverviewCtrl, Parent> boardOverview) {
+                           final Pair<BoardOverviewCtrl, Parent> boardOverview,
+                           final Pair<SelectServerCtrl, Parent> selectServer) {
         this.primaryStage = primaryStage;
         this.overviewCtrl = overview.getKey();
         this.overview = new Scene(overview.getValue());
@@ -44,8 +49,13 @@ public class MainCtrl {
 
         this.addCtrl = add.getKey();
         this.add = new Scene(add.getValue());
-        showBoardOverview();
+
+        this.selectServerCtrl=selectServer.getKey();
+        this.selectServer= new Scene(selectServer.getValue());
+
+        //showBoardOverview();
         //showOverview();
+        showSelectServer();
         primaryStage.show();
     }
 
@@ -65,5 +75,10 @@ public class MainCtrl {
         primaryStage.setTitle("Quotes: Adding Quote");
         primaryStage.setScene(add);
         add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
+    }
+
+    public void showSelectServer() {
+        primaryStage.setTitle("Talio: select your server");
+        primaryStage.setScene(selectServer);
     }
 }
