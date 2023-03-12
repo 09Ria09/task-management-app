@@ -24,12 +24,13 @@ public class MainCtrlTest {
 
     @BeforeEach
     public void setup() {
-        sut = new MainCtrl();
+        sut = new MainCtrl(creatList);
     }
 
     @Test
     public void writeSomeTests() {
         // TODO create replacement objects and write some tests
         // sut.initialize(null, null, null);
+        
     }
 }

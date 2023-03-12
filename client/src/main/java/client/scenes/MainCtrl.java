@@ -28,9 +28,14 @@ public class MainCtrl {
     private Scene overview;
 
     private AddQuoteCtrl addCtrl;
-    //private BoardOverviewCtrl boardOverviewCtrl;
+
+
+    private static BoardOverviewCtrl boardOverviewCtrl;
     private Scene boardOverview;
     private Scene add;
+
+    private Scene createList;
+    private CreateListCtrl createListCtrl;
 
     private SelectServerCtrl selectServerCtrl;
 
@@ -39,16 +44,20 @@ public class MainCtrl {
     public void initialize(final Stage primaryStage, final Pair<QuoteOverviewCtrl, Parent> overview,
                            final Pair<AddQuoteCtrl, Parent> add,
                            final Pair<BoardOverviewCtrl, Parent> boardOverview,
+                           final Pair<CreateListCtrl, Parent> createList,
                            final Pair<SelectServerCtrl, Parent> selectServer) {
         this.primaryStage = primaryStage;
         this.overviewCtrl = overview.getKey();
         this.overview = new Scene(overview.getValue());
 
-        //this.boardOverviewCtrl = boardOverview.getKey();
+        this.boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
 
         this.addCtrl = add.getKey();
         this.add = new Scene(add.getValue());
+
+        this.createListCtrl = createList.getKey();
+        this.createList = new Scene(createList.getValue());
 
         this.selectServerCtrl=selectServer.getKey();
         this.selectServer= new Scene(selectServer.getValue());
@@ -80,5 +89,15 @@ public class MainCtrl {
     public void showSelectServer() {
         primaryStage.setTitle("Talio: select your server");
         primaryStage.setScene(selectServer);
+    }
+
+    public void showCreateList() {
+        primaryStage.setTitle("Talio: Create List");
+        primaryStage.setScene(createList);
+        overviewCtrl.refresh();
+    }
+
+    public static BoardOverviewCtrl getBoardOverviewCtrl() {
+        return boardOverviewCtrl;
     }
 }
