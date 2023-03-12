@@ -14,7 +14,8 @@ import java.util.List;
 public class BoardService {
 
     /**
-     * The JPA repository that contains all the data about the boards, lists and tasks. It is constructed automatically.
+     * The JPA repository that contains all the data about the boards, lists and tasks.
+     * It is constructed automatically.
      */
     @Autowired
     private BoardRepository boardRepository;
@@ -62,7 +63,8 @@ public class BoardService {
     }
 
     /**
-     * Returns all the task lists of the board assigned to the provided id, or an empty list if the id is not assigned to a board.
+     * Returns all the task lists of the board assigned to the provided id.
+     * It returns an empty list if the id is not assigned to a board.
      * @param boardId the id of the board from which we want to access the board.
      * @return a list of all the task lists of the board.
      */
@@ -74,7 +76,8 @@ public class BoardService {
     }
 
     /**
-     * Returns a specific list of a specific board, by ids. Both the id of the board and the id of the list are needed to access it.
+     * Returns a specific list of a specific board, by ids.
+     * Both the id of the board and the id of the list are needed to access it.
      * @param boardId the id of the board.
      * @param listId the id of the task list.
      * @return the task list corresponding to the specified ids.
@@ -140,7 +143,8 @@ public class BoardService {
     }
 
     /**
-     * Gets a specific task from a specific task list in a specific board, by ids. The id of the board, the list and the task are needed to access it.
+     * Gets a specific task from a specific task list in a specific board, by ids.
+     * The id of the board, the list and the task are needed to access it.
      * @param boardId the id of the board.
      * @param listId the id of the list.
      * @param taskId the id of the task.
