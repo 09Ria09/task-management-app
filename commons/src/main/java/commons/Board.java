@@ -26,6 +26,9 @@ public class Board {
     }
 
     public Board() {
+        this.taskLists = new ArrayList<>();
+        this.tags = new ArrayList<>();
+        this.name = "";
     }
 
     public String getName() {
