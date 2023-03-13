@@ -103,7 +103,8 @@ public class MainCtrl {
     /**
      *
      * @return the instance of boardOverviewControl in order to be able to use the addList method.
-     * Needs fixing. addList method should be done on the server side so that the lists can be stored.
+     * Needs fixing. addList method should be done on the server side so that the lists can be
+     * stored.
      */
     public static BoardOverviewCtrl getBoardOverviewCtrl() {
         return boardOverviewCtrl;
