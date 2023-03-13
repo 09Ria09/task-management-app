@@ -4,8 +4,6 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
-
-
 import javafx.event.ActionEvent;
 
 public class CreateListCtrl {
@@ -60,7 +58,4 @@ public class CreateListCtrl {
     public void cancel(final ActionEvent event) {
         showServerBoards();
     }
-
-
-
 }
