@@ -17,6 +17,10 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.Task;
+import commons.TaskList;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
@@ -26,16 +30,14 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class BoardOverviewCtrl implements Initializable {
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
     private final DataFormat taskCustom = new DataFormat("task.custom");
-    @FXML
-    private final ArrayList<ListView<String>> lists;
+    private final Map<Long, VBox> listsMap;
     @FXML
     private HBox listsContainer;
 
@@ -43,55 +45,70 @@ public class BoardOverviewCtrl implements Initializable {
     public BoardOverviewCtrl(final ServerUtils server, final MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
-        this.lists = new ArrayList<>();
+        this.listsMap = new HashMap<>();
     }
 
+    /**
+     * Initializes the board overview by setting the board to refresh at a fixed rate
+     * @param location
+     * The location used to resolve relative paths for the root object, or
+     * {@code null} if the location is not known.
+     *
+     * @param resources
+     * The resources used to localize the root object, or {@code null} if
+     * the root object was not localized.
+     */
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
-        for (int i = 0; i < 3; ++i)
-            addList("title " + i);
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> refresh());
+            }
+        }, 0, 750);
     }
 
-    public void addCard(final String text, final int list) {
-        lists.get(list).getItems().add(text);
-    }
-
-    public void addCard() {
-        addCard("test"+Math.random(),0);
-    }
-
-    public void addList(final String title) {
+    /**
+     * adds a list to the board
+     * @param taskList the list to be added
+     */
+    public void addList(final TaskList taskList) {
         var kids = listsContainer.getChildren();
         var newList = new ListView<String>();
+
         newList.setPrefWidth(200);
-        newList.setOnDragDetected(event -> dragDetected(newList, event));
-        newList.setOnDragEntered(event -> dragEntered(newList, event));
-        newList.setOnDragOver(event -> dragOver(newList, event));
-        newList.setOnDragExited(event -> dragExited(newList, event));
-        newList.setOnDragDropped(event -> dragDropped(newList, event));
-        newList.setOnDragDone(event -> dragDone(newList, event));
+        setDragHandlers(newList);
         if (!kids.isEmpty()) {
             var lb = kids.get(kids.size() - 1).getLayoutBounds();
             var lx = kids.get(kids.size() - 1).getLayoutX();
             newList.setLayoutX(lx + lb.getMaxX());
         }
-
         VBox newVBox = new VBox();
-        newVBox.getChildren().add(new Text(title));
+        newList.getItems().addAll(convertTasksToCards(taskList));
+
+        newVBox.getChildren().add(new Text(taskList.getName()));
         newVBox.getChildren().add(newList);
 
         kids.add(newVBox);
-        lists.add(newList);
+        listsMap.put(taskList.id, newVBox);
+    }
+
+    private void setDragHandlers(final ListView<String> list) {
+        list.setOnDragDetected(event -> dragDetected(list, event));
+        list.setOnDragEntered(event -> dragEntered(list, event));
+        list.setOnDragOver(event -> dragOver(list, event));
+        list.setOnDragExited(event -> dragExited(list, event));
+        list.setOnDragDropped(event -> dragDropped(list, event));
+        list.setOnDragDone(event -> dragDone(list, event));
     }
 
     public void addList() {
-        addList("test"+Math.random());
     }
 
     public void dragDetected(final ListView<String> lv, final MouseEvent event) {
         Dragboard dragboard = lv.startDragAndDrop(TransferMode.MOVE);
         ClipboardContent cc = new ClipboardContent();
-        if(lv.getSelectionModel().getSelectedItem()==null)
+        if (lv.getSelectionModel().getSelectedItem() == null)
             return;
         cc.put(taskCustom, lv.getSelectionModel().getSelectedItem());
         dragboard.setContent(cc);
@@ -119,7 +136,7 @@ public class BoardOverviewCtrl implements Initializable {
             lv.getItems().add((String) event.getDragboard().getContent(taskCustom));
             event.setDropCompleted(true);
         } else
-            event.setDropCompleted(true);
+            event.setDropCompleted(false);
         event.consume();
     }
 
@@ -135,7 +152,57 @@ public class BoardOverviewCtrl implements Initializable {
     It is attached to a button in the board overview scene
     Currently all it does is switch the scene but
      */
-    public void switchServer(){
+    public void switchServer() {
         mainCtrl.showSelectServer();
+    }
+
+    /**
+     * This method refreshes the board overview.
+     */
+    private void refresh() {
+        var data = server.getLists();
+        System.out.println(data);
+        data = FXCollections.observableList(data);
+        refreshLists(data);
+    }
+
+    /**
+     * This method refreshes the lists of the board.
+     * @param lists the list of lists
+     */
+    private void refreshLists(final List<TaskList> lists) {
+        for (TaskList list : lists) {
+            if (!listsMap.containsKey(list.id))
+                addList(list);
+            else {
+                Text title = (Text) listsMap.get(list.id).getChildren().get(0);
+                if (!Objects.equals(title.getText(), list.getName()))
+                    title.setText(list.getName());
+                refreshTasks(list);
+            }
+        }
+    }
+
+    /**
+     * This refreshes the tasks of the list.
+     * @param taskList the list for which the tasks must be refreshed.
+     */
+    private void refreshTasks(final TaskList taskList) {
+        ListView<String> currentTasks =
+            (ListView<String>) listsMap.get(taskList.id).getChildren().get(1);
+        currentTasks.getItems().retainAll(convertTasksToCards(taskList));
+        for (Task task : taskList.getTasks()) {
+            if (!currentTasks.getItems().contains(task.getName())) //TODO: make this based on id
+                currentTasks.getItems().add(task.getName());
+        }
+    }
+
+    /**
+     * converts a TaskList to a list of strings which contains the titles of the tasks
+     * @param taskList the list that must be converted
+     * @return a list of titles of the cards
+     */
+    private String[] convertTasksToCards(final TaskList taskList) {
+        return taskList.getTasks().stream().map(Task::getName).toArray(String[]::new);
     }
 }
