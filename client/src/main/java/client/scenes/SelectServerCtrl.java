@@ -26,8 +26,9 @@ public class SelectServerCtrl {
     -connect to server
      */
     public void showServerBoards(){
-        mainCtrl.showBoardOverview();
         String serverAddress = addressField.getText();
+        System.out.println(server.isTalioServer(serverAddress));
+        System.out.println(serverAddress);
     }
 
 }
