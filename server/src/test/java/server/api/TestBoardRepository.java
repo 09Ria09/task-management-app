@@ -40,7 +40,7 @@ public class TestBoardRepository implements BoardRepository {
 
     @Override
     public List<Board> findAll() {
-        calledMethods.add("findAll");
+        call("findAll");
         return boards;
     }
 
@@ -161,7 +161,7 @@ public class TestBoardRepository implements BoardRepository {
     @Override
     public void delete(final Board entity) {
         this.boards.remove(entity);
-        this.calledMethods.add("delete");
+        call("delete");
     }
 
     @Override
