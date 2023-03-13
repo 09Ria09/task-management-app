@@ -40,7 +40,7 @@ public class TestBoardRepository implements BoardRepository {
 
     @Override
     public List<Board> findAll() {
-        calledMethods.add("findAll");
+        call("findAll");
         return boards;
     }
 
