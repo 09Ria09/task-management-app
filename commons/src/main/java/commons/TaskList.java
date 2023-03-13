@@ -14,7 +14,7 @@ public class TaskList {
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long id;
     private String name;
-    @OneToMany
+    @OneToMany(cascade=CascadeType.ALL)
     private List<Task> tasks;
 
     public TaskList(final String name) {
@@ -28,7 +28,6 @@ public class TaskList {
     }
 
     public TaskList(){
-
     }
 
     public String getName() {
@@ -43,6 +42,9 @@ public class TaskList {
         return tasks;
     }
 
+    public Optional<Task> getTaskById(final long id){
+        return tasks.stream().filter(x -> x.id == id).findFirst();
+    }
 
     public void addTask(final Task task) {
         tasks.add(task);

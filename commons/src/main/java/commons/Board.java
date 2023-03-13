@@ -14,9 +14,9 @@ public class Board {
 
     private String name;
 
-    @OneToMany
+    @OneToMany(cascade=CascadeType.ALL)
     private List<TaskList> taskLists;
-    @OneToMany
+    @OneToMany(cascade=CascadeType.ALL)
     private List<Tag> tags;
 
     public Board(final String name, final List<TaskList> listTaskList, final List<Tag> tags) {
@@ -60,11 +60,15 @@ public class Board {
         taskLists.remove(taskList);
     }
 
-    public void addTask(final Tag tag) {
+    public Optional<TaskList> getTaskListById(final long id){
+        return taskLists.stream().filter(x -> x.id == id).findFirst();
+    }
+
+    public void addTag(final Tag tag) {
         tags.add(tag);
     }
 
-    public void removeTask(final Tag tag) {
+    public void removeTag(final Tag tag) {
         tags.remove(tag);
     }
 
@@ -80,7 +84,7 @@ public class Board {
 
     @Override
     public String toString() {
-        String res = "Lists:\n";
+        String res = "Board (" + id + ") : " + name + "\nLists:\n";
         for (TaskList taskList : this.taskLists) {
             res = res + taskList.toString() + "\n";
         }

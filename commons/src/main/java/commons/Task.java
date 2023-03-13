@@ -16,7 +16,7 @@ public class Task {
     private String name;
     private String description;
 
-    @OneToMany
+    @OneToMany(cascade=CascadeType.ALL)
     private List<SubTask> subtasks;
 
     public Task(){
