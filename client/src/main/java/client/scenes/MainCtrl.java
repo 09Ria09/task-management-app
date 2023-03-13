@@ -66,7 +66,7 @@ public class MainCtrl {
     }
 
     public void showBoardOverview() {
-        primaryStage.setTitle("Quotes: Overview");
+        primaryStage.setTitle("Talio: Board Overview");
         primaryStage.setScene(boardOverview);
         overviewCtrl.refresh();
     }
@@ -78,7 +78,7 @@ public class MainCtrl {
     }
 
     public void showSelectServer() {
-        primaryStage.setTitle("Talio: select your server");
+        primaryStage.setTitle("Talio: Select Your Server");
         primaryStage.setScene(selectServer);
     }
 }
