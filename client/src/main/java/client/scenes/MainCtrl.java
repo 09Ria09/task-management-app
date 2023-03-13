@@ -91,12 +91,20 @@ public class MainCtrl {
         primaryStage.setScene(selectServer);
     }
 
+    /**
+     * Changes the scene to the popup that allows users to create a new task list and name it.
+     */
     public void showCreateList() {
         primaryStage.setTitle("Talio: Create List");
         primaryStage.setScene(createList);
         overviewCtrl.refresh();
     }
 
+    /**
+     *
+     * @return the instance of boardOverviewControl in order to be able to use the addList method.
+     * Needs fixing. addList method should be done on the server side so that the lists can be stored.
+     */
     public static BoardOverviewCtrl getBoardOverviewCtrl() {
         return boardOverviewCtrl;
     }

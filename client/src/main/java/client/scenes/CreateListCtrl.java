@@ -22,23 +22,41 @@ public class CreateListCtrl {
 
     String listName;
 
+    /**
+     * Constructor
+     * @param server
+     * @param mainCtrl
+     */
     @Inject
     public CreateListCtrl(final ServerUtils server, final MainCtrl mainCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
     }
 
-
+    /**
+     *
+     * @param event When the user clicks confirm in the create list window,
+     *              the new list will be added to the board and they will be
+     *              returned to the board overview.
+     */
     public void confirm(final ActionEvent event) {
         listName = listNameInput.getText();
         MainCtrl.getBoardOverviewCtrl().addList(listName);
         showServerBoards();
     }
 
+    /**
+     * Method to return to board overview scene
+     */
     public void showServerBoards(){
         mainCtrl.showBoardOverview();
     }
 
+    /**
+     *
+     * @param event When the user presses cancel in the create list window,
+     *              they will be returned to the board overview.
+     */
     public void cancel(final ActionEvent event) {
         showServerBoards();
     }
