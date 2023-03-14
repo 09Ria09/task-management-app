@@ -89,7 +89,7 @@ public class BoardController {
      * @param taskid the id of the task we want to access
      * @return the task corresponding to all the given ids
      */
-    @GetMapping("/get/board/{boardid}/tasklist/{taskListid}/task/{taskid}")
+    @GetMapping("/{boardid}/tasklist/{taskListid}/task/{taskid}")
     public Task getTask(
             @PathVariable("boardid") final long boardid,
             @PathVariable("taskListid") final long taskListid,
