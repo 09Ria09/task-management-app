@@ -35,7 +35,7 @@ public class BoardController {
      * @param id the id of the board that will be retrieved
      * @return the board with the corresponding id
      */
-    @GetMapping("/get/board/{id}")
+    @GetMapping("/{boardid}")
     public Board getBoard(@PathVariable("id") final long id) {
         return boardService.getBoard(id);
     }
