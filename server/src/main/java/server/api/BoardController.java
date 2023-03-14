@@ -48,7 +48,7 @@ public class BoardController {
      */
     @GetMapping("/{boardid}/tasklists")
     public List<TaskList> getTaskLists(@PathVariable("boardid") final long boardid) {
-        return boardService.getLists(id);
+        return boardService.getLists(boardid);
     }
 
     /**
