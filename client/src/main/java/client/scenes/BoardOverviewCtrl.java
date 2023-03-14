@@ -60,6 +60,7 @@ public class BoardOverviewCtrl implements Initializable {
         addCard("test"+Math.random(),0);
     }
 
+    //Should be implemented in the server utils
     public void addList(final String title) {
         var kids = listsContainer.getChildren();
         var newList = new ListView<String>();
@@ -85,7 +86,7 @@ public class BoardOverviewCtrl implements Initializable {
     }
 
     public void addList() {
-        addList("test"+Math.random());
+        mainCtrl.showCreateList();
     }
 
     public void dragDetected(final ListView<String> lv, final MouseEvent event) {
