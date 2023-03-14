@@ -59,9 +59,7 @@ public class CreateTaskCtrl {
     //this is run to get the description and name of
     //the task out of the text boxes and to create a new Task object
     private Task getTask() {
-        var name = taskName.getText();
-        var desc = taskDesc.getText();
-        return new Task(name, desc);
+        return new Task(taskName.getText(), taskDesc.getText());
     }
 
     //this clears the text fields of the UI to allow them to be reusable

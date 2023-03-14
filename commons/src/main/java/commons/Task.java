@@ -16,6 +16,8 @@ public class Task {
     private String name;
     private String description;
 
+    private TaskList tasklist;
+
     @OneToMany(cascade=CascadeType.ALL)
     private List<SubTask> subtasks;
 
@@ -77,4 +79,6 @@ public class Task {
     public boolean removeSubtask(final SubTask subTask){
         return this.subtasks.remove(subTask);
     }
+
+    public TaskList getTasklist() { return this.tasklist; };
 }
