@@ -56,8 +56,8 @@ public class CreateListCtrl {
      *              they will be returned to the board overview.
      */
     public void cancel(final ActionEvent event) {
-         listNameInput.clear();
-         showServerBoards();
+        listNameInput.clear();
+        showServerBoards();
     }
 
 }
