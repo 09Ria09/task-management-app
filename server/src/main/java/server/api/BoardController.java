@@ -144,7 +144,7 @@ public class BoardController {
      *
      * @param boardid the corresponding id of the board that will be deleted
      */
-    @DeleteMapping("/delete/{boardid}")
+    @DeleteMapping("/{boardid}")
     public void deleteBoard(@PathVariable("boardid") final long boardid) {
         boardService.removeBoardByID(boardid);
     }
