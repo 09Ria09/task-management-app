@@ -13,6 +13,10 @@ public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long id;
+
+    @ManyToOne
+    private TaskList list;
+//this refers to the task list that a task is assigned to
     private String name;
     private String description;
 

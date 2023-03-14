@@ -19,13 +19,10 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Person;
 import commons.Quote;
-import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.Modality;
-
+//we should start moving forward in order to delete this class
 public class AddQuoteCtrl {
 
     private final ServerUtils server;
@@ -51,7 +48,8 @@ public class AddQuoteCtrl {
         clearFields();
         mainCtrl.showOverview();
     }
-
+ //will be deleted soon
+   /**
     public void ok() {
         try {
             server.addQuote(getQuote());
@@ -66,7 +64,7 @@ public class AddQuoteCtrl {
 
         clearFields();
         mainCtrl.showOverview();
-    }
+    } **/
 
     private Quote getQuote() {
         var p = new Person(firstName.getText(), lastName.getText());
@@ -83,7 +81,7 @@ public class AddQuoteCtrl {
     public void keyPressed(final KeyEvent e) {
         switch (e.getCode()) {
             case ENTER:
-                ok();
+        //        ok();
                 break;
             case ESCAPE:
                 cancel();

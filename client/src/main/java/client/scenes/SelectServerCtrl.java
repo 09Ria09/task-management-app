@@ -19,16 +19,27 @@ public class SelectServerCtrl {
         this.mainCtrl = mainCtrl;
     }
 
-    //TODO
-    /*
-    -Take input from addressField
-    -verify input for validity
-    -connect to server
-     */
+   //takes input from user and checks if it is a valid server after setting the serveraddress
+    //if it is a valid server it will show the boardoverview
+    //if it is not a valid server it will show the wrongserver scene
     public void showServerBoards(){
         String serverAddress = addressField.getText();
-        System.out.println(server.isTalioServer(serverAddress));
+        server.setServerAddress(serverAddress);
         System.out.println(serverAddress);
+        try{
+            //TODO
+            //I have to implement a timeout of sorts - connecting to
+            //google.com will take time and it will cause the app to be not responding
+            //until going to wrong server scene
+            if(server.isTalioServer()){
+                addressField.clear();
+                mainCtrl.showBoardOverview();
+            }
+
+        }
+        catch (Exception e){
+            mainCtrl.showWrongServer();
+        }
     }
 
 }

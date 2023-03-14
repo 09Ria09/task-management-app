@@ -14,6 +14,6 @@
          </content>
       </ScrollPane>
       <Button layoutX="436.0" layoutY="403.0" mnemonicParsing="false" onAction="#addList" text="Add List" />
-      <Button layoutX="26.0" layoutY="391.0" mnemonicParsing="false" onAction="#switchServer" text="Button" />
+      <Button layoutX="26.0" layoutY="391.0" mnemonicParsing="false" onAction="#switchServer" text="Disconnect" />
    </children>
 </AnchorPane>

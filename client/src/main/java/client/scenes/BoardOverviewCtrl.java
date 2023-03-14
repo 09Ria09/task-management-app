@@ -137,5 +137,6 @@ public class BoardOverviewCtrl implements Initializable {
      */
     public void switchServer(){
         mainCtrl.showSelectServer();
+        server.disconnect();
     }
 }

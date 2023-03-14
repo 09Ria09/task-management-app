@@ -42,8 +42,8 @@ public class Main extends Application {
         var lists = FXML.load(BoardOverviewCtrl.class, "client", "scenes", "BoardOverview.fxml");
         var serverSelection = FXML
                 .load(SelectServerCtrl.class, "client", "scenes", "SelectServer.fxml");
-
+        var wrongServer = FXML.load(WrongServerCtrl.class, "client", "scenes", "WrongServer.fxml");
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, overview, add, lists, serverSelection);
+        mainCtrl.initialize(primaryStage, overview, add, lists, serverSelection,wrongServer);
     }
 }

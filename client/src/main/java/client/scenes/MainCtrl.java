@@ -36,10 +36,14 @@ public class MainCtrl {
 
     private Scene selectServer;
 
+    private WrongServerCtrl wrongServerCtrl;
+    private Scene wrongServer;
+
     public void initialize(final Stage primaryStage, final Pair<QuoteOverviewCtrl, Parent> overview,
                            final Pair<AddQuoteCtrl, Parent> add,
                            final Pair<BoardOverviewCtrl, Parent> boardOverview,
-                           final Pair<SelectServerCtrl, Parent> selectServer) {
+                           final Pair<SelectServerCtrl, Parent> selectServer,
+                           final Pair<WrongServerCtrl, Parent> wrongServer) {
         this.primaryStage = primaryStage;
         this.overviewCtrl = overview.getKey();
         this.overview = new Scene(overview.getValue());
@@ -53,8 +57,9 @@ public class MainCtrl {
         this.selectServerCtrl=selectServer.getKey();
         this.selectServer= new Scene(selectServer.getValue());
 
-        //showBoardOverview();
-        //showOverview();
+        this.wrongServerCtrl = wrongServer.getKey();
+        this.wrongServer= new Scene(wrongServer.getValue());
+
         showSelectServer();
         primaryStage.show();
     }
@@ -80,5 +85,11 @@ public class MainCtrl {
     public void showSelectServer() {
         primaryStage.setTitle("Talio: Select Your Server");
         primaryStage.setScene(selectServer);
+    }
+
+    public void showWrongServer() {
+        primaryStage.setTitle("Talio: server not found :/");
+        primaryStage.setScene(wrongServer);
+
     }
 }

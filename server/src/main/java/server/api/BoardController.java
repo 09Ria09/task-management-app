@@ -12,7 +12,7 @@ import server.BoardService;
 @RequestMapping("/api/boards")
 public class BoardController {
 
-    private BoardService boardService;
+    private final BoardService boardService;
 
     @Autowired
     public BoardController(final BoardService boardService) {
