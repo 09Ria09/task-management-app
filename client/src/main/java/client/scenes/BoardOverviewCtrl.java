@@ -38,6 +38,7 @@ public class BoardOverviewCtrl implements Initializable {
     private final MainCtrl mainCtrl;
     private final DataFormat taskCustom = new DataFormat("task.custom");
     private final Map<Long, VBox> listsMap;
+    private final Map<Long, Map<Long, Integer>> tasksMap;
     @FXML
     private HBox listsContainer;
 
@@ -46,6 +47,7 @@ public class BoardOverviewCtrl implements Initializable {
         this.mainCtrl = mainCtrl;
         this.server = server;
         this.listsMap = new HashMap<>();
+        this.tasksMap = new HashMap<>();
     }
 
     /**
@@ -63,9 +65,10 @@ public class BoardOverviewCtrl implements Initializable {
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(() -> refresh());
+                Platform.runLater(() -> refresh()); // Platform.runLater() had to be used to prevent
+                // thread-caused errors
             }
-        }, 0, 750);
+        }, 0, 500);
     }
 
     /**
@@ -91,6 +94,7 @@ public class BoardOverviewCtrl implements Initializable {
 
         kids.add(newVBox);
         listsMap.put(taskList.id, newVBox);
+        tasksMap.put(taskList.id, new HashMap<>());
     }
 
     private void setDragHandlers(final ListView<String> list) {
@@ -100,9 +104,6 @@ public class BoardOverviewCtrl implements Initializable {
         list.setOnDragExited(event -> dragExited(list, event));
         list.setOnDragDropped(event -> dragDropped(list, event));
         list.setOnDragDone(event -> dragDone(list, event));
-    }
-
-    public void addList() {
     }
 
     public void dragDetected(final ListView<String> lv, final MouseEvent event) {
@@ -161,7 +162,7 @@ public class BoardOverviewCtrl implements Initializable {
      */
     private void refresh() {
         var data = server.getLists();
-        System.out.println(data);
+        //System.out.println(data);
         data = FXCollections.observableList(data);
         refreshLists(data);
     }
@@ -171,7 +172,12 @@ public class BoardOverviewCtrl implements Initializable {
      * @param lists the list of lists
      */
     private void refreshLists(final List<TaskList> lists) {
-        for (TaskList list : lists) {
+        List<Long> listsId=lists.stream().map(taskList -> taskList.id).toList();
+        for (Map.Entry<Long, VBox> list : listsMap.entrySet()) { // this removes any lists in excess
+            if(!listsId.contains(list.getKey()))
+                listsMap.remove(list.getKey());
+        }
+        for (TaskList list : lists) { // this adds or modifies existing lists
             if (!listsMap.containsKey(list.id))
                 addList(list);
             else {
@@ -185,22 +191,39 @@ public class BoardOverviewCtrl implements Initializable {
 
     /**
      * This refreshes the tasks of the list.
-     * @param taskList the list for which the tasks must be refreshed.
+     * @param newTaskList the list for which the tasks must be refreshed.
      */
-    private void refreshTasks(final TaskList taskList) {
+    private void refreshTasks(final TaskList newTaskList) {
         ListView<String> currentTasks =
-            (ListView<String>) listsMap.get(taskList.id).getChildren().get(1);
-        currentTasks.getItems().retainAll(convertTasksToCards(taskList));
-        for (Task task : taskList.getTasks()) {
+            (ListView<String>) listsMap.get(newTaskList.id).getChildren().get(1);
+        currentTasks.getItems().retainAll(convertTasksToCards(newTaskList));
+        for (Task task : newTaskList.getTasks()) {
             if (!currentTasks.getItems().contains(task.getName())) //TODO: make this based on id
-                currentTasks.getItems().add(task.getName());
+                currentTasks.getItems().add(task.getName()); //TODO: also should support ordering
         }
     }
+    /* private void refreshTasks(final TaskList newTaskList) {
+        ListView<String> displayedTasks =
+            (ListView<String>) listsMap.get(newTaskList.id).getChildren().get(1);
+        List<Long> newTaskIds=newTaskList.getTasks().stream().map(task -> task.id).toList();
+        for (Map.Entry<Long, Integer> entry : tasksMap.get(newTaskList.id).entrySet()) {
+            if(!newTaskIds.contains(entry.getKey())){
+                displayedTasks.getItems().remove((int)
+                tasksMap.get(newTaskList.id).remove(entry.getKey()));
+            }
+        }
+        for (Task task : newTaskList.getTasks()) {
+            if (!tasksMap.get(newTaskList.id).containsKey(task.id)) {
+                displayedTasks.getItems().add(task.getName());
+                tasksMap.get(newTaskList.id).put(task.id, displayedTasks.getItems().size()-1);
+            }
+        }
+    }*/
 
     /**
      * converts a TaskList to a list of strings which contains the titles of the tasks
      * @param taskList the list that must be converted
-     * @return a list of titles of the cards
+     * @return an array of titles of the cards
      */
     private String[] convertTasksToCards(final TaskList taskList) {
         return taskList.getTasks().stream().map(Task::getName).toArray(String[]::new);
