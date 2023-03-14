@@ -130,7 +130,7 @@ public class BoardController {
      * @param tasklistid the id from the list you want to add the task to
      * @param task the task you want to add to the entities with the given ids
      */
-    @PostMapping("/post/{boardid}/{tasklistid}/task")
+    @PostMapping("/{boardid}/{tasklistid}/task")
     public void addTask(
             @PathVariable("boardid") final long boardid,
             @PathVariable("tasklistid") final long tasklistid,
