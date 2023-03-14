@@ -53,6 +53,20 @@ public class BoardService {
     }
 
     /**
+     * Removes a board from the repository, given by the id
+     *
+     * @throws if the board does not exist, it throws an exception
+     * @param boardID the id of the board that will be removed
+     */
+    public void removeBoardByID(final long boardID) {
+        if(boardRepository.existsById(boardID)) {
+            boardRepository.deleteById(boardID);
+        } else {
+            throw new IllegalStateException("There does not exist a board with this id");
+        }
+    }
+
+    /**
      * Change the name of a board to a new name, if the provided id is assigned to a board.
      * @param boardID the id of the board to rename.
      * @param newName the new name of the board.
@@ -111,6 +125,20 @@ public class BoardService {
         boardRepository.findById(boardID)
                 .ifPresent(x -> {
                     x.removeTaskList(list);
+                    boardRepository.save(x);
+                });
+    }
+
+    /**
+     * Removes the list specified by a board if and a list id
+     *
+     * @param boardID the id of the board where the list will be removed
+     * @param taskListID the id of the task list that will be removed
+     */
+    public void removeListByID(final long boardID, final long taskListID) {
+        boardRepository.findById(boardID)
+                .ifPresent(x -> {
+                    x.getTaskListById(taskListID).ifPresent(x::removeTaskList);
                     boardRepository.save(x);
                 });
     }
@@ -184,6 +212,22 @@ public class BoardService {
                     boardRepository.save(b);
                 });
 
+    }
+
+    /**
+     * Removes a task from a list in a specific board, given by the ids
+     *
+     * @param boardID the id of the board where the task will be removed
+     * @param listID the id of the list from which the task will be removed
+     * @param taskID the id of the task that will be removed
+     */
+    public void removeTaskByID(final long boardID, final long listID, final long taskID) {
+        boardRepository.findById(boardID)
+                .ifPresent(b -> {
+                    b.getTaskListById(listID)
+                            .ifPresent(l -> l.getTaskById(taskID).ifPresent(l::removeTask));
+                    boardRepository.save(b);
+                });
     }
 
     /**
