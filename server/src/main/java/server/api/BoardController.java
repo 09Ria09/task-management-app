@@ -185,7 +185,7 @@ public class BoardController {
      * @param boardid the id of the board of which the name will be changed
      * @param name the new name for the board
      */
-    @PutMapping("/put/{boardid}")
+    @PutMapping("/{boardid}")
     public void renameBoard(
             @PathVariable("boardid") final long boardid,
             @RequestParam final String name
