@@ -56,6 +56,10 @@ public class CreateListCtrl {
      *              they will be returned to the board overview.
      */
     public void cancel(final ActionEvent event) {
+         listNameInput.clear()
+         showServerBoards();
+    }
+``` This way you make sure that the field is also reset to be empty
         showServerBoards();
     }
 }
