@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import server.BoardService;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/boards")
 public class BoardController {
 
     private BoardService boardService;
