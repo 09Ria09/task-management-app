@@ -87,7 +87,6 @@ public class BoardOverviewCtrl implements Initializable {
 
     public void addList() {
         mainCtrl.showCreateList();
-        //addList("test"+Math.random());
     }
 
     public void dragDetected(final ListView<String> lv, final MouseEvent event) {
