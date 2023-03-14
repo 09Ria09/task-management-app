@@ -46,7 +46,7 @@ public class BoardController {
      * @param id the id of the board that will be accesses
      * @return a list of tasklists from the corresponding board
      */
-    @GetMapping("/get/board/{id}/tasklists")
+    @GetMapping("/{boardid}/tasklists")
     public List<TaskList> getTaskLists(@PathVariable("id") final long id) {
         return boardService.getLists(id);
     }
