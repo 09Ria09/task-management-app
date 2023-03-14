@@ -58,7 +58,7 @@ public class BoardController {
      * @param taskListid the id of the list that will be accessed
      * @return the corresponding list from the corresponding board
      */
-    @GetMapping("/get/board/{boardid}/tasklist/{taskListid}")
+    @GetMapping("/{boardid}/tasklist/{taskListid}")
     public TaskList getTaskList(
             @PathVariable("boardid") final long boardid,
             @PathVariable("taskListid") final long taskListid
