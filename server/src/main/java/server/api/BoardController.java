@@ -24,7 +24,7 @@ public class BoardController {
      *
      * @return a list of all the boards stored in the repository
      */
-    @GetMapping("/get/boards")
+    @GetMapping(path = { "", "/" })
     public List<Board> getBoards() {
         return boardService.getBoards();
     }
