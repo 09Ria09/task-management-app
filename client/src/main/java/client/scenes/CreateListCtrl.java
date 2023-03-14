@@ -59,7 +59,5 @@ public class CreateListCtrl {
          listNameInput.clear()
          showServerBoards();
     }
-``` This way you make sure that the field is also reset to be empty
-        showServerBoards();
-    }
+
 }
