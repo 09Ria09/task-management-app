@@ -217,7 +217,7 @@ public class BoardController {
      * @param taskid the id of the task of which the name will be changed
      * @param name the new name for the list
      */
-    @PutMapping("/put/{boardid}/{tasklistid}/{taskid}")
+    @PutMapping("/{boardid}/{tasklistid}/{taskid}")
     public void renameTask(
             @PathVariable("board_id") final long boardid,
             @PathVariable("tasklist_id") final long tasklistid,
