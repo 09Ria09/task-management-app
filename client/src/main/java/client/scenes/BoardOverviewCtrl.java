@@ -126,8 +126,8 @@ public class BoardOverviewCtrl implements Initializable {
         ClipboardContent cc = new ClipboardContent();
         if(lv.getSelectionModel().getSelectedItem()==null)
             return;
-        var wow=lv.getSelectionModel().getSelectedItem();
-        cc.put(taskCustom, wow);
+        var selectedTask=lv.getSelectionModel().getSelectedItem();
+        cc.put(taskCustom, selectedTask);
         dragboard.setContent(cc);
         event.consume();
     }
