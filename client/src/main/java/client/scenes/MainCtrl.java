@@ -29,7 +29,6 @@ public class MainCtrl {
 
     private AddQuoteCtrl addCtrl;
 
-
     private static BoardOverviewCtrl boardOverviewCtrl;
     private Scene boardOverview;
     private Scene add;
@@ -106,7 +105,7 @@ public class MainCtrl {
      * Needs fixing. addList method should be done on the server side so that the lists can be
      * stored.
      */
-    public static BoardOverviewCtrl getBoardOverviewCtrl() {
-        return boardOverviewCtrl;
-    }
+    // public static BoardOverviewCtrl getBoardOverviewCtrl() {
+    //     return boardOverviewCtrl;
+    // }
 }

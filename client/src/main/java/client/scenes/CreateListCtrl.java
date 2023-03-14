@@ -39,8 +39,9 @@ public class CreateListCtrl {
      */
     public void confirm(final ActionEvent event) {
         listName = listNameInput.getText();
-        MainCtrl.getBoardOverviewCtrl().addList(listName);
-        showServerBoards();
+        // MainCtrl.getBoardOverviewCtrl().addList(listName);
+        // showServerBoards();
+        //Should be done on server side
     }
 
     /**
