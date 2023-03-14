@@ -155,7 +155,7 @@ public class BoardController {
      * @param boardid the id of the board from where the list will be deleted
      * @param tasklistid the id of the list that will be deleted
      */
-    @DeleteMapping("/delete/{boardid}/{tasklistid}")
+    @DeleteMapping("/{boardid}/{tasklistid}")
     public void deleteTaskList(
             @PathVariable("boardid") final long boardid,
             @PathVariable("tasklistid") final long tasklistid
