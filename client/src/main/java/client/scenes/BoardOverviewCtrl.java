@@ -73,6 +73,7 @@ public class BoardOverviewCtrl implements Initializable {
      * this creates a new list
      * @param title the title of the list
      */
+    //Should be implemented in the server utils
     public void addList(final String title) {
         var kids = listsContainer.getChildren();
         var newList = new ListView<Task>();
@@ -116,11 +117,8 @@ public class BoardOverviewCtrl implements Initializable {
         lists.add(newList);
     }
 
-    /**
-     * this is for testing purposes. it will be removed
-     */
     public void addList() {
-        addList("test"+Math.random());
+        mainCtrl.showCreateList();
     }
 
     public void dragDetected(final ListView<Task> lv, final MouseEvent event) {
