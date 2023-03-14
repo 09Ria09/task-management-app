@@ -15,7 +15,7 @@ public class BoardController {
     private BoardService boardService;
 
     @Autowired
-    public BoardController(BoardService boardService) {
+    public BoardController(final BoardService boardService) {
         this.boardService = boardService;
     }
 
@@ -36,7 +36,7 @@ public class BoardController {
      * @return the board with the corresponding id
      */
     @GetMapping("/get/board/{id}")
-    public Board getBoard(@PathVariable("id") long id) {
+    public Board getBoard(@PathVariable("id") final long id) {
         return boardService.getBoard(id);
     }
 
@@ -47,55 +47,55 @@ public class BoardController {
      * @return a list of tasklists from the corresponding board
      */
     @GetMapping("/get/board/{id}/tasklists")
-    public List<TaskList> getTaskLists(@PathVariable("id") long id) {
+    public List<TaskList> getTaskLists(@PathVariable("id") final long id) {
         return boardService.getLists(id);
     }
 
     /**
      * Get util method for a specific list of a specific board
      *
-     * @param board_id the id of the board from which we want to access the list
-     * @param taskList_id the id of the list that will be accessed
+     * @param boardid the id of the board from which we want to access the list
+     * @param taskListid the id of the list that will be accessed
      * @return the corresponding list from the corresponding board
      */
-    @GetMapping("/get/board/{board_id}/tasklist/{taskList_id}")
+    @GetMapping("/get/board/{boardid}/tasklist/{taskListid}")
     public TaskList getTaskList(
-            @PathVariable("board_id") long board_id,
-            @PathVariable("taskList_id") long taskList_id
+            @PathVariable("boardid") final long boardid,
+            @PathVariable("taskListid") final long taskListid
     ) {
-        return boardService.getList(board_id, taskList_id);
+        return boardService.getList(boardid, taskListid);
     }
 
     /**
      * Get util method to get all the tasks in a specific list of a specific board
      *
-     * @param board_id the id of the board from which we want to access the tasks
-     * @param taskList_id the id of the list from which we want to access the tasks
+     * @param boardid the id of the board from which we want to access the tasks
+     * @param taskListid the id of the list from which we want to access the tasks
      * @return a list of tasks from the corresponding list and board
      */
-    @GetMapping("/get/board/{board_id}/tasklist/{taskList_id}/tasks")
+    @GetMapping("/get/board/{boardid}/tasklist/{taskListid}/tasks")
     public List<Task> getTasks(
-            @PathVariable("board_id") long board_id,
-            @PathVariable("taskList_id") long taskList_id
+            @PathVariable("boardid") final long boardid,
+            @PathVariable("taskListid") final long taskListid
     ) {
-        return boardService.getTasks(board_id, taskList_id);
+        return boardService.getTasks(boardid, taskListid);
     }
 
     /**
      * Get util method to get a specific task from a specific tasklist and board
      *
-     * @param board_id the id of the board from which we want to access the task
-     * @param taskList_id the id of the tasklist from which we want to access the task
-     * @param task_id the id of the task we want to access
+     * @param boardid the id of the board from which we want to access the task
+     * @param taskListid the id of the tasklist from which we want to access the task
+     * @param taskid the id of the task we want to access
      * @return the task corresponding to all the given ids
      */
-    @GetMapping("/get/board/{board_id}/tasklist/{taskList_id}/task/{task_id}")
+    @GetMapping("/get/board/{boardid}/tasklist/{taskListid}/task/{taskid}")
     public Task getTask(
-            @PathVariable("board_id") long board_id,
-            @PathVariable("taskList_id") long taskList_id,
-            @PathVariable("taks_id") long task_id
+            @PathVariable("boardid") final long boardid,
+            @PathVariable("taskListid") final long taskListid,
+            @PathVariable("taksid") final long taskid
     ) {
-        return boardService.getTask(board_id, taskList_id, task_id);
+        return boardService.getTask(boardid, taskListid, taskid);
     }
 
     /**
@@ -104,126 +104,126 @@ public class BoardController {
      * @param board the board you want to add
      */
     @PostMapping("/post/board")
-    public void addBoard(@RequestBody Board board) {
+    public void addBoard(@RequestBody final Board board) {
         boardService.addBoard(board);
     }
 
     /**
      * Post util method to add a tasklist to a specific board
      *
-     * @param board_id the id from the board you want to add a tasklist to
+     * @param boardid the id from the board you want to add a tasklist to
      * @param taskList the tasklist that you want to add to board with the given id
      */
-    @PostMapping("/post/{board_id}/tasklist")
+    @PostMapping("/post/{boardid}/tasklist")
     public void addTaskList(
-            @PathVariable("board_id") long board_id,
-            @RequestBody TaskList taskList
+            @PathVariable("boardid") final long boardid,
+            @RequestBody final TaskList taskList
     ) {
-        boardService.addList(board_id, taskList);
+        boardService.addList(boardid, taskList);
     }
 
     /**
      * Post util method to add a task to a specific board and list
      *
-     * @param board_id the id from the board you want to add the task to
-     * @param tasklist_id the id from the list you want to add the task to
+     * @param boardid the id from the board you want to add the task to
+     * @param tasklistid the id from the list you want to add the task to
      * @param task the task you want to add to the entities with the given ids
      */
-    @PostMapping("/post/{board_id}/{tasklist_id}/task")
+    @PostMapping("/post/{boardid}/{tasklistid}/task")
     public void addTask(
-            @PathVariable("board_id") long board_id,
-            @PathVariable("tasklist_id") long tasklist_id,
-            @RequestBody Task task
+            @PathVariable("boardid") final long boardid,
+            @PathVariable("tasklistid") final long tasklistid,
+            @RequestBody final Task task
     ) {
-        boardService.addTask(board_id, tasklist_id, task);
+        boardService.addTask(boardid, tasklistid, task);
     }
 
     /**
      * Delete request to delete a board with a specific id
      *
-     * @param board_id the corresponding id of the board that will be deleted
+     * @param boardid the corresponding id of the board that will be deleted
      */
-    @DeleteMapping("/delete/{board_id}")
-    public void deleteBoard(@PathVariable("board_id") long board_id) {
-        boardService.removeBoardByID(board_id);
+    @DeleteMapping("/delete/{boardid}")
+    public void deleteBoard(@PathVariable("boardid") final long boardid) {
+        boardService.removeBoardByID(boardid);
     }
 
     /**
      * Delete request to delete a tasklist with a list id and board id
      *
-     * @param board_id the id of the board from where the list will be deleted
-     * @param tasklist_id the id of the list that will be deleted
+     * @param boardid the id of the board from where the list will be deleted
+     * @param tasklistid the id of the list that will be deleted
      */
-    @DeleteMapping("/delete/{board_id}/{tasklist_id}")
+    @DeleteMapping("/delete/{boardid}/{tasklistid}")
     public void deleteTaskList(
-            @PathVariable("board_id") long board_id,
-            @PathVariable("tasklist_id") long tasklist_id
+            @PathVariable("boardid") final long boardid,
+            @PathVariable("tasklistid") final long tasklistid
     ) {
-        boardService.removeListByID(board_id, tasklist_id);
+        boardService.removeListByID(boardid, tasklistid);
     }
 
     /**
      * Delete request to delete a task with a board, list and task id
      *
-     * @param board_id the id of the board from where the task will be deleted
-     * @param tasklist_id the id of the tasklist from where the list will be deleted
-     * @param task_id the id of the task that will be deleted
+     * @param boardid the id of the board from where the task will be deleted
+     * @param tasklistid the id of the tasklist from where the list will be deleted
+     * @param taskid the id of the task that will be deleted
      */
-    @DeleteMapping("/delete/{board_id}/{tasklist_id}/{task_id}")
+    @DeleteMapping("/delete/{boardid}/{tasklistid}/{taskid}")
     public void deleteTask(
-            @PathVariable("board_id") long board_id,
-            @PathVariable("tasklist_id") long tasklist_id,
-            @PathVariable("task_id") long task_id
+            @PathVariable("boardid") final long boardid,
+            @PathVariable("tasklistid") final long tasklistid,
+            @PathVariable("taskid") final long taskid
     ) {
-        boardService.removeTaskByID(board_id, tasklist_id, task_id);
+        boardService.removeTaskByID(boardid, tasklistid, taskid);
     }
 
     /**
      * Put request to change the name of a board
      *
-     * @param board_id the id of the board of which the name will be changed
+     * @param boardid the id of the board of which the name will be changed
      * @param name the new name for the board
      */
-    @PutMapping("/put/{board_id}")
+    @PutMapping("/put/{boardid}")
     public void renameBoard(
-            @PathVariable("board_id") long board_id,
-            @RequestParam String name
+            @PathVariable("boardid") final long boardid,
+            @RequestParam final String name
     ) {
-        boardService.renameBoard(board_id, name);
+        boardService.renameBoard(boardid, name);
     }
 
     /**
      * Put request to change the name of a tasklist
      *
-     * @param board_id the id of the board from where the list will be renamed
-     * @param tasklist_id the id of the list of which the name will be changed
+     * @param boardid the id of the board from where the list will be renamed
+     * @param tasklistid the id of the list of which the name will be changed
      * @param name the new name for the list
      */
-    @PutMapping("/put/{board_id}/{tasklist_id}")
+    @PutMapping("/put/{boardid}/{tasklistid}")
     public void renameTaskList(
-            @PathVariable("board_id") long board_id,
-            @PathVariable("tasklist_id") long tasklist_id,
-            @RequestParam String name
+            @PathVariable("boardid") final long boardid,
+            @PathVariable("tasklistid") final long tasklistid,
+            @RequestParam final String name
     ) {
-        boardService.renameList(board_id, tasklist_id, name);
+        boardService.renameList(boardid, tasklistid, name);
     }
 
     /**
      * Put request to change the name of a task
      *
-     * @param board_id the id of the board from where the task will be renamed
-     * @param tasklist_id the id of the list from where the task will be renamed
-     * @param task_id the id of the task of which the name will be changed
+     * @param boardid the id of the board from where the task will be renamed
+     * @param tasklistid the id of the list from where the task will be renamed
+     * @param taskid the id of the task of which the name will be changed
      * @param name the new name for the list
      */
-    @PutMapping("/put/{board_id}/{tasklist_id}/{task}")
+    @PutMapping("/put/{boardid}/{tasklistid}/{taskid}")
     public void renameTask(
-            @PathVariable("board_id") long board_id,
-            @PathVariable("tasklist_id") long tasklist_id,
-            @PathVariable("task_id") long task_id,
-            @RequestParam String name
+            @PathVariable("board_id") final long boardid,
+            @PathVariable("tasklist_id") final long tasklistid,
+            @PathVariable("taskid") final long taskid,
+            @RequestParam final String name
     ) {
-        boardService.renameTask(board_id, tasklist_id, task_id, name);
+        boardService.renameTask(boardid, tasklistid, taskid, name);
     }
 
 
