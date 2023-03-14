@@ -94,6 +94,7 @@ public class BoardController {
             @PathVariable("boardid") final long boardid,
             @PathVariable("taskListid") final long taskListid,
             @PathVariable("taksid") final long taskid
+            @PathVariable("taskid") final long taskid
     ) {
         return boardService.getTask(boardid, taskListid, taskid);
     }
