@@ -115,7 +115,7 @@ public class BoardController {
      * @param boardid the id from the board you want to add a tasklist to
      * @param taskList the tasklist that you want to add to board with the given id
      */
-    @PostMapping("/post/{boardid}/tasklist")
+    @PostMapping("/{boardid}/tasklist")
     public void addTaskList(
             @PathVariable("boardid") final long boardid,
             @RequestBody final TaskList taskList
