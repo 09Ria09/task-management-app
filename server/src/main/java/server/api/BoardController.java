@@ -103,7 +103,7 @@ public class BoardController {
      *
      * @param board the board you want to add
      */
- @PostMapping(path = { "", "/" })
+    @PostMapping(path = { "", "/" })
     public void addBoard(@RequestBody final Board board) {
         boardService.addBoard(board);
     }
