@@ -220,13 +220,13 @@ public class BoardOverviewCtrl implements Initializable {
 
         for (TaskList list : lists) {
             // this adds or modifies existing lists
-            if (!listsMap.containsKey(list.id))
-                addList(list);
-            else {
-                Text title = (Text) getVBox(list.id).getChildren().get(0);
-                if (!Objects.equals(title.getText(), list.getName()))
-                    title.setText(list.getName());
-                refreshTasks(list);
+            if (!listsMap.containsKey(list.id)) // if the list is new
+                addList(list); // simply add it
+            else { // if the list was already there
+                Text title = (Text) getVBox(list.id).getChildren().get(0); // get the title
+                if (!Objects.equals(title.getText(), list.getName())) // if the title is different
+                    title.setText(list.getName()); // update it
+                refreshTasks(list); // refresh the tasks
             }
         }
     }
@@ -239,10 +239,11 @@ public class BoardOverviewCtrl implements Initializable {
         ListView<Task> currentTasks =
             (ListView<Task>) getVBox(newTaskList.id).getChildren().get(1);
 
-        currentTasks.getItems().retainAll(newTaskList.getTasks());
-        for (Task task : newTaskList.getTasks()) {
-            if (!currentTasks.getItems().contains(task))
-                currentTasks.getItems().add(task);
+        currentTasks.getItems().retainAll(newTaskList.getTasks()); // retain only the tasks
+        // that are also in newTaskList
+        for (Task task : newTaskList.getTasks()) { // go thru all the received tasks
+            if (!currentTasks.getItems().contains(task)) // if this task isn't there
+                currentTasks.getItems().add(task); // add it
         }
     }
 
