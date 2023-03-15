@@ -51,6 +51,10 @@ public class Board {
         return tags;
     }
 
+    public long getId() {
+        return id;
+    }
+
     public void setTags(final List<Tag> tags) {
         this.tags = tags;
     }

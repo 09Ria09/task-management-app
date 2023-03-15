@@ -81,4 +81,8 @@ public class Task {
     public boolean removeSubtask(final SubTask subTask){
         return this.subtasks.remove(subTask);
     }
+
+    public TaskList getList() {
+        return list;
+    }
 }
