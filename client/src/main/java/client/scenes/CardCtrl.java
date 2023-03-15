@@ -25,7 +25,7 @@ public class CardCtrl {
      * @return true if the object provided is the same to this object
      */
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CardCtrl cardCtrl = (CardCtrl) o;
