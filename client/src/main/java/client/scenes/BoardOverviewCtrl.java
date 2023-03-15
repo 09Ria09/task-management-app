@@ -22,13 +22,17 @@ import commons.TaskList;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.input.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
@@ -72,6 +76,15 @@ public class BoardOverviewCtrl implements Initializable {
     }
 
     /**
+     * this adds a task to a specific list
+     * @param task the task to be added
+     * @param list the list which will receive the task
+     */
+    public void addCard(final Task task, final int list) {
+        lists.get(list).getItems().add(task);
+    }
+
+    /**
      * adds a list to the board
      * @param taskList the list to be added
      */
@@ -79,6 +92,26 @@ public class BoardOverviewCtrl implements Initializable {
         var kids = listsContainer.getChildren();
         var newList = new ListView<String>();
 
+        var newList = new ListView<Task>();
+        newList.setCellFactory(param -> new ListCell<Task>(){
+            @Override
+            protected void updateItem(final Task task, final boolean empty){
+                super.updateItem(task, empty);
+                if(task==null || empty){
+                    setGraphic(null);
+                } else{
+                    try{
+                        var cardLoader = new FXMLLoader(getClass().getResource("Card.fxml"));
+                        Node card = cardLoader.load();
+                        CardCtrl cardCtrl = cardLoader.getController();
+                        cardCtrl.initialize(task);
+                        setGraphic(card);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        });
         newList.setPrefWidth(200);
         setDragHandlers(newList);
         if (!kids.isEmpty()) {
@@ -106,44 +139,51 @@ public class BoardOverviewCtrl implements Initializable {
         list.setOnDragDone(event -> dragDone(list, event));
     }
 
-    public void dragDetected(final ListView<String> lv, final MouseEvent event) {
+    public void addList() {
+        mainCtrl.showCreateList();
+    }
+
+    public void dragDetected(final ListView<Task> lv, final MouseEvent event) {
         Dragboard dragboard = lv.startDragAndDrop(TransferMode.MOVE);
         ClipboardContent cc = new ClipboardContent();
         if (lv.getSelectionModel().getSelectedItem() == null)
             return;
-        cc.put(taskCustom, lv.getSelectionModel().getSelectedItem());
+        var selectedTask=lv.getSelectionModel().getSelectedItem();
+        cc.put(taskCustom, selectedTask);
         dragboard.setContent(cc);
         event.consume();
     }
 
-    public void dragEntered(final ListView<String> lv, final DragEvent event) {
+    public void dragEntered(final ListView<Task> lv, final DragEvent event) {
         lv.setStyle("-fx-effect: innershadow(gaussian, rgba(0,0,0,0.8), 20, 0, 0, 0);");
         event.consume();
     }
 
-    public void dragExited(final ListView<String> lv, final DragEvent event) {
+    public void dragExited(final ListView<Task> lv, final DragEvent event) {
         lv.setStyle("-fx-effect: none;");
         event.consume();
     }
 
-    public void dragOver(final ListView<String> lv, final DragEvent event) {
+    public void dragOver(final ListView<Task> lv, final DragEvent event) {
         if (event.getDragboard().hasContent(taskCustom))
             event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
         event.consume();
     }
 
-    public void dragDropped(final ListView<String> lv, final DragEvent event) {
+    public void dragDropped(final ListView<Task> lv, final DragEvent event) {
         if (event.getDragboard().hasContent(taskCustom)) {
-            lv.getItems().add((String) event.getDragboard().getContent(taskCustom));
+            lv.getItems().add((Task) event.getDragboard().getContent(taskCustom));
             event.setDropCompleted(true);
         } else
             event.setDropCompleted(false);
         event.consume();
     }
 
-    public void dragDone(final ListView<String> lv, final DragEvent event) {
-        if (event.getTransferMode() == TransferMode.MOVE) {
-            lv.getItems().remove(lv.getSelectionModel().getSelectedItem());
+    public void dragDone(final ListView<Task> lv, final DragEvent event) {
+        Task selectedTask = lv.getSelectionModel().getSelectedItem();
+        if (selectedTask != null && event.getTransferMode() == TransferMode.MOVE &&
+            event.getEventType()==DragEvent.DRAG_DONE) {
+            lv.getItems().remove(selectedTask);
         }
         event.consume();
     }

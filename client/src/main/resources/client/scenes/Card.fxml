@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="150.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.CardCtrl">
+   <children>
+      <Text fx:id="text" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You shouldn't see this!" textAlignment="CENTER" wrappingWidth="150.0" />
+      <Button layoutX="99.0" layoutY="61.0" mnemonicParsing="false" pickOnBounds="false" text="Edit" />
+      <Button layoutX="42.0" layoutY="61.0" mnemonicParsing="false" pickOnBounds="false" text="↑" />
+      <Button layoutX="14.0" layoutY="61.0" mnemonicParsing="false" pickOnBounds="false" text="↓" />
+   </children>
+</Pane>
