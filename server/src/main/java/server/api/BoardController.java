@@ -5,6 +5,7 @@ import java.util.*;
 import commons.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import server.BoardService;
 
@@ -32,7 +33,7 @@ public class BoardController {
     /**
      * Get util method to get a specific board
      *
-     * @param id the id of the board that will be retrieved
+     * @param boardid the id of the board that will be retrieved
      * @return the board with the corresponding id
      */
     @GetMapping("/{boardid}")
@@ -43,7 +44,7 @@ public class BoardController {
     /**
      * Get util method to get all the tasklists from a specific board
      *
-     * @param id the id of the board that will be accesses
+     * @param boardid the id of the board that will be accesses
      * @return a list of tasklists from the corresponding board
      */
     @GetMapping("/{boardid}/tasklists")
@@ -142,11 +143,25 @@ public class BoardController {
      * Delete request to delete a board with a specific id
      *
      * @param boardid the corresponding id of the board that will be deleted
+     * @return the deleted board if it was deleted successfully,
+     * otherwise a not found/error response
      */
     @DeleteMapping("/{boardid}")
-    public void deleteBoard(@PathVariable("boardid") final long boardid) {
-        boardService.removeBoardByID(boardid);
+    public ResponseEntity<Board> deleteBoard(@PathVariable("boardid") final long boardid) {
+        try {
+            //the remove method checks if the board exists anyway
+            //so we can be certain that the getBoard will also return something non-null
+            boardService.removeBoardByID(boardid);
+            return ResponseEntity.ok(boardService.getBoard(boardid));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            // Log the error or perform error-handling
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
     }
+
 
     /**
      * Delete request to delete a tasklist with a list id and board id
@@ -155,11 +170,19 @@ public class BoardController {
      * @param tasklistid the id of the list that will be deleted
      */
     @DeleteMapping("/{boardid}/{tasklistid}")
-    public void deleteTaskList(
+    public ResponseEntity<TaskList> deleteTaskList(
             @PathVariable("boardid") final long boardid,
             @PathVariable("tasklistid") final long tasklistid
     ) {
-        boardService.removeListByID(boardid, tasklistid);
+        try {
+            boardService.removeListByID(boardid, tasklistid);
+            return ResponseEntity.ok(boardService.getList(boardid, tasklistid));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     /**
@@ -170,12 +193,20 @@ public class BoardController {
      * @param taskid the id of the task that will be deleted
      */
     @DeleteMapping("/{boardid}/{tasklistid}/{taskid}")
-    public void deleteTask(
+    public ResponseEntity<Task> deleteTask(
             @PathVariable("boardid") final long boardid,
             @PathVariable("tasklistid") final long tasklistid,
             @PathVariable("taskid") final long taskid
     ) {
-        boardService.removeTaskByID(boardid, tasklistid, taskid);
+        try {
+            boardService.removeTaskByID(boardid, tasklistid, taskid);
+            return ResponseEntity.ok(boardService.getTask(boardid, tasklistid, taskid));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     /**
@@ -185,27 +216,53 @@ public class BoardController {
      * @param name the new name for the board
      */
     @PutMapping("/{boardid}")
-    public void renameBoard(
+    public ResponseEntity<Board> renameBoard(
             @PathVariable("boardid") final long boardid,
             @RequestParam final String name
     ) {
-        boardService.renameBoard(boardid, name);
+        try{
+            //the remove method checks if the board exists anyway
+            //so we can be certain that the getBoard will also return something non-null
+            boardService.renameBoard(boardid, name);
+            return ResponseEntity.ok(boardService.getBoard(boardid));
+        } catch (NullPointerException e) {
+            //we should update the boardService such that we have consistent
+            //handling of exceptions - not found for example differs
+            // for removing board and removing tasklist
+            return ResponseEntity.badRequest().build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }catch (Exception e) {
+            // Log the error and perform error-handling
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     /**
      * Put request to change the name of a tasklist
      *
-     * @param boardid the id of the board from where the list will be renamed
+     * @param boardid    the id of the board from where the list will be renamed
      * @param tasklistid the id of the list of which the name will be changed
-     * @param name the new name for the list
+     * @param name       the new name for the list
+     * @return  the tasklist with the new name if it was renamed successfully,
+     * otherwise a not found/error response
      */
     @PutMapping("/{boardid}/{tasklistid}")
-    public void renameTaskList(
+    public ResponseEntity<TaskList> renameTaskList(
             @PathVariable("boardid") final long boardid,
             @PathVariable("tasklistid") final long tasklistid,
             @RequestParam final String name
     ) {
-        boardService.renameList(boardid, tasklistid, name);
+        try {
+            boardService.renameList(boardid, tasklistid, name);
+            return ResponseEntity.ok(boardService.getList(boardid, tasklistid));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     /**
@@ -217,13 +274,21 @@ public class BoardController {
      * @param name the new name for the list
      */
     @PutMapping("/{boardid}/{tasklistid}/{taskid}")
-    public void renameTask(
-            @PathVariable("board_id") final long boardid,
-            @PathVariable("tasklist_id") final long tasklistid,
+    public ResponseEntity<Task> renameTask(
+            @PathVariable("boardid") final long boardid,
+            @PathVariable("tasklistid") final long tasklistid,
             @PathVariable("taskid") final long taskid,
             @RequestParam final String name
     ) {
-        boardService.renameTask(boardid, tasklistid, taskid, name);
+        try {
+            boardService.renameTask(boardid, tasklistid, taskid, name);
+            return ResponseEntity.ok(boardService.getTask(boardid, tasklistid, taskid));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
 

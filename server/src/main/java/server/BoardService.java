@@ -9,6 +9,8 @@ import server.database.BoardRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class BoardService {
@@ -23,43 +25,43 @@ public class BoardService {
     /**
      * @return a list of all the boards stored in the repository.
      */
-    public List<Board> getBoards(){
+    public List<Board> getBoards() {
         return new ArrayList<Board>(boardRepository.findAll());
     }
 
     /**
-     *
      * @param id the id of the board that will be acessed.
      * @return the board with the corresponding id, or null if there is none.
      */
-    public Board getBoard(final long id){
+    public Board getBoard(final long id) {
         return boardRepository.findById(id).orElse(null);
     }
 
     /**
      * Adds a new board to the repository to make it persistent.
+     *
      * @param board the board that will be added.
      */
-    public void addBoard(final Board board){
+    public void addBoard(final Board board) {
         boardRepository.save(board);
     }
 
     /**
      * Removes a board from the repository.
+     *
      * @param board the board to remove.
      */
-    public void removeBoard(final Board board){
+    public void removeBoard(final Board board) {
         boardRepository.delete(board);
     }
 
     /**
      * Removes a board from the repository, given by the id
      *
-     * @throws if the board does not exist, it throws an exception
      * @param boardID the id of the board that will be removed
      */
     public void removeBoardByID(final long boardID) {
-        if(boardRepository.existsById(boardID)) {
+        if (boardRepository.existsById(boardID)) {
             boardRepository.deleteById(boardID);
         } else {
             throw new IllegalStateException("There does not exist a board with this id");
@@ -68,21 +70,29 @@ public class BoardService {
 
     /**
      * Change the name of a board to a new name, if the provided id is assigned to a board.
+     *
      * @param boardID the id of the board to rename.
      * @param newName the new name of the board.
      */
-    public void renameBoard(final long boardID, final String newName){
-        boardRepository.findById(boardID)
-                .ifPresent(x -> x.setName(newName));
+    public void renameBoard(final long boardID, final String newName) {
+        Optional<Board> boardOptional = boardRepository.findById(boardID);
+        if (boardOptional.isPresent()) {
+            Board board = boardOptional.get();
+            board.setName(newName);
+            boardRepository.save(board);
+        } else {
+            throw new NoSuchElementException("Board not found");
+        }
     }
 
     /**
      * Returns all the task lists of the board assigned to the provided id.
      * It returns an empty list if the id is not assigned to a board.
+     *
      * @param boardId the id of the board from which we want to access the board.
      * @return a list of all the task lists of the board.
      */
-    public List<TaskList> getLists(final long boardId){
+    public List<TaskList> getLists(final long boardId) {
         System.out.println("getting lists");
         return boardRepository.findById(boardId)
                 .map(Board::getListTaskList)
@@ -92,11 +102,12 @@ public class BoardService {
     /**
      * Returns a specific list of a specific board, by ids.
      * Both the id of the board and the id of the list are needed to access it.
+     *
      * @param boardId the id of the board.
-     * @param listId the id of the task list.
+     * @param listId  the id of the task list.
      * @return the task list corresponding to the specified ids.
      */
-    public TaskList getList(final long boardId, final long listId){
+    public TaskList getList(final long boardId, final long listId) {
         return boardRepository.findById(boardId)
                 .flatMap(b -> b.getTaskListById(listId))
                 .orElse(null);
@@ -104,10 +115,11 @@ public class BoardService {
 
     /**
      * Adds a new task list to a specific board in the JPARepository.
+     *
      * @param boardID the id of the board where the list will be added.
-     * @param list the task list that will be added to the board and made persistent.
+     * @param list    the task list that will be added to the board and made persistent.
      */
-    public void addList(final long boardID, final TaskList list){
+    public void addList(final long boardID, final TaskList list) {
         System.out.println("add list : " + list.getName());
         boardRepository.findById(boardID)
                 .ifPresent(x -> {
@@ -118,10 +130,11 @@ public class BoardService {
 
     /**
      * Removes the specified list from the specified board.
+     *
      * @param boardID the id of the board where the list will be removed.
-     * @param list the task list that will be removed from the board.
+     * @param list    the task list that will be removed from the board.
      */
-    public void removeList(final long boardID, final TaskList list){
+    public void removeList(final long boardID, final TaskList list) {
         boardRepository.findById(boardID)
                 .ifPresent(x -> {
                     x.removeTaskList(list);
@@ -132,7 +145,7 @@ public class BoardService {
     /**
      * Removes the list specified by a board if and a list id
      *
-     * @param boardID the id of the board where the list will be removed
+     * @param boardID    the id of the board where the list will be removed
      * @param taskListID the id of the task list that will be removed
      */
     public void removeListByID(final long boardID, final long taskListID) {
@@ -145,25 +158,30 @@ public class BoardService {
 
     /**
      * Changes the name of a task list in a board to a new name.
+     *
      * @param boardID the id of the board where the list to rename is.
-     * @param listID the id of the list to rename.
+     * @param listID  the id of the list to rename.
      * @param newName the new name of the list.
      */
-    public void renameList(final long boardID, final long listID, final String newName){
+    public void renameList(final long boardID, final long listID, final String newName) {
         boardRepository.findById(boardID)
-                .ifPresent( x-> {
-                    x.getTaskListById(listID).ifPresent(y -> y.setName(newName));
-                    boardRepository.save(x);
-                });
+                .ifPresent(board -> board.getTaskListById(listID)
+                        .ifPresentOrElse(taskList -> {
+                            taskList.setName(newName);
+                            boardRepository.save(board);
+                        }, () -> {
+                            throw new NoSuchElementException("Task list not found");
+                        }));
     }
 
     /**
      * Gets a list of the tasks that are in a specified task list inside a specific board.
+     *
      * @param boardId the id of the board.
-     * @param listId the id of the list.
+     * @param listId  the id of the list.
      * @return the list of the tasks that are in the task list corresponding to the ids given.
      */
-    public List<Task> getTasks(final long boardId, final long listId){
+    public List<Task> getTasks(final long boardId, final long listId) {
         return boardRepository.findById(boardId)
                 .flatMap(b -> b.getTaskListById(listId))
                 .map(TaskList::getTasks)
@@ -173,12 +191,13 @@ public class BoardService {
     /**
      * Gets a specific task from a specific task list in a specific board, by ids.
      * The id of the board, the list and the task are needed to access it.
+     *
      * @param boardId the id of the board.
-     * @param listId the id of the list.
-     * @param taskId the id of the task.
+     * @param listId  the id of the list.
+     * @param taskId  the id of the task.
      * @return the task corresponding to the given ids.
      */
-    public Task getTask(final long boardId, final long listId, final long taskId){
+    public Task getTask(final long boardId, final long listId, final long taskId) {
         return boardRepository.findById(boardId)
                 .flatMap(b -> b.getTaskListById(listId))
                 .flatMap(l -> l.getTaskById(taskId))
@@ -187,11 +206,12 @@ public class BoardService {
 
     /**
      * Adds a new task in a specific list in a specific board to the JPA Repository.
+     *
      * @param boardID the id of the board where the task will be added.
-     * @param listID the id of the list where the task will be added.
-     * @param task the task that will be added to the task list and made persistent.
+     * @param listID  the id of the list where the task will be added.
+     * @param task    the task that will be added to the task list and made persistent.
      */
-    public void addTask(final long boardID, final long listID, final Task task){
+    public void addTask(final long boardID, final long listID, final Task task) {
         boardRepository.findById(boardID)
                 .ifPresent(b -> {
                     b.getTaskListById(listID).ifPresent(l -> l.addTask(task));
@@ -201,11 +221,12 @@ public class BoardService {
 
     /**
      * Removes a task from a list in a specific board.
+     *
      * @param boardID the id of the board where the task will be removed.
-     * @param listID the id of the list from which the task will be removed.
-     * @param task the task that will be removed.
+     * @param listID  the id of the list from which the task will be removed.
+     * @param task    the task that will be removed.
      */
-    public void removeTask(final long boardID, final long listID, final Task task){
+    public void removeTask(final long boardID, final long listID, final Task task) {
         boardRepository.findById(boardID)
                 .ifPresent(b -> {
                     b.getTaskListById(listID).ifPresent(l -> l.removeTask(task));
@@ -218,8 +239,8 @@ public class BoardService {
      * Removes a task from a list in a specific board, given by the ids
      *
      * @param boardID the id of the board where the task will be removed
-     * @param listID the id of the list from which the task will be removed
-     * @param taskID the id of the task that will be removed
+     * @param listID  the id of the list from which the task will be removed
+     * @param taskID  the id of the task that will be removed
      */
     public void removeTaskByID(final long boardID, final long listID, final long taskID) {
         boardRepository.findById(boardID)
@@ -232,19 +253,26 @@ public class BoardService {
 
     /**
      * Changes the name of a task to a new name.
+     *
      * @param boardID the id of the board where the task will be renamed.
-     * @param listID the id of the list in which the task will be renamed.
-     * @param taskId the id of the task to rename.
+     * @param listID  the id of the list in which the task will be renamed.
+     * @param taskId  the id of the task to rename.
      * @param newName the new name of the task.
      */
     public void renameTask(final long boardID, final long listID,
-                           final long taskId, final String newName){
+                           final long taskId, final String newName) {
         boardRepository.findById(boardID)
-                .ifPresent(b -> {
-                    b.getTaskListById(listID).flatMap(l -> l.getTaskById(taskId))
-                                            .ifPresent(t -> t.setName(newName));
-                    boardRepository.save(b);
-                });
-
+                .ifPresent(board -> board.getTaskListById(listID)
+                        .ifPresentOrElse(taskList -> {
+                            taskList.getTaskById(taskId)
+                                    .ifPresentOrElse(task -> {
+                                        task.setName(newName);
+                                        boardRepository.save(board);
+                                    }, () -> {
+                                        throw new NoSuchElementException("Task not found");
+                                    });
+                        }, () -> {
+                            throw new NoSuchElementException("Task list not found");
+                        }));
     }
 }

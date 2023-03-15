@@ -22,6 +22,7 @@ import commons.Board;
 import commons.Task;
 import commons.TaskList;
 import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 
 
@@ -57,7 +58,8 @@ public class ServerUtils {
                 .target(serverAddress).path("api/boards") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .get(new GenericType<List<Board>>() {});
+                .get(new GenericType<List<Board>>() {
+                });
     }
 
     //get all lists from server
@@ -74,46 +76,53 @@ public class ServerUtils {
     public List<TaskList> getLists(final Long boardid) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 //endpoint still needs to be created
-                .target(serverAddress).path("api/boards/"+boardid)
+                .target(serverAddress).path("api/boards/" + boardid)
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .get(new GenericType<List<TaskList>>() {});
+                .get(new GenericType<List<TaskList>>() {
+                });
     }
 
     //get all tasks in a specific list of a specific board from server
-    public List<Task> getTasks(final Long boardid,final Long listid) {
+    public List<Task> getTasks(final Long boardid, final Long listid) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 //endpoint still needs to be created
-                .target(serverAddress).path("api/boards/"+ boardid +"/tasklists/"+listid+"/tasks")
+                .target(serverAddress)
+                .path("api/boards/" + boardid + "/tasklists/" + listid + "/tasks")
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .get(new GenericType<List<Task>>() {});
+                .get(new GenericType<List<Task>>() {
+                });
     }
 
     //METHODS FOR CREATING BOARD, LIST AND TASK
     //create a board on the server
-    public Board addBoard(final Board board){
+    public Board addBoard(final Board board) {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(serverAddress).path("api/boards") //
+                .target(serverAddress)
+                .path("api/boards") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .post(Entity.entity(board, APPLICATION_JSON), Board.class);
     }
 
     //create a list on the server
-    public TaskList addList(final TaskList list){
+    public TaskList addList(final TaskList list) {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(serverAddress).path("api/boards"+list.getBoard().getId()+"/tasklist") //
+                .target(serverAddress)
+                .path("api/boards" + list.getBoard().getId() + "/tasklist") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .post(Entity.entity(list, APPLICATION_JSON), TaskList.class);
     }
+
     //create a task on the server
-    public Task addTask(final Task task){
+    public Task addTask(final Task task) {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(serverAddress).path("api/boards"
-                        +task.getList().getBoard().getId()
-                        +"/"+task.getList().getId()+"/task") //
+                .target(serverAddress)
+                .path("api/boards"
+                        + task.getList().getBoard().getId()
+                        + "/" + task.getList().getId() + "/task") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .post(Entity.entity(task, APPLICATION_JSON), Task.class);
@@ -121,74 +130,232 @@ public class ServerUtils {
 
     //METHODS FOR UPDATING BOARD, LIST AND TASK
 
-    //update a board on the server
-    public void updateBoard(final long boardId, final String newName) {
-        ClientBuilder.newClient(new ClientConfig()) //
-                .target(serverAddress).path("api/boards/" + boardId) //
-                .request(APPLICATION_JSON) //
-                .put(Entity.entity(newName, APPLICATION_JSON), Void.class);
+    /**
+     * Update a board on the server
+     *
+     * @param boardId the id of the board to update
+     * @param newName the new name of the board
+     * @return a response indicating whether the update was successful
+     */
+    public Response updateBoard(final long boardId, final String newName) {
+        try {
+            Response response = ClientBuilder.newClient(new ClientConfig()) //
+                    .target(serverAddress)
+                    .path("api/boards/" + boardId) //
+                    .request(APPLICATION_JSON) //
+                    .put(Entity.entity(newName, APPLICATION_JSON), Response.class);
+            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+                return Response.status(Response.Status.OK)
+                        .entity("Board name updated successfully").build();
+            } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("Board not found").build();
+            } else {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                        .entity("An error occurred while updating the board name").build();
+            }
+        } catch (Exception e) {
+            // Log the error or perform other error-handling actions
+            e.printStackTrace();
+            // Return an appropriate HTTP status code and error message to the client
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An error occurred while updating the board name").build();
+        }
+
     }
 
 
-    //update a list on the server
-    public void updateList(final long boardId, final long listId, final String newName) {
-        ClientBuilder.newClient(new ClientConfig()) //
-                .target(serverAddress).path("api/boards/" + boardId + "/" + listId) //
-                .request(APPLICATION_JSON) //
-                .put(Entity.entity(newName, APPLICATION_JSON), Void.class);
+    /**
+     * Update a list on the server
+     *
+     * @param boardId the id of the board the list belongs to
+     * @param listId  the id of the list to update
+     * @param newName the new name of the list
+     * @return a response indicating whether the list was updated successfully or not
+     */
+    public Response updateList(final long boardId, final long listId, final String newName) {
+        try {
+            Response response = ClientBuilder.newClient(new ClientConfig()) //
+                    .target(serverAddress)
+                    .path("api/boards/" + boardId + "/" + listId) //
+                    .request(APPLICATION_JSON) //
+                    .put(Entity.entity(newName, APPLICATION_JSON), Response.class);
+            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+                return Response.status(Response.Status.OK)
+                        .entity("List name updated successfully").build();
+            } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("List not found").build();
+            } else {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                        .entity("An error occurred while updating the list name").build();
+            }
+        } catch (Exception e) {
+            // Log the error or perform other error-handling actions
+            e.printStackTrace();
+            // Return an appropriate HTTP status code and error message to the client
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An error occurred while updating the list name").build();
+        }
     }
 
-    //update a task on the server
-    public void updateTask(final long boardId, final long listId,
-                           final long taskId, final String newName) {
-        ClientBuilder.newClient(new ClientConfig()) //
-                .target(serverAddress).path("api/boards/"
-                        + boardId + "/" + listId + "/" + taskId) //
-                .request(APPLICATION_JSON) //
-                .put(Entity.entity(newName, APPLICATION_JSON), Void.class);
+
+    /**
+     * Update a task on the server
+     *
+     * @param boardId the id of the board the task belongs to
+     * @param listId  the id of the list the task belongs to
+     * @param taskId  the id of the task to be updated
+     * @param newName the new name of the task
+     * @return a response object containing the status code and message
+     */
+    public Response updateTask(final long boardId, final long listId,
+                               final long taskId, final String newName) {
+        try {
+            Response response = ClientBuilder.newClient(new ClientConfig()) //
+                    .target(serverAddress)
+                    .path("api/boards/"
+                            + boardId + "/" + listId + "/" + taskId) //
+                    .request(APPLICATION_JSON) //
+                    .put(Entity.entity(newName, APPLICATION_JSON), Response.class);
+            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+                return Response.status(Response.Status.OK)
+                        .entity("Task name updated successfully").build();
+            } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("Task not found").build();
+            } else {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                        .entity("An error occurred while updating the task name").build();
+            }
+        } catch (Exception e) {
+            // Log the error or perform other error-handling actions
+            e.printStackTrace();
+            // Return an appropriate HTTP status code and error message to the client
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An error occurred while updating the task name").build();
+        }
     }
     //METHODS FOR DELETING BOARD, LIST AND TASK
 
-    //delete a board on the server
-    public void deleteBoard(final long boardId) {
-        ClientBuilder.newClient(new ClientConfig()) //
-                .target(serverAddress).path("api/boards/" + boardId) //
-                .request(APPLICATION_JSON) //
-                .delete();
-    }
-    //delete a list on the server
-    public void deleteList(final long boardId, final long listId) {
-        ClientBuilder.newClient(new ClientConfig()) //
-                .target(serverAddress).path("api/boards/" + boardId + "/" + listId) //
-                .request(APPLICATION_JSON) //
-                .delete();
+    /**
+     * Delete a board on the server
+     *
+     * @param boardId the id of the board to delete
+     * @return a response indicating whether the board was deleted successfully or not
+     */
+    public Response deleteBoard(final long boardId) {
+        try {
+            Response response = ClientBuilder.newClient(new ClientConfig()) //
+                    .target(serverAddress)
+                    .path("api/boards/" + boardId) //
+                    .request(APPLICATION_JSON) //
+                    .delete();
+            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+                return Response.status(Response.Status.OK)
+                        .entity("Board deleted succesfully!").build();
+            } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("Board not found!").build(); //this is how we will
+                // handle errors when deleting something that
+                //does not exist
+            } else {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                        .entity("An unexpected error occurred while deleting the board").build();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An unexpected error occurred while deleting the board").build();
+        }
     }
 
-    //delete a task on the server
-    public void deleteTask(final long boardId, final long listId, final long taskId) {
-        ClientBuilder.newClient(new ClientConfig()) //
-                .target(serverAddress).path("api/boards/"
-                        + boardId + "/" + listId + "/" + taskId) //
-                .request(APPLICATION_JSON) //
-                .delete();
+    /**
+     * Delete a list on the server
+     *
+     * @param boardId the id of the board the list belongs to
+     * @param listId  the id of the list to delete
+     * @return a response indicating whether the list was deleted successfully or not
+     */
+    public Response deleteList(final long boardId, final long listId) {
+        try {
+            Response response = ClientBuilder.newClient(new ClientConfig()) //
+                    .target(serverAddress)
+                    .path("api/boards/" + boardId + "/" + listId) //
+                    .request(APPLICATION_JSON) //
+                    .delete();
+            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+                return Response.status(Response.Status.OK)
+                        .entity("List deleted succesfully!").build();
+            } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("List not found!").build();
+            } else {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                        .entity("An unexpected error occurred while deleting the list").build();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An unexpected error occurred while deleting the list").build();
+        }
+
     }
 
-    //method for checking if a server is a Talio server
-    public Boolean isTalioServer(){
+    /**
+     * Delete a task on the server
+     *
+     * @param boardId the id of the board the task belongs to
+     * @param listId  the id of the list the task belongs to
+     * @param taskId  the id of the task to delete
+     * @return a response indicating whether the task was deleted successfully or not
+     */
+    public Response deleteTask(final long boardId, final long listId, final long taskId) {
+        try {
+            Response response = ClientBuilder.newClient(new ClientConfig()) //
+                    .target(serverAddress)
+                    .path("api/boards/" + boardId + "/" + listId + "/" + taskId) //
+                    .request(APPLICATION_JSON) //
+                    .delete();
+            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+                return Response.status(Response.Status.OK)
+                        .entity("Task deleted succesfully!").build();
+            } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("Task not found!").build();
+            } else {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                        .entity("An unexpected error occurred while deleting the taskt").build();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An unexpected error occurred while deleting the task").build();
+        }
+    }
+
+    /**
+     * Method for checking if the server is ra talio server
+     *
+     * @return true if the server is a running talio server, false otherwise
+     */
+    public Boolean isTalioServer() {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(serverAddress).path("api/talio") //
+                .target(serverAddress)
+                .path("api/talio") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .get(new GenericType<Boolean>() {});
+                .get(new GenericType<Boolean>() {
+                });
     }
 
     //method for setting the server address once the user has entered it
     public void setServerAddress(final String serverAddress) {
-        ServerUtils.serverAddress = "http://"+serverAddress+":8080";
+        ServerUtils.serverAddress = "http://" + serverAddress + ":8080";
     }
 
     //method for disconnecting from the server
     public void disconnect() {
-        serverAddress=null;
+        serverAddress = null;
     }
 }
