@@ -41,8 +41,7 @@ public class BoardOverviewCtrl implements Initializable {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
     private final DataFormat taskCustom = new DataFormat("task.custom");
-    private final Map<Long, VBox> listsMap;
-    private final Map<Long, Map<Long, Integer>> tasksMap;
+    private final Map<Long, Integer> listsMap;
     @FXML
     private HBox listsContainer;
 
@@ -51,7 +50,6 @@ public class BoardOverviewCtrl implements Initializable {
         this.mainCtrl = mainCtrl;
         this.server = server;
         this.listsMap = new HashMap<>();
-        this.tasksMap = new HashMap<>();
     }
 
     /**
@@ -77,11 +75,12 @@ public class BoardOverviewCtrl implements Initializable {
 
     /**
      * this adds a task to a specific list
+     *
      * @param task the task to be added
      * @param list the list which will receive the task
      */
-    public void addCard(final Task task, final int list) {
-        lists.get(list).getItems().add(task);
+    public void addCard(final Task task, final long list) {
+        ((ListView<Task>) getVBox(list).getChildren().get(1)).getItems().add(task);
     }
 
     /**
@@ -90,17 +89,17 @@ public class BoardOverviewCtrl implements Initializable {
      */
     public void addList(final TaskList taskList) {
         var kids = listsContainer.getChildren();
-        var newList = new ListView<String>();
-
         var newList = new ListView<Task>();
-        newList.setCellFactory(param -> new ListCell<Task>(){
+        newList.setPrefWidth(200);
+        setDragHandlers(newList);
+        newList.setCellFactory(param -> new ListCell<>() {
             @Override
-            protected void updateItem(final Task task, final boolean empty){
+            protected void updateItem(final Task task, final boolean empty) {
                 super.updateItem(task, empty);
-                if(task==null || empty){
+                if (task == null || empty) {
                     setGraphic(null);
-                } else{
-                    try{
+                } else {
+                    try {
                         var cardLoader = new FXMLLoader(getClass().getResource("Card.fxml"));
                         Node card = cardLoader.load();
                         CardCtrl cardCtrl = cardLoader.getController();
@@ -112,25 +111,23 @@ public class BoardOverviewCtrl implements Initializable {
                 }
             }
         });
-        newList.setPrefWidth(200);
-        setDragHandlers(newList);
+
         if (!kids.isEmpty()) {
             var lb = kids.get(kids.size() - 1).getLayoutBounds();
             var lx = kids.get(kids.size() - 1).getLayoutX();
             newList.setLayoutX(lx + lb.getMaxX());
         }
         VBox newVBox = new VBox();
-        newList.getItems().addAll(convertTasksToCards(taskList));
+        newList.getItems().addAll(taskList.getTasks());
 
         newVBox.getChildren().add(new Text(taskList.getName()));
         newVBox.getChildren().add(newList);
 
         kids.add(newVBox);
-        listsMap.put(taskList.id, newVBox);
-        tasksMap.put(taskList.id, new HashMap<>());
+        listsMap.put(taskList.id, kids.size() - 1);
     }
 
-    private void setDragHandlers(final ListView<String> list) {
+    private void setDragHandlers(final ListView<Task> list) {
         list.setOnDragDetected(event -> dragDetected(list, event));
         list.setOnDragEntered(event -> dragEntered(list, event));
         list.setOnDragOver(event -> dragOver(list, event));
@@ -212,16 +209,21 @@ public class BoardOverviewCtrl implements Initializable {
      * @param lists the list of lists
      */
     private void refreshLists(final List<TaskList> lists) {
-        List<Long> listsId=lists.stream().map(taskList -> taskList.id).toList();
-        for (Map.Entry<Long, VBox> list : listsMap.entrySet()) { // this removes any lists in excess
-            if(!listsId.contains(list.getKey()))
+        List<Long> listsId = lists.stream().map(taskList -> taskList.id).toList();
+        for (Map.Entry<Long, Integer> list : listsMap.entrySet()) {
+            // this removes any lists in excess
+            if (!listsId.contains(list.getKey())) {
+                listsContainer.getChildren().remove((int) list.getValue());
                 listsMap.remove(list.getKey());
+            }
         }
-        for (TaskList list : lists) { // this adds or modifies existing lists
+
+        for (TaskList list : lists) {
+            // this adds or modifies existing lists
             if (!listsMap.containsKey(list.id))
                 addList(list);
             else {
-                Text title = (Text) listsMap.get(list.id).getChildren().get(0);
+                Text title = (Text) getVBox(list.id).getChildren().get(0);
                 if (!Objects.equals(title.getText(), list.getName()))
                     title.setText(list.getName());
                 refreshTasks(list);
@@ -234,38 +236,22 @@ public class BoardOverviewCtrl implements Initializable {
      * @param newTaskList the list for which the tasks must be refreshed.
      */
     private void refreshTasks(final TaskList newTaskList) {
-        ListView<String> currentTasks =
-            (ListView<String>) listsMap.get(newTaskList.id).getChildren().get(1);
-        currentTasks.getItems().retainAll(convertTasksToCards(newTaskList));
+        ListView<Task> currentTasks =
+            (ListView<Task>) getVBox(newTaskList.id).getChildren().get(1);
+
+        currentTasks.getItems().retainAll(newTaskList.getTasks());
         for (Task task : newTaskList.getTasks()) {
-            if (!currentTasks.getItems().contains(task.getName())) //TODO: make this based on id
-                currentTasks.getItems().add(task.getName()); //TODO: also should support ordering
+            if (!currentTasks.getItems().contains(task))
+                currentTasks.getItems().add(task);
         }
     }
-    /* private void refreshTasks(final TaskList newTaskList) {
-        ListView<String> displayedTasks =
-            (ListView<String>) listsMap.get(newTaskList.id).getChildren().get(1);
-        List<Long> newTaskIds=newTaskList.getTasks().stream().map(task -> task.id).toList();
-        for (Map.Entry<Long, Integer> entry : tasksMap.get(newTaskList.id).entrySet()) {
-            if(!newTaskIds.contains(entry.getKey())){
-                displayedTasks.getItems().remove((int)
-                tasksMap.get(newTaskList.id).remove(entry.getKey()));
-            }
-        }
-        for (Task task : newTaskList.getTasks()) {
-            if (!tasksMap.get(newTaskList.id).containsKey(task.id)) {
-                displayedTasks.getItems().add(task.getName());
-                tasksMap.get(newTaskList.id).put(task.id, displayedTasks.getItems().size()-1);
-            }
-        }
-    }*/
 
     /**
-     * converts a TaskList to a list of strings which contains the titles of the tasks
-     * @param taskList the list that must be converted
-     * @return an array of titles of the cards
+     * Get VBox matching the provided id
+     * @param id TaskList id
+     * @return the VBox
      */
-    private String[] convertTasksToCards(final TaskList taskList) {
-        return taskList.getTasks().stream().map(Task::getName).toArray(String[]::new);
+    private VBox getVBox(final long id){
+        return (VBox) listsContainer.getChildren().get(listsMap.get(id));
     }
 }

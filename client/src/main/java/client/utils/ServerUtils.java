@@ -50,7 +50,7 @@ public class ServerUtils {
      */
     public List<TaskList> getLists() {
         return ClientBuilder.newClient(new ClientConfig()) //
-            .target(SERVER).path("api/board") //
+            .target(SERVER).path("api/boards/1/tasklists") //
             .request(APPLICATION_JSON) //
             .accept(APPLICATION_JSON) //
             .get(new GenericType<>() {
