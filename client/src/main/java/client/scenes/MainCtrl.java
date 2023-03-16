@@ -26,9 +26,11 @@ public class MainCtrl {
 
     private Stage primaryStage;
 
-    private AddQuoteCtrl addCtrl;
     //private BoardOverviewCtrl boardOverviewCtrl;
     private Scene boardOverview;
+
+    private Scene createList;
+    private CreateListCtrl createListCtrl;
 
 
     private SelectServerCtrl selectServerCtrl;
@@ -52,6 +54,7 @@ public class MainCtrl {
      */
     public void initialize(final Stage primaryStage,
                            final Pair<BoardOverviewCtrl, Parent> boardOverview,
+                           final Pair<CreateListCtrl, Parent> createList,
                            final ServerScenes serverScenes){
         this.primaryStage = primaryStage;
 
@@ -59,6 +62,8 @@ public class MainCtrl {
         //this.boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
 
+        this.createListCtrl = createList.getKey();
+        this.createList = new Scene(createList.getValue());
 
         this.selectServerCtrl = serverScenes.getSelectServer().getKey();
         this.selectServer = new Scene(serverScenes.getSelectServer().getValue());
@@ -82,6 +87,14 @@ public class MainCtrl {
     public void showBoardOverview() {
         primaryStage.setTitle("Talio: Board Overview");
         primaryStage.setScene(boardOverview);
+    }
+
+    /**
+     * Changes the scene to the popup that allows users to create a new task list and name it.
+     */
+    public void showCreateList() {
+        primaryStage.setTitle("Talio: Create List");
+        primaryStage.setScene(createList);
     }
 
     /**

@@ -51,6 +51,6 @@ public class Main extends Application {
                 serverTimeout, serverDown);
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage,lists, createList, serverSelection);
+        mainCtrl.initialize(primaryStage,lists, createList, serverScenes);
     }
 }
