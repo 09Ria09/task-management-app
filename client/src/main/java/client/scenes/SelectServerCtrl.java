@@ -5,6 +5,8 @@ import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
+import java.util.Optional;
+
 public class SelectServerCtrl {
 
     private final ServerUtils server;
@@ -19,26 +21,34 @@ public class SelectServerCtrl {
         this.mainCtrl = mainCtrl;
     }
 
-   //takes input from user and checks if it is a valid server after setting the serveraddress
-    //if it is a valid server it will show the boardoverview
-    //if it is not a valid server it will show the wrongserver scene
+    /**
+     * takes input from user and checks if it is a valid server after setting the serveraddress
+     * if it is a valid server it will show the boardoverview
+     * if it is not a valid server it will show the wrongserver scene
+     * if there is a timeout it will show the timeout scene
+     * if there is an error it will show the serverdown scene
+     */
+
     public void showServerBoards(){
         String serverAddress = addressField.getText();
         server.setServerAddress(serverAddress);
         System.out.println(serverAddress);
-        try{
-            //TODO
-            //I have to implement a timeout of sorts - connecting to
-            //google.com will take time and it will cause the app to be not responding
-            //until going to wrong server scene
-            if(server.isTalioServer()){
+        try {
+            Optional<String> result = server.isTalioServer();
+            if (result.isEmpty()) {
                 addressField.clear();
                 mainCtrl.showBoardOverview();
+            } else if(result.get().equals("Not a Talio server")||
+                    result.get().equals("Unexpected response status")) {
+                mainCtrl.showWrongServer();
+            } else if(result.get().equals("IOException")){
+                mainCtrl.showTimeout();
+            } else if(result.get().equals("InterruptedException")||
+                    result.get().equals("Exception")){
+                mainCtrl.showServerDown();
             }
-
-        }
-        catch (Exception e){
-            mainCtrl.showWrongServer();
+        } catch (Exception e) {
+            mainCtrl.showServerDown();
         }
     }
 

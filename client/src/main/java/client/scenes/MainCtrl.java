@@ -15,22 +15,21 @@
  */
 package client.scenes;
 
+import client.utils.ServerScenes;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
+
 public class MainCtrl {
 
     private Stage primaryStage;
 
-    private QuoteOverviewCtrl overviewCtrl;
-    private Scene overview;
-
     private AddQuoteCtrl addCtrl;
     //private BoardOverviewCtrl boardOverviewCtrl;
     private Scene boardOverview;
-    private Scene add;
+
 
     private SelectServerCtrl selectServerCtrl;
 
@@ -39,57 +38,79 @@ public class MainCtrl {
     private WrongServerCtrl wrongServerCtrl;
     private Scene wrongServer;
 
-    public void initialize(final Stage primaryStage, final Pair<QuoteOverviewCtrl, Parent> overview,
-                           final Pair<AddQuoteCtrl, Parent> add,
+    private ServerTimeoutCtrl serverTimeoutCtrl;
+    private Scene serverTimeout;
+
+    private ServerDownCtrl serverDownCtrl;
+    private Scene serverDown;
+
+    /**
+     * Initializes the main controller.
+     * @param primaryStage the primary stage
+     * @param boardOverview the board overview scene
+     * @param serverScenes the server scenes
+     */
+    public void initialize(final Stage primaryStage,
                            final Pair<BoardOverviewCtrl, Parent> boardOverview,
-                           final Pair<SelectServerCtrl, Parent> selectServer,
-                           final Pair<WrongServerCtrl, Parent> wrongServer) {
+                           final ServerScenes serverScenes){
         this.primaryStage = primaryStage;
-        this.overviewCtrl = overview.getKey();
-        this.overview = new Scene(overview.getValue());
+
 
         //this.boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
 
-        this.addCtrl = add.getKey();
-        this.add = new Scene(add.getValue());
 
-        this.selectServerCtrl=selectServer.getKey();
-        this.selectServer= new Scene(selectServer.getValue());
+        this.selectServerCtrl = serverScenes.getSelectServer().getKey();
+        this.selectServer = new Scene(serverScenes.getSelectServer().getValue());
 
-        this.wrongServerCtrl = wrongServer.getKey();
-        this.wrongServer= new Scene(wrongServer.getValue());
+        this.wrongServerCtrl = serverScenes.getWrongServer().getKey();
+        this.wrongServer = new Scene(serverScenes.getWrongServer().getValue());
+
+        this.serverTimeoutCtrl = serverScenes.getServerTimeout().getKey();
+        this.serverTimeout = new Scene(serverScenes.getServerTimeout().getValue());
+
+        this.serverDownCtrl = serverScenes.getServerDown().getKey();
+        this.serverDown = new Scene(serverScenes.getServerDown().getValue());
 
         showSelectServer();
         primaryStage.show();
     }
 
-    public void showOverview() {
-        primaryStage.setTitle("Quotes: Overview");
-        primaryStage.setScene(overview);
-        overviewCtrl.refresh();
-    }
-
+    /**
+     * Shows the board overview scene.
+     */
     public void showBoardOverview() {
         primaryStage.setTitle("Talio: Board Overview");
         primaryStage.setScene(boardOverview);
-        overviewCtrl.refresh();
     }
 
-    public void showAdd() {
-        primaryStage.setTitle("Quotes: Adding Quote");
-        primaryStage.setScene(add);
-        add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
-    }
-
+    /**
+     * Shows the select server scene.
+     */
     public void showSelectServer() {
         primaryStage.setTitle("Talio: Select Your Server");
         primaryStage.setScene(selectServer);
     }
-
+    /**
+     * Shows the wrong server scene.
+     */
     public void showWrongServer() {
-        primaryStage.setTitle("Talio: server not found :/");
+        primaryStage.setTitle("Talio: server not found");
         primaryStage.setScene(wrongServer);
 
+    }
+    /**
+     * Shows the server timeout scene.
+     */
+    public void showTimeout() {
+        primaryStage.setTitle("Talio: server timed out");
+        primaryStage.setScene(serverTimeout);
+    }
+    /**
+     * Shows the server down/other errors scene.
+     */
+    public void showServerDown() {
+        primaryStage.setTitle("Talio: server is down");
+        primaryStage.setScene(serverDown);
     }
 }

@@ -30,7 +30,14 @@ import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.GenericType;
 
 import javax.inject.Inject;
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 
 public class ServerUtils {
 
@@ -41,18 +48,13 @@ public class ServerUtils {
         ServerUtils.serverAddress = serverAddress;
     }
 
-//    public void getQuotesTheHardWay() throws IOException {
-//        var url = new URL("http://localhost:8080/api/quotes");
-//        var is = url.openConnection().getInputStream();
-//        var br = new BufferedReader(new InputStreamReader(is));
-//        String line;
-//        while ((line = br.readLine()) != null) {
-//            System.out.println(line);
-//        }
-//    }
 //METHODS FOR GETTING ALL BOARDS FROM SERVER, ALL LISTS FROM BOARD AND ALL TASKS FROM LIST
 
-    //get all boards from server
+    /**
+     * Get all boards from the server.
+     *
+     * @return A list of boards.
+     */
     public List<Board> getBoards() {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(serverAddress).path("api/boards") //
@@ -72,7 +74,12 @@ public class ServerUtils {
                 .get(new GenericType<List<TaskList>>() {});
     }
 */
-//get all lists of a board from server
+    /**
+     * Get all lists from a specific board.
+     *
+     * @param boardid The id of the board.
+     * @return A list of lists.
+     */
     public List<TaskList> getLists(final Long boardid) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 //endpoint still needs to be created
@@ -83,7 +90,13 @@ public class ServerUtils {
                 });
     }
 
-    //get all tasks in a specific list of a specific board from server
+    /**
+     * Get all tasks from a specific list.
+     *
+     * @param boardid The id of the board.
+     * @param listid  The id of the list.
+     * @return A list of tasks.
+     */
     public List<Task> getTasks(final Long boardid, final Long listid) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 //endpoint still needs to be created
@@ -96,7 +109,13 @@ public class ServerUtils {
     }
 
     //METHODS FOR CREATING BOARD, LIST AND TASK
-    //create a board on the server
+
+    /**
+     * Create a board on the server.
+     *
+     * @param board The board to create.
+     * @return The created board.
+     */
     public Board addBoard(final Board board) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(serverAddress)
@@ -106,21 +125,31 @@ public class ServerUtils {
                 .post(Entity.entity(board, APPLICATION_JSON), Board.class);
     }
 
-    //create a list on the server
+    /**
+     * Create a list on the server.
+     *
+     * @param list The list to create.
+     * @return The created list.
+     */
     public TaskList addList(final TaskList list) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(serverAddress)
-                .path("api/boards" + list.getBoard().getId() + "/tasklist") //
+                .path("api/boards/" + list.getBoard().getId() + "/tasklist") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .post(Entity.entity(list, APPLICATION_JSON), TaskList.class);
     }
 
-    //create a task on the server
+    /**
+     * Create a task on the server.
+     *
+     * @param task The task to create.
+     * @return The created task.
+     */
     public Task addTask(final Task task) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(serverAddress)
-                .path("api/boards"
+                .path("api/boards/"
                         + task.getList().getBoard().getId()
                         + "/" + task.getList().getId() + "/task") //
                 .request(APPLICATION_JSON) //
@@ -334,22 +363,58 @@ public class ServerUtils {
         }
     }
 
-    /**
-     * Method for checking if the server is ra talio server
-     *
-     * @return true if the server is a running talio server, false otherwise
-     */
-    public Boolean isTalioServer() {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(serverAddress)
-                .path("api/talio") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .get(new GenericType<Boolean>() {
-                });
+   /**
+        * Check if the server is a Talio server
+        *
+        * @return an empty optional if the server is a Talio server,
+        * or an optional containing an error message
+        */
+    public Optional<String> isTalioServer() {
+        try {
+            HttpClient httpClient = HttpClient.newBuilder()
+                    .version(HttpClient.Version.HTTP_1_1)
+                    .connectTimeout(Duration.ofSeconds(5))
+                    .build();
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(serverAddress + "/api/talio"))
+                    .timeout(Duration.ofSeconds(5))
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = httpClient
+                    .send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                return Boolean.parseBoolean(response.body())
+                        ? Optional.empty()
+                        : Optional.of("Not a Talio server");
+            }
+            else if (response.statusCode() == 404) {
+                return Optional.of("Not a Talio server");
+            }
+            else {
+                return Optional.of("Unexpected response status");
+            }
+        } catch (IOException e) {
+            //timeout
+            System.out.println("1"+e.getMessage());
+            return Optional.of("IOException");
+        } catch (InterruptedException e) {
+            //this is something related to threads
+            System.out.println("2"+e.getMessage());
+            return Optional.of("InterruptedException");
+        } catch (Exception e) {
+            //unsupportd uri
+            System.out.println("3"+e.getMessage());
+            return Optional.of("Exception");
+        }
     }
 
-    //method for setting the server address once the user has entered it
+    /**
+     * Set the server address
+     * @param serverAddress the server address
+     */
     public void setServerAddress(final String serverAddress) {
         ServerUtils.serverAddress = "http://" + serverAddress + ":8080";
     }

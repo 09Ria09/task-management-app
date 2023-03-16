@@ -33,12 +33,18 @@ public class BoardController {
     /**
      * Get util method to get a specific board
      *
-     * @param boardid the id of the board that will be retrieved
-     * @return the board with the corresponding id
+     * @param boardid the id of the board that will be accessed
+     * @return the board with the corresponding id as response entity
      */
     @GetMapping("/{boardid}")
-    public Board getBoard(@PathVariable("boardid") final long boardid) {
-        return boardService.getBoard(boardid);
+    public ResponseEntity<Board> getBoard(@PathVariable("boardid") final long boardid) {
+        Board board = boardService.getBoard(boardid);
+        if (board != null) {
+            return ResponseEntity.ok(board);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+
     }
 
     /**
@@ -50,6 +56,8 @@ public class BoardController {
     @GetMapping("/{boardid}/tasklists")
     public List<TaskList> getTaskLists(@PathVariable("boardid") final long boardid) {
         return boardService.getLists(boardid);
+        //we don't really care if this is empty, but we care if a board
+        //is not found so that's why we don't return response entity
     }
 
     /**
@@ -57,14 +65,19 @@ public class BoardController {
      *
      * @param boardid the id of the board from which we want to access the list
      * @param taskListid the id of the list that will be accessed
-     * @return the corresponding list from the corresponding board
+     * @return the corresponding list from the corresponding board as response entity
      */
     @GetMapping("/{boardid}/tasklist/{taskListid}")
-    public TaskList getTaskList(
+    public ResponseEntity<TaskList> getTaskList(
             @PathVariable("boardid") final long boardid,
             @PathVariable("taskListid") final long taskListid
     ) {
-        return boardService.getList(boardid, taskListid);
+        TaskList taskList = boardService.getList(boardid, taskListid);
+        if (taskList != null) {
+            return ResponseEntity.ok(taskList);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     /**
@@ -88,15 +101,21 @@ public class BoardController {
      * @param boardid the id of the board from which we want to access the task
      * @param taskListid the id of the tasklist from which we want to access the task
      * @param taskid the id of the task we want to access
-     * @return the task corresponding to all the given ids
+     * @return the task corresponding to all the given ids as response entity
      */
     @GetMapping("/{boardid}/tasklist/{taskListid}/task/{taskid}")
-    public Task getTask(
+    public ResponseEntity<Task> getTask(
             @PathVariable("boardid") final long boardid,
             @PathVariable("taskListid") final long taskListid,
             @PathVariable("taskid") final long taskid
     ) {
-        return boardService.getTask(boardid, taskListid, taskid);
+        Task task =boardService.getTask(boardid, taskListid, taskid);
+        if (task != null) {
+            return ResponseEntity.ok(task);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+
     }
 
     /**
@@ -149,7 +168,7 @@ public class BoardController {
     @DeleteMapping("/{boardid}")
     public ResponseEntity<Board> deleteBoard(@PathVariable("boardid") final long boardid) {
         try {
-            //the remove method checks if the board exists anyway
+            //the remove method checks if the board exists anyway,
             //so we can be certain that the getBoard will also return something non-null
             boardService.removeBoardByID(boardid);
             return ResponseEntity.ok(boardService.getBoard(boardid));
@@ -163,11 +182,13 @@ public class BoardController {
     }
 
 
-    /**
-     * Delete request to delete a tasklist with a list id and board id
+   /**
+     * Delete request to delete a tasklist with a board and list id
      *
      * @param boardid the id of the board from where the list will be deleted
      * @param tasklistid the id of the list that will be deleted
+     * @return the deleted list if it was deleted successfully,
+     * otherwise a not found/error response
      */
     @DeleteMapping("/{boardid}/{tasklistid}")
     public ResponseEntity<TaskList> deleteTaskList(
@@ -189,8 +210,10 @@ public class BoardController {
      * Delete request to delete a task with a board, list and task id
      *
      * @param boardid the id of the board from where the task will be deleted
-     * @param tasklistid the id of the tasklist from where the list will be deleted
+     * @param tasklistid the id of the list from where the task will be deleted
      * @param taskid the id of the task that will be deleted
+     * @return the deleted task if it was deleted successfully,
+     * otherwise a not found/error response
      */
     @DeleteMapping("/{boardid}/{tasklistid}/{taskid}")
     public ResponseEntity<Task> deleteTask(
@@ -210,10 +233,11 @@ public class BoardController {
     }
 
     /**
-     * Put request to change the name of a board
-     *
-     * @param boardid the id of the board of which the name will be changed
-     * @param name the new name for the board
+     * Put request to rename a board
+     * @param boardid the id of the board that will be renamed
+     * @param name the new name of the board
+     * @return the renamed board if it was renamed successfully,
+     * otherwise a not found/error response
      */
     @PutMapping("/{boardid}")
     public ResponseEntity<Board> renameBoard(
@@ -221,7 +245,7 @@ public class BoardController {
             @RequestParam final String name
     ) {
         try{
-            //the remove method checks if the board exists anyway
+            //the remove method checks if the board exists anyway,
             //so we can be certain that the getBoard will also return something non-null
             boardService.renameBoard(boardid, name);
             return ResponseEntity.ok(boardService.getBoard(boardid));
@@ -268,10 +292,12 @@ public class BoardController {
     /**
      * Put request to change the name of a task
      *
-     * @param boardid the id of the board from where the task will be renamed
+     * @param boardid    the id of the board from where the task will be renamed
      * @param tasklistid the id of the list from where the task will be renamed
-     * @param taskid the id of the task of which the name will be changed
-     * @param name the new name for the list
+     * @param taskid     the id of the task of which the name will be changed
+     * @param name       the new name for the task
+     * @return the task with the new name if it was renamed successfully,
+     * otherwise a not found/error response
      */
     @PutMapping("/{boardid}/{tasklistid}/{taskid}")
     public ResponseEntity<Task> renameTask(

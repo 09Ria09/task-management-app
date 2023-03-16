@@ -21,7 +21,6 @@ import commons.Person;
 import commons.Quote;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyEvent;
 //we should start moving forward in order to delete this class
 public class AddQuoteCtrl {
 
@@ -44,10 +43,8 @@ public class AddQuoteCtrl {
 
     }
 
-    public void cancel() {
-        clearFields();
-        mainCtrl.showOverview();
-    }
+    //we should keep this for reference for when we start to adding the
+    //user interface with the back end
  //will be deleted soon
    /**
     public void ok() {
@@ -71,14 +68,8 @@ public class AddQuoteCtrl {
         var q = quote.getText();
         return new Quote(p, q);
     }
-
-    private void clearFields() {
-        firstName.clear();
-        lastName.clear();
-        quote.clear();
-    }
-
-    public void keyPressed(final KeyEvent e) {
+    //we should keep this for reference for when we get to the keyboard shortcuts
+  /*  public void keyPressed(final KeyEvent e) {
         switch (e.getCode()) {
             case ENTER:
         //        ok();
@@ -89,5 +80,5 @@ public class AddQuoteCtrl {
             default:
                 break;
         }
-    }
+    }*/
 }
