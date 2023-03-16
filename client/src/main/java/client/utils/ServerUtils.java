@@ -66,14 +66,14 @@ public class ServerUtils {
 
     //get all lists from server
     //TODO create api lists endpoint
-   /* public List<TaskList> getLists() {
+    public List<TaskList> getLists() {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(serverAddress).path("api/lists") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<List<TaskList>>() {});
     }
-*/
+
     /**
      * Get all lists from a specific board.
      *
@@ -83,7 +83,7 @@ public class ServerUtils {
     public List<TaskList> getLists(final Long boardid) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 //endpoint still needs to be created
-                .target(serverAddress).path("api/boards/" + boardid)
+                .target(serverAddress).path("api/boards/" + boardid + "/tasklists")
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<List<TaskList>>() {
@@ -398,15 +398,12 @@ public class ServerUtils {
             }
         } catch (IOException e) {
             //timeout
-            System.out.println("1"+e.getMessage());
             return Optional.of("IOException");
         } catch (InterruptedException e) {
             //this is something related to threads
-            System.out.println("2"+e.getMessage());
             return Optional.of("InterruptedException");
         } catch (Exception e) {
             //unsupportd uri
-            System.out.println("3"+e.getMessage());
             return Optional.of("Exception");
         }
     }
