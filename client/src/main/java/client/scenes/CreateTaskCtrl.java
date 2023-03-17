@@ -40,9 +40,9 @@ public class CreateTaskCtrl {
     //appropriate name and description however this interface does not work yet
     public void confirm() {
         try {
-            //PLACEHOLDER CODE: WILL SOON BE SOMETHING LIKE THE LINE BELOW
-            //server.addTask(getTask());
             System.out.println("hello world");
+            //this will have something like:
+            //MainCtrl.getBoardOverviewCtrl().getList(listid).addTask(task);
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);

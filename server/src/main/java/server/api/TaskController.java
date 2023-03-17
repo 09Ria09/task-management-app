@@ -1,79 +1,100 @@
-/*
- * Copyright 2021 Delft University of Technology
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package server.api;
 
 import java.util.List;
-import java.util.Random;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import commons.Task;
-import server.database.TaskRepository;
+import org.springframework.web.bind.annotation.*;
+
+import server.TaskService;
 
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
 
-    private final Random random;
-    private final TaskRepository repo;
+    private TaskService taskService;
 
-    public TaskController(final Random random, final TaskRepository repo) {
-        this.random = random;
-        this.repo = repo;
+    /**
+     * Post util method to add a task to a specific board and list
+     *
+     * @param boardid the id from the board you want to add a task to
+     * @param boardid the id from the board you want to add a task to
+     * @param task the tasklist that you want to add to board with the given id
+     */
+    @PostMapping("/{boardid}/{listid}/task")
+    public void addTask(
+            @PathVariable("boardid") final long boardid,
+            @PathVariable("listid") final long listid,
+            @RequestBody final Task task
+    ) {
+        taskService.addTask(boardid, listid, task);
     }
 
-    @GetMapping(path = { "", "/" })
-    public List<Task> getAll() {
-        return repo.findAll();
+    /**
+     * Get util method to get all the tasks from a specific list
+     * @param boardid the id of the board that will be accessed
+     * @param listid the id of the list that will be accessed
+     * @return a list of tasks from the corresponding list
+     */
+    @GetMapping("/{boardid}/{listid}/task")
+    public List<Task> getTasks(@PathVariable("boardid") final long boardid
+                               , @PathVariable("listid") final long listid) {
+        return taskService.getTasks(boardid, listid);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Task> getById(@PathVariable("id") final long id) {
-        if (id < 0 || !repo.existsById(id)) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(repo.findById(id).get());
+    /**
+     * Get util method for a specific task of a specific list
+     *
+     * @param boardid the id of the board from which we want to access the task
+     * @param listid the id of the list from which we want to access the task
+     * @param taskid the id of the task that will be returned
+     * @return the corresponding task from the corresponding list
+     */
+    @GetMapping("/{boardid}/{listid}/{taskid}")
+    public Task getTask(
+            @PathVariable("boardid") final long boardid,
+            @PathVariable("listid") final long listid,
+            @PathVariable("taskid") final long taskid
+    ) {
+        return taskService.getTask(boardid, listid, taskid);
     }
 
-    @PostMapping(path = { "", "/" })
-    public ResponseEntity<Task> add(@RequestBody final Task task) {
+    /**
+     * Put request to change the name of a tasklist
+     *
+     * @param boardid the id of the board from where the task will be renamed
+     * @param listid the id of the list in which the task of which the name will be changed is
+     * @param taskid the id of the task to be renamed
+     * @param name the new name for the task
+     */
+    @PutMapping("/{boardid}/{listid}/{taskid}")
+    public void renameTask(
+            @PathVariable("boardid") final long boardid,
+            @PathVariable("listid") final long listid,
+            @PathVariable("taskid") final long taskid,
+            @RequestParam final String name
+    ) {
+        taskService.renameTask(boardid, listid, taskid, name);
+    }
 
-        if (isNullOrEmpty(task.getName()) ||
-                isNullOrEmpty(task.getDescription())) {
-            return ResponseEntity.badRequest().build();
-        }
 
-        Task saved = repo.save(task);
-        return ResponseEntity.ok(saved);
+    /**
+     * Delete request to delete a task form a list
+     *
+     * @param boardid the id from the board you want to remove a task from
+     * @param boardid the id from the board you want to remove a task from
+     * @param task the tasklist that you want to remove from board with the given id
+     */
+    @PostMapping("/{boardid}/{listid}/task")
+    public void removeTask(
+            @PathVariable("boardid") final long boardid,
+            @PathVariable("listid") final long listid,
+            @RequestBody final Task task
+    ) {
+        taskService.removeTask(boardid, listid, task);
     }
 
     private static boolean isNullOrEmpty(final String s) {
         return s == null || s.isEmpty();
     }
 
-    @GetMapping("rnd")
-    public ResponseEntity<Task> getRandom() {
-        var tasks = repo.findAll();
-        var idx = random.nextInt((int) repo.count());
-        return ResponseEntity.ok(tasks.get(idx));
-    }
 }

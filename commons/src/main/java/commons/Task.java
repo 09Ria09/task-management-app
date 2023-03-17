@@ -83,4 +83,6 @@ public class Task implements Serializable {
     }
 
     public TaskList getTasklist() { return this.tasklist; };
+
+    public long getId() {return this.id;}
 }
