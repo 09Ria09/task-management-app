@@ -7,7 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 import server.api.TestBoardRepository;
-import server.database.BoardRepository;
+
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,7 +32,7 @@ public class BoardServiceTest {
 
     @Test
     public void testNonExistingBoard(){
-        assertNull(service.getBoard(5L));
+        assertThrows(NoSuchElementException.class, () -> service.getBoard(5L));
     }
 
     @Test
@@ -47,7 +48,7 @@ public class BoardServiceTest {
         Board b = new Board();
         service.addBoard(b);
         service.removeBoard(b);
-        assertNull(service.getBoard(b.id));
+        assertThrows(NoSuchElementException.class, () -> service.getBoard(b.id));
     }
 
     @Test
@@ -153,6 +154,6 @@ public class BoardServiceTest {
         service.addTask(b.id, l.id, t);
         assertEquals(t, service.getTask(b.id, l.id, t.id));
         service.removeTask(b.id, l.id, t);
-        assertNull(service.getTask(b.id, l.id, t.id));
+        assertThrows(NoSuchElementException.class, () -> service.getTask(b.id, l.id, t.id));
     }
 }

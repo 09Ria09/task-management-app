@@ -16,6 +16,7 @@
 package client;
 
 import client.scenes.*;
+import client.utils.ServerScenes;
 import com.google.inject.Injector;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -37,13 +38,19 @@ public class Main extends Application {
     @Override
     public void start(final Stage primaryStage) throws IOException {
 
-        var overview = FXML.load(QuoteOverviewCtrl.class, "client", "scenes", "QuoteOverview.fxml");
-        var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
+
         var lists = FXML.load(BoardOverviewCtrl.class, "client", "scenes", "BoardOverview.fxml");
+        var createList = FXML.load(CreateListCtrl.class, "client", "scenes", "CreateList.fxml");
         var serverSelection = FXML
                 .load(SelectServerCtrl.class, "client", "scenes", "SelectServer.fxml");
+        var wrongServer = FXML.load(WrongServerCtrl.class, "client", "scenes", "WrongServer.fxml");
+        var serverTimeout = FXML.load(ServerTimeoutCtrl.class, "client",
+                "scenes", "ConnectionTimeout.fxml");
+        var serverDown = FXML.load(ServerDownCtrl.class, "client", "scenes", "ServerDown.fxml");
+        var serverScenes = new ServerScenes(serverSelection, wrongServer,
+                serverTimeout, serverDown);
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, overview, add, lists, serverSelection);
+        mainCtrl.initialize(primaryStage,lists, createList, serverScenes);
     }
 }

@@ -8,29 +8,28 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="client.scenes.ServerDownCtrl">
-   <Label alignment="CENTER" layoutX="201.0" layoutY="27.0" text="Ooh No !" textAlignment="CENTER"
-          AnchorPane.bottomAnchor="312.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0"
-          AnchorPane.topAnchor="30.0">
+            fx:controller="client.scenes.ServerTimeoutCtrl">
+   <Label alignment="CENTER" layoutX="201.0" layoutY="27.0" text="Uh oh!" AnchorPane.bottomAnchor="312.0"
+          AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="30.0">
       <font>
          <Font size="40.0"/>
       </font>
    </Label>
-   <Button layoutX="269.0" layoutY="336.0" mnemonicParsing="false" onAction="#showSelectServer"
-           text="Back to main screen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="200.0"
-           AnchorPane.rightAnchor="200.0"/>
    <Label alignment="CENTER" contentDisplay="CENTER" layoutX="164.0" layoutY="96.0"
-          text="The server is down, please try again later" textAlignment="CENTER" AnchorPane.leftAnchor="30.0"
+          text="It seems like there was a timeout" textAlignment="CENTER" AnchorPane.leftAnchor="30.0"
           AnchorPane.rightAnchor="30.0">
       <font>
          <Font size="18.0"/>
       </font>
    </Label>
    <Label alignment="CENTER" contentDisplay="CENTER" layoutX="282.0" layoutY="123.0"
-          text="If the problem persists, please contact the administrator" AnchorPane.leftAnchor="50.0"
+          text="Please try a different server, or contact the administrator" AnchorPane.leftAnchor="50.0"
           AnchorPane.rightAnchor="50.0"/>
+   <Button layoutX="200.0" layoutY="336.0" mnemonicParsing="false" onAction="#showSelectServer"
+           text="Back to main screen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="200.0"
+           AnchorPane.rightAnchor="200.0"/>
    <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="225.0" layoutY="125.0" pickOnBounds="true"
               preserveRatio="true" AnchorPane.bottomAnchor="85.0" AnchorPane.topAnchor="165.0">
-      <Image url="@/client/images/server-down.png"/>
+      <Image url="@/client/images/server-timeout.png"/>
    </ImageView>
 </AnchorPane>

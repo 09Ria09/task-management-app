@@ -1,22 +1,21 @@
 package client.scenes;
 
 
+
 import javax.inject.Inject;
 
-
-public class ServerDownCtrl {
-
+public class ServerTimeoutCtrl {
     private final MainCtrl mainCtrl;
 
     @Inject
-    public ServerDownCtrl(final MainCtrl mainCtrl) {
+    public ServerTimeoutCtrl(final MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
     }
-
-
 
     //used for the go back button
     public void showSelectServer() {
         mainCtrl.showSelectServer();
     }
+
+
 }

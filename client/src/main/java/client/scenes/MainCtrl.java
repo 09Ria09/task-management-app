@@ -15,70 +15,115 @@
  */
 package client.scenes;
 
+import client.utils.ServerScenes;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
+
 public class MainCtrl {
 
     private Stage primaryStage;
 
-    private QuoteOverviewCtrl overviewCtrl;
-    private Scene overview;
-
-    private AddQuoteCtrl addCtrl;
-    //private BoardOverviewCtrl boardOverviewCtrl;
+    private BoardOverviewCtrl boardOverviewCtrl;
     private Scene boardOverview;
-    private Scene add;
+
+    private Scene createList;
+    private CreateListCtrl createListCtrl;
+
 
     private SelectServerCtrl selectServerCtrl;
 
     private Scene selectServer;
 
-    public void initialize(final Stage primaryStage, final Pair<QuoteOverviewCtrl, Parent> overview,
-                           final Pair<AddQuoteCtrl, Parent> add,
-                           final Pair<BoardOverviewCtrl, Parent> boardOverview,
-                           final Pair<SelectServerCtrl, Parent> selectServer) {
-        this.primaryStage = primaryStage;
-        this.overviewCtrl = overview.getKey();
-        this.overview = new Scene(overview.getValue());
+    private WrongServerCtrl wrongServerCtrl;
+    private Scene wrongServer;
 
-        //this.boardOverviewCtrl = boardOverview.getKey();
+    private ServerTimeoutCtrl serverTimeoutCtrl;
+    private Scene serverTimeout;
+
+    private ServerDownCtrl serverDownCtrl;
+    private Scene serverDown;
+
+    /**
+     * Initializes the main controller.
+     * @param primaryStage the primary stage
+     * @param boardOverview the board overview scene
+     * @param serverScenes the server scenes
+     */
+    public void initialize(final Stage primaryStage,
+                           final Pair<BoardOverviewCtrl, Parent> boardOverview,
+                           final Pair<CreateListCtrl, Parent> createList,
+                           final ServerScenes serverScenes){
+        this.primaryStage = primaryStage;
+
+
+        this.boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
 
-        this.addCtrl = add.getKey();
-        this.add = new Scene(add.getValue());
+        this.createListCtrl = createList.getKey();
+        this.createList = new Scene(createList.getValue());
 
-        this.selectServerCtrl=selectServer.getKey();
-        this.selectServer= new Scene(selectServer.getValue());
+        this.selectServerCtrl = serverScenes.getSelectServer().getKey();
+        this.selectServer = new Scene(serverScenes.getSelectServer().getValue());
 
-        //showBoardOverview();
-        //showOverview();
+        this.wrongServerCtrl = serverScenes.getWrongServer().getKey();
+        this.wrongServer = new Scene(serverScenes.getWrongServer().getValue());
+
+        this.serverTimeoutCtrl = serverScenes.getServerTimeout().getKey();
+        this.serverTimeout = new Scene(serverScenes.getServerTimeout().getValue());
+
+        this.serverDownCtrl = serverScenes.getServerDown().getKey();
+        this.serverDown = new Scene(serverScenes.getServerDown().getValue());
+
         showSelectServer();
         primaryStage.show();
     }
 
-    public void showOverview() {
-        primaryStage.setTitle("Quotes: Overview");
-        primaryStage.setScene(overview);
-        overviewCtrl.refresh();
-    }
-
+    /**
+     * Shows the board overview scene.
+     */
     public void showBoardOverview() {
         primaryStage.setTitle("Talio: Board Overview");
         primaryStage.setScene(boardOverview);
-        overviewCtrl.refresh();
     }
 
-    public void showAdd() {
-        primaryStage.setTitle("Quotes: Adding Quote");
-        primaryStage.setScene(add);
-        add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
+    /**
+     * Changes the scene to the popup that allows users to create a new task list and name it.
+     */
+    public void showCreateList() {
+        primaryStage.setTitle("Talio: Create List");
+        primaryStage.setScene(createList);
     }
 
+    /**
+     * Shows the select server scene.
+     */
     public void showSelectServer() {
         primaryStage.setTitle("Talio: Select Your Server");
         primaryStage.setScene(selectServer);
+    }
+    /**
+     * Shows the wrong server scene.
+     */
+    public void showWrongServer() {
+        primaryStage.setTitle("Talio: server not found");
+        primaryStage.setScene(wrongServer);
+
+    }
+    /**
+     * Shows the server timeout scene.
+     */
+    public void showTimeout() {
+        primaryStage.setTitle("Talio: server timed out");
+        primaryStage.setScene(serverTimeout);
+    }
+    /**
+     * Shows the server down/other errors scene.
+     */
+    public void showServerDown() {
+        primaryStage.setTitle("Talio: server is down");
+        primaryStage.setScene(serverDown);
     }
 }
