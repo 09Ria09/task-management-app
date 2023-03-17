@@ -5,59 +5,68 @@ import java.util.Random;
 
 import commons.TaskList;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import server.database.ListRepository;
+import server.ListService;
 
 @RestController
 @RequestMapping("/api/tasks")
 public class ListController {
 
-    private final Random random;
-    private final ListRepository repo;
+    private ListService listService;
 
-    public ListController(final Random random, final ListRepository repo) {
-        this.random = random;
-        this.repo = repo;
+    /**
+     * Post util method to add a tasklist to a specific board
+     *
+     * @param boardid the id from the board you want to add a tasklist to
+     * @param taskList the tasklist that you want to add to board with the given id
+     */
+    @PostMapping("/{boardid}/tasklist")
+    public void addTaskList(
+            @PathVariable("boardid") final long boardid,
+            @RequestBody final TaskList taskList
+    ) {
+        listService.addList(boardid, taskList);
     }
 
-    @GetMapping(path = { "", "/" })
-    public List<TaskList> getAll() {
-        return repo.findAll();
+    @GetMapping("/{boardid}/tasklists")
+    public List<TaskList> getTaskLists(@PathVariable("boardid") final long boardid) {
+        return listService.getLists(boardid);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<TaskList> getById(@PathVariable("id") final long id) {
-        if (id < 0 || !repo.existsById(id)) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(repo.findById(id).get());
+    @GetMapping("/{boardid}/tasklist/{taskListid}")
+    public TaskList getTaskList(
+            @PathVariable("boardid") final long boardid,
+            @PathVariable("taskListid") final long taskListid
+    ) {
+        return listService.getList(boardid, taskListid);
     }
 
-    @PostMapping(path = { "", "/" })
-    public ResponseEntity<TaskList> add(@RequestBody final TaskList list) {
+    @PutMapping("/{boardid}/{tasklistid}")
+    public void renameTaskList(
+            @PathVariable("boardid") final long boardid,
+            @PathVariable("tasklistid") final long tasklistid,
+            @RequestParam final String name
+    ) {
+        listService.renameList(boardid, tasklistid, name);
+    }
 
-        if (isNullOrEmpty(list.getName()) || list == null) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        TaskList saved = repo.save(list);
-        return ResponseEntity.ok(saved);
+    /**
+     * Delete request to delete a tasklist with a list id and board id
+     *
+     * @param boardid the id of the board from where the list will be deleted
+     * @param tasklistid the id of the list that will be deleted
+     */
+    @DeleteMapping("/{boardid}/{tasklistid}")
+    public void deleteTaskList(
+            @PathVariable("boardid") final long boardid,
+            @PathVariable("tasklistid") final long tasklistid
+    ) {
+        listService.removeListByID(boardid, tasklistid);
     }
 
     private static boolean isNullOrEmpty(final String s) {
         return s == null || s.isEmpty();
     }
 
-    @GetMapping("rnd")
-    public ResponseEntity<TaskList> getRandom() {
-        var lists = repo.findAll();
-        var idx = random.nextInt((int) repo.count());
-        return ResponseEntity.ok(lists.get(idx));
-    }
 }
