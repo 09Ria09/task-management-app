@@ -15,9 +15,6 @@ public class Task implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long id;
 
-    @ManyToOne
-    private TaskList list;
-//this refers to the task list that a task is assigned to
     private String name;
     private String description;
 
@@ -83,7 +80,4 @@ public class Task implements Serializable {
         return this.subtasks.remove(subTask);
     }
 
-    public TaskList getList() {
-        return list;
-    }
 }
