@@ -26,8 +26,9 @@ public class BoardController {
      * @return a list of all the boards stored in the repository
      */
     @GetMapping(path = { "", "/" })
-    public List<Board> getBoards() {
-        return boardService.getBoards();
+    public ResponseEntity<List<Board>> getBoards() {
+        List<Board> boards = boardService.getBoards();
+        return ResponseEntity.ok(boards);
     }
 
     /**
@@ -38,13 +39,12 @@ public class BoardController {
      */
     @GetMapping("/{boardid}")
     public ResponseEntity<Board> getBoard(@PathVariable("boardid") final long boardid) {
-        Board board = boardService.getBoard(boardid);
-        if (board != null) {
+        try {
+            Board board = boardService.getBoard(boardid);
             return ResponseEntity.ok(board);
-        } else {
+        } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
-
     }
 
     /**
@@ -54,10 +54,14 @@ public class BoardController {
      * @return a list of tasklists from the corresponding board
      */
     @GetMapping("/{boardid}/tasklists")
-    public List<TaskList> getTaskLists(@PathVariable("boardid") final long boardid) {
-        return boardService.getLists(boardid);
-        //we don't really care if this is empty, but we care if a board
-        //is not found so that's why we don't return response entity
+    public ResponseEntity<List<TaskList>>
+        getTaskLists(@PathVariable("boardid") final long boardid) {
+        try {
+            List<TaskList> taskLists = boardService.getLists(boardid);
+            return ResponseEntity.ok(taskLists);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     /**
@@ -72,10 +76,10 @@ public class BoardController {
             @PathVariable("boardid") final long boardid,
             @PathVariable("taskListid") final long taskListid
     ) {
-        TaskList taskList = boardService.getList(boardid, taskListid);
-        if (taskList != null) {
+        try {
+            TaskList taskList = boardService.getList(boardid, taskListid);
             return ResponseEntity.ok(taskList);
-        } else {
+        } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -88,11 +92,16 @@ public class BoardController {
      * @return a list of tasks from the corresponding list and board
      */
     @GetMapping("/{boardid}/tasklist/{taskListid}/tasks")
-    public List<Task> getTasks(
+    public ResponseEntity<List<Task>> getTasks(
             @PathVariable("boardid") final long boardid,
             @PathVariable("taskListid") final long taskListid
     ) {
-        return boardService.getTasks(boardid, taskListid);
+        try {
+            List<Task> tasks = boardService.getTasks(boardid, taskListid);
+            return ResponseEntity.ok(tasks);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     /**
@@ -109,13 +118,12 @@ public class BoardController {
             @PathVariable("taskListid") final long taskListid,
             @PathVariable("taskid") final long taskid
     ) {
-        Task task =boardService.getTask(boardid, taskListid, taskid);
-        if (task != null) {
+        try {
+            Task task = boardService.getTask(boardid, taskListid, taskid);
             return ResponseEntity.ok(task);
-        } else {
+        } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
-
     }
 
     /**
@@ -124,8 +132,12 @@ public class BoardController {
      * @param board the board you want to add
      */
     @PostMapping(path = { "", "/" })
-    public void addBoard(@RequestBody final Board board) {
-        boardService.addBoard(board);
+    public ResponseEntity<Board> addBoard(@RequestBody final Board board) {
+        if (board == null || board.getName() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        Board createdBoard = boardService.addBoard(board);
+        return ResponseEntity.ok(createdBoard);
     }
 
     /**
@@ -135,11 +147,18 @@ public class BoardController {
      * @param taskList the tasklist that you want to add to board with the given id
      */
     @PostMapping("/{boardid}/tasklist")
-    public void addTaskList(
+    public ResponseEntity<TaskList> addTaskList(
             @PathVariable("boardid") final long boardid,
             @RequestBody final TaskList taskList
-    ) {
-        boardService.addList(boardid, taskList);
+    ) {try{
+            if (taskList == null || taskList.getName() == null) {
+                return ResponseEntity.badRequest().build();
+            }
+            TaskList createdTaskList = boardService.addList(boardid, taskList);
+            return ResponseEntity.ok(createdTaskList);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     /**
@@ -150,12 +169,19 @@ public class BoardController {
      * @param task the task you want to add to the entities with the given ids
      */
     @PostMapping("/{boardid}/{tasklistid}/task")
-    public void addTask(
+    public ResponseEntity<Task> addTask(
             @PathVariable("boardid") final long boardid,
             @PathVariable("tasklistid") final long tasklistid,
             @RequestBody final Task task
-    ) {
-        boardService.addTask(boardid, tasklistid, task);
+    ) {try{
+            if (task == null || task.getName() == null) {
+                return ResponseEntity.badRequest().build();
+            }
+            Task createdTask = boardService.addTask(boardid, tasklistid, task);
+            return ResponseEntity.ok(createdTask);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     /**
@@ -170,9 +196,10 @@ public class BoardController {
         try {
             //the remove method checks if the board exists anyway,
             //so we can be certain that the getBoard will also return something non-null
+            Board boardToDelete = boardService.getBoard(boardid);
             boardService.removeBoardByID(boardid);
-            return ResponseEntity.ok(boardService.getBoard(boardid));
-        } catch (IllegalStateException e) {
+            return ResponseEntity.ok(boardToDelete);
+        } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
             // Log the error or perform error-handling
@@ -196,9 +223,10 @@ public class BoardController {
             @PathVariable("tasklistid") final long tasklistid
     ) {
         try {
+            TaskList taskListToDelete = boardService.getList(boardid, tasklistid);
             boardService.removeListByID(boardid, tasklistid);
-            return ResponseEntity.ok(boardService.getList(boardid, tasklistid));
-        } catch (IllegalStateException e) {
+            return ResponseEntity.ok(taskListToDelete);
+        } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -222,9 +250,10 @@ public class BoardController {
             @PathVariable("taskid") final long taskid
     ) {
         try {
+            Task taskToDelete = boardService.getTask(boardid, tasklistid, taskid);
             boardService.removeTaskByID(boardid, tasklistid, taskid);
-            return ResponseEntity.ok(boardService.getTask(boardid, tasklistid, taskid));
-        } catch (IllegalStateException e) {
+            return ResponseEntity.ok(taskToDelete);
+        } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -244,16 +273,12 @@ public class BoardController {
             @PathVariable("boardid") final long boardid,
             @RequestParam final String name
     ) {
+        if (name == null || name.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
         try{
-            //the remove method checks if the board exists anyway,
-            //so we can be certain that the getBoard will also return something non-null
             boardService.renameBoard(boardid, name);
             return ResponseEntity.ok(boardService.getBoard(boardid));
-        } catch (NullPointerException e) {
-            //we should update the boardService such that we have consistent
-            //handling of exceptions - not found for example differs
-            // for removing board and removing tasklist
-            return ResponseEntity.badRequest().build();
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }catch (Exception e) {
@@ -278,6 +303,9 @@ public class BoardController {
             @PathVariable("tasklistid") final long tasklistid,
             @RequestParam final String name
     ) {
+        if (name == null || name.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
         try {
             boardService.renameList(boardid, tasklistid, name);
             return ResponseEntity.ok(boardService.getList(boardid, tasklistid));
@@ -306,6 +334,9 @@ public class BoardController {
             @PathVariable("taskid") final long taskid,
             @RequestParam final String name
     ) {
+        if (name == null || name.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
         try {
             boardService.renameTask(boardid, tasklistid, taskid, name);
             return ResponseEntity.ok(boardService.getTask(boardid, tasklistid, taskid));

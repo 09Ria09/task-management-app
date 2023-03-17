@@ -26,7 +26,7 @@ public class MainCtrl {
 
     private Stage primaryStage;
 
-    //private BoardOverviewCtrl boardOverviewCtrl;
+    private BoardOverviewCtrl boardOverviewCtrl;
     private Scene boardOverview;
 
     private Scene createList;
@@ -59,7 +59,7 @@ public class MainCtrl {
         this.primaryStage = primaryStage;
 
 
-        //this.boardOverviewCtrl = boardOverview.getKey();
+        this.boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
 
         this.createListCtrl = createList.getKey();

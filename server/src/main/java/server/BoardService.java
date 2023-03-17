@@ -10,7 +10,6 @@ import server.database.BoardRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class BoardService {
@@ -30,20 +29,24 @@ public class BoardService {
     }
 
     /**
-     * @param id the id of the board that will be acessed.
-     * @return the board with the corresponding id, or null if there is none.
+     * @param boardID the id of the board that will be acessed.
+     * @return the board with the corresponding id, or throw a no
+     * such element exception if there is none.
      */
-    public Board getBoard(final long id) {
-        return boardRepository.findById(id).orElse(null);
+    public Board getBoard(final long boardID) {
+        return boardRepository.findById(boardID)
+                .orElseThrow(() -> new NoSuchElementException("Board not found"));
     }
 
     /**
      * Adds a new board to the repository to make it persistent.
      *
      * @param board the board that will be added.
+     * @return the board that was added.
      */
-    public void addBoard(final Board board) {
+    public Board addBoard(final Board board) {
         boardRepository.save(board);
+        return board;
     }
 
     /**
@@ -61,11 +64,8 @@ public class BoardService {
      * @param boardID the id of the board that will be removed
      */
     public void removeBoardByID(final long boardID) {
-        if (boardRepository.existsById(boardID)) {
-            boardRepository.deleteById(boardID);
-        } else {
-            throw new IllegalStateException("There does not exist a board with this id");
-        }
+        Board board = getBoard(boardID);
+        boardRepository.delete(board);
     }
 
     /**
@@ -75,14 +75,9 @@ public class BoardService {
      * @param newName the new name of the board.
      */
     public void renameBoard(final long boardID, final String newName) {
-        Optional<Board> boardOptional = boardRepository.findById(boardID);
-        if (boardOptional.isPresent()) {
-            Board board = boardOptional.get();
-            board.setName(newName);
-            boardRepository.save(board);
-        } else {
-            throw new NoSuchElementException("Board not found");
-        }
+        Board board = getBoard(boardID);
+        board.setName(newName);
+        boardRepository.save(board);
     }
 
     /**
@@ -93,10 +88,8 @@ public class BoardService {
      * @return a list of all the task lists of the board.
      */
     public List<TaskList> getLists(final long boardId) {
-        System.out.println("getting lists");
-        return boardRepository.findById(boardId)
-                .map(Board::getListTaskList)
-                .orElse(new ArrayList<>());
+        Board board = getBoard(boardId);
+        return board.getListTaskList();
     }
 
     /**
@@ -108,9 +101,9 @@ public class BoardService {
      * @return the task list corresponding to the specified ids.
      */
     public TaskList getList(final long boardId, final long listId) {
-        return boardRepository.findById(boardId)
-                .flatMap(b -> b.getTaskListById(listId))
-                .orElse(null);
+        Board board = getBoard(boardId);
+        return board.getTaskListById(listId)
+                .orElseThrow(() -> new NoSuchElementException("Task list not found"));
     }
 
     /**
@@ -118,14 +111,13 @@ public class BoardService {
      *
      * @param boardID the id of the board where the list will be added.
      * @param list    the task list that will be added to the board and made persistent.
+     * @return the task list that was added.
      */
-    public void addList(final long boardID, final TaskList list) {
-        System.out.println("add list : " + list.getName());
-        boardRepository.findById(boardID)
-                .ifPresent(x -> {
-                    x.addTaskList(list);
-                    boardRepository.save(x);
-                });
+    public TaskList addList(final long boardID, final TaskList list) {
+        Board board = getBoard(boardID);
+        board.addTaskList(list);
+        boardRepository.save(board);
+        return list;
     }
 
     /**
@@ -135,11 +127,9 @@ public class BoardService {
      * @param list    the task list that will be removed from the board.
      */
     public void removeList(final long boardID, final TaskList list) {
-        boardRepository.findById(boardID)
-                .ifPresent(x -> {
-                    x.removeTaskList(list);
-                    boardRepository.save(x);
-                });
+        Board board = getBoard(boardID);
+        board.removeTaskList(list);
+        boardRepository.save(board);
     }
 
     /**
@@ -149,11 +139,10 @@ public class BoardService {
      * @param taskListID the id of the task list that will be removed
      */
     public void removeListByID(final long boardID, final long taskListID) {
-        boardRepository.findById(boardID)
-                .ifPresent(x -> {
-                    x.getTaskListById(taskListID).ifPresent(x::removeTaskList);
-                    boardRepository.save(x);
-                });
+        Board board = getBoard(boardID);
+        TaskList list = getList(boardID, taskListID);
+        board.removeTaskList(list);
+        boardRepository.save(board);
     }
 
     /**
@@ -164,14 +153,10 @@ public class BoardService {
      * @param newName the new name of the list.
      */
     public void renameList(final long boardID, final long listID, final String newName) {
-        boardRepository.findById(boardID)
-                .ifPresent(board -> board.getTaskListById(listID)
-                        .ifPresentOrElse(taskList -> {
-                            taskList.setName(newName);
-                            boardRepository.save(board);
-                        }, () -> {
-                            throw new NoSuchElementException("Task list not found");
-                        }));
+        Board board = getBoard(boardID);
+        TaskList list = getList(boardID, listID);
+        list.setName(newName);
+        boardRepository.save(board);
     }
 
     /**
@@ -182,10 +167,8 @@ public class BoardService {
      * @return the list of the tasks that are in the task list corresponding to the ids given.
      */
     public List<Task> getTasks(final long boardId, final long listId) {
-        return boardRepository.findById(boardId)
-                .flatMap(b -> b.getTaskListById(listId))
-                .map(TaskList::getTasks)
-                .orElse(new ArrayList<>());
+        TaskList list = getList(boardId, listId);
+        return list.getTasks();
     }
 
     /**
@@ -198,10 +181,9 @@ public class BoardService {
      * @return the task corresponding to the given ids.
      */
     public Task getTask(final long boardId, final long listId, final long taskId) {
-        return boardRepository.findById(boardId)
-                .flatMap(b -> b.getTaskListById(listId))
-                .flatMap(l -> l.getTaskById(taskId))
-                .orElse(null);
+        TaskList list = getList(boardId, listId);
+        return list.getTaskById(taskId)
+                .orElseThrow(() -> new NoSuchElementException("Task not found"));
     }
 
     /**
@@ -210,13 +192,14 @@ public class BoardService {
      * @param boardID the id of the board where the task will be added.
      * @param listID  the id of the list where the task will be added.
      * @param task    the task that will be added to the task list and made persistent.
+     * @return the task that was added.
      */
-    public void addTask(final long boardID, final long listID, final Task task) {
-        boardRepository.findById(boardID)
-                .ifPresent(b -> {
-                    b.getTaskListById(listID).ifPresent(l -> l.addTask(task));
-                    boardRepository.save(b);
-                });
+    public Task addTask(final long boardID, final long listID, final Task task) {
+        Board board = getBoard(boardID);
+        TaskList list = getList(boardID, listID);
+        list.addTask(task);
+        boardRepository.save(board);
+        return task;
     }
 
     /**
@@ -227,12 +210,10 @@ public class BoardService {
      * @param task    the task that will be removed.
      */
     public void removeTask(final long boardID, final long listID, final Task task) {
-        boardRepository.findById(boardID)
-                .ifPresent(b -> {
-                    b.getTaskListById(listID).ifPresent(l -> l.removeTask(task));
-                    boardRepository.save(b);
-                });
-
+        Board board = getBoard(boardID);
+        TaskList list = getList(boardID, listID);
+        list.removeTask(task);
+        boardRepository.save(board);
     }
 
     /**
@@ -243,12 +224,11 @@ public class BoardService {
      * @param taskID  the id of the task that will be removed
      */
     public void removeTaskByID(final long boardID, final long listID, final long taskID) {
-        boardRepository.findById(boardID)
-                .ifPresent(b -> {
-                    b.getTaskListById(listID)
-                            .ifPresent(l -> l.getTaskById(taskID).ifPresent(l::removeTask));
-                    boardRepository.save(b);
-                });
+        Board board = getBoard(boardID);
+        TaskList list = getList(boardID, listID);
+        Task task = getTask(boardID, listID, taskID);
+        list.removeTask(task);
+        boardRepository.save(board);
     }
 
     /**
@@ -261,18 +241,10 @@ public class BoardService {
      */
     public void renameTask(final long boardID, final long listID,
                            final long taskId, final String newName) {
-        boardRepository.findById(boardID)
-                .ifPresent(board -> board.getTaskListById(listID)
-                        .ifPresentOrElse(taskList -> {
-                            taskList.getTaskById(taskId)
-                                    .ifPresentOrElse(task -> {
-                                        task.setName(newName);
-                                        boardRepository.save(board);
-                                    }, () -> {
-                                        throw new NoSuchElementException("Task not found");
-                                    });
-                        }, () -> {
-                            throw new NoSuchElementException("Task list not found");
-                        }));
+        Board board = getBoard(boardID);
+        TaskList list = getList(boardID, listID);
+        Task task = getTask(boardID, listID, taskId);
+        task.setName(newName);
+        boardRepository.save(board);
     }
 }

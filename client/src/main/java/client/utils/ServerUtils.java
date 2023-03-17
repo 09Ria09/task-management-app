@@ -64,16 +64,6 @@ public class ServerUtils {
                 });
     }
 
-    //get all lists from server
-    //TODO create api lists endpoint
-    public List<TaskList> getLists() {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(serverAddress).path("api/lists") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .get(new GenericType<List<TaskList>>() {});
-    }
-
     /**
      * Get all lists from a specific board.
      *
@@ -403,7 +393,7 @@ public class ServerUtils {
             //this is something related to threads
             return Optional.of("InterruptedException");
         } catch (Exception e) {
-            //unsupportd uri
+            //unsupported uri
             return Optional.of("Exception");
         }
     }
