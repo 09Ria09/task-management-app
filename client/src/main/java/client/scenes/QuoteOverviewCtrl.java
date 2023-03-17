@@ -23,7 +23,6 @@ import com.google.inject.Inject;
 import client.utils.ServerUtils;
 import commons.Quote;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -61,13 +60,9 @@ public class QuoteOverviewCtrl implements Initializable {
         colQuote.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().quote));
     }
 
-    public void addQuote() {
-        mainCtrl.showAdd();
-    }
-
     public void refresh() {
-        var quotes = server.getQuotes();
-        data = FXCollections.observableList(quotes);
-        table.setItems(data);
+//        var quotes = server.getQuotes();
+  //      data = FXCollections.observableList(quotes);
+   //     table.setItems(data);
     }
 }

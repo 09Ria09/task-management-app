@@ -15,62 +15,104 @@
  */
 package client.utils;
 
-import commons.Quote;
+
 import commons.TaskList;
 import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
 import org.glassfish.jersey.client.ClientConfig;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 public class ServerUtils {
 
-    private static final String SERVER = "http://localhost:8080/";
+    private String serverAddress;
 
-    public void getQuotesTheHardWay() throws IOException {
-        var url = new URL("http://localhost:8080/api/quotes");
-        var is = url.openConnection().getInputStream();
-        var br = new BufferedReader(new InputStreamReader(is));
-        String line;
-        while ((line = br.readLine()) != null) {
-            System.out.println(line);
+   /**
+        * Check if the server is a Talio server
+        *
+        * @return an empty optional if the server is a Talio server,
+        * or an optional containing an error message
+        */
+    public Optional<String> isTalioServer() {
+        try {
+            HttpClient httpClient = HttpClient.newBuilder()
+                    .version(HttpClient.Version.HTTP_1_1)
+                    .connectTimeout(Duration.ofSeconds(5))
+                    .build();
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(serverAddress + "/api/talio"))
+                    .timeout(Duration.ofSeconds(5))
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = httpClient
+                    .send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                return Boolean.parseBoolean(response.body())
+                        ? Optional.empty()
+                        : Optional.of("Not a Talio server");
+            }
+            else if (response.statusCode() == 404) {
+                return Optional.of("Not a Talio server");
+            }
+            else {
+                return Optional.of("Unexpected response status");
+            }
+        } catch (IOException e) {
+            //timeout
+            return Optional.of("IOException");
+        } catch (InterruptedException e) {
+            //this is something related to threads
+            return Optional.of("InterruptedException");
+        } catch (Exception e) {
+            //unsupported uri
+            return Optional.of("Exception");
         }
     }
 
     /**
-     * This method requests all the lists of the board from the server
-     * @return the list of lists
+     * Get all lists from a specific board.
+     *
+     * @param boardid The id of the board.
+     * @return A list of lists.'
+     * I KEPT THIS ONE HERE JUST SO THAT THE BUILD RUNS
+     * THIS IS NOT THE FINAL VERSION OF THIS METHOD
      */
-    public List<TaskList> getLists() {
+    public List<TaskList> getLists(final Long boardid) {
         return ClientBuilder.newClient(new ClientConfig()) //
-            .target(SERVER).path("api/boards/1/tasklists") //
-            .request(APPLICATION_JSON) //
-            .accept(APPLICATION_JSON) //
-            .get(new GenericType<>() {
-            });
-    }
-
-    public List<Quote> getQuotes() {
-        return ClientBuilder.newClient(new ClientConfig()) //
-            .target(SERVER).path("api/quotes") //
-            .request(APPLICATION_JSON) //
-            .accept(APPLICATION_JSON) //
-            .get(new GenericType<List<Quote>>() {
-            });
-    }
-
-    public Quote addQuote(final Quote quote) {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/quotes") //
+                //endpoint still needs to be created
+                .target(serverAddress).path("api/boards/" + boardid + "/tasklists")
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .post(Entity.entity(quote, APPLICATION_JSON), Quote.class);
+                .get(new GenericType<List<TaskList>>() {
+                });
+    }
+
+    /**
+     * Set the server address
+     * @param serverAddress the server address
+     */
+    public void setServerAddress(final String serverAddress) {
+        this.serverAddress = "http://" + serverAddress + ":8080";
+    }
+
+    //method for disconnecting from the server
+    public void disconnect() {
+        serverAddress = null;
+    }
+
+    public String getServerAddress() {
+        return serverAddress;
     }
 }

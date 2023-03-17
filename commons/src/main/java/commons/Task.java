@@ -14,6 +14,7 @@ public class Task implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long id;
+
     private String name;
     private String description;
 
@@ -78,4 +79,5 @@ public class Task implements Serializable {
     public boolean removeSubtask(final SubTask subTask){
         return this.subtasks.remove(subTask);
     }
+
 }

@@ -14,6 +14,7 @@ public class TaskList {
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long id;
     private String name;
+
     @OneToMany(cascade=CascadeType.ALL)
     private List<Task> tasks;
 
@@ -21,6 +22,8 @@ public class TaskList {
         this.name = name;
         this.tasks = new ArrayList<Task>();
     }
+
+
 
     public TaskList(final String name, final List<Task> tasks) {
         this.name = name;
@@ -52,6 +55,14 @@ public class TaskList {
 
     public void removeTask(final Task task) {
         tasks.remove(task);
+    }
+
+    public void setTasks(final List<Task> tasks) {
+        this.tasks = tasks;
+    }
+
+    public long getId() {
+        return id;
     }
 
     @Override

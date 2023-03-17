@@ -42,6 +42,8 @@ public class BoardOverviewCtrl implements Initializable {
     private final MainCtrl mainCtrl;
     private final DataFormat taskCustom = new DataFormat("task.custom");
     private final Map<Long, Integer> listsMap;
+    private long currentBoardId;
+
     @FXML
     private HBox listsContainer;
 
@@ -192,13 +194,17 @@ public class BoardOverviewCtrl implements Initializable {
      */
     public void switchServer() {
         mainCtrl.showSelectServer();
+        server.disconnect();
     }
 
     /**
      * This method refreshes the board overview.
      */
     private void refresh() {
-        var data = server.getLists();
+        if(server.isTalioServer().isPresent()){
+            return;
+        }
+        var data = server.getLists(currentBoardId);
         //System.out.println(data);
         data = FXCollections.observableList(data);
         refreshLists(data);
@@ -254,5 +260,9 @@ public class BoardOverviewCtrl implements Initializable {
      */
     private VBox getVBox(final long id){
         return (VBox) listsContainer.getChildren().get(listsMap.get(id));
+    }
+
+    public void setCurrentBoardId(final long currentBoardId) {
+        this.currentBoardId = currentBoardId;
     }
 }
