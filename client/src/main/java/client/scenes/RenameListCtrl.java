@@ -21,7 +21,7 @@ public class RenameListCtrl {
     private String listName;
 
     @Inject
-    public RenameListCtrl(TaskListUtils listUtils, MainCtrl mainCtrl) {
+    public RenameListCtrl(final TaskListUtils listUtils, final MainCtrl mainCtrl) {
         this.listUtils = listUtils;
         this.mainCtrl = mainCtrl;
     }

@@ -6,7 +6,7 @@ import com.google.inject.Inject;
 import commons.TaskList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
-import javafx.event.ActionEvent;
+
 
 public class CreateListCtrl {
 

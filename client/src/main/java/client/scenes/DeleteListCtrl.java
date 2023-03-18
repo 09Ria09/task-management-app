@@ -18,7 +18,7 @@ public class DeleteListCtrl {
     private long listId;
 
     @Inject
-    public DeleteListCtrl(TaskListUtils listUtils, MainCtrl mainCtrl) {
+    public DeleteListCtrl(final TaskListUtils listUtils, final MainCtrl mainCtrl) {
         this.listUtils = listUtils;
         this.mainCtrl = mainCtrl;
     }
