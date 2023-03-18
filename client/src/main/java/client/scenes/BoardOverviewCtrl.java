@@ -143,6 +143,14 @@ public class BoardOverviewCtrl implements Initializable {
         mainCtrl.showCreateList();
     }
 
+    public void deleteList() {
+        mainCtrl.showDeleteList();
+    }
+
+    public void renameList() {
+        mainCtrl.showRenameList();
+    }
+
     public void dragDetected(final ListView<Task> lv, final MouseEvent event) {
         Dragboard dragboard = lv.startDragAndDrop(TransferMode.MOVE);
         ClipboardContent cc = new ClipboardContent();

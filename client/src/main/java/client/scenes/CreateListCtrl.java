@@ -42,16 +42,15 @@ public class CreateListCtrl {
     }
 
     /**
-     *
-     * @param event When the user clicks confirm in the create list window,
-     *              the new list will be added to the board and they will be
-     *              returned to the board overview.
+     * Creates a list with the given name
      */
-    public void confirm(final ActionEvent event) {
+    public void confirm() {
         listName = listNameInput.getText();
         boardId = Long.parseLong(boardIdInput.getText());
         TaskList list = new TaskList(listName);
         listUtils.createTaskList(boardId, list);
+        listNameInput.clear();
+        boardIdInput.clear();
         showServerBoards();
 
     }
@@ -64,11 +63,9 @@ public class CreateListCtrl {
     }
 
     /**
-     *
-     * @param event When the user presses cancel in the create list window,
-     *              they will be returned to the board overview.
+     * Returns user to board overview
      */
-    public void cancel(final ActionEvent event) {
+    public void cancel() {
         listNameInput.clear();
         showServerBoards();
     }
