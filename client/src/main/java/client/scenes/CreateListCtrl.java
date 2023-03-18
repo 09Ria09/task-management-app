@@ -34,7 +34,8 @@ public class CreateListCtrl {
      * @param mainCtrl
      */
     @Inject
-    public CreateListCtrl(final ServerUtils server, TaskListUtils listUtils, final MainCtrl mainCtrl) {
+    public CreateListCtrl(final ServerUtils server, final TaskListUtils listUtils,
+                          final MainCtrl mainCtrl) {
         this.server = server;
         this.listUtils = listUtils;
         this.mainCtrl = mainCtrl;
