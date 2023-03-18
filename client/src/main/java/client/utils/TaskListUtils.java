@@ -76,7 +76,6 @@ public class TaskListUtils {
             System.out.println("An error occurred while creating the task list: "
                     + response.readEntity(String.class));
         }
-
         return null;
     }
     /**

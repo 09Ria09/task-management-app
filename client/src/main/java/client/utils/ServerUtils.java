@@ -98,7 +98,6 @@ public class ServerUtils {
                 .get(new GenericType<List<TaskList>>() {
                 });
     }
-
     /**
      * Set the server address
      * @param serverAddress the server address

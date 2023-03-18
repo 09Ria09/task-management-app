@@ -32,7 +32,7 @@ public class SelectServerCtrl {
     public void showServerBoards(){
         String serverAddress = addressField.getText();
         server.setServerAddress(serverAddress);
-        System.out.println(serverAddress);
+        System.out.println(server.getServerAddress());
         try {
             Optional<String> result = server.isTalioServer();
             if (result.isEmpty()) {

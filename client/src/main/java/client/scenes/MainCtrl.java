@@ -46,6 +46,8 @@ public class MainCtrl {
     private ServerDownCtrl serverDownCtrl;
     private Scene serverDown;
 
+
+
     /**
      * Initializes the main controller.
      * @param primaryStage the primary stage

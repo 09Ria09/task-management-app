@@ -66,6 +66,7 @@ public class BoardOverviewCtrl implements Initializable {
      */
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
+        setCurrentBoardId(1);
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
