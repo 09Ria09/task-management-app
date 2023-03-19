@@ -23,17 +23,7 @@ public class TaskService {
      * @return a list of all the tasks of the list.
      */
     public List<Task> getTasks(final long boardId, final long listId){
-
-        List<TaskList> listlist =  boardRepository.findById(boardId).map(Board::getListTaskList)
-                .orElse(new ArrayList<>());
-
-        for (TaskList list : listlist) {
-            if (listId == list.getId()) {
-                return list.getTasks();
-            }
-        }
-
-        return new ArrayList<>();
+        return getList(boardId, listId).getTasks();
     }
 
     /**
@@ -45,7 +35,7 @@ public class TaskService {
      * @return the task corresponding to the specified ids.
      */
     public Task getTask(final long boardId, final long listId, final long taskId){
-        List<Task> tasklist = getTasks(boardId, listId);
+        List<Task> tasklist = getList(boardId, listId).getTasks();
 
         for (Task task : tasklist) {
             if (task.getId() == taskId) {
@@ -63,14 +53,8 @@ public class TaskService {
      * @param listId the id of the list to which to add the task.
      */
     public void addTask(final long boardId, final long listId, final Task task){
-        List<TaskList> listlist =  boardRepository.findById(boardId).map(Board::getListTaskList)
-                .orElse(new ArrayList<>());
-
-        for (TaskList list : listlist) {
-            if (listId == list.getId()) {
-                list.addTask(task);
-            }
-        }
+        TaskList list = getList(boardId, listId);
+        list.addTask(task);
     }
 
     /**
@@ -94,14 +78,8 @@ public class TaskService {
      * @param task the task that will be removed from the board.
      */
     public void removeTask(final long boardId, final long listId, final Task task){
-        List<TaskList> listlist =  boardRepository.findById(boardId).map(Board::getListTaskList)
-                .orElse(new ArrayList<>());
-
-        for (TaskList list : listlist) {
-            if (listId == list.getId()) {
-                list.removeTask(task);
-            }
-        }
+        TaskList list = getList(boardId, listId);
+        list.removeTask(task);
     }
 
     /**
@@ -111,19 +89,27 @@ public class TaskService {
      * @param taskId the task that will be removed from the board.
      */
     public void removeTaskById(final long boardId, final long listId, final long taskId){
-        List<TaskList> listlist =  boardRepository.findById(boardId).map(Board::getListTaskList)
-                .orElse(new ArrayList<>());
+        TaskList list = getList(boardId, listId);
 
-        for (TaskList list : listlist) {
-            if (listId == list.getId()) {
-                for (Task task : list.getTasks()) {
-                    if (taskId == task.getId()) {
-                        list.removeTask(task);
-                    }
-                }
+        for (Task task : list.getTasks()) {
+            if (taskId == task.getId()) {
+                list.removeTask(task);
             }
         }
     }
 
 
+    //finds a task list given a boardId and listId
+    public TaskList getList(final long boardId, final long listId) {
+        List<TaskList> listlist =  boardRepository.findById(boardId).map(Board::getListTaskList)
+                .orElse(new ArrayList<>());
+
+        for (TaskList list : listlist) {
+            if (listId == list.getId()) {
+                return list;
+            }
+        }
+
+        return null;
+    }
 }
