@@ -1,14 +1,16 @@
 package server.api;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import commons.Task;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import server.TaskService;
 
 @RestController
-@RequestMapping("/api/tasks")
+@RequestMapping("/api/boards")
 public class TaskController {
 
     private TaskService taskService;
@@ -18,15 +20,23 @@ public class TaskController {
      *
      * @param boardid the id from the board you want to add a task to
      * @param boardid the id from the board you want to add a task to
-     * @param task the tasklist that you want to add to board with the given id
+     * @param task    the tasklist that you want to add to board with the given id
+     * @return
      */
     @PostMapping("/{boardid}/{listid}/task")
-    public void addTask(
+    public ResponseEntity<Task> addTask(
             @PathVariable("boardid") final long boardid,
             @PathVariable("listid") final long listid,
             @RequestBody final Task task
     ) {
-        taskService.addTask(boardid, listid, task);
+        try {
+            if (task == null || task.getName() == null) {
+                return ResponseEntity.badRequest().build();
+            }
+            Task createdTask = taskService.addTask(boardid, listid, task);
+            return ResponseEntity.ok(createdTask);
+        }
+        catch (NoSuchElementException e) { return ResponseEntity.notFound().build(); }
     }
 
     /**
@@ -35,10 +45,14 @@ public class TaskController {
      * @param listid the id of the list that will be accessed
      * @return a list of tasks from the corresponding list
      */
-    @GetMapping("/{boardid}/{listid}/task")
-    public List<Task> getTasks(@PathVariable("boardid") final long boardid
+    @GetMapping("/{boardid}/tasklist/{listid}/tasks")
+    public ResponseEntity<List<Task>> getTasks(@PathVariable("boardid") final long boardid
                                , @PathVariable("listid") final long listid) {
-        return taskService.getTasks(boardid, listid);
+        try {
+            List<Task> tasks = taskService.getTasks(boardid, listid);
+            return ResponseEntity.ok(tasks);
+        }
+        catch (NoSuchElementException e) { return ResponseEntity.notFound().build(); }
     }
 
     /**
@@ -49,13 +63,17 @@ public class TaskController {
      * @param taskid the id of the task that will be returned
      * @return the corresponding task from the corresponding list
      */
-    @GetMapping("/{boardid}/{listid}/{taskid}")
-    public Task getTask(
+    @GetMapping("/{boardid}/tasklist/{listid}/task/{taskid}")
+    public ResponseEntity<Task> getTask(
             @PathVariable("boardid") final long boardid,
             @PathVariable("listid") final long listid,
             @PathVariable("taskid") final long taskid
     ) {
-        return taskService.getTask(boardid, listid, taskid);
+        try {
+            Task task = taskService.getTask(boardid, listid, taskid);
+            return ResponseEntity.ok(task);
+        }
+        catch (NoSuchElementException e) { return ResponseEntity.notFound().build(); }
     }
 
     /**
@@ -67,13 +85,21 @@ public class TaskController {
      * @param name the new name for the task
      */
     @PutMapping("/{boardid}/{listid}/{taskid}")
-    public void renameTask(
+    public ResponseEntity<Task> renameTask(
             @PathVariable("boardid") final long boardid,
             @PathVariable("listid") final long listid,
             @PathVariable("taskid") final long taskid,
             @RequestParam final String name
     ) {
-        taskService.renameTask(boardid, listid, taskid, name);
+        try {
+            if (name == null || name.isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
+            Task task = taskService.renameTask(boardid, listid, taskid, name);
+            return ResponseEntity.ok(task);
+        }
+        catch (NoSuchElementException e) { return ResponseEntity.notFound().build(); }
+        catch (Exception e) { return ResponseEntity.internalServerError().build(); }
     }
 
 
@@ -82,15 +108,20 @@ public class TaskController {
      *
      * @param boardid the id from the board you want to remove a task from
      * @param boardid the id from the board you want to remove a task from
-     * @param task the tasklist that you want to remove from board with the given id
+     * @param taskid the task id that you want to remove from board with the given id
      */
-    @PostMapping("/{boardid}/{listid}/task")
-    public void removeTask(
+    @DeleteMapping("/{boardid}/{listid}/{taskid}")
+    public ResponseEntity<Task> deleteTask(
             @PathVariable("boardid") final long boardid,
             @PathVariable("listid") final long listid,
-            @RequestBody final Task task
+            @PathVariable("taskid") final long taskid
     ) {
-        taskService.removeTask(boardid, listid, task);
+        try {
+            Task removedTask = taskService.removeTaskById(boardid, listid, taskid);
+            return ResponseEntity.ok(removedTask);
+        }
+        catch (NoSuchElementException e) { return ResponseEntity.notFound().build(); }
+        catch (Exception e) { return ResponseEntity.internalServerError().build(); }
     }
 
     private static boolean isNullOrEmpty(final String s) {

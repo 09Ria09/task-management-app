@@ -6,13 +6,26 @@ import commons.TaskList;
 import org.springframework.beans.factory.annotation.Autowired;
 import server.database.BoardRepository;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class TaskService {
 
     @Autowired
     private BoardRepository boardRepository;
+
+
+    public Board getBoard(final long boardID) {
+        return boardRepository.findById(boardID)
+                .orElseThrow(() -> new NoSuchElementException("Board not found"));
+    }
+
+    //finds a task list given a boardId and listId
+    public TaskList getList(final long boardId, final long listId) {
+        Board board = getBoard(boardId);
+        return board.getTaskListById(listId)
+                .orElseThrow(() -> new NoSuchElementException("Task list not found"));
+    }
 
 
     /**
@@ -34,16 +47,10 @@ public class TaskService {
      * @param boardId the id of the board.
      * @return the task corresponding to the specified ids.
      */
-    public Task getTask(final long boardId, final long listId, final long taskId){
-        List<Task> tasklist = getList(boardId, listId).getTasks();
-
-        for (Task task : tasklist) {
-            if (task.getId() == taskId) {
-                return task;
-            }
-        }
-
-        return null;
+    public Task getTask(final long boardId, final long listId, final long taskId) {
+        TaskList list = getList(boardId, listId);
+        return list.getTaskById(taskId)
+                .orElseThrow(() -> new NoSuchElementException("Task not found"));
     }
 
     /**
@@ -52,9 +59,16 @@ public class TaskService {
      * @param task the task that will be added to the board and made persistent.
      * @param listId the id of the list to which to add the task.
      */
-    public void addTask(final long boardId, final long listId, final Task task){
+    public Task addTask(final long boardId, final long listId, final Task task){
         TaskList list = getList(boardId, listId);
+        Board board = getBoard(boardId);
+
         list.addTask(task);
+
+        //I am not sure whether this actually updates the list in the board.
+        boardRepository.save(board);
+
+        return task;
     }
 
     /**
@@ -64,11 +78,17 @@ public class TaskService {
      * @param taskId the id of the task to rename.
      * @param newName the new name of the task.
      */
-    public void renameTask(final long boardID, final long listID,
+    public Task renameTask(final long boardID, final long listID,
                            final long taskId, final String newName){
+        Board board = getBoard(boardID);
         Task task = getTask(boardID, listID, taskId);
 
         task.setName(newName);
+
+        //I am not sure whether this actually updates the list in the board.
+        boardRepository.save(board);
+
+        return task;
     }
 
     /**
@@ -77,9 +97,15 @@ public class TaskService {
      * @param listId the id of the list where the task will be removed.
      * @param task the task that will be removed from the board.
      */
-    public void removeTask(final long boardId, final long listId, final Task task){
+    public Task removeTask(final long boardId, final long listId, final Task task){
+        Board board = getBoard(boardId);
         TaskList list = getList(boardId, listId);
         list.removeTask(task);
+
+        //I am not sure whether this actually updates the list in the board.
+        boardRepository.save(board);
+
+        return task;
     }
 
     /**
@@ -88,28 +114,16 @@ public class TaskService {
      * @param listId the id of the list where the task will be removed.
      * @param taskId the task that will be removed from the board.
      */
-    public void removeTaskById(final long boardId, final long listId, final long taskId){
+    public Task removeTaskById(final long boardId, final long listId, final long taskId){
+        Board board = getBoard(boardId);
         TaskList list = getList(boardId, listId);
+        Task task = getTask(boardId, listId, taskId);
 
-        for (Task task : list.getTasks()) {
-            if (taskId == task.getId()) {
-                list.removeTask(task);
-            }
-        }
+        list.removeTask(task);
+
+        boardRepository.save(board);
+
+        return task;
     }
 
-
-    //finds a task list given a boardId and listId
-    public TaskList getList(final long boardId, final long listId) {
-        List<TaskList> listlist =  boardRepository.findById(boardId).map(Board::getListTaskList)
-                .orElse(new ArrayList<>());
-
-        for (TaskList list : listlist) {
-            if (listId == list.getId()) {
-                return list;
-            }
-        }
-
-        return null;
-    }
 }
