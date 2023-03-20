@@ -60,7 +60,11 @@ public class Board {
     }
 
     public void removeTaskList(final TaskList taskList) {
-        taskLists.remove(taskList);
+        try {
+            taskLists.remove(taskList);
+        }catch (NoSuchElementException e){
+            e.printStackTrace();
+        }
     }
 
     public Optional<TaskList> getTaskListById(final long id){

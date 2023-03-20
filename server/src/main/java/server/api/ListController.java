@@ -1,14 +1,16 @@
 package server.api;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import commons.TaskList;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import server.ListService;
 
 @RestController
-@RequestMapping("/api/tasks")
+@RequestMapping("/api/lists")
 public class ListController {
 
     private ListService listService;
@@ -20,11 +22,19 @@ public class ListController {
      * @param taskList the tasklist that you want to add to board with the given id
      */
     @PostMapping("/{boardid}/tasklist")
-    public void addTaskList(
+    public ResponseEntity<TaskList> addTaskList(
             @PathVariable("boardid") final long boardid,
             @RequestBody final TaskList taskList
     ) {
-        listService.addList(boardid, taskList);
+        try{
+            if(taskList == null|| taskList.getName() == null){
+                return ResponseEntity.badRequest().build();
+            }
+            TaskList createdList = listService.addList(boardid, taskList);
+            return ResponseEntity.ok(createdList);
+        } catch (NoSuchElementException e){
+            return ResponseEntity.notFound().build();
+        }
     }
 
     /**
@@ -33,8 +43,13 @@ public class ListController {
      * @return a list of tasklists from the corresponding board
      */
     @GetMapping("/{boardid}/tasklists")
-    public List<TaskList> getTaskLists(@PathVariable("boardid") final long boardid) {
-        return listService.getLists(boardid);
+    public ResponseEntity<List> getTaskLists(@PathVariable("boardid") final long boardid) {
+        try {
+            List<TaskList> lists = listService.getLists(boardid);
+            return ResponseEntity.ok(lists);
+        } catch (NoSuchElementException e){
+            return ResponseEntity.notFound().build();
+        }
     }
 
     /**
@@ -45,11 +60,16 @@ public class ListController {
      * @return the corresponding list from the corresponding board
      */
     @GetMapping("/{boardid}/tasklist/{taskListid}")
-    public TaskList getTaskList(
+    public ResponseEntity<TaskList> getTaskList(
             @PathVariable("boardid") final long boardid,
             @PathVariable("taskListid") final long taskListid
     ) {
-        return listService.getList(boardid, taskListid);
+        try {
+            TaskList list = listService.getList(boardid, taskListid);
+            return ResponseEntity.ok(list);
+        } catch (NoSuchElementException e){
+            return ResponseEntity.notFound().build();
+        }
     }
 
     /**
@@ -60,12 +80,22 @@ public class ListController {
      * @param name the new name for the list
      */
     @PutMapping("/{boardid}/{tasklistid}")
-    public void renameTaskList(
+    public ResponseEntity<TaskList> renameTaskList(
             @PathVariable("boardid") final long boardid,
             @PathVariable("tasklistid") final long tasklistid,
             @RequestParam final String name
     ) {
-        listService.renameList(boardid, tasklistid, name);
+        try {
+            if(name == null|| name.isEmpty()){
+                return ResponseEntity.badRequest().build();
+            }
+            TaskList list = listService.renameList(boardid, tasklistid, name);
+            return ResponseEntity.ok(list);
+        } catch(NoSuchElementException e){
+            return ResponseEntity.notFound().build();
+        }
+
+//        listService.renameList(boardid, tasklistid, name);
     }
 
     /**
@@ -75,11 +105,17 @@ public class ListController {
      * @param tasklistid the id of the list that will be deleted
      */
     @DeleteMapping("/{boardid}/{tasklistid}")
-    public void deleteTaskList(
+    public ResponseEntity<TaskList> deleteTaskList(
             @PathVariable("boardid") final long boardid,
             @PathVariable("tasklistid") final long tasklistid
     ) {
-        listService.removeListByID(boardid, tasklistid);
+        try {
+            TaskList list = listService.removeList(boardid,
+                    listService.getList(boardid, tasklistid));
+            return ResponseEntity.ok(list);
+        } catch(NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     private static boolean isNullOrEmpty(final String s) {
