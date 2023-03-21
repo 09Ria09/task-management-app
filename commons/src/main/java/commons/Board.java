@@ -14,7 +14,7 @@ public class Board {
 
     private String name;
 
-    @OneToMany(cascade=CascadeType.ALL)
+    @OneToMany(cascade=CascadeType.ALL, orphanRemoval = true)
     private List<TaskList> taskLists;
     @OneToMany(cascade=CascadeType.ALL)
     private List<Tag> tags;

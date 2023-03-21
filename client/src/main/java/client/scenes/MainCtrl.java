@@ -15,6 +15,8 @@
  */
 package client.scenes;
 
+//import client.utils.ListScenes;
+import client.utils.ListScenes;
 import client.utils.ServerScenes;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -57,16 +59,15 @@ public class MainCtrl {
      * Initializes the main controller.
      * @param primaryStage the primary stage
      * @param boardOverview the board overview scene
-     * @param createList the create list scene
-     * @param deleteList the delete list scene
-     * @param renameList the rename list scene
+     * @param listScenes the list scenes
      * @param serverScenes the server scenes
      */
     public void initialize(final Stage primaryStage,
                            final Pair<BoardOverviewCtrl, Parent> boardOverview,
-                           final Pair<CreateListCtrl, Parent> createList,
-                           final Pair<DeleteListCtrl, Parent> deleteList,
-                           final Pair<RenameListCtrl, Parent> renameList,
+//                           final Pair<CreateListCtrl, Parent> createList,
+//                           final Pair<DeleteListCtrl, Parent> deleteList,
+//                           final Pair<RenameListCtrl, Parent> renameList,
+                           final ListScenes listScenes,
                            final ServerScenes serverScenes){
         this.primaryStage = primaryStage;
 
@@ -74,14 +75,14 @@ public class MainCtrl {
         this.boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
 
-        this.createListCtrl = createList.getKey();
-        this.createList = new Scene(createList.getValue());
+        this.createListCtrl = listScenes.getCreateList().getKey();
+        this.createList = new Scene(listScenes.getCreateList().getValue());
 
-        this.deleteListCtrl = deleteList.getKey();
-        this.deleteList = new Scene(deleteList.getValue());
+        this.deleteListCtrl = listScenes.getDeleteList().getKey();
+        this.deleteList = new Scene(listScenes.getDeleteList().getValue());
 
-        this.renameListCtrl = renameList.getKey();
-        this.renameList = new Scene(renameList.getValue());
+        this.renameListCtrl = listScenes.getRenameList().getKey();
+        this.renameList = new Scene(listScenes.getRenameList().getValue());
 
         this.selectServerCtrl = serverScenes.getSelectServer().getKey();
         this.selectServer = new Scene(serverScenes.getSelectServer().getValue());

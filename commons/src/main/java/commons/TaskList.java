@@ -15,7 +15,7 @@ public class TaskList {
     public long id;
     private String name;
 
-    @OneToMany(cascade=CascadeType.ALL)
+    @OneToMany(cascade=CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks;
 
     public TaskList(final String name) {
