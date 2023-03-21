@@ -32,6 +32,10 @@ public class MainCtrl {
     private Scene createList;
     private CreateListCtrl createListCtrl;
 
+    private CreateTaskCtrl createTaskCtrl;
+
+    private Scene createTask;
+
     private DeleteListCtrl deleteListCtrl;
     private Scene deleteList;
 
@@ -113,6 +117,14 @@ public class MainCtrl {
     public void showCreateList() {
         primaryStage.setTitle("Talio: Create List");
         primaryStage.setScene(createList);
+    }
+
+    /**
+     * Changes the scene to the popup that allows users to create a new task and name it.
+     */
+    public void showCreateTask() {
+        primaryStage.setTitle("Talio: Create Task");
+        primaryStage.setScene(createTask);
     }
 
     /**

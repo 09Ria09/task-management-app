@@ -40,8 +40,7 @@ public class CreateTaskCtrl {
     //appropriate name and description however this interface does not work yet
     public void confirm() {
         try {
-            System.out.println("hello world");
-            //this will have something like:
+            Task task = getTask();
             //MainCtrl.getBoardOverviewCtrl().getList(listid).addTask(task);
         } catch (WebApplicationException e) {
 
