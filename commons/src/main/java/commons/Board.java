@@ -60,7 +60,7 @@ public class Board {
     }
 
     public void removeTaskList(final TaskList taskList) {
-            taskLists.remove(taskList);
+        taskLists.remove(taskList);
     }
 
     public Optional<TaskList> getTaskListById(final long id){
