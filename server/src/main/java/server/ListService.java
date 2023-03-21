@@ -68,6 +68,7 @@ public class ListService {
         TaskList list = board.getTaskListById(listID)
                 .orElseThrow(() -> new NoSuchElementException("List doesn't exist"));
         list.setName(newName);
+        boardRepository.save(board);
         return list;
     }
 
@@ -89,13 +90,13 @@ public class ListService {
      * @param boardID the id of the board where the list will be removed
      * @param taskListID the id of the task list that will be removed
      */
-    public Board removeListByID(final long boardID, final long taskListID) {
+    public TaskList removeListByID(final long boardID, final long taskListID) {
         Board board = getBoard(boardID);
         TaskList list = board.getTaskListById(taskListID)
                 .orElseThrow(() -> new NoSuchElementException("No such task list"));
         board.removeTaskList(list);
-
-        return board;
+        boardRepository.save(board);
+        return list;
     }
 
 

@@ -115,6 +115,8 @@ public class ListController {
             return ResponseEntity.ok(list);
         } catch(NoSuchElementException e) {
             return ResponseEntity.notFound().build();
+        } catch(Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 
