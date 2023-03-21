@@ -16,6 +16,7 @@
 package client;
 
 import client.scenes.*;
+import client.utils.ListScenes;
 import client.utils.ServerScenes;
 import com.google.inject.Injector;
 import javafx.application.Application;
@@ -49,10 +50,11 @@ public class Main extends Application {
         var serverTimeout = FXML.load(ServerTimeoutCtrl.class, "client",
                 "scenes", "ConnectionTimeout.fxml");
         var serverDown = FXML.load(ServerDownCtrl.class, "client", "scenes", "ServerDown.fxml");
+        var listScenes = new ListScenes(createList, deleteList, renameList);
         var serverScenes = new ServerScenes(serverSelection, wrongServer,
                 serverTimeout, serverDown);
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage,lists, createList, deleteList, renameList, serverScenes);
+        mainCtrl.initialize(primaryStage,lists, listScenes, serverScenes);
     }
 }
