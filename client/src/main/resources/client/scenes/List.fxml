@@ -8,10 +8,10 @@
    <children>
       <HBox>
          <children>
-            <Button mnemonicParsing="false" prefHeight="20.0" prefWidth="26.0" text="+" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="List" textAlignment="CENTER" wrappingWidth="174.13671875" />
+            <Button mnemonicParsing="false" prefHeight="20.0" prefWidth="26.0" text="+" onAction="#addCard"/>
+            <Text fx:id="title" strokeType="OUTSIDE" strokeWidth="0.0" text="Loading..." textAlignment="CENTER" wrappingWidth="174.0" />
          </children>
       </HBox>
-      <ListView prefWidth="200.0" />
+      <ListView fx:id="list" prefWidth="200.0" />
    </children>
 </VBox>
