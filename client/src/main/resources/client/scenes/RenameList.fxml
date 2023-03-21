@@ -13,8 +13,10 @@
             <Font size="34.0" />
          </font>
       </Text>
-      <TextField layoutX="226.0" layoutY="200.0" promptText="Enter new list name" />
-      <Button layoutX="226.0" layoutY="260.0" mnemonicParsing="false" text="Confirm" />
-      <Button layoutX="323.0" layoutY="260.0" mnemonicParsing="false" text="Cancel" />
+      <TextField fx:id="listNameInput" layoutX="226.0" layoutY="200.0" promptText="Enter new list name" />
+      <Button layoutX="226.0" layoutY="260.0" mnemonicParsing="false" onAction="#confirm" text="Confirm" />
+      <Button layoutX="323.0" layoutY="260.0" mnemonicParsing="false" onAction="#cancel" text="Cancel" />
+      <TextField fx:id="listIdInput" layoutX="226.0" layoutY="165.0" promptText="Enter listID" />
+      <TextField fx:id="boardIdInput" layoutX="226.0" layoutY="129.0" promptText="Enter board ID" />
    </children>
 </AnchorPane>

@@ -66,6 +66,7 @@ public class BoardOverviewCtrl implements Initializable {
      */
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
+        setCurrentBoardId(1);
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -140,6 +141,14 @@ public class BoardOverviewCtrl implements Initializable {
 
     public void addList() {
         mainCtrl.showCreateList();
+    }
+
+    public void deleteList() {
+        mainCtrl.showDeleteList();
+    }
+
+    public void renameList() {
+        mainCtrl.showRenameList();
     }
 
     public void dragDetected(final ListView<Task> lv, final MouseEvent event) {

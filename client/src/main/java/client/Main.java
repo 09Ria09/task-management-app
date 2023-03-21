@@ -41,6 +41,8 @@ public class Main extends Application {
 
         var lists = FXML.load(BoardOverviewCtrl.class, "client", "scenes", "BoardOverview.fxml");
         var createList = FXML.load(CreateListCtrl.class, "client", "scenes", "CreateList.fxml");
+        var deleteList = FXML.load(DeleteListCtrl.class, "client", "scenes", "DeleteList.fxml");
+        var renameList = FXML.load(RenameListCtrl.class, "client", "scenes", "RenameList.fxml");
         var serverSelection = FXML
                 .load(SelectServerCtrl.class, "client", "scenes", "SelectServer.fxml");
         var wrongServer = FXML.load(WrongServerCtrl.class, "client", "scenes", "WrongServer.fxml");
@@ -51,6 +53,6 @@ public class Main extends Application {
                 serverTimeout, serverDown);
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage,lists, createList, serverScenes);
+        mainCtrl.initialize(primaryStage,lists, createList, deleteList, renameList, serverScenes);
     }
 }

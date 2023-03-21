@@ -32,6 +32,11 @@ public class MainCtrl {
     private Scene createList;
     private CreateListCtrl createListCtrl;
 
+    private DeleteListCtrl deleteListCtrl;
+    private Scene deleteList;
+
+    private RenameListCtrl renameListCtrl;
+    private Scene renameList;
 
     private SelectServerCtrl selectServerCtrl;
 
@@ -46,15 +51,22 @@ public class MainCtrl {
     private ServerDownCtrl serverDownCtrl;
     private Scene serverDown;
 
+
+
     /**
      * Initializes the main controller.
      * @param primaryStage the primary stage
      * @param boardOverview the board overview scene
+     * @param createList the create list scene
+     * @param deleteList the delete list scene
+     * @param renameList the rename list scene
      * @param serverScenes the server scenes
      */
     public void initialize(final Stage primaryStage,
                            final Pair<BoardOverviewCtrl, Parent> boardOverview,
                            final Pair<CreateListCtrl, Parent> createList,
+                           final Pair<DeleteListCtrl, Parent> deleteList,
+                           final Pair<RenameListCtrl, Parent> renameList,
                            final ServerScenes serverScenes){
         this.primaryStage = primaryStage;
 
@@ -64,6 +76,12 @@ public class MainCtrl {
 
         this.createListCtrl = createList.getKey();
         this.createList = new Scene(createList.getValue());
+
+        this.deleteListCtrl = deleteList.getKey();
+        this.deleteList = new Scene(deleteList.getValue());
+
+        this.renameListCtrl = renameList.getKey();
+        this.renameList = new Scene(renameList.getValue());
 
         this.selectServerCtrl = serverScenes.getSelectServer().getKey();
         this.selectServer = new Scene(serverScenes.getSelectServer().getValue());
@@ -95,6 +113,23 @@ public class MainCtrl {
     public void showCreateList() {
         primaryStage.setTitle("Talio: Create List");
         primaryStage.setScene(createList);
+    }
+
+    /**
+     * Changes scene to popup where a user can delete a task list.
+     * NOTE: should be changed from popup to delete button on a list.
+     */
+    public void showDeleteList() {
+        primaryStage.setTitle("Talio: Delete List");
+        primaryStage.setScene(deleteList);
+    }
+
+    /**
+     * Changes scene to a scene where a user can rename a task list.
+     */
+    public void showRenameList() {
+        primaryStage.setTitle("Talio: Rename List");
+        primaryStage.setScene(renameList);
     }
 
     /**

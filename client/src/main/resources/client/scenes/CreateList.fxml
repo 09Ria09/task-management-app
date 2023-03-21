@@ -16,5 +16,6 @@
             <Font size="29.0" />
          </font>
       </Text>
+      <TextField fx:id="boardIdInput" layoutX="227.0" layoutY="188.0" promptText="Enter board ID" />
    </children>
 </AnchorPane>
