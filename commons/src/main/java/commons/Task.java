@@ -18,8 +18,6 @@ public class Task implements Serializable {
     private String name;
     private String description;
 
-    private TaskList tasklist;
-
     @OneToMany(cascade=CascadeType.ALL)
     private List<SubTask> subtasks;
 
@@ -81,8 +79,6 @@ public class Task implements Serializable {
     public boolean removeSubtask(final SubTask subTask){
         return this.subtasks.remove(subTask);
     }
-
-    public TaskList getTasklist() { return this.tasklist; };
 
     public long getId() {return this.id;}
 }
