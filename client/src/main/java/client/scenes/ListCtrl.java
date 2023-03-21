@@ -80,7 +80,7 @@ public class ListCtrl implements Initializable {
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(final URL location, final ResourceBundle resources) {
         setDragHandlers(list);
         list.setCellFactory(param -> new ListCell<>() {
             @Override
@@ -103,7 +103,7 @@ public class ListCtrl implements Initializable {
         });
     }
 
-    public void setLayoutX(double x){
+    public void setLayoutX(final double x){
         list.setLayoutX(x);
     }
 
