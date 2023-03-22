@@ -15,9 +15,16 @@ public class BoardController {
 
     private final BoardService boardService;
 
+    /**
+     * Initialize the Board Controller. If the JPA Repository is empty, a default board is created
+     * @param boardService the service used to interact with the JPA Repository
+     */
     @Autowired
     public BoardController(final BoardService boardService) {
         this.boardService = boardService;
+        if(this.boardService.getBoards().isEmpty()){
+            createDefaultBoard();
+        }
     }
 
     /**
@@ -348,6 +355,15 @@ public class BoardController {
         }
     }
 
-
+    /**
+     * Creates a default board that contains 3 lists : To Do, In Progress, Done
+     */
+    public void createDefaultBoard(){
+        TaskList todo = new TaskList("To Do");
+        TaskList inprogress = new TaskList("In Progress");
+        TaskList done = new TaskList("Done");
+        Board b = new Board("Main", List.of(todo, inprogress, done), new ArrayList<>());
+        this.boardService.addBoard(b);
+    }
 
 }

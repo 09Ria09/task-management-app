@@ -27,7 +27,7 @@ public class ListController {
             @RequestBody final TaskList taskList
     ) {
         try{
-            if(taskList == null|| taskList.getName() == null){
+            if(taskList == null|| isNullOrEmpty(taskList.getName())){
                 return ResponseEntity.badRequest().build();
             }
             TaskList createdList = listService.addList(boardid, taskList);
