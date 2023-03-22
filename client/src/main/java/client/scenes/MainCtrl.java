@@ -76,7 +76,8 @@ public class MainCtrl {
                            final ServerScenes serverScenes,
                            final TaskScenes taskScenes){
         this.primaryStage = primaryStage;
-
+        primaryStage.getIcons().add(new javafx.scene
+                .image.Image("file:src/main/resources/client/images/icon.png"));
 
         this.boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
