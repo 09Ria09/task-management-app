@@ -11,11 +11,13 @@ public class CardCtrl {
     @FXML
     public Text text;
 
+    private ListCtrl listController;
+
     /**
      * This initializes the card using a task
      * @param task the task used for initialization
      */
-    public void initialize(final Task task) {
+    public void initialize(final Task task, final ListCtrl listCtrl) {
         this.task= task;
         this.text.setText(task.getName());
     }

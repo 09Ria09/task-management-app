@@ -37,6 +37,8 @@ public class BoardOverviewCtrl implements Initializable {
     private final Map<Long, ListCtrl> listsMap;
     private long currentBoardId;
 
+    private List<TaskList> taskLists;
+
     @FXML
     private HBox listsContainer;
 
@@ -45,6 +47,7 @@ public class BoardOverviewCtrl implements Initializable {
         this.mainCtrl = mainCtrl;
         this.server = server;
         this.listsMap = new HashMap<>();
+        this.taskLists = new ArrayList<>();
     }
 
     /**
@@ -74,12 +77,13 @@ public class BoardOverviewCtrl implements Initializable {
      * @param taskList the list to be added
      */
     public void addList(final TaskList taskList) {
+        taskLists.add(taskList);
         var kids = listsContainer.getChildren();
         var listLoader = new FXMLLoader(getClass().getResource("List.fxml"));
         try {
             Node list = listLoader.load();
             ListCtrl listCtrl = listLoader.getController();
-            listCtrl.refresh(taskList);
+            listCtrl.refresh(taskList, currentBoardId);
             if (!kids.isEmpty()) {
                 var lb = kids.get(kids.size() - 1).getLayoutBounds();
                 var lx = kids.get(kids.size() - 1).getLayoutX();
@@ -126,9 +130,9 @@ public class BoardOverviewCtrl implements Initializable {
         if(server.isTalioServer().isPresent()){
             return;
         }
-        var data = server.getLists(currentBoardId);
+        taskLists = server.getLists(currentBoardId);
         //System.out.println(data);
-        data = FXCollections.observableList(data);
+        var data = FXCollections.observableList(taskLists);
         refreshLists(data);
     }
 
@@ -137,7 +141,8 @@ public class BoardOverviewCtrl implements Initializable {
      * @param lists the list of lists
      */
     private void refreshLists(final List<TaskList> lists) {
-        List<Long> listsId = lists.stream().map(taskList -> taskList.id).toList();
+        this.taskLists = lists;
+        List<Long> listsId = taskLists.stream().map(taskList -> taskList.id).toList();
         for (Map.Entry<Long, ListCtrl> list : listsMap.entrySet()) {
             // this removes any lists in excess
             if (!listsId.contains(list.getKey())) {
@@ -151,12 +156,16 @@ public class BoardOverviewCtrl implements Initializable {
             if (!listsMap.containsKey(list.id)) // if the list is new
                 addList(list); // simply add it
             else { // if the list was already there
-                listsMap.get(list.id).refresh(list);
+                listsMap.get(list.id).refresh(list, currentBoardId);
             }
         }
     }
 
     public void setCurrentBoardId(final long currentBoardId) {
         this.currentBoardId = currentBoardId;
+    }
+
+    public List<TaskList> getTaskLists() {
+        return taskLists;
     }
 }

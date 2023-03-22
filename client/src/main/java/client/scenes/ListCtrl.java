@@ -23,9 +23,11 @@ public class ListCtrl implements Initializable {
     ListView<Task> list;
     @FXML
     Text title;
-
     @FXML
     VBox vBox;
+
+    private TaskList taskList;
+    private long boardID;
 
     private void setDragHandlers(final ListView<Task> list) {
         list.setOnDragDetected(event -> dragDetected(list, event));
@@ -81,6 +83,7 @@ public class ListCtrl implements Initializable {
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
+        ListCtrl controller = this;
         setDragHandlers(list);
         list.setCellFactory(param -> new ListCell<>() {
             @Override
@@ -93,7 +96,7 @@ public class ListCtrl implements Initializable {
                         var cardLoader = new FXMLLoader(getClass().getResource("Card.fxml"));
                         Node card = cardLoader.load();
                         CardCtrl cardCtrl = cardLoader.getController();
-                        cardCtrl.initialize(task);
+                        cardCtrl.initialize(task, controller);
                         setGraphic(card);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -111,7 +114,8 @@ public class ListCtrl implements Initializable {
      * This refreshes the tasks of the list.
      * @param newTaskList the list for which the tasks must be refreshed.
      */
-    public void refresh(final TaskList newTaskList) {
+    public void refresh(final TaskList newTaskList, long boardID) {
+        this.boardID = boardID;
         if (!Objects.equals(title.getText(), newTaskList.getName())) // if the title is different
             title.setText(newTaskList.getName()); // update it
 
@@ -141,5 +145,13 @@ public class ListCtrl implements Initializable {
 
     public VBox getRoot() {
         return vBox;
+    }
+
+    public TaskList getTaskList() {
+        return taskList;
+    }
+
+    public long getBoardID() {
+        return boardID;
     }
 }
