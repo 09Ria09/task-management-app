@@ -1,14 +1,11 @@
 package client.utils;
 
 import com.google.inject.Inject;
-
 import commons.TaskList;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
-
-
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -129,7 +126,8 @@ public class TaskListUtils {
         return null;
     }
 
-    public TaskList reorderTask(final long boardId,final long taskListId, final long taskID, final int newIndex) {
+    public TaskList reorderTask(final long boardId,final long taskListId,
+                                final long taskID, final int newIndex) {
         String serverAddress = server.getServerAddress();
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
                 .path("api/boards/" + boardId + "/" + taskListId + "/reorder/" + taskID)

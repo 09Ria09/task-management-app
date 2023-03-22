@@ -1,14 +1,13 @@
 package client.scenes;
 
-import com.google.inject.Inject;
-
 import client.utils.ServerUtils;
+import com.google.inject.Inject;
 import commons.Task;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.TextField;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 
 public class CreateTaskCtrl {
@@ -68,7 +67,7 @@ public class CreateTaskCtrl {
         taskName.clear();
     }
 
-    public void setListCtrl(ListCtrl listCtrl) {
+    public void setListCtrl(final ListCtrl listCtrl) {
         this.listCtrl = listCtrl;
     }
 }

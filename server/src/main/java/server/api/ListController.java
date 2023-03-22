@@ -1,14 +1,13 @@
 package server.api;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-
 import commons.TaskList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import server.ListService;
+
+import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/lists")
@@ -17,7 +16,7 @@ public class ListController {
     private ListService listService;
 
     @Autowired
-    public ListController(ListService listService) {
+    public ListController(final ListService listService) {
         this.listService = listService;
     }
 

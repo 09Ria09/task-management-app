@@ -128,7 +128,7 @@ public class MainCtrl {
     /**
      * Changes the scene to the popup that allows users to create a new task and name it.
      */
-    public void showCreateTask(ListCtrl ctrl) {
+    public void showCreateTask(final ListCtrl ctrl) {
         primaryStage.setTitle("Talio: Create Task");
         primaryStage.setScene(createTask);
         createTaskCtrl.setListCtrl(ctrl);

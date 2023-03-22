@@ -7,7 +7,6 @@ import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 
-
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 //TODO

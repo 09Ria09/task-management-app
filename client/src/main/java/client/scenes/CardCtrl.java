@@ -23,7 +23,8 @@ public class CardCtrl {
      * @param task the task used for initialization
      */
     @Inject
-    public void initialize(final Task task, final ListCtrl listCtrl, final TaskListUtils listUtils) {
+    public void initialize(final Task task, final ListCtrl listCtrl,
+                           final TaskListUtils listUtils) {
         this.task= task;
         this.text.setText(task.getName());
         this.listController = listCtrl;

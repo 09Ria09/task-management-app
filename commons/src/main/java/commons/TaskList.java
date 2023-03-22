@@ -4,7 +4,9 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 
 @Entity
@@ -84,7 +86,7 @@ public class TaskList {
     }
 
 
-    public void reorder(long taskid, int newIndex) {
+    public void reorder(final long taskid, final int newIndex) {
         int index = tasks.indexOf(getTaskById(taskid));
 
         if(index == newIndex) {

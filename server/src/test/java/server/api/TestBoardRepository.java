@@ -22,7 +22,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery.FetchableFluentQuery;
 import server.database.BoardRepository;
-import server.database.BoardRepository;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,14 +1,13 @@
 package server.api;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-
 import commons.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import server.TaskService;
+
+import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/boards")
@@ -18,7 +17,7 @@ public class TaskController {
     private TaskService taskService;
 
     @Autowired
-    public TaskController(TaskService taskService) {
+    public TaskController(final TaskService taskService) {
         this.taskService = taskService;
     }
 

@@ -3,7 +3,6 @@ package client.scenes;
 import client.utils.ServerUtils;
 import client.utils.TaskListUtils;
 import client.utils.TaskUtils;
-import com.google.inject.Inject;
 import commons.Task;
 import commons.TaskList;
 import javafx.fxml.FXML;
@@ -18,7 +17,8 @@ import javafx.scene.text.Text;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.Objects;
+import java.util.ResourceBundle;
 
 public class ListCtrl implements Initializable {
     private static final DataFormat taskCustom = new DataFormat("task.custom");
@@ -132,7 +132,7 @@ public class ListCtrl implements Initializable {
      * This refreshes the tasks of the list.
      * @param newTaskList the list for which the tasks must be refreshed.
      */
-    public void refresh(final TaskList newTaskList, long boardID, ServerUtils server) {
+    public void refresh(final TaskList newTaskList, final long boardID, final ServerUtils server) {
         this.boardID = boardID;
         this.taskList = newTaskList;
         this.server = server;
@@ -149,7 +149,7 @@ public class ListCtrl implements Initializable {
         }
     }
 
-    public void refresh(final TaskList newTaskList, long boardID) {
+    public void refresh(final TaskList newTaskList, final long boardID) {
         this.boardID = boardID;
         this.taskList = newTaskList;
         if (!Objects.equals(title.getText(), newTaskList.getName())) // if the title is different

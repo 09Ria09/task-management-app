@@ -102,7 +102,8 @@ public class ListService {
     }
 
 
-    public TaskList reorderTask(long boardid, long tasklistid, long taskid, int newIndex) {
+    public TaskList reorderTask(final long boardid, final long tasklistid,
+                                final long taskid, final int newIndex) {
         Board board = getBoard(boardid);
         TaskList list = board.getTaskListById(tasklistid)
                 .orElseThrow(() -> new NoSuchElementException("No such task list"));
