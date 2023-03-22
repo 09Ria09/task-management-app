@@ -84,6 +84,7 @@ public class BoardOverviewCtrl implements Initializable {
             Node list = listLoader.load();
             ListCtrl listCtrl = listLoader.getController();
             listCtrl.refresh(taskList, currentBoardId);
+            listCtrl.passMain(mainCtrl);
             if (!kids.isEmpty()) {
                 var lb = kids.get(kids.size() - 1).getLayoutBounds();
                 var lx = kids.get(kids.size() - 1).getLayoutX();
