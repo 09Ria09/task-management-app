@@ -1,8 +1,5 @@
 package server.api;
 
-import commons.Board;
-import commons.Task;
-import commons.TaskList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -10,10 +7,7 @@ import org.junit.jupiter.api.TestInfo;
 import org.springframework.test.util.ReflectionTestUtils;
 import server.BoardService;
 
-import java.util.NoSuchElementException;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BoardControllerTest {
     private BoardService service;

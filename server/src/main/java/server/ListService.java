@@ -3,11 +3,13 @@ package server;
 import commons.Board;
 import commons.TaskList;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import server.database.BoardRepository;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
+@Service
 public class ListService {
 
     @Autowired
@@ -100,4 +102,13 @@ public class ListService {
     }
 
 
+    public TaskList reorderTask(final long boardid, final long tasklistid,
+                                final long taskid, final int newIndex) {
+        Board board = getBoard(boardid);
+        TaskList list = board.getTaskListById(tasklistid)
+                .orElseThrow(() -> new NoSuchElementException("No such task list"));
+        list.reorder(taskid, newIndex);
+        boardRepository.save(board);
+        return list;
+    }
 }

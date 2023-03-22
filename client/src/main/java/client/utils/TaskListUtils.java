@@ -1,14 +1,11 @@
 package client.utils;
 
 import com.google.inject.Inject;
-
 import commons.TaskList;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
-
-
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -123,6 +120,28 @@ public class TaskListUtils {
             System.out.println("Task list not found.");
         } else {
             System.out.println("An error occurred while deleting the task list: "
+                    + response.readEntity(String.class));
+        }
+
+        return null;
+    }
+
+    public TaskList reorderTask(final long boardId,final long taskListId,
+                                final long taskID, final int newIndex) {
+        String serverAddress = server.getServerAddress();
+        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
+                .path("api/boards/" + boardId + "/" + taskListId + "/reorder/" + taskID)
+                .queryParam("newIndex", newIndex)
+                .request()
+                .accept(APPLICATION_JSON)
+                .put(Entity.entity(newIndex, APPLICATION_JSON));
+
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+            return response.readEntity(TaskList.class);
+        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
+            System.out.println("Task list not found.");
+        } else {
+            System.out.println("An error occurred while reordering the task list: "
                     + response.readEntity(String.class));
         }
 

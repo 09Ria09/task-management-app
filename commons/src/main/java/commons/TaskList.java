@@ -4,7 +4,9 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 
 @Entity
@@ -84,4 +86,20 @@ public class TaskList {
     }
 
 
+    public void reorder(final long taskid, final int newIndex) {
+        int index = tasks.indexOf(getTaskById(taskid));
+
+        if(index == newIndex) {
+            return;
+        }
+
+        if(index > newIndex) {
+            Task temp = tasks.remove(index);
+            tasks.add(newIndex, temp);
+        } else {
+            Task temp = tasks.remove(index);
+            tasks.add(newIndex-1, temp);
+        }
+
+    }
 }

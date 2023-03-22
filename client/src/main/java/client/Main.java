@@ -19,14 +19,13 @@ import client.scenes.*;
 import client.utils.ListScenes;
 import client.utils.ServerScenes;
 import client.utils.TaskScenes;
+import com.google.inject.Guice;
 import com.google.inject.Injector;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-
-import com.google.inject.Guice;
 
 public class Main extends Application {
 

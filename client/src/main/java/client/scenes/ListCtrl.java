@@ -1,5 +1,8 @@
 package client.scenes;
 
+import client.utils.ServerUtils;
+import client.utils.TaskListUtils;
+import client.utils.TaskUtils;
 import commons.Task;
 import commons.TaskList;
 import javafx.fxml.FXML;
@@ -14,7 +17,8 @@ import javafx.scene.text.Text;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.Objects;
+import java.util.ResourceBundle;
 
 public class ListCtrl implements Initializable {
     private static final DataFormat taskCustom = new DataFormat("task.custom");
@@ -23,9 +27,21 @@ public class ListCtrl implements Initializable {
     ListView<Task> list;
     @FXML
     Text title;
-
     @FXML
     VBox vBox;
+
+    private TaskList taskList;
+    private long boardID;
+    private TaskListUtils taskListUtils;
+    private TaskUtils taskUtils;
+
+    private ServerUtils server;
+
+
+    public ListCtrl() {
+        this.taskListUtils = new TaskListUtils(new ServerUtils());
+        this.taskUtils = new TaskUtils(new ServerUtils());;
+    }
 
     public void passMain(final MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
@@ -85,6 +101,7 @@ public class ListCtrl implements Initializable {
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
+        ListCtrl controller = this;
         setDragHandlers(list);
         list.setCellFactory(param -> new ListCell<>() {
             @Override
@@ -97,7 +114,7 @@ public class ListCtrl implements Initializable {
                         var cardLoader = new FXMLLoader(getClass().getResource("Card.fxml"));
                         Node card = cardLoader.load();
                         CardCtrl cardCtrl = cardLoader.getController();
-                        cardCtrl.initialize(task);
+                        cardCtrl.initialize(task, controller, taskListUtils);
                         setGraphic(card);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -114,8 +131,9 @@ public class ListCtrl implements Initializable {
     /**
      * This refreshes the tasks of the list.
      * @param newTaskList the list for which the tasks must be refreshed.
-     */
-    public void refresh(final TaskList newTaskList) {
+     */    public void refresh(final TaskList newTaskList, final long boardID) {
+        this.boardID = boardID;
+        this.taskList = newTaskList;
         if (!Objects.equals(title.getText(), newTaskList.getName())) // if the title is different
             title.setText(newTaskList.getName()); // update it
 
@@ -137,16 +155,32 @@ public class ListCtrl implements Initializable {
             list = new ListView<Task>();
         }
         list.getItems().add(task);
+        taskUtils.addTask(boardID, this.getTaskList().id, task);
+
     }
 
     /**
      * this adds a task to a specific list
      */
     public void addCard() {
-        mainCtrl.showCreateTask();
+        mainCtrl.showCreateTask(this);
     }
 
     public VBox getRoot() {
         return vBox;
+    }
+
+    public TaskList getTaskList() {
+        return taskList;
+    }
+
+    public long getBoardID() {
+        return boardID;
+    }
+
+    public void setServer(final ServerUtils server) {
+        this.server = server;
+        this.taskUtils = new TaskUtils(server);
+        this.taskListUtils = new TaskListUtils(server);
     }
 }
