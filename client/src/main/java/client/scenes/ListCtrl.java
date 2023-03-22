@@ -1,7 +1,5 @@
 package client.scenes;
 
-import client.utils.ServerUtils;
-import com.google.inject.Inject;
 import commons.Task;
 import commons.TaskList;
 import javafx.fxml.FXML;
@@ -29,7 +27,7 @@ public class ListCtrl implements Initializable {
     @FXML
     VBox vBox;
 
-    public void passMain(MainCtrl mainCtrl) {
+    public void passMain(final MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
     }
 
