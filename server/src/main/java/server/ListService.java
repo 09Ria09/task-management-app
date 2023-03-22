@@ -3,11 +3,13 @@ package server;
 import commons.Board;
 import commons.TaskList;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import server.database.BoardRepository;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
+@Service
 public class ListService {
 
     @Autowired

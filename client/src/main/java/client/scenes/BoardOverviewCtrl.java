@@ -83,7 +83,7 @@ public class BoardOverviewCtrl implements Initializable {
         try {
             Node list = listLoader.load();
             ListCtrl listCtrl = listLoader.getController();
-            listCtrl.refresh(taskList, currentBoardId);
+            listCtrl.refresh(taskList, currentBoardId, server);
             listCtrl.passMain(mainCtrl);
             if (!kids.isEmpty()) {
                 var lb = kids.get(kids.size() - 1).getLayoutBounds();
@@ -102,7 +102,7 @@ public class BoardOverviewCtrl implements Initializable {
     }
 
     public void addTask() {
-        mainCtrl.showCreateTask();
+        //mainCtrl.showCreateTask();
     }
 
     public void deleteList() {
@@ -151,15 +151,16 @@ public class BoardOverviewCtrl implements Initializable {
                 listsMap.remove(list.getKey());
             }
         }
-
-        for (TaskList list : lists) {
-            // this adds or modifies existing lists
-            if (!listsMap.containsKey(list.id)) // if the list is new
-                addList(list); // simply add it
-            else { // if the list was already there
-                listsMap.get(list.id).refresh(list, currentBoardId);
+        Platform.runLater(() -> {
+            for (TaskList list : lists) {
+                // this adds or modifies existing lists
+                if (!listsMap.containsKey(list.id)) // if the list is new
+                    addList(list); // simply add it
+                else { // if the list was already there
+                    listsMap.get(list.id).refresh(list, currentBoardId, server);
+                }
             }
-        }
+        });
     }
 
     public void setCurrentBoardId(final long currentBoardId) {

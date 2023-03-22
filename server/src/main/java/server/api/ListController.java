@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import commons.TaskList;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,13 @@ import server.ListService;
 public class ListController {
 
     private ListService listService;
+
+    @Autowired
+    public ListController(ListService listService) {
+        this.listService = listService;
+    }
+
+
 
     /**
      * Post util method to add a tasklist to a specific board
@@ -27,15 +35,16 @@ public class ListController {
             @RequestBody final TaskList taskList
     ) {
         try{
-            if(taskList == null|| isNullOrEmpty(taskList.getName())){
+            if (taskList == null || taskList.getName() == null) {
                 return ResponseEntity.badRequest().build();
             }
-            TaskList createdList = listService.addList(boardid, taskList);
-            return ResponseEntity.ok(createdList);
-        } catch (NoSuchElementException e){
+            TaskList createdTaskList = listService.addList(boardid, taskList);
+            return ResponseEntity.ok(createdTaskList);
+        } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
     }
+
 
     /**
      * Get util method to get all the tasklists from a specific board

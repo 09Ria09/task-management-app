@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.utils.ServerUtils;
 import client.utils.TaskListUtils;
 import client.utils.TaskUtils;
 import com.google.inject.Inject;
@@ -34,13 +35,12 @@ public class ListCtrl implements Initializable {
     private TaskListUtils taskListUtils;
     private TaskUtils taskUtils;
 
-    @Inject
-    public ListCtrl(TaskListUtils taskListUtils, TaskUtils taskUtils) {
-        this.taskListUtils = taskListUtils;
-        this.taskUtils = taskUtils;
-    }
+    private ServerUtils server;
+
 
     public ListCtrl() {
+        this.taskListUtils = new TaskListUtils(new ServerUtils());
+        this.taskUtils = new TaskUtils(new ServerUtils());;
     }
 
     public void passMain(final MainCtrl mainCtrl) {
@@ -132,8 +132,26 @@ public class ListCtrl implements Initializable {
      * This refreshes the tasks of the list.
      * @param newTaskList the list for which the tasks must be refreshed.
      */
+    public void refresh(final TaskList newTaskList, long boardID, ServerUtils server) {
+        this.boardID = boardID;
+        this.taskList = newTaskList;
+        this.server = server;
+        this.taskListUtils = new TaskListUtils(server);
+        this.taskUtils = new TaskUtils(server);
+        if (!Objects.equals(title.getText(), newTaskList.getName())) // if the title is different
+            title.setText(newTaskList.getName()); // update it
+
+        list.getItems().retainAll(newTaskList.getTasks()); // retain only the tasks
+        // that are also in newTaskList
+        for (Task task : newTaskList.getTasks()) { // go through all the received tasks
+            if (!list.getItems().contains(task)) // if this task isn't there
+                list.getItems().add(task); // add it
+        }
+    }
+
     public void refresh(final TaskList newTaskList, long boardID) {
         this.boardID = boardID;
+        this.taskList = newTaskList;
         if (!Objects.equals(title.getText(), newTaskList.getName())) // if the title is different
             title.setText(newTaskList.getName()); // update it
 
@@ -155,7 +173,7 @@ public class ListCtrl implements Initializable {
             list = new ListView<Task>();
         }
         list.getItems().add(task);
-        taskUtils.addTask(boardID, taskList.id, task);
+        taskUtils.addTask(boardID, this.getTaskList().id, task);
 
     }
 
@@ -163,7 +181,7 @@ public class ListCtrl implements Initializable {
      * this adds a task to a specific list
      */
     public void addCard() {
-        mainCtrl.showCreateTask();
+        mainCtrl.showCreateTask(this);
     }
 
     public VBox getRoot() {
