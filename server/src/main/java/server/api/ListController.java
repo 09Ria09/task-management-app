@@ -124,4 +124,28 @@ public class ListController {
         return s == null || s.isEmpty();
     }
 
+    /**
+     * A put method to change the index of a task to the new given index
+     * @param boardid the board where the task is in
+     * @param tasklistid the tasklist where the task is in
+     * @param taskid the id of the task that needs to be repositioned
+     * @param newIndex the new index of the task
+     * @return the corresponding list after it's changed
+     */
+    @PutMapping("/{boardid}/{tasklistid}/reorder/{taskid}")
+    public ResponseEntity<TaskList> reorderTasks(
+            @PathVariable("boardid") final long boardid,
+            @PathVariable("tasklistid") final long tasklistid,
+            @PathVariable ("taskid") final long taskid,
+            @RequestParam final int newIndex
+    ) {
+        try {
+
+            TaskList list = listService.reorderTask(boardid, tasklistid, taskid, newIndex);
+            return ResponseEntity.ok(list);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }

@@ -100,4 +100,12 @@ public class ListService {
     }
 
 
+    public TaskList reorderTask(long boardid, long tasklistid, long taskid, int newIndex) {
+        Board board = getBoard(boardid);
+        TaskList list = board.getTaskListById(tasklistid)
+                .orElseThrow(() -> new NoSuchElementException("No such task list"));
+        list.reorder(taskid, newIndex);
+        boardRepository.save(board);
+        return list;
+    }
 }

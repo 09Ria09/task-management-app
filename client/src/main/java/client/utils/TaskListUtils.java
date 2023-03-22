@@ -128,4 +128,25 @@ public class TaskListUtils {
 
         return null;
     }
+
+    public TaskList reorderTask(final long boardId,final long taskListId, final long taskID, final int newIndex) {
+        String serverAddress = server.getServerAddress();
+        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
+                .path("api/boards/" + boardId + "/" + taskListId + "/reorder/" + taskID)
+                .queryParam("newIndex", newIndex)
+                .request()
+                .accept(APPLICATION_JSON)
+                .put(Entity.entity(newIndex, APPLICATION_JSON));
+
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+            return response.readEntity(TaskList.class);
+        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
+            System.out.println("Task list not found.");
+        } else {
+            System.out.println("An error occurred while reordering the task list: "
+                    + response.readEntity(String.class));
+        }
+
+        return null;
+    }
 }

@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.utils.TaskListUtils;
 import commons.Task;
 import commons.TaskList;
 import javafx.fxml.FXML;
@@ -28,6 +29,11 @@ public class ListCtrl implements Initializable {
 
     private TaskList taskList;
     private long boardID;
+    private TaskListUtils taskListUtils;
+
+    public ListCtrl(TaskListUtils taskListUtils) {
+        this.taskListUtils = taskListUtils;
+    }
 
     private void setDragHandlers(final ListView<Task> list) {
         list.setOnDragDetected(event -> dragDetected(list, event));
@@ -96,7 +102,7 @@ public class ListCtrl implements Initializable {
                         var cardLoader = new FXMLLoader(getClass().getResource("Card.fxml"));
                         Node card = cardLoader.load();
                         CardCtrl cardCtrl = cardLoader.getController();
-                        cardCtrl.initialize(task, controller);
+                        cardCtrl.initialize(task, controller, taskListUtils);
                         setGraphic(card);
                     } catch (IOException e) {
                         throw new RuntimeException(e);

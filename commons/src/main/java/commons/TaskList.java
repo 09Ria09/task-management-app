@@ -84,4 +84,20 @@ public class TaskList {
     }
 
 
+    public void reorder(long taskid, int newIndex) {
+        int index = tasks.indexOf(getTaskById(taskid));
+
+        if(index == newIndex) {
+            return;
+        }
+
+        if(index > newIndex) {
+            Task temp = tasks.remove(index);
+            tasks.add(newIndex, temp);
+        } else {
+            Task temp = tasks.remove(index);
+            tasks.add(newIndex-1, temp);
+        }
+
+    }
 }
