@@ -5,6 +5,7 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 quizzzz.trace.db
+talio.trace.db
 **/*.mv.db
 
 **/*.swp
@@ -39,3 +40,5 @@ out/
 
 ### VS Code ###
 .vscode/
+
+report.HTML

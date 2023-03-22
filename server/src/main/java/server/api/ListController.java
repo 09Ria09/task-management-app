@@ -1,19 +1,26 @@
 package server.api;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-
 import commons.TaskList;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import server.ListService;
+
+import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/lists")
 public class ListController {
 
     private ListService listService;
+
+    @Autowired
+    public ListController(final ListService listService) {
+        this.listService = listService;
+    }
+
+
 
     /**
      * Post util method to add a tasklist to a specific board
@@ -27,15 +34,16 @@ public class ListController {
             @RequestBody final TaskList taskList
     ) {
         try{
-            if(taskList == null|| taskList.getName() == null){
+            if (taskList == null || taskList.getName() == null) {
                 return ResponseEntity.badRequest().build();
             }
-            TaskList createdList = listService.addList(boardid, taskList);
-            return ResponseEntity.ok(createdList);
-        } catch (NoSuchElementException e){
+            TaskList createdTaskList = listService.addList(boardid, taskList);
+            return ResponseEntity.ok(createdTaskList);
+        } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
     }
+
 
     /**
      * Get util method to get all the tasklists from a specific board
@@ -122,6 +130,30 @@ public class ListController {
 
     private static boolean isNullOrEmpty(final String s) {
         return s == null || s.isEmpty();
+    }
+
+    /**
+     * A put method to change the index of a task to the new given index
+     * @param boardid the board where the task is in
+     * @param tasklistid the tasklist where the task is in
+     * @param taskid the id of the task that needs to be repositioned
+     * @param newIndex the new index of the task
+     * @return the corresponding list after it's changed
+     */
+    @PutMapping("/{boardid}/{tasklistid}/reorder/{taskid}")
+    public ResponseEntity<TaskList> reorderTasks(
+            @PathVariable("boardid") final long boardid,
+            @PathVariable("tasklistid") final long tasklistid,
+            @PathVariable ("taskid") final long taskid,
+            @RequestParam final int newIndex
+    ) {
+        try {
+
+            TaskList list = listService.reorderTask(boardid, tasklistid, taskid, newIndex);
+            return ResponseEntity.ok(list);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }

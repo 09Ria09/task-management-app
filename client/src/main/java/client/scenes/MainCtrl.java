@@ -18,6 +18,7 @@ package client.scenes;
 //import client.utils.ListScenes;
 import client.utils.ListScenes;
 import client.utils.ServerScenes;
+import client.utils.TaskScenes;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -72,12 +73,16 @@ public class MainCtrl {
 //                           final Pair<DeleteListCtrl, Parent> deleteList,
 //                           final Pair<RenameListCtrl, Parent> renameList,
                            final ListScenes listScenes,
-                           final ServerScenes serverScenes){
+                           final ServerScenes serverScenes,
+                           final TaskScenes taskScenes){
         this.primaryStage = primaryStage;
 
 
         this.boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
+
+        this.createTaskCtrl = taskScenes.getCreateTask().getKey();
+        this.createTask = new Scene(taskScenes.getCreateTask().getValue());
 
         this.createListCtrl = listScenes.getCreateList().getKey();
         this.createList = new Scene(listScenes.getCreateList().getValue());
@@ -125,9 +130,10 @@ public class MainCtrl {
     /**
      * Changes the scene to the popup that allows users to create a new task and name it.
      */
-    public void showCreateTask() {
+    public void showCreateTask(final ListCtrl ctrl) {
         primaryStage.setTitle("Talio: Create Task");
         primaryStage.setScene(createTask);
+        createTaskCtrl.setListCtrl(ctrl);
     }
 
     /**

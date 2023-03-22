@@ -1,9 +1,13 @@
 package client.scenes;
 
+import client.utils.TaskListUtils;
 import commons.Task;
+import commons.TaskList;
 import javafx.fxml.FXML;
 import javafx.scene.text.Text;
 
+import javax.inject.Inject;
+import java.util.List;
 import java.util.Objects;
 
 public class CardCtrl {
@@ -11,13 +15,20 @@ public class CardCtrl {
     @FXML
     public Text text;
 
+    private ListCtrl listController;
+    private TaskListUtils taskListUtils;
+
     /**
      * This initializes the card using a task
      * @param task the task used for initialization
      */
-    public void initialize(final Task task) {
+    @Inject
+    public void initialize(final Task task, final ListCtrl listCtrl,
+                           final TaskListUtils listUtils) {
         this.task= task;
         this.text.setText(task.getName());
+        this.listController = listCtrl;
+        this.taskListUtils = listUtils;
     }
 
     /**
@@ -38,5 +49,33 @@ public class CardCtrl {
     @Override
     public int hashCode() {
         return Objects.hash(task);
+    }
+
+    public boolean moveUp() {
+        TaskList taskList = listController.getTaskList();
+
+        List<Task> tasks = taskList.getTasks();
+        int index = tasks.indexOf(task);
+        if(index > 0) {
+            taskListUtils.reorderTask(listController.getBoardID(), taskList.id, task.id, index-1);
+            listController.refresh(taskList, listController.getBoardID());
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean moveDown() {
+        TaskList taskList = listController.getTaskList();
+
+        List<Task> tasks = taskList.getTasks();
+        int index = tasks.indexOf(task);
+        if(index < tasks.size()-1) {
+            taskListUtils.reorderTask(listController.getBoardID(), taskList.id, task.id, index+1);
+            listController.refresh(taskList, listController.getBoardID());
+            return true;
+        } else {
+            return false;
+        }
     }
 }

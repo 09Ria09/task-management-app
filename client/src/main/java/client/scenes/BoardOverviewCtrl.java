@@ -37,6 +37,8 @@ public class BoardOverviewCtrl implements Initializable {
     private final Map<Long, ListCtrl> listsMap;
     private long currentBoardId;
 
+    private List<TaskList> taskLists;
+
     @FXML
     private HBox listsContainer;
 
@@ -45,6 +47,7 @@ public class BoardOverviewCtrl implements Initializable {
         this.mainCtrl = mainCtrl;
         this.server = server;
         this.listsMap = new HashMap<>();
+        this.taskLists = new ArrayList<>();
     }
 
     /**
@@ -66,8 +69,7 @@ public class BoardOverviewCtrl implements Initializable {
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(() -> refresh()); // Platform.runLater() had to be used to prevent
-                // thread-caused errors
+                refresh();
             }
         }, 0, 500);
     }
@@ -77,12 +79,15 @@ public class BoardOverviewCtrl implements Initializable {
      * @param taskList the list to be added
      */
     public void addList(final TaskList taskList) {
+        taskLists.add(taskList);
         var kids = listsContainer.getChildren();
         var listLoader = new FXMLLoader(getClass().getResource("List.fxml"));
         try {
             Node list = listLoader.load();
             ListCtrl listCtrl = listLoader.getController();
-            listCtrl.refresh(taskList);
+            listCtrl.refresh(taskList, currentBoardId);
+            listCtrl.setServer(server);
+            listCtrl.passMain(mainCtrl);
             if (!kids.isEmpty()) {
                 var lb = kids.get(kids.size() - 1).getLayoutBounds();
                 var lx = kids.get(kids.size() - 1).getLayoutX();
@@ -100,7 +105,7 @@ public class BoardOverviewCtrl implements Initializable {
     }
 
     public void addTask() {
-        mainCtrl.showCreateTask();
+        //mainCtrl.showCreateTask();
     }
 
     public void deleteList() {
@@ -126,10 +131,12 @@ public class BoardOverviewCtrl implements Initializable {
      * This method refreshes the board overview.
      */
     public void refresh() {
-        var data = server.getLists(currentBoardId);
-        //System.out.println(data);
-        data = FXCollections.observableList(data);
-        refreshLists(data);
+        Platform.runLater(()->{
+            taskLists = server.getLists(currentBoardId);
+            //System.out.println(data);
+            var data = FXCollections.observableList(taskLists);
+            refreshLists(data);
+        });
     }
 
     /**
@@ -137,6 +144,7 @@ public class BoardOverviewCtrl implements Initializable {
      * @param lists the list of lists
      */
     private void refreshLists(final List<TaskList> lists) {
+        this.taskLists = lists;
         List<Long> listsId = lists.stream().map(taskList -> taskList.id).toList();
         Iterator<Map.Entry<Long, ListCtrl>> iter=listsMap.entrySet().iterator();
         while (iter.hasNext()){
@@ -165,5 +173,9 @@ public class BoardOverviewCtrl implements Initializable {
     public void reset(){
         listsContainer.getChildren().clear();
         listsMap.clear();
+    }
+
+    public List<TaskList> getTaskLists() {
+        return taskLists;
     }
 }
