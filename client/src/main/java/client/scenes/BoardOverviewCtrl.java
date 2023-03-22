@@ -60,6 +60,9 @@ public class BoardOverviewCtrl implements Initializable {
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
         setCurrentBoardId(1);
+        if(server.isTalioServer().isPresent()){
+            return;
+        }
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -122,10 +125,7 @@ public class BoardOverviewCtrl implements Initializable {
     /**
      * This method refreshes the board overview.
      */
-    private void refresh() {
-        if(server.isTalioServer().isPresent()){
-            return;
-        }
+    public void refresh() {
         var data = server.getLists(currentBoardId);
         //System.out.println(data);
         data = FXCollections.observableList(data);
@@ -160,5 +160,10 @@ public class BoardOverviewCtrl implements Initializable {
 
     public void setCurrentBoardId(final long currentBoardId) {
         this.currentBoardId = currentBoardId;
+    }
+
+    public void reset(){
+        listsContainer.getChildren().clear();
+        listsMap.clear();
     }
 }
