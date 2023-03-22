@@ -1,5 +1,7 @@
 package client.scenes;
 
+import client.utils.ServerUtils;
+import com.google.inject.Inject;
 import commons.Task;
 import commons.TaskList;
 import javafx.fxml.FXML;
@@ -18,7 +20,7 @@ import java.util.*;
 
 public class ListCtrl implements Initializable {
     private static final DataFormat taskCustom = new DataFormat("task.custom");
-
+    private MainCtrl mainCtrl;
     @FXML
     ListView<Task> list;
     @FXML
@@ -26,6 +28,10 @@ public class ListCtrl implements Initializable {
 
     @FXML
     VBox vBox;
+
+    public void passMain(MainCtrl mainCtrl) {
+        this.mainCtrl = mainCtrl;
+    }
 
     private void setDragHandlers(final ListView<Task> list) {
         list.setOnDragDetected(event -> dragDetected(list, event));
@@ -129,6 +135,9 @@ public class ListCtrl implements Initializable {
      * @param task the task to be added
      */
     public void addCard(final Task task) {
+        if (list == null) {
+            list = new ListView<Task>();
+        }
         list.getItems().add(task);
     }
 
@@ -136,7 +145,6 @@ public class ListCtrl implements Initializable {
      * this adds a task to a specific list
      */
     public void addCard() {
-        MainCtrl mainCtrl = new MainCtrl();
         mainCtrl.showCreateTask();
     }
 
