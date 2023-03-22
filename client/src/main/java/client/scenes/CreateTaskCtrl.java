@@ -8,6 +8,7 @@ import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextArea;
 import javafx.stage.Modality;
 
 public class CreateTaskCtrl {
@@ -20,7 +21,7 @@ public class CreateTaskCtrl {
     private TextField taskName;
 
     @FXML
-    private TextField taskDesc;
+    private TextArea taskDesc;
 
     //this sets up the server, mainctrl and listctrl variables
     @Inject
