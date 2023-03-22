@@ -1,6 +1,8 @@
 package client.scenes;
 
 import client.utils.TaskListUtils;
+import client.utils.TaskUtils;
+import com.google.inject.Inject;
 import commons.Task;
 import commons.TaskList;
 import javafx.fxml.FXML;
@@ -30,9 +32,15 @@ public class ListCtrl implements Initializable {
     private TaskList taskList;
     private long boardID;
     private TaskListUtils taskListUtils;
+    private TaskUtils taskUtils;
 
-    public ListCtrl(TaskListUtils taskListUtils) {
+    @Inject
+    public ListCtrl(TaskListUtils taskListUtils, TaskUtils taskUtils) {
         this.taskListUtils = taskListUtils;
+        this.taskUtils = taskUtils;
+    }
+
+    public ListCtrl() {
     }
 
     public void passMain(final MainCtrl mainCtrl) {
@@ -147,6 +155,8 @@ public class ListCtrl implements Initializable {
             list = new ListView<Task>();
         }
         list.getItems().add(task);
+        taskUtils.addTask(boardID, taskList.id, task);
+
     }
 
     /**
