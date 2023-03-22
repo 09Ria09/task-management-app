@@ -138,11 +138,13 @@ public class BoardOverviewCtrl implements Initializable {
      */
     private void refreshLists(final List<TaskList> lists) {
         List<Long> listsId = lists.stream().map(taskList -> taskList.id).toList();
-        for (Map.Entry<Long, ListCtrl> list : listsMap.entrySet()) {
+        Iterator<Map.Entry<Long, ListCtrl>> iter=listsMap.entrySet().iterator();
+        while (iter.hasNext()){
             // this removes any lists in excess
-            if (!listsId.contains(list.getKey())) {
-                listsContainer.getChildren().remove(list.getValue().getRoot());
-                listsMap.remove(list.getKey());
+            var current=iter.next();
+            if (!listsId.contains(current.getKey())) {
+                listsContainer.getChildren().remove(current.getValue().getRoot());
+                iter.remove();
             }
         }
 
