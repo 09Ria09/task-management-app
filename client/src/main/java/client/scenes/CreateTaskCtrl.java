@@ -24,7 +24,8 @@ public class CreateTaskCtrl {
 
     //this sets up the server, mainctrl and listctrl variables
     @Inject
-    public CreateTaskCtrl(final ServerUtils server, final MainCtrl mainCtrl, final ListCtrl listCtrl) {
+    public CreateTaskCtrl(final ServerUtils server, final MainCtrl mainCtrl,
+                          final ListCtrl listCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
         this.listCtrl = listCtrl;
