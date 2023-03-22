@@ -83,7 +83,8 @@ public class BoardOverviewCtrl implements Initializable {
         try {
             Node list = listLoader.load();
             ListCtrl listCtrl = listLoader.getController();
-            listCtrl.refresh(taskList, currentBoardId, server);
+            listCtrl.refresh(taskList, currentBoardId);
+            listCtrl.setServer(server);
             listCtrl.passMain(mainCtrl);
             if (!kids.isEmpty()) {
                 var lb = kids.get(kids.size() - 1).getLayoutBounds();
@@ -157,7 +158,8 @@ public class BoardOverviewCtrl implements Initializable {
                 if (!listsMap.containsKey(list.id)) // if the list is new
                     addList(list); // simply add it
                 else { // if the list was already there
-                    listsMap.get(list.id).refresh(list, currentBoardId, server);
+                    listsMap.get(list.id).refresh(list, currentBoardId);
+                    listsMap.get(list.id).setServer(server);
                 }
             }
         });

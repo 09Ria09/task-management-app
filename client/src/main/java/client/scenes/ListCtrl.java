@@ -131,15 +131,7 @@ public class ListCtrl implements Initializable {
     /**
      * This refreshes the tasks of the list.
      * @param newTaskList the list for which the tasks must be refreshed.
-     */
-    public void refresh(final TaskList newTaskList, final long boardID, final ServerUtils server) {
-        this.server = server;
-        this.taskListUtils = new TaskListUtils(server);
-        this.taskUtils = new TaskUtils(server);
-        refresh(newTaskList, boardID);
-    }
-
-    public void refresh(final TaskList newTaskList, final long boardID) {
+     */    public void refresh(final TaskList newTaskList, final long boardID) {
         this.boardID = boardID;
         this.taskList = newTaskList;
         if (!Objects.equals(title.getText(), newTaskList.getName())) // if the title is different
@@ -184,5 +176,11 @@ public class ListCtrl implements Initializable {
 
     public long getBoardID() {
         return boardID;
+    }
+
+    public void setServer(final ServerUtils server) {
+        this.server = server;
+        this.taskUtils = new TaskUtils(server);
+        this.taskListUtils = new TaskListUtils(server);
     }
 }
