@@ -133,20 +133,10 @@ public class ListCtrl implements Initializable {
      * @param newTaskList the list for which the tasks must be refreshed.
      */
     public void refresh(final TaskList newTaskList, final long boardID, final ServerUtils server) {
-        this.boardID = boardID;
-        this.taskList = newTaskList;
         this.server = server;
         this.taskListUtils = new TaskListUtils(server);
         this.taskUtils = new TaskUtils(server);
-        if (!Objects.equals(title.getText(), newTaskList.getName())) // if the title is different
-            title.setText(newTaskList.getName()); // update it
-
-        list.getItems().retainAll(newTaskList.getTasks()); // retain only the tasks
-        // that are also in newTaskList
-        for (Task task : newTaskList.getTasks()) { // go through all the received tasks
-            if (!list.getItems().contains(task)) // if this task isn't there
-                list.getItems().add(task); // add it
-        }
+        refresh(newTaskList, boardID);
     }
 
     public void refresh(final TaskList newTaskList, final long boardID) {
