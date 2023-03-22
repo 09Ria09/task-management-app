@@ -136,7 +136,8 @@ public class ListCtrl implements Initializable {
      * this adds a task to a specific list
      */
     public void addCard() {
-        //TODO this should bring the create task
+        MainCtrl mainCtrl = new MainCtrl();
+        mainCtrl.showCreateTask();
     }
 
     public VBox getRoot() {

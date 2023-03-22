@@ -14,6 +14,7 @@ public class CreateTaskCtrl {
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+    private final ListCtrl listCtrl;
 
     @FXML
     private TextField taskName;
@@ -21,11 +22,12 @@ public class CreateTaskCtrl {
     @FXML
     private TextField taskDesc;
 
-    //this sets up the server and mainctrl variables
+    //this sets up the server, mainctrl and listctrl variables
     @Inject
-    public CreateTaskCtrl(final ServerUtils server, final MainCtrl mainCtrl) {
+    public CreateTaskCtrl(final ServerUtils server, final MainCtrl mainCtrl, final ListCtrl listCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
+        this.listCtrl = listCtrl;
 
     }
 
@@ -41,7 +43,7 @@ public class CreateTaskCtrl {
     public void confirm() {
         try {
             Task task = getTask();
-            //MainCtrl.getBoardOverviewCtrl().getList(listid).addTask(task);
+            listCtrl.addCard(task);
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);

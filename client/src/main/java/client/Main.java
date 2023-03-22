@@ -18,6 +18,7 @@ package client;
 import client.scenes.*;
 import client.utils.ListScenes;
 import client.utils.ServerScenes;
+import client.utils.TaskScenes;
 import com.google.inject.Injector;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -53,8 +54,10 @@ public class Main extends Application {
         var listScenes = new ListScenes(createList, deleteList, renameList);
         var serverScenes = new ServerScenes(serverSelection, wrongServer,
                 serverTimeout, serverDown);
+        var createTask = FXML.load(CreateTaskCtrl.class, "client", "scenes", "CreateTask.fxml");
+        var taskScenes = new TaskScenes(createTask);
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage,lists, listScenes, serverScenes);
+        mainCtrl.initialize(primaryStage,lists, listScenes, serverScenes, taskScenes);
     }
 }
