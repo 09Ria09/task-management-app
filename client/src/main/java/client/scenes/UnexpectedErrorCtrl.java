@@ -4,12 +4,12 @@ package client.scenes;
 import javax.inject.Inject;
 
 
-public class ServerDownCtrl {
+public class UnexpectedErrorCtrl {
 
     private final MainCtrl mainCtrl;
 
     @Inject
-    public ServerDownCtrl(final MainCtrl mainCtrl) {
+    public UnexpectedErrorCtrl(final MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
     }
 
