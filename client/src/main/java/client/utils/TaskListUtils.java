@@ -126,11 +126,11 @@ public class TaskListUtils {
         return null;
     }
 
-    public TaskList reorderTask(final long boardId,final long taskListId,
+    public TaskList reorderTask(final long boardId, final long taskListId,
                                 final long taskID, final int newIndex) {
         String serverAddress = server.getServerAddress();
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/boards/" + boardId + "/" + taskListId + "/reorder/" + taskID)
+                .path("api/lists/" + boardId + "/" + taskListId + "/reorder/" + taskID)
                 .queryParam("newIndex", newIndex)
                 .request()
                 .accept(APPLICATION_JSON)

@@ -11,7 +11,7 @@
             <Font size="17.0" />
          </font></Text>
       <Button layoutX="99.0" layoutY="38.0" mnemonicParsing="false" pickOnBounds="false" style="-fx-background-color: #282E58;" text="Edit" textFill="WHITE" />
-      <Button layoutX="43.0" layoutY="38.0" mnemonicParsing="false" pickOnBounds="false" style="-fx-background-color: #282E58;" text="↑" textFill="WHITE" />
-      <Button layoutX="14.0" layoutY="38.0" mnemonicParsing="false" pickOnBounds="false" style="-fx-background-color: #282E58;" text="↓" textFill="WHITE" />
+      <Button layoutX="43.0" layoutY="38.0" mnemonicParsing="false" onAction="#moveUp" pickOnBounds="false" style="-fx-background-color: #282E58;" text="↑" textFill="WHITE" />
+      <Button layoutX="14.0" layoutY="38.0" mnemonicParsing="false" onAction="#moveDown" pickOnBounds="false" style="-fx-background-color: #282E58;" text="↓" textFill="WHITE" />
    </children>
 </Pane>

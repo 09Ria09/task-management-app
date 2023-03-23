@@ -5,6 +5,7 @@ import client.utils.TaskListUtils;
 import client.utils.TaskUtils;
 import commons.Task;
 import commons.TaskList;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -17,6 +18,8 @@ import javafx.scene.text.Text;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -34,28 +37,28 @@ public class ListCtrl implements Initializable {
     private long boardID;
     private TaskListUtils taskListUtils;
     private TaskUtils taskUtils;
-
     private ServerUtils server;
 
 
     public ListCtrl() {
         this.taskListUtils = new TaskListUtils(new ServerUtils());
-        this.taskUtils = new TaskUtils(new ServerUtils());;
+        this.taskUtils = new TaskUtils(new ServerUtils());
     }
 
     public void passMain(final MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
     }
 
-    private void setDragHandlers(final ListView<Task> list) {
-        list.setOnDragDetected(event -> dragDetected(list, event));
-        list.setOnDragEntered(event -> dragEntered(list, event));
-        list.setOnDragOver(event -> dragOver(list, event));
-        list.setOnDragExited(event -> dragExited(list, event));
-        list.setOnDragDropped(event -> dragDropped(list, event));
-        list.setOnDragDone(event -> dragDone(list, event));
+    private void setDragHandlers(final ListCtrl listCtrl) {
+        list.setOnDragDetected(event -> dragDetected(listCtrl, event));
+        list.setOnDragEntered(event -> dragEntered(listCtrl, event));
+        list.setOnDragOver(event -> dragOver(listCtrl, event));
+        list.setOnDragExited(event -> dragExited(listCtrl, event));
+        list.setOnDragDropped(event -> dragDropped(listCtrl, event));
+        list.setOnDragDone(event -> dragDone(listCtrl, event));
     }
-    public void dragDetected(final ListView<Task> lv, final MouseEvent event) {
+    public void dragDetected(final ListCtrl listCtrl, final MouseEvent event) {
+        ListView<Task> lv = listCtrl.list;
         Dragboard dragboard = lv.startDragAndDrop(TransferMode.MOVE);
         ClipboardContent cc = new ClipboardContent();
         if (lv.getSelectionModel().getSelectedItem() == null)
@@ -65,36 +68,46 @@ public class ListCtrl implements Initializable {
         dragboard.setContent(cc);
         event.consume();
     }
-    public void dragEntered(final ListView<Task> lv, final DragEvent event) {
+    public void dragEntered(final ListCtrl listCtrl, final DragEvent event) {
+        ListView<Task> lv = listCtrl.list;
         lv.setStyle("-fx-effect: innershadow(gaussian, rgba(0,0,0,0.8), 20, 0, 0, 0);");
         event.consume();
     }
 
-    public void dragExited(final ListView<Task> lv, final DragEvent event) {
+    public void dragExited(final ListCtrl listCtrl, final DragEvent event) {
+        ListView<Task> lv = listCtrl.list;
         lv.setStyle("-fx-effect: none;");
         event.consume();
     }
 
-    public void dragOver(final ListView<Task> lv, final DragEvent event) {
+    public void dragOver(final ListCtrl listCtrl, final DragEvent event) {
+        ListView<Task> lv = listCtrl.list;
         if (event.getDragboard().hasContent(taskCustom))
             event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
         event.consume();
     }
 
-    public void dragDropped(final ListView<Task> lv, final DragEvent event) {
+    public void dragDropped(final ListCtrl listCtrl, final DragEvent event) {
+        ListView<Task> lv = listCtrl.list;
         if (event.getDragboard().hasContent(taskCustom)) {
-            lv.getItems().add((Task) event.getDragboard().getContent(taskCustom));
+            Task task = (Task) event.getDragboard().getContent(taskCustom);
+            lv.getItems().add(task);
+
             event.setDropCompleted(true);
         } else
             event.setDropCompleted(false);
         event.consume();
     }
 
-    public void dragDone(final ListView<Task> lv, final DragEvent event) {
+    public void dragDone(final ListCtrl listCtrl, final DragEvent event) {
+        ListView<Task> lv = listCtrl.list;
         Task selectedTask = lv.getSelectionModel().getSelectedItem();
         if (selectedTask != null && event.getTransferMode() == TransferMode.MOVE &&
             event.getEventType()==DragEvent.DRAG_DONE) {
             lv.getItems().remove(selectedTask);
+
+            taskUtils.deleteTask(listCtrl.boardID, listCtrl.taskList.id, selectedTask.id);
+            taskUtils.addTask(listCtrl.boardID, taskList.id, selectedTask);
         }
         event.consume();
     }
@@ -102,7 +115,7 @@ public class ListCtrl implements Initializable {
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
         ListCtrl controller = this;
-        setDragHandlers(list);
+        setDragHandlers(controller);
         list.setCellFactory(param -> new ListCell<>() {
             @Override
             protected void updateItem(final Task task, final boolean empty) {
@@ -145,6 +158,15 @@ public class ListCtrl implements Initializable {
         }
     }
 
+    public void hardRefresh(final TaskList newTaskList, final long boardID) {
+        this.boardID = boardID;
+        this.taskList = newTaskList;
+        if (!Objects.equals(title.getText(), newTaskList.getName())) // if the title is different
+            title.setText(newTaskList.getName()); // update it
+
+        list.getItems().setAll(newTaskList.getTasks());// Change the tasklist to the new tasklist
+    }
+
     /**
      * this adds a task to a specific list
      *
@@ -156,7 +178,6 @@ public class ListCtrl implements Initializable {
         }
         list.getItems().add(task);
         taskUtils.addTask(boardID, this.getTaskList().id, task);
-
     }
 
     /**

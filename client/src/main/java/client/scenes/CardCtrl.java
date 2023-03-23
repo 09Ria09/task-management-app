@@ -58,7 +58,7 @@ public class CardCtrl {
         int index = tasks.indexOf(task);
         if(index > 0) {
             taskListUtils.reorderTask(listController.getBoardID(), taskList.id, task.id, index-1);
-            listController.refresh(taskList, listController.getBoardID());
+            listController.hardRefresh(taskList, listController.getBoardID());
             return true;
         } else {
             return false;
@@ -72,7 +72,7 @@ public class CardCtrl {
         int index = tasks.indexOf(task);
         if(index < tasks.size()-1) {
             taskListUtils.reorderTask(listController.getBoardID(), taskList.id, task.id, index+1);
-            listController.refresh(taskList, listController.getBoardID());
+            listController.hardRefresh(taskList, listController.getBoardID());
             return true;
         } else {
             return false;
