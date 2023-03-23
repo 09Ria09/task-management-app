@@ -3,6 +3,7 @@ package client.scenes;
 import client.utils.ServerUtils;
 import client.utils.TaskListUtils;
 import client.utils.TaskUtils;
+import client.utils.customExceptions.TaskException;
 import commons.Task;
 import commons.TaskList;
 import javafx.fxml.FXML;
@@ -14,7 +15,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.input.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-
+import javafx.scene.control.Alert;
+import javafx.stage.Modality;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
@@ -151,11 +153,18 @@ public class ListCtrl implements Initializable {
      * @param task the task to be added
      */
     public void addCard(final Task task) {
-        if (list == null) {
-            list = new ListView<Task>();
+        try {
+            if (list == null) {
+                list = new ListView<Task>();
+            }
+            list.getItems().add(task);
+            taskUtils.addTask(boardID, this.getTaskList().id, task);
+        } catch (TaskException e) {
+            var alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
         }
-        list.getItems().add(task);
-        taskUtils.addTask(boardID, this.getTaskList().id, task);
 
     }
 
