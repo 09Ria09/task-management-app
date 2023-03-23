@@ -115,6 +115,7 @@ public class MainCtrl {
      */
     public void showBoardOverview() {
         primaryStage.setTitle("Talio: Board Overview");
+        boardOverviewCtrl.refreshTimer(500);
         primaryStage.setScene(boardOverview);
     }
 

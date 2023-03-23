@@ -3,6 +3,7 @@ package client.scenes;
 import client.utils.ServerUtils;
 import client.utils.TaskListUtils;
 import client.utils.TaskUtils;
+import com.google.inject.Inject;
 import client.utils.customExceptions.TaskException;
 import commons.Task;
 import commons.TaskList;
@@ -39,13 +40,11 @@ public class ListCtrl implements Initializable {
 
     private ServerUtils server;
 
-
-    public ListCtrl() {
-        this.taskListUtils = new TaskListUtils(new ServerUtils());
-        this.taskUtils = new TaskUtils(new ServerUtils());;
-    }
-
-    public void passMain(final MainCtrl mainCtrl) {
+    @Inject
+    public ListCtrl(final MainCtrl mainCtrl, final TaskListUtils taskListUtils,
+                    final TaskUtils taskUtils) {
+        this.taskListUtils = taskListUtils;
+        this.taskUtils = taskUtils;
         this.mainCtrl = mainCtrl;
     }
 
@@ -132,8 +131,10 @@ public class ListCtrl implements Initializable {
 
     /**
      * This refreshes the tasks of the list.
+     *
      * @param newTaskList the list for which the tasks must be refreshed.
-     */    public void refresh(final TaskList newTaskList, final long boardID) {
+     */
+    public void refresh(final TaskList newTaskList, final long boardID) {
         this.boardID = boardID;
         this.taskList = newTaskList;
         if (!Objects.equals(title.getText(), newTaskList.getName())) // if the title is different
