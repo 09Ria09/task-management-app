@@ -18,6 +18,7 @@ package client.scenes;
 import client.utils.ServerUtils;
 import client.utils.TaskListUtils;
 import client.utils.TaskUtils;
+import client.utils.customExceptions.TaskListException;
 import com.google.inject.Inject;
 import commons.TaskList;
 import javafx.application.Platform;
@@ -26,7 +27,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
 
 import java.io.IOException;
 import java.net.URL;
@@ -35,6 +38,7 @@ import java.util.*;
 public class BoardOverviewCtrl implements Initializable {
 
     private final ServerUtils server;
+    private final TaskListUtils taskListUtils;
     private final MainCtrl mainCtrl;
     private final Map<Long, ListCtrl> listsMap;
     private long currentBoardId;
@@ -50,6 +54,7 @@ public class BoardOverviewCtrl implements Initializable {
     public BoardOverviewCtrl(final ServerUtils server, final MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
+        this.taskListUtils = new TaskListUtils(server);
         this.listsMap = new HashMap<>();
         this.taskLists = new ArrayList<>();
         refreshTimer = new Timer();
@@ -143,7 +148,14 @@ public class BoardOverviewCtrl implements Initializable {
      */
     public void refresh() {
         Platform.runLater(() -> {
-            taskLists = server.getLists(currentBoardId);
+            try {
+                taskLists = taskListUtils.getTaskLists(currentBoardId);
+            } catch (TaskListException e) {
+                var alert = new Alert(Alert.AlertType.ERROR);
+                alert.initModality(Modality.APPLICATION_MODAL);
+                alert.setContentText(e.getMessage());
+                alert.showAndWait();
+            }
             //System.out.println(data);
             var data = FXCollections.observableList(taskLists);
             refreshLists(data);

@@ -39,7 +39,7 @@ public class TaskListUtils {
             throws TaskListException {
         String serverAddress = server.getServerAddress();
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/boards/" + boardId + "/tasklists/")
+                .path("api/lists/" + boardId + "/tasklists/")
                 .request()
                 .accept(APPLICATION_JSON) //I think this is where implicit deserialization happens
                 .get();
