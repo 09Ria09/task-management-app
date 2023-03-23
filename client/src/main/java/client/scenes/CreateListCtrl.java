@@ -2,10 +2,14 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import client.utils.TaskListUtils;
+import client.utils.customExceptions.BoardException;
+import client.utils.customExceptions.TaskListException;
 import com.google.inject.Inject;
 import commons.TaskList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import javafx.stage.Modality;
 
 
 public class CreateListCtrl {
@@ -45,14 +49,20 @@ public class CreateListCtrl {
      * Creates a list with the given name
      */
     public void confirm() {
-        listName = listNameInput.getText();
-        boardId = Long.parseLong(boardIdInput.getText());
-        TaskList list = new TaskList(listName);
-        listUtils.createTaskList(boardId, list);
-        listNameInput.clear();
-        boardIdInput.clear();
-        showServerBoards();
-
+        try {
+            listName = listNameInput.getText();
+            boardId = Long.parseLong(boardIdInput.getText());
+            TaskList list = new TaskList(listName);
+            listUtils.createTaskList(boardId, list);
+            listNameInput.clear();
+            boardIdInput.clear();
+            showServerBoards();
+        } catch (BoardException | TaskListException | NumberFormatException e) {
+            var alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
     }
 
     /**

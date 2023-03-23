@@ -55,8 +55,8 @@ public class MainCtrl {
     private ServerTimeoutCtrl serverTimeoutCtrl;
     private Scene serverTimeout;
 
-    private ServerDownCtrl serverDownCtrl;
-    private Scene serverDown;
+    private UnexpectedErrorCtrl unexpectedErrorCtrl;
+    private Scene unexpectedError;
 
 
 
@@ -103,8 +103,8 @@ public class MainCtrl {
         this.serverTimeoutCtrl = serverScenes.getServerTimeout().getKey();
         this.serverTimeout = new Scene(serverScenes.getServerTimeout().getValue());
 
-        this.serverDownCtrl = serverScenes.getServerDown().getKey();
-        this.serverDown = new Scene(serverScenes.getServerDown().getValue());
+        this.unexpectedErrorCtrl = serverScenes.getUnexpectedError().getKey();
+        this.unexpectedError = new Scene(serverScenes.getUnexpectedError().getValue());
 
         showSelectServer();
         primaryStage.show();
@@ -176,10 +176,10 @@ public class MainCtrl {
         primaryStage.setScene(serverTimeout);
     }
     /**
-     * Shows the server down/other errors scene.
+     * Shows the unexpected error scene.
      */
-    public void showServerDown() {
-        primaryStage.setTitle("Talio: server is down");
-        primaryStage.setScene(serverDown);
+    public void showUnexpectedError() {
+        primaryStage.setTitle("Talio: unexpected error");
+        primaryStage.setScene(unexpectedError);
     }
 }
