@@ -92,7 +92,7 @@ public class ServerUtils {
     public List<TaskList> getLists(final Long boardid) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 //endpoint still needs to be created
-                .target(serverAddress).path("api/boards/" + boardid + "/tasklists")
+                .target(serverAddress).path("api/lists/" + boardid + "/tasklists")
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<List<TaskList>>() {

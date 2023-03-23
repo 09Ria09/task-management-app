@@ -4,27 +4,30 @@ import commons.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import server.BoardService;
 import server.TaskService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/api/boards")
+@RequestMapping("/api/tasks")
 public class TaskController {
 
 
-    private TaskService taskService;
+    private final TaskService taskService;
 
     @Autowired
-    public TaskController(final TaskService taskService) {
+    public TaskController(final TaskService taskService, final BoardService boardService) {
         this.taskService = taskService;
+        if(boardService.getBoards().isEmpty()){
+            boardService.createDefaultBoard();
+        }
     }
 
     /**
      * Post util method to add a task to a specific board and list
      *
-     * @param boardid the id from the board you want to add a task to
      * @param boardid the id from the board you want to add a task to
      * @param task    the tasklist that you want to add to board with the given id
      * @return

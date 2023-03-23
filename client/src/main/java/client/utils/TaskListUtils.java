@@ -27,6 +27,9 @@ public class TaskListUtils {
         this.server = server;
     }
 
+
+
+
     /**
      *   Get all lists of a board
      * @param boardId the id of the board
@@ -36,7 +39,7 @@ public class TaskListUtils {
             throws TaskListException {
         String serverAddress = server.getServerAddress();
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/boards/" + boardId + "/tasklists/")
+                .path("api/lists/" + boardId + "/tasklists/")
                 .request()
                 .accept(APPLICATION_JSON) //I think this is where implicit deserialization happens
                 .get();
@@ -59,7 +62,7 @@ public class TaskListUtils {
             throws TaskListException {
         String serverAddress = server.getServerAddress();
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/boards/" + boardId + "/tasklist/" + taskListId)
+                .path("api/lists/" + boardId + "/tasklist/" + taskListId)
                 .request()
                 .accept(APPLICATION_JSON)
                 .get();
