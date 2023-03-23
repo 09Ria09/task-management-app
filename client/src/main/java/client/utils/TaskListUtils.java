@@ -4,8 +4,11 @@ import com.google.inject.Inject;
 import commons.TaskList;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
+
+import java.util.List;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -13,11 +16,6 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 /*
  * !    find a way to pass errors to frontend controllers instead
  * of just printing them
- * !    check if passing of serverAddress is correct and ask for feedback
- * on this aspect  - can't figure out how to properly organize this
- * such that there is one serverAddress that
- * changes everywhere like in a prototype bean
- * !    add method for getting all task lists
  * !    reformat duplicate code
  */
 public class TaskListUtils {
@@ -26,6 +24,26 @@ public class TaskListUtils {
     @Inject
     public TaskListUtils(final ServerUtils server) {
         this.server = server;
+    }
+
+    /**
+     *   Get all lists of a board
+     * @param boardId the id of the board
+     * @return the lists of the board
+     */
+    public List<TaskList> getTaskLists(final long boardId) {
+        String serverAddress = server.getServerAddress();
+        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
+                .path("api/boards/" + boardId + "/tasklists/")
+                .request()
+                .accept(APPLICATION_JSON) //I think this is where implicit deserialization happens
+                .get();
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+            return response.readEntity(new GenericType<List<TaskList>>() {});
+        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
+            System.out.println("Task lists not found");
+        }
+        return null;
     }
 
     /**

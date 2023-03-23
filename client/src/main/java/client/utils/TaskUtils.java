@@ -4,8 +4,11 @@ import com.google.inject.Inject;
 import commons.Task;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
+
+import java.util.List;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -13,14 +16,8 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 /*
  * !    find a way to pass errors to frontend controllers instead
  * of just printing them
- * !    check if passing of serverAddress is correct and ask for feedback
- * on this aspect  - can't figure out how to properly organize this
- * such that there is one serverAddress that
- * changes everywhere like in a prototype bean
- * !    add method for getting all tasks
  * !    reformat duplicate code
- * provide error messages on all ResponseEntities such that
- * response.readEntity(String.class) actually outputs something
+
  */
 public class TaskUtils {
 
@@ -30,6 +27,21 @@ public class TaskUtils {
         this.server = server;
     }
 
+    public List<Task> getTasks(final long boardId, final long taskListId) {
+        String serverAddress = server.getServerAddress();
+        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
+                .path("api/boards" + boardId + "/tasklist" + taskListId + "/tasks")
+                .request()
+                .accept(APPLICATION_JSON)
+                .get();
+
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+            return response.readEntity(new GenericType<List<Task>>() {});
+        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
+            System.out.println("Tasks not found.");
+        }
+        return null;
+    }
     /**
      * Get a specific task from a specific list.
      *
