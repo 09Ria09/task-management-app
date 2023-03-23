@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.text.Text?>
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="150.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.CardCtrl">
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="77.0" prefWidth="150.0" style="-fx-background-radius: 15px; -fx-border-radius: 15px;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.CardCtrl">
    <children>
-      <Text fx:id="text" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You shouldn't see this!" textAlignment="CENTER" wrappingWidth="150.0" />
-      <Button layoutX="99.0" layoutY="61.0" mnemonicParsing="false" pickOnBounds="false" text="Edit" />
-      <Button layoutX="42.0" layoutY="61.0" mnemonicParsing="false" pickOnBounds="false" text="↑" />
-      <Button layoutX="14.0" layoutY="61.0" mnemonicParsing="false" pickOnBounds="false" text="↓" />
+      <Text fx:id="text" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Loading..." textAlignment="CENTER" wrappingWidth="150.0">
+         <font>
+            <Font size="17.0" />
+         </font></Text>
+      <Button layoutX="99.0" layoutY="38.0" mnemonicParsing="false" pickOnBounds="false" style="-fx-background-color: #282E58;" text="Edit" textFill="WHITE" />
+      <Button layoutX="43.0" layoutY="38.0" mnemonicParsing="false" pickOnBounds="false" style="-fx-background-color: #282E58;" text="↑" textFill="WHITE" />
+      <Button layoutX="14.0" layoutY="38.0" mnemonicParsing="false" pickOnBounds="false" style="-fx-background-color: #282E58;" text="↓" textFill="WHITE" />
    </children>
 </Pane>
