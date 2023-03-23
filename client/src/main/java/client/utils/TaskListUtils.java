@@ -28,6 +28,9 @@ public class TaskListUtils {
         this.server = server;
     }
 
+
+
+
     /**
      *   Get a specific list from a board
      * @param boardId the id of the board the list belongs to
@@ -37,7 +40,7 @@ public class TaskListUtils {
     public TaskList getTaskList(final long boardId,final long taskListId) {
         String serverAddress = server.getServerAddress();
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/boards/" + boardId + "/tasklist/" + taskListId)
+                .path("api/lists/" + boardId + "/tasklist/" + taskListId)
                 .request()
                 .accept(APPLICATION_JSON)
                 .get();
@@ -58,7 +61,7 @@ public class TaskListUtils {
     public TaskList createTaskList(final long boardId,final TaskList taskList) {
         String serverAddress = server.getServerAddress();
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/boards/" + boardId + "/tasklist")
+                .path("api/lists/" + boardId + "/tasklist")
                 .request()
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(taskList, APPLICATION_JSON));
@@ -86,7 +89,7 @@ public class TaskListUtils {
     public TaskList renameTaskList(final long boardId,final long taskListId,final String newName) {
         String serverAddress = server.getServerAddress();
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/boards/" + boardId + "/" + taskListId)
+                .path("api/lists/" + boardId + "/" + taskListId)
                 .queryParam("name", newName)
                 .request()
                 .accept(APPLICATION_JSON)
@@ -109,7 +112,7 @@ public class TaskListUtils {
     public TaskList deleteTaskList(final long boardId,final long taskListId) {
         String serverAddress = server.getServerAddress();
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/boards/" + boardId + "/" + taskListId)
+                .path("api/lists/" + boardId + "/" + taskListId)
                 .request()
                 .accept(APPLICATION_JSON)
                 .delete();
@@ -130,7 +133,7 @@ public class TaskListUtils {
                                 final long taskID, final int newIndex) {
         String serverAddress = server.getServerAddress();
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/boards/" + boardId + "/" + taskListId + "/reorder/" + taskID)
+                .path("api/lists/" + boardId + "/" + taskListId + "/reorder/" + taskID)
                 .queryParam("newIndex", newIndex)
                 .request()
                 .accept(APPLICATION_JSON)

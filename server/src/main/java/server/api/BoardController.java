@@ -1,13 +1,11 @@
 package server.api;
 
 import commons.Board;
-import commons.TaskList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import server.BoardService;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -25,7 +23,7 @@ public class BoardController {
     public BoardController(final BoardService boardService) {
         this.boardService = boardService;
         if(this.boardService.getBoards().isEmpty()){
-            createDefaultBoard();
+            this.boardService.createDefaultBoard();
         }
     }
 
@@ -120,16 +118,4 @@ public class BoardController {
             return ResponseEntity.internalServerError().build();
         }
     }
-
-    /**
-     * Creates a default board that contains 3 lists : To Do, In Progress, Done
-     */
-    public void createDefaultBoard(){
-        TaskList todo = new TaskList("To Do");
-        TaskList inprogress = new TaskList("In Progress");
-        TaskList done = new TaskList("Done");
-        Board b = new Board("Main", List.of(todo, inprogress, done), new ArrayList<>());
-        this.boardService.addBoard(b);
-    }
-
 }

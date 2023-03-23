@@ -4,6 +4,7 @@ import commons.TaskList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import server.BoardService;
 import server.ListService;
 
 import java.util.List;
@@ -16,8 +17,11 @@ public class ListController {
     private final ListService listService;
 
     @Autowired
-    public ListController(final ListService listService) {
+    public ListController(final ListService listService, final BoardService boardService) {
         this.listService = listService;
+        if(boardService.getBoards().isEmpty()){
+            boardService.createDefaultBoard();
+        }
     }
 
 
@@ -55,6 +59,7 @@ public class ListController {
             @PathVariable("boardid") final long boardid) {
         try {
             List<TaskList> lists = listService.getLists(boardid);
+            System.out.println(lists.size());
             return ResponseEntity.ok(lists);
         } catch (NoSuchElementException e){
             return ResponseEntity.notFound().build();

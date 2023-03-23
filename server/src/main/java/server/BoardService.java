@@ -1,6 +1,7 @@
 package server;
 
 import commons.Board;
+import commons.TaskList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.database.BoardRepository;
@@ -76,5 +77,16 @@ public class BoardService {
         Board board = getBoard(boardID);
         board.setName(newName);
         boardRepository.save(board);
+    }
+
+    /**
+     * Creates a default board that contains 3 lists : To Do, In Progress, Done
+     */
+    public void createDefaultBoard(){
+        TaskList todo = new TaskList("To Do");
+        TaskList inprogress = new TaskList("In Progress");
+        TaskList done = new TaskList("Done");
+        Board b = new Board("Main", List.of(todo, inprogress, done), new ArrayList<>());
+        this.addBoard(b);
     }
 }

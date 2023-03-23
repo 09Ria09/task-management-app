@@ -41,7 +41,7 @@ public class TaskUtils {
     public Task getTask(final long boardId, final long taskListId, final long taskId) {
         String serverAddress = server.getServerAddress();
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/boards/" + boardId + "/tasklist/" + taskListId + "/task/" + taskId)
+                .path("api/tasks/" + boardId + "/tasklist/" + taskListId + "/task/" + taskId)
                 .request()
                 .accept(APPLICATION_JSON)
                 .get();
@@ -68,7 +68,7 @@ public class TaskUtils {
     public Task addTask(final long boardId, final long taskListId, final Task task) {
         String serverAddress = server.getServerAddress();
         Response response =  ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/boards/" + boardId + "/" + taskListId + "/task")
+                .path("api/tasks/" + boardId + "/" + taskListId + "/task")
                 .request()
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(task, APPLICATION_JSON));
@@ -99,7 +99,7 @@ public class TaskUtils {
                            final long taskId, final String newName) {
         String serverAddress = server.getServerAddress();
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/boards/" + boardId + "/" + taskListId + "/" + taskId)
+                .path("api/tasks/" + boardId + "/" + taskListId + "/" + taskId)
                 .queryParam("name", newName)
                 .request()
                 .accept(APPLICATION_JSON)
@@ -130,7 +130,7 @@ public class TaskUtils {
     public Task deleteTask(final long boardId, final long taskListId, final long taskId) {
         String serverAddress = server.getServerAddress();
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/boards/" + boardId + "/  " + taskListId + "/" + taskId)
+                .path("api/tasks/" + boardId + "/  " + taskListId + "/" + taskId)
                 .request()
                 .accept(APPLICATION_JSON)
                 .delete();
