@@ -203,8 +203,7 @@ public class ListCtrl implements Initializable {
     public void refresh(final TaskList newTaskList, final long boardID) {
         this.boardID = boardID;
         this.taskList = newTaskList;
-        if (!Objects.equals(title.getText(), newTaskList.getName())) // if the title is different
-            title.setText(newTaskList.getName()); // update it
+        nameRefresh(newTaskList.getName(), boardID);
 
         list.getItems().retainAll(newTaskList.getTasks()); // retain only the tasks
         // that are also in newTaskList
@@ -231,10 +230,14 @@ public class ListCtrl implements Initializable {
     public void hardRefresh(final TaskList newTaskList, final long boardID) {
         this.boardID = boardID;
         this.taskList = newTaskList;
-        if (!Objects.equals(title.getText(), newTaskList.getName())) // if the title is different
-            title.setText(newTaskList.getName()); // update it
+        nameRefresh(newTaskList.getName(), boardID);
 
         list.getItems().setAll(newTaskList.getTasks());// Change the tasklist to the new tasklist
+    }
+
+    public void nameRefresh(final String name, final long boardID) {
+        if (!Objects.equals(title.getText(), name)) // if the title is different
+            title.setText(name); // update it
     }
 
     /**
