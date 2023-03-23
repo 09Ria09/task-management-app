@@ -119,7 +119,7 @@ public class BoardOverviewCtrl implements Initializable {
     Currently all it does is switch the scene but
      */
     public void switchServer() {
-        reset();
+        clear();
         mainCtrl.showSelectServer();
         server.disconnect();
     }
@@ -180,7 +180,7 @@ public class BoardOverviewCtrl implements Initializable {
         this.currentBoardId = currentBoardId;
     }
 
-    public void reset() {
+    public void clear() {
         refreshTimer.cancel();
         refreshTimer = new Timer();
         listsContainer.getChildren().clear();
