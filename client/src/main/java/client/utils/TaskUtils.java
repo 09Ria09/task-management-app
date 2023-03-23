@@ -1,26 +1,22 @@
 package client.utils;
 
+import client.utils.customExceptions.TaskException;
 import com.google.inject.Inject;
 import commons.Task;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
+
+import java.util.List;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 //TODO
 /*
- * !    find a way to pass errors to frontend controllers instead
- * of just printing them
- * !    check if passing of serverAddress is correct and ask for feedback
- * on this aspect  - can't figure out how to properly organize this
- * such that there is one serverAddress that
- * changes everywhere like in a prototype bean
- * !    add method for getting all tasks
- * !    reformat duplicate code
- * provide error messages on all ResponseEntities such that
- * response.readEntity(String.class) actually outputs something
+ * !    reformat duplicate code -
+ * either use responsehandler or leave as is
  */
 public class TaskUtils {
 
@@ -30,6 +26,23 @@ public class TaskUtils {
         this.server = server;
     }
 
+    public List<Task> getTasks(final long boardId, final long taskListId)
+            throws TaskException {
+        String serverAddress = server.getServerAddress();
+        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
+                .path("api/boards" + boardId + "/tasklist" + taskListId + "/tasks")
+                .request()
+                .accept(APPLICATION_JSON)
+                .get();
+
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+            return response.readEntity(new GenericType<List<Task>>() {});
+        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
+            throw new TaskException("Tasks not found.");
+        } else {
+            throw new TaskException("An error occurred while fetching the tasks");
+        }
+    }
     /**
      * Get a specific task from a specific list.
      *
@@ -38,7 +51,8 @@ public class TaskUtils {
      * @param taskId  The id of the task.
      * @return The task.
      */
-    public Task getTask(final long boardId, final long taskListId, final long taskId) {
+    public Task getTask(final long boardId, final long taskListId, final long taskId)
+            throws TaskException {
         String serverAddress = server.getServerAddress();
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
                 .path("api/tasks/" + boardId + "/tasklist/" + taskListId + "/task/" + taskId)
@@ -49,13 +63,10 @@ public class TaskUtils {
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             return response.readEntity(Task.class);
         } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            System.out.println("Task not found.");
+            throw new TaskException("Task not found.");
         } else {
-            System.out.println("An error occurred while fetching the task: "
-                    + response.readEntity(String.class));
+            throw new TaskException("An error occurred while fetching the task");
         }
-
-        return null;
     }
 
     /**
@@ -65,7 +76,8 @@ public class TaskUtils {
      * @param task the task to add
      * @return the added task
      */
-    public Task addTask(final long boardId, final long taskListId, final Task task) {
+    public Task addTask(final long boardId, final long taskListId, final Task task)
+            throws TaskException {
         String serverAddress = server.getServerAddress();
         Response response =  ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
                 .path("api/tasks/" + boardId + "/" + taskListId + "/task")
@@ -76,15 +88,12 @@ public class TaskUtils {
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             return response.readEntity(Task.class);
         } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            System.out.println("Board or task list not found.");
+            throw new TaskException("Board or task list not found.");
         } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
-            System.out.println("Bad request: " + response.readEntity(String.class));
+            throw new TaskException("Bad request");
         } else {
-            System.out.println("An error occurred while adding the task: "
-                    + response.readEntity(String.class));
+            throw new TaskException("An error occurred while adding the task");
         }
-
-        return null;
     }
 
     /**
@@ -96,7 +105,8 @@ public class TaskUtils {
      * @return the renamed task
      * */
     public Task renameTask(final long boardId, final long taskListId,
-                           final long taskId, final String newName) {
+                           final long taskId, final String newName)
+            throws TaskException {
         String serverAddress = server.getServerAddress();
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
                 .path("api/tasks/" + boardId + "/" + taskListId + "/" + taskId)
@@ -108,15 +118,12 @@ public class TaskUtils {
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             return response.readEntity(Task.class);
         } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            System.out.println("Task not found.");
+            throw new TaskException("Task not found.");
         } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
-            System.out.println("Bad request: " + response.readEntity(String.class));
+            throw new TaskException("Bad request");
         } else {
-            System.out.println("An error occurred while renaming the task: "
-                    + response.readEntity(String.class));
+            throw new TaskException("An error occurred while renaming the task");
         }
-
-        return null;
     }
 
 
@@ -127,7 +134,8 @@ public class TaskUtils {
      * @param taskId The id of the task.
      * @return The deleted task.
      */
-    public Task deleteTask(final long boardId, final long taskListId, final long taskId) {
+    public Task deleteTask(final long boardId, final long taskListId, final long taskId)
+            throws TaskException {
         String serverAddress = server.getServerAddress();
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
                 .path("api/tasks/" + boardId + "/  " + taskListId + "/" + taskId)
@@ -138,13 +146,10 @@ public class TaskUtils {
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             return response.readEntity(Task.class);
         } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            System.out.println("Task not found.");
+            throw new TaskException("Task not found.");
         } else {
-            System.out.println("An error occurred while deleting the task: "
-                    + response.readEntity(String.class));
+            throw new TaskException("An error occurred while deleting the task");
         }
-
-        return null;
     }
 
 }
