@@ -52,33 +52,14 @@ public class ListCtrl implements Initializable {
     }
 
     private void setDragHandlers(final ListCtrl listCtrl) {
-        list.setOnDragDetected(event -> {
-            try {
-                dragDetected(listCtrl, event);
-            } catch (TaskException | TaskListException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        list.setOnDragDetected(event -> dragDetected(listCtrl, event));
         list.setOnDragEntered(event -> dragEntered(listCtrl, event));
         list.setOnDragOver(event -> dragOver(listCtrl, event));
         list.setOnDragExited(event -> dragExited(listCtrl, event));
-        list.setOnDragDropped(event -> {
-            try {
-                dragDropped(listCtrl, event);
-            } catch (TaskException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        list.setOnDragDone(event -> {
-            try {
-                dragDone(listCtrl, event);
-            } catch (TaskException | TaskListException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        list.setOnDragDropped(event -> dragDropped(listCtrl, event));
+        list.setOnDragDone(event -> dragDone(listCtrl, event));
     }
-    public void dragDetected(final ListCtrl listCtrl, final MouseEvent event)
-            throws TaskException, TaskListException {
+    public void dragDetected(final ListCtrl listCtrl, final MouseEvent event) {
         ListView<Task> lv = listCtrl.list;
         Dragboard dragboard = lv.startDragAndDrop(TransferMode.MOVE);
         ClipboardContent cc = new ClipboardContent();
@@ -90,10 +71,18 @@ public class ListCtrl implements Initializable {
 
         draggedTask = selectedTask;
         totalAmountOfTasks = 0;
-        for(TaskList taskList1 : taskListUtils.getTaskLists(boardID)) {
-            totalAmountOfTasks = totalAmountOfTasks + taskList1.getTasks().size();
+        try {
+            for(TaskList taskList1 : taskListUtils.getTaskLists(boardID)) {
+                totalAmountOfTasks = totalAmountOfTasks + taskList1.getTasks().size();
+            }
+        } catch (TaskListException e) {
+            throw new RuntimeException(e);
         }
-        taskUtils.deleteTask(listCtrl.boardID, listCtrl.taskList.id, selectedTask.id);
+        try {
+            taskUtils.deleteTask(listCtrl.boardID, listCtrl.taskList.id, selectedTask.id);
+        } catch (TaskException e) {
+            throw new RuntimeException(e);
+        }
 
         event.consume();
     }
@@ -125,13 +114,17 @@ public class ListCtrl implements Initializable {
         event.consume();
     }
 
-    public void dragDropped(final ListCtrl listCtrl, final DragEvent event) throws TaskException {
+    public void dragDropped(final ListCtrl listCtrl, final DragEvent event) {
         ListView<Task> lv = listCtrl.list;
         if (event.getDragboard().hasContent(taskCustom)) {
             Task task = (Task) event.getDragboard().getContent(taskCustom);
             lv.getItems().add(task);
 
-            taskUtils.addTask(listCtrl.boardID, taskList.id, task);
+            try {
+                taskUtils.addTask(listCtrl.boardID, taskList.id, task);
+            } catch (TaskException e) {
+                throw new RuntimeException(e);
+            }
 
             event.setDropCompleted(true);
         } else
@@ -145,11 +138,8 @@ public class ListCtrl implements Initializable {
      *
      * @param listCtrl this list controller
      * @param event the drag event
-     * @throws TaskException throws a task exception if it couldn't add the task
-     * @throws TaskListException throws a tasklist exception if it couldn't find the tasklist
      */
-    public void dragDone(final ListCtrl listCtrl, final DragEvent event)
-            throws TaskException, TaskListException {
+    public void dragDone(final ListCtrl listCtrl, final DragEvent event) {
         ListView<Task> lv = listCtrl.list;
         Task selectedTask = lv.getSelectionModel().getSelectedItem();
         if (selectedTask != null && event.getTransferMode() == TransferMode.MOVE &&
@@ -157,11 +147,19 @@ public class ListCtrl implements Initializable {
             lv.getItems().remove(selectedTask);
         } else {
             int count = 0;
-            for(TaskList taskList1 : taskListUtils.getTaskLists(boardID)) {
-                count = count + taskList1.getTasks().size();
+            try {
+                for(TaskList taskList1 : taskListUtils.getTaskLists(boardID)) {
+                    count = count + taskList1.getTasks().size();
+                }
+            } catch (TaskListException e) {
+                throw new RuntimeException(e);
             }
             if(count != totalAmountOfTasks) {
-                taskUtils.addTask(listCtrl.boardID, taskList.id, draggedTask);
+                try {
+                    taskUtils.addTask(listCtrl.boardID, taskList.id, draggedTask);
+                } catch (TaskException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
         event.consume();
