@@ -111,7 +111,7 @@ public class TaskService {
     }
 
     /**
-     * Removes the specified list from the specified board.
+     * Removes the specified task from the specified board.
      * @param boardId the id of the board where the task will be removed.
      * @param listId the id of the list where the task will be removed.
      * @param taskId the task that will be removed from the board.

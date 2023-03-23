@@ -54,6 +54,12 @@ public class CardCtrl {
         return Objects.hash(task);
     }
 
+    /**
+     * This will move the card one position up in the listview
+     * So in the list of tasks of a tasklist it will go 1 index down
+     *
+     * @return it will return a boolean depending if the task could be moved up
+     */
     public boolean moveUp() {
         try {
             TaskList taskList = listController.getTaskList();
@@ -62,7 +68,8 @@ public class CardCtrl {
             if (index > 0) {
                 taskListUtils.reorderTask(listController.getBoardID(),
                         taskList.id, task.id, index - 1);
-                listController.refresh(taskList, listController.getBoardID());
+                taskList.reorder(task.id, index - 1);
+                listController.hardRefresh(taskList, listController.getBoardID());
                 return true;
             } else {
                 return false;
@@ -76,6 +83,12 @@ public class CardCtrl {
         }
     }
 
+    /**
+     * This will move the card one position down in the listview
+     * So in the list of tasks of a tasklist it will go 1 index up
+     *
+     * @return it will return a boolean depending if the task could be moved down
+     */
     public boolean moveDown() {
         try {
             TaskList taskList = listController.getTaskList();
@@ -84,7 +97,8 @@ public class CardCtrl {
             if (index < tasks.size() - 1) {
                 taskListUtils.reorderTask(listController.getBoardID(),
                         taskList.id, task.id, index + 1);
-                listController.refresh(taskList, listController.getBoardID());
+                taskList.reorder(task.id, index + 1);
+                listController.hardRefresh(taskList, listController.getBoardID());
                 return true;
             } else {
                 return false;

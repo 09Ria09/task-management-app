@@ -87,19 +87,19 @@ public class TaskList {
 
 
     public void reorder(final long taskid, final int newIndex) {
-        int index = tasks.indexOf(getTaskById(taskid));
+        var task = getTaskById(taskid);
+        if(task.isEmpty()) {
+            return;
+        }
+
+        int index = tasks.indexOf(task.get());
 
         if(index == newIndex) {
             return;
         }
 
-        if(index > newIndex) {
-            Task temp = tasks.remove(index);
-            tasks.add(newIndex, temp);
-        } else {
-            Task temp = tasks.remove(index);
-            tasks.add(newIndex-1, temp);
-        }
+        Task temp = tasks.remove(index);
+        tasks.add(newIndex, temp);
 
     }
 }

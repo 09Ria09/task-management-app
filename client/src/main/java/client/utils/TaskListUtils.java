@@ -144,7 +144,7 @@ public class TaskListUtils {
                                 final long taskID, final int newIndex) throws TaskListException {
         String serverAddress = server.getServerAddress();
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/boards/" + boardId + "/" + taskListId + "/reorder/" + taskID)
+                .path("api/lists/" + boardId + "/" + taskListId + "/reorder/" + taskID)
                 .queryParam("newIndex", newIndex)
                 .request()
                 .accept(APPLICATION_JSON)
