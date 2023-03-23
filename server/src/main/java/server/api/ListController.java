@@ -154,7 +154,6 @@ public class ListController {
             @RequestParam final int newIndex
     ) {
         try {
-
             TaskList list = listService.reorderTask(boardid, tasklistid, taskid, newIndex);
             return ResponseEntity.ok(list);
         } catch (NoSuchElementException e) {
