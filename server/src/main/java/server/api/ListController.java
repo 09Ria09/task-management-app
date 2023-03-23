@@ -13,7 +13,7 @@ import java.util.NoSuchElementException;
 @RequestMapping("/api/lists")
 public class ListController {
 
-    private ListService listService;
+    private final ListService listService;
 
     @Autowired
     public ListController(final ListService listService) {
@@ -51,7 +51,8 @@ public class ListController {
      * @return a list of tasklists from the corresponding board
      */
     @GetMapping("/{boardid}/tasklists")
-    public ResponseEntity<List> getTaskLists(@PathVariable("boardid") final long boardid) {
+    public ResponseEntity<List<TaskList>> getTaskLists(
+            @PathVariable("boardid") final long boardid) {
         try {
             List<TaskList> lists = listService.getLists(boardid);
             return ResponseEntity.ok(lists);

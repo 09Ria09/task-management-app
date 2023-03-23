@@ -1,7 +1,6 @@
 package server.api;
 
 import commons.Board;
-import commons.Task;
 import commons.TaskList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -52,85 +51,6 @@ public class BoardController {
         try {
             Board board = boardService.getBoard(boardid);
             return ResponseEntity.ok(board);
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    /**
-     * Get util method to get all the tasklists from a specific board
-     *
-     * @param boardid the id of the board that will be accesses
-     * @return a list of tasklists from the corresponding board
-     */
-    @GetMapping("/{boardid}/tasklists")
-    public ResponseEntity<List<TaskList>>
-        getTaskLists(@PathVariable("boardid") final long boardid) {
-        try {
-            List<TaskList> taskLists = boardService.getLists(boardid);
-            return ResponseEntity.ok(taskLists);
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    /**
-     * Get util method for a specific list of a specific board
-     *
-     * @param boardid the id of the board from which we want to access the list
-     * @param taskListid the id of the list that will be accessed
-     * @return the corresponding list from the corresponding board as response entity
-     */
-    @GetMapping("/{boardid}/tasklist/{taskListid}")
-    public ResponseEntity<TaskList> getTaskList(
-            @PathVariable("boardid") final long boardid,
-            @PathVariable("taskListid") final long taskListid
-    ) {
-        try {
-            TaskList taskList = boardService.getList(boardid, taskListid);
-            return ResponseEntity.ok(taskList);
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    /**
-     * Get util method to get all the tasks in a specific list of a specific board
-     *
-     * @param boardid the id of the board from which we want to access the tasks
-     * @param taskListid the id of the list from which we want to access the tasks
-     * @return a list of tasks from the corresponding list and board
-     */
-    @GetMapping("/{boardid}/tasklist/{taskListid}/tasks")
-    public ResponseEntity<List<Task>> getTasks(
-            @PathVariable("boardid") final long boardid,
-            @PathVariable("taskListid") final long taskListid
-    ) {
-        try {
-            List<Task> tasks = boardService.getTasks(boardid, taskListid);
-            return ResponseEntity.ok(tasks);
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    /**
-     * Get util method to get a specific task from a specific tasklist and board
-     *
-     * @param boardid the id of the board from which we want to access the task
-     * @param taskListid the id of the tasklist from which we want to access the task
-     * @param taskid the id of the task we want to access
-     * @return the task corresponding to all the given ids as response entity
-     */
-    @GetMapping("/{boardid}/tasklist/{taskListid}/task/{taskid}")
-    public ResponseEntity<Task> getTask(
-            @PathVariable("boardid") final long boardid,
-            @PathVariable("taskListid") final long taskListid,
-            @PathVariable("taskid") final long taskid
-    ) {
-        try {
-            Task task = boardService.getTask(boardid, taskListid, taskid);
-            return ResponseEntity.ok(task);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }

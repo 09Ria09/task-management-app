@@ -14,7 +14,7 @@ import java.util.NoSuchElementException;
 public class TaskController {
 
 
-    private TaskService taskService;
+    private final TaskService taskService;
 
     @Autowired
     public TaskController(final TaskService taskService) {
