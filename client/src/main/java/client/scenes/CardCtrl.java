@@ -1,10 +1,13 @@
 package client.scenes;
 
 import client.utils.TaskListUtils;
+import client.utils.customExceptions.TaskListException;
 import commons.Task;
 import commons.TaskList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -52,30 +55,47 @@ public class CardCtrl {
     }
 
     public boolean moveUp() {
-        TaskList taskList = listController.getTaskList();
-
-        List<Task> tasks = taskList.getTasks();
-        int index = tasks.indexOf(task);
-        if(index > 0) {
-            taskListUtils.reorderTask(listController.getBoardID(), taskList.id, task.id, index-1);
-            listController.hardRefresh(taskList, listController.getBoardID());
-            return true;
-        } else {
+        try {
+            TaskList taskList = listController.getTaskList();
+            List<Task> tasks = taskList.getTasks();
+            int index = tasks.indexOf(task);
+            if (index > 0) {
+                taskListUtils.reorderTask(listController.getBoardID(),
+                        taskList.id, task.id, index - 1);
+                listController.hardRefresh(taskList, listController.getBoardID());
+                return true;
+            } else {
+                return false;
+            }
+        }catch (TaskListException e){
+            var alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
             return false;
         }
     }
 
     public boolean moveDown() {
-        TaskList taskList = listController.getTaskList();
-
-        List<Task> tasks = taskList.getTasks();
-        int index = tasks.indexOf(task);
-        if(index < tasks.size()-1) {
-            taskListUtils.reorderTask(listController.getBoardID(), taskList.id, task.id, index+1);
-            listController.hardRefresh(taskList, listController.getBoardID());
-            return true;
-        } else {
+        try {
+            TaskList taskList = listController.getTaskList();
+            List<Task> tasks = taskList.getTasks();
+            int index = tasks.indexOf(task);
+            if (index < tasks.size() - 1) {
+                taskListUtils.reorderTask(listController.getBoardID(),
+                        taskList.id, task.id, index + 1);
+                listController.hardRefresh(taskList, listController.getBoardID());
+                return true;
+            } else {
+                return false;
+            }
+        } catch (TaskListException e) {
+            var alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
             return false;
+
         }
     }
 }

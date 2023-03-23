@@ -45,10 +45,10 @@ public class SelectServerCtrl {
                 mainCtrl.showTimeout();
             } else if(result.get().equals("InterruptedException")||
                     result.get().equals("Exception")){
-                mainCtrl.showServerDown();
+                mainCtrl.showUnexpectedError();
             }
         } catch (Exception e) {
-            mainCtrl.showServerDown();
+            mainCtrl.showUnexpectedError();
         }
     }
 

@@ -16,6 +16,8 @@
 package client.scenes;
 
 import client.utils.ServerUtils;
+import client.utils.TaskListUtils;
+import client.utils.TaskUtils;
 import com.google.inject.Inject;
 import commons.TaskList;
 import javafx.application.Platform;
@@ -39,6 +41,8 @@ public class BoardOverviewCtrl implements Initializable {
 
     private List<TaskList> taskLists;
 
+    private Timer refreshTimer;
+
     @FXML
     private HBox listsContainer;
 
@@ -48,6 +52,7 @@ public class BoardOverviewCtrl implements Initializable {
         this.server = server;
         this.listsMap = new HashMap<>();
         this.taskLists = new ArrayList<>();
+        refreshTimer = new Timer();
     }
 
     /**
@@ -63,13 +68,6 @@ public class BoardOverviewCtrl implements Initializable {
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
         setCurrentBoardId(1);
-        new Timer().scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> refresh()); // Platform.runLater() had to be used to prevent
-                // thread-caused errors
-            }
-        }, 0, 500);
     }
 
     /**
@@ -77,15 +75,15 @@ public class BoardOverviewCtrl implements Initializable {
      * @param taskList the list to be added
      */
     public void addList(final TaskList taskList) {
-        taskLists.add(taskList);
         var kids = listsContainer.getChildren();
         var listLoader = new FXMLLoader(getClass().getResource("List.fxml"));
+        listLoader.setControllerFactory(type -> new ListCtrl(mainCtrl, new TaskListUtils(server),
+            new TaskUtils(server)));
         try {
             Node list = listLoader.load();
             ListCtrl listCtrl = listLoader.getController();
             listCtrl.refresh(taskList, currentBoardId);
             listCtrl.setServer(server);
-            listCtrl.passMain(mainCtrl);
             if (!kids.isEmpty()) {
                 var lb = kids.get(kids.size() - 1).getLayoutBounds();
                 var lx = kids.get(kids.size() - 1).getLayoutX();
@@ -121,21 +119,35 @@ public class BoardOverviewCtrl implements Initializable {
     Currently all it does is switch the scene but
      */
     public void switchServer() {
+        clear();
         mainCtrl.showSelectServer();
         server.disconnect();
     }
 
     /**
+     * This creates and runs a refresh timer at a specified period
+     *
+     * @param refreshPeriod the time period in miliseconds
+     */
+    public void refreshTimer(final long refreshPeriod) {
+        refreshTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                refresh();
+            }
+        }, 0, refreshPeriod);
+    }
+
+    /**
      * This method refreshes the board overview.
      */
-    private void refresh() {
-        if(server.isTalioServer().isPresent()){
-            return;
-        }
-        taskLists = server.getLists(currentBoardId);
-        //System.out.println(data);
-        var data = FXCollections.observableList(taskLists);
-        refreshLists(data);
+    public void refresh() {
+        Platform.runLater(() -> {
+            taskLists = server.getLists(currentBoardId);
+            //System.out.println(data);
+            var data = FXCollections.observableList(taskLists);
+            refreshLists(data);
+        });
     }
 
     /**
@@ -143,30 +155,36 @@ public class BoardOverviewCtrl implements Initializable {
      * @param lists the list of lists
      */
     private void refreshLists(final List<TaskList> lists) {
-        this.taskLists = lists;
-        List<Long> listsId = taskLists.stream().map(taskList -> taskList.id).toList();
-        for (Map.Entry<Long, ListCtrl> list : listsMap.entrySet()) {
+        List<Long> listsId = lists.stream().map(taskList -> taskList.id).toList();
+        Iterator<Map.Entry<Long, ListCtrl>> iter=listsMap.entrySet().iterator();
+        while (iter.hasNext()){
             // this removes any lists in excess
-            if (!listsId.contains(list.getKey())) {
-                listsContainer.getChildren().remove(list.getValue().getRoot());
-                listsMap.remove(list.getKey());
+            var current=iter.next();
+            if (!listsId.contains(current.getKey())) {
+                listsContainer.getChildren().remove(current.getValue().getRoot());
+                iter.remove();
             }
         }
-        Platform.runLater(() -> {
-            for (TaskList list : lists) {
-                // this adds or modifies existing lists
-                if (!listsMap.containsKey(list.id)) // if the list is new
-                    addList(list); // simply add it
-                else { // if the list was already there
-                    listsMap.get(list.id).refresh(list, currentBoardId);
-                    listsMap.get(list.id).setServer(server);
-                }
+
+        for (TaskList list : lists) {
+            // this adds or modifies existing lists
+            if (!listsMap.containsKey(list.id)) // if the list is new
+                addList(list); // simply add it
+            else { // if the list was already there
+                listsMap.get(list.id).refresh(list, currentBoardId);
             }
-        });
+        }
     }
 
     public void setCurrentBoardId(final long currentBoardId) {
         this.currentBoardId = currentBoardId;
+    }
+
+    public void clear() {
+        refreshTimer.cancel();
+        refreshTimer = new Timer();
+        listsContainer.getChildren().clear();
+        listsMap.clear();
     }
 
     public List<TaskList> getTaskLists() {

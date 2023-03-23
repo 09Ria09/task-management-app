@@ -3,6 +3,8 @@ package client.scenes;
 import client.utils.ServerUtils;
 import client.utils.TaskListUtils;
 import client.utils.TaskUtils;
+import com.google.inject.Inject;
+import client.utils.customExceptions.TaskException;
 import commons.Task;
 import commons.TaskList;
 import javafx.collections.ObservableList;
@@ -15,7 +17,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.input.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-
+import javafx.scene.control.Alert;
+import javafx.stage.Modality;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -40,12 +43,11 @@ public class ListCtrl implements Initializable {
     private ServerUtils server;
 
 
-    public ListCtrl() {
-        this.taskListUtils = new TaskListUtils(new ServerUtils());
-        this.taskUtils = new TaskUtils(new ServerUtils());
-    }
-
-    public void passMain(final MainCtrl mainCtrl) {
+    @Inject
+    public ListCtrl(final MainCtrl mainCtrl, final TaskListUtils taskListUtils,
+                    final TaskUtils taskUtils) {
+        this.taskListUtils = taskListUtils;
+        this.taskUtils = taskUtils;
         this.mainCtrl = mainCtrl;
     }
 
@@ -55,7 +57,13 @@ public class ListCtrl implements Initializable {
         list.setOnDragOver(event -> dragOver(listCtrl, event));
         list.setOnDragExited(event -> dragExited(listCtrl, event));
         list.setOnDragDropped(event -> dragDropped(listCtrl, event));
-        list.setOnDragDone(event -> dragDone(listCtrl, event));
+        list.setOnDragDone(event -> {
+            try {
+                dragDone(listCtrl, event);
+            } catch (TaskException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
     public void dragDetected(final ListCtrl listCtrl, final MouseEvent event) {
         ListView<Task> lv = listCtrl.list;
@@ -99,7 +107,7 @@ public class ListCtrl implements Initializable {
         event.consume();
     }
 
-    public void dragDone(final ListCtrl listCtrl, final DragEvent event) {
+    public void dragDone(final ListCtrl listCtrl, final DragEvent event) throws TaskException {
         ListView<Task> lv = listCtrl.list;
         Task selectedTask = lv.getSelectionModel().getSelectedItem();
         if (selectedTask != null && event.getTransferMode() == TransferMode.MOVE &&
@@ -143,8 +151,10 @@ public class ListCtrl implements Initializable {
 
     /**
      * This refreshes the tasks of the list.
+     *
      * @param newTaskList the list for which the tasks must be refreshed.
-     */    public void refresh(final TaskList newTaskList, final long boardID) {
+     */
+    public void refresh(final TaskList newTaskList, final long boardID) {
         this.boardID = boardID;
         this.taskList = newTaskList;
         if (!Objects.equals(title.getText(), newTaskList.getName())) // if the title is different
@@ -173,11 +183,18 @@ public class ListCtrl implements Initializable {
      * @param task the task to be added
      */
     public void addCard(final Task task) {
-        if (list == null) {
-            list = new ListView<Task>();
+        try {
+            if (list == null) {
+                list = new ListView<Task>();
+            }
+            list.getItems().add(task);
+            taskUtils.addTask(boardID, this.getTaskList().id, task);
+        } catch (TaskException e) {
+            var alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
         }
-        list.getItems().add(task);
-        taskUtils.addTask(boardID, this.getTaskList().id, task);
     }
 
     /**

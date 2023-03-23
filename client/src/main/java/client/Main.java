@@ -49,10 +49,11 @@ public class Main extends Application {
         var wrongServer = FXML.load(WrongServerCtrl.class, "client", "scenes", "WrongServer.fxml");
         var serverTimeout = FXML.load(ServerTimeoutCtrl.class, "client",
                 "scenes", "ConnectionTimeout.fxml");
-        var serverDown = FXML.load(ServerDownCtrl.class, "client", "scenes", "ServerDown.fxml");
+        var unexpectedError = FXML.load(UnexpectedErrorCtrl.class, "client",
+                "scenes", "UnexpectedError.fxml");
         var listScenes = new ListScenes(createList, deleteList, renameList);
         var serverScenes = new ServerScenes(serverSelection, wrongServer,
-                serverTimeout, serverDown);
+                serverTimeout, unexpectedError);
         var createTask = FXML.load(CreateTaskCtrl.class, "client", "scenes", "CreateTask.fxml");
         var taskScenes = new TaskScenes(createTask);
 
