@@ -58,7 +58,7 @@ public class TaskListUtils {
     public TaskList createTaskList(final long boardId,final TaskList taskList) {
         String serverAddress = server.getServerAddress();
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/boards/" + boardId + "/tasklist")
+            .path("api/lists/" + boardId + "/tasklist")
                 .request()
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(taskList, APPLICATION_JSON));

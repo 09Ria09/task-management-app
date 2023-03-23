@@ -16,6 +16,8 @@
 package client.scenes;
 
 import client.utils.ServerUtils;
+import client.utils.TaskListUtils;
+import client.utils.TaskUtils;
 import com.google.inject.Inject;
 import commons.TaskList;
 import javafx.application.Platform;
@@ -39,6 +41,8 @@ public class BoardOverviewCtrl implements Initializable {
 
     private List<TaskList> taskLists;
 
+    private Timer refreshTimer;
+
     @FXML
     private HBox listsContainer;
 
@@ -48,6 +52,7 @@ public class BoardOverviewCtrl implements Initializable {
         this.server = server;
         this.listsMap = new HashMap<>();
         this.taskLists = new ArrayList<>();
+        refreshTimer = new Timer();
     }
 
     /**
@@ -63,15 +68,6 @@ public class BoardOverviewCtrl implements Initializable {
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
         setCurrentBoardId(1);
-        if(server.isTalioServer().isPresent()){
-            return;
-        }
-        new Timer().scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                refresh();
-            }
-        }, 0, 500);
     }
 
     /**
@@ -79,15 +75,15 @@ public class BoardOverviewCtrl implements Initializable {
      * @param taskList the list to be added
      */
     public void addList(final TaskList taskList) {
-        taskLists.add(taskList);
         var kids = listsContainer.getChildren();
         var listLoader = new FXMLLoader(getClass().getResource("List.fxml"));
+        listLoader.setControllerFactory(type -> new ListCtrl(mainCtrl, new TaskListUtils(server),
+            new TaskUtils(server)));
         try {
             Node list = listLoader.load();
             ListCtrl listCtrl = listLoader.getController();
             listCtrl.refresh(taskList, currentBoardId);
             listCtrl.setServer(server);
-            listCtrl.passMain(mainCtrl);
             if (!kids.isEmpty()) {
                 var lb = kids.get(kids.size() - 1).getLayoutBounds();
                 var lx = kids.get(kids.size() - 1).getLayoutX();
@@ -123,15 +119,30 @@ public class BoardOverviewCtrl implements Initializable {
     Currently all it does is switch the scene but
      */
     public void switchServer() {
+        reset();
         mainCtrl.showSelectServer();
         server.disconnect();
+    }
+
+    /**
+     * This creates and runs a refresh timer at a specified period
+     *
+     * @param refreshPeriod the time period in miliseconds
+     */
+    public void refreshTimer(final long refreshPeriod) {
+        refreshTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                refresh();
+            }
+        }, 0, refreshPeriod);
     }
 
     /**
      * This method refreshes the board overview.
      */
     public void refresh() {
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             taskLists = server.getLists(currentBoardId);
             //System.out.println(data);
             var data = FXCollections.observableList(taskLists);
@@ -144,7 +155,6 @@ public class BoardOverviewCtrl implements Initializable {
      * @param lists the list of lists
      */
     private void refreshLists(final List<TaskList> lists) {
-        this.taskLists = lists;
         List<Long> listsId = lists.stream().map(taskList -> taskList.id).toList();
         Iterator<Map.Entry<Long, ListCtrl>> iter=listsMap.entrySet().iterator();
         while (iter.hasNext()){
@@ -161,7 +171,7 @@ public class BoardOverviewCtrl implements Initializable {
             if (!listsMap.containsKey(list.id)) // if the list is new
                 addList(list); // simply add it
             else { // if the list was already there
-                listsMap.get(list.id).refresh(list);
+                listsMap.get(list.id).refresh(list, currentBoardId);
             }
         }
     }
@@ -170,7 +180,9 @@ public class BoardOverviewCtrl implements Initializable {
         this.currentBoardId = currentBoardId;
     }
 
-    public void reset(){
+    public void reset() {
+        refreshTimer.cancel();
+        refreshTimer = new Timer();
         listsContainer.getChildren().clear();
         listsMap.clear();
     }
