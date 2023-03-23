@@ -15,7 +15,6 @@
  */
 package client;
 
-import client.scenes.AddQuoteCtrl;
 import client.scenes.BoardOverviewCtrl;
 import client.scenes.MainCtrl;
 import client.scenes.QuoteOverviewCtrl;
@@ -30,7 +29,6 @@ public class MyModule implements Module {
     @Override
     public void configure(final Binder binder) {
         binder.bind(MainCtrl.class).in(Scopes.SINGLETON);
-        binder.bind(AddQuoteCtrl.class).in(Scopes.SINGLETON);
         binder.bind(QuoteOverviewCtrl.class).in(Scopes.SINGLETON);
         binder.bind(BoardOverviewCtrl.class).in(Scopes.SINGLETON);
         binder.bind(TaskListUtils.class).in(Scopes.SINGLETON);
