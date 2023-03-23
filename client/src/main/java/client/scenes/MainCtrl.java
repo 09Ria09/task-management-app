@@ -177,8 +177,8 @@ public class MainCtrl {
     /**
      * Shows the unexpected error scene.
      */
-    public void showServerDown() {
-        primaryStage.setTitle("Talio: server is down");
+    public void showUnexpectedError() {
+        primaryStage.setTitle("Talio: unexpected error");
         primaryStage.setScene(unexpectedError);
     }
 }
