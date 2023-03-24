@@ -152,4 +152,23 @@ public class TaskUtils {
         }
     }
 
+    public Task renameDescription(long boardId, long taskListId, long taskId, String newDescription) throws TaskException {
+        String serverAddress = server.getServerAddress();
+        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
+                .path("api/tasks/" + boardId + "/" + taskListId + "/desc/" + taskId)
+                .queryParam("description", newDescription)
+                .request()
+                .accept(APPLICATION_JSON)
+                .put(Entity.entity(newDescription, APPLICATION_JSON));
+
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+            return response.readEntity(Task.class);
+        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
+            throw new TaskException("Task not found.");
+        } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
+            throw new TaskException("You inputted a wrong value");
+        } else {
+            throw new TaskException("An error occurred while renaming the task");
+        }
+    }
 }

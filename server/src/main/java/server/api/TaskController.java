@@ -137,4 +137,21 @@ public class TaskController {
         return s == null || s.isEmpty();
     }
 
+    @PutMapping("/{boardid}/{listid}/desc/{taskid}")
+    public ResponseEntity<Task> renameDescription(
+            @PathVariable("boardid") final long boardid,
+            @PathVariable("listid") final long listid,
+            @PathVariable("taskid") final long taskid,
+            @RequestParam final String description
+    ) {
+        try {
+            if (description == null || description.isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
+            Task task = taskService.renameDescription(boardid, listid, taskid, description);
+            return ResponseEntity.ok(task);
+        }
+        catch (NoSuchElementException e) { return ResponseEntity.notFound().build(); }
+        catch (Exception e) { return ResponseEntity.internalServerError().build(); }
+    }
 }

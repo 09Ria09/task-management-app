@@ -11,7 +11,7 @@
          <font>
             <Font size="17.0" />
          </font></Text>
-      <Button layoutX="14.0" layoutY="39.0" mnemonicParsing="false" pickOnBounds="false" style="-fx-background-color: #282E58;" text="Edit" textFill="WHITE" />
+      <Button layoutX="14.0" layoutY="39.0" mnemonicParsing="false" onAction="#editTask" pickOnBounds="false" style="-fx-background-color: #282E58;" text="Edit" textFill="WHITE" />
       <Button layoutX="114.0" layoutY="11.0" mnemonicParsing="false" onAction="#moveUp" pickOnBounds="false" style="-fx-background-color: #282E58;" text="↑" textFill="WHITE" />
       <Button layoutX="114.0" layoutY="39.0" mnemonicParsing="false" onAction="#moveDown" pickOnBounds="false" style="-fx-background-color: #282E58;" text="↓" textFill="WHITE" />
       <Button layoutX="57.0" layoutY="39.0" mnemonicParsing="false" onAction="#deleteTask" style="-fx-background-color: red; -fx-opacity: 80%;" text="Delete">

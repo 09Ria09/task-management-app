@@ -128,4 +128,15 @@ public class TaskService {
         return task;
     }
 
+    public Task renameDescription(long boardid, long listid, long taskid, String description) {
+        Board board = getBoard(boardid);
+        Task task = getTask(boardid, listid, taskid);
+
+        task.setName(description);
+
+        //I am not sure whether this actually updates the list in the board.
+        boardRepository.save(board);
+
+        return task;
+    }
 }

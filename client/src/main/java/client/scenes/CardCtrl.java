@@ -21,6 +21,7 @@ public class CardCtrl {
     @FXML
     public Text text;
 
+    private MainCtrl mainCtrl;
     private ListCtrl listController;
     private TaskListUtils taskListUtils;
     private TaskUtils taskUtils;
@@ -33,13 +34,14 @@ public class CardCtrl {
     @Inject
     public void initialize(final Task task, final ListCtrl listCtrl,
                            final TaskListUtils listUtils, final CustomAlert customAlert,
-                           final TaskUtils taskUtils) {
+                           final TaskUtils taskUtils, final MainCtrl mainCtrl) {
         this.task= task;
         this.text.setText(task.getName());
         this.listController = listCtrl;
         this.taskListUtils = listUtils;
         this.customAlert = customAlert;
         this.taskUtils = taskUtils;
+        this.mainCtrl = mainCtrl;
     }
 
     /**
@@ -129,5 +131,21 @@ public class CardCtrl {
             alert.showAndWait();
             return false;
         }
+    }
+
+    public void editTask() {
+        mainCtrl.showEditTask(this);
+    }
+
+    public Task getTask() {
+        return task;
+    }
+
+    public TaskUtils getTaskUtils() {
+        return taskUtils;
+    }
+
+    public ListCtrl getListController() {
+        return listController;
     }
 }

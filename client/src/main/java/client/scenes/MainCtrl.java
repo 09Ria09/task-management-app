@@ -43,6 +43,9 @@ public class MainCtrl {
 
     private Scene createTask;
 
+    private EditTaskCtrl editTaskCtrl;
+    private Scene editTask;
+
     private DeleteListCtrl deleteListCtrl;
     private Scene deleteList;
 
@@ -88,6 +91,9 @@ public class MainCtrl {
 
         this.createTaskCtrl = taskScenes.getCreateTask().getKey();
         this.createTask = new Scene(taskScenes.getCreateTask().getValue());
+
+        this.editTaskCtrl = taskScenes.getEditTask().getKey();
+        this.editTask = new Scene(taskScenes.getEditTask().getValue());
 
         this.createListCtrl = listScenes.getCreateList().getKey();
         this.createList = new Scene(listScenes.getCreateList().getValue());
@@ -138,6 +144,12 @@ public class MainCtrl {
         primaryStage.setTitle("Talio: Create Task");
         primaryStage.setScene(createTask);
         createTaskCtrl.setListCtrl(ctrl);
+    }
+
+    public void showEditTask(final CardCtrl cardCtrl) {
+        primaryStage.setTitle("Talio : Edit Task");
+        primaryStage.setScene(editTask);
+        editTaskCtrl.setCardCtrl(cardCtrl);
     }
 
     /**
