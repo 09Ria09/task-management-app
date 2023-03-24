@@ -80,6 +80,7 @@ public class ListCtrl implements Initializable {
         if (lv.getSelectionModel().getSelectedItem() == null)
             return;
         var selectedTask=lv.getSelectionModel().getSelectedItem();
+        indexToDrop = lv.getSelectionModel().getSelectedIndex();
         cc.put(taskCustom, selectedTask);
         dragboard.setContent(cc);
 
@@ -183,7 +184,17 @@ public class ListCtrl implements Initializable {
             if(count != totalAmountOfTasks) {
                 try {
                     taskUtils.addTask(listCtrl.boardID, taskList.id, draggedTask);
-                } catch (TaskException e) {
+
+                    TaskList updatedList = taskListUtils.getTaskList(listCtrl.boardID, taskList.id);
+                    Optional<Task> optionalTask =
+                            updatedList.getTaskById(updatedList.findHighestTaskID());
+                    if(optionalTask.isPresent()) {
+                        draggedTask = optionalTask.get();
+                    }
+                    taskListUtils.reorderTask(listCtrl.boardID, taskList.id, draggedTask.id, indexToDrop);
+
+                    taskListUtils.reorderTask(listCtrl.boardID, taskList.id, draggedTask.id, indexToDrop);
+                } catch (TaskException | TaskListException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -221,7 +232,6 @@ public class ListCtrl implements Initializable {
                 } else {
                     indexToDrop = cell.getIndex();
                 }
-                System.out.println(cell.getIndex());
                 event.consume();
             });
             return cell;
