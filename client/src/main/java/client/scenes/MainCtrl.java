@@ -15,10 +15,10 @@
  */
 package client.scenes;
 
-//import client.scene_management.ListScenes;
-import client.scene_management.ListScenes;
-import client.scene_management.ServerScenes;
-import client.scene_management.TaskScenes;
+//import client.sceneManagement.ListScenes;
+import client.sceneManagement.ListScenes;
+import client.sceneManagement.ServerScenes;
+import client.sceneManagement.TaskScenes;
 import client.scenes.connectScenes.SelectServerCtrl;
 import client.scenes.connectScenes.ServerTimeoutCtrl;
 import client.scenes.connectScenes.UnexpectedErrorCtrl;
