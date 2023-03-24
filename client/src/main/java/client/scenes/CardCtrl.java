@@ -1,7 +1,8 @@
 package client.scenes;
 
+import client.CustomAlert;
 import client.utils.TaskListUtils;
-import client.utils.customExceptions.TaskListException;
+import client.customExceptions.TaskListException;
 import commons.Task;
 import commons.TaskList;
 import javafx.fxml.FXML;
@@ -20,6 +21,7 @@ public class CardCtrl {
 
     private ListCtrl listController;
     private TaskListUtils taskListUtils;
+    private CustomAlert customAlert;
 
     /**
      * This initializes the card using a task
@@ -27,11 +29,12 @@ public class CardCtrl {
      */
     @Inject
     public void initialize(final Task task, final ListCtrl listCtrl,
-                           final TaskListUtils listUtils) {
+                           final TaskListUtils listUtils, final CustomAlert customAlert) {
         this.task= task;
         this.text.setText(task.getName());
         this.listController = listCtrl;
         this.taskListUtils = listUtils;
+        this.customAlert = customAlert;
     }
 
     /**
@@ -77,7 +80,8 @@ public class CardCtrl {
         }catch (TaskListException e){
             var alert = new Alert(Alert.AlertType.ERROR);
             alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setContentText(e.getMessage());
+            alert.setHeaderText("Oops, something went wrong!");
+            alert.setContentText("We're sorry :( something went wrong : "+ e.getMessage());
             alert.showAndWait();
             return false;
         }
@@ -104,12 +108,9 @@ public class CardCtrl {
                 return false;
             }
         } catch (TaskListException e) {
-            var alert = new Alert(Alert.AlertType.ERROR);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setContentText(e.getMessage());
+            Alert alert = customAlert.showAlert(e.getMessage());
             alert.showAndWait();
             return false;
-
         }
     }
 }

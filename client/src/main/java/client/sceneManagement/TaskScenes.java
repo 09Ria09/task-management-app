@@ -1,4 +1,4 @@
-package client.utils;
+package client.sceneManagement;
 
 import client.scenes.CreateTaskCtrl;
 import javafx.scene.Parent;

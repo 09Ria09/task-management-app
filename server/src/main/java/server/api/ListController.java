@@ -38,7 +38,7 @@ public class ListController {
             @RequestBody final TaskList taskList
     ) {
         try{
-            if (taskList == null || taskList.getName() == null) {
+            if (taskList == null || isNullOrEmpty(taskList.getName())) {
                 return ResponseEntity.badRequest().build();
             }
             TaskList createdTaskList = listService.addList(boardid, taskList);
@@ -59,7 +59,6 @@ public class ListController {
             @PathVariable("boardid") final long boardid) {
         try {
             List<TaskList> lists = listService.getLists(boardid);
-            System.out.println(lists.size());
             return ResponseEntity.ok(lists);
         } catch (NoSuchElementException e){
             return ResponseEntity.notFound().build();

@@ -15,10 +15,14 @@
  */
 package client.scenes;
 
-//import client.utils.ListScenes;
-import client.utils.ListScenes;
-import client.utils.ServerScenes;
-import client.utils.TaskScenes;
+//import client.sceneManagement.ListScenes;
+import client.sceneManagement.ListScenes;
+import client.sceneManagement.ServerScenes;
+import client.sceneManagement.TaskScenes;
+import client.scenes.connectScenes.SelectServerCtrl;
+import client.scenes.connectScenes.ServerTimeoutCtrl;
+import client.scenes.connectScenes.UnexpectedErrorCtrl;
+import client.scenes.connectScenes.WrongServerCtrl;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;

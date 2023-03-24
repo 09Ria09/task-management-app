@@ -7,7 +7,7 @@
 <?import javafx.scene.text.Text?>
 
 
-<AnchorPane prefHeight="287.0" prefWidth="544.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.SelectServerCtrl" style="-fx-background-color: #f0f0f0;">
+<AnchorPane prefHeight="287.0" prefWidth="544.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.connectScenes.SelectServerCtrl" style="-fx-background-color: #f0f0f0;">
    <children>
       <Text layoutX="167.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to talio!" textAlignment="CENTER" wrappingWidth="217.673828125">
          <font>

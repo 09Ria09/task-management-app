@@ -1,6 +1,6 @@
 package client.utils;
 
-import client.utils.customExceptions.TaskException;
+import client.customExceptions.TaskException;
 import com.google.inject.Inject;
 import commons.Task;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -90,7 +90,7 @@ public class TaskUtils {
         } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
             throw new TaskException("Board or task list not found.");
         } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
-            throw new TaskException("Bad request");
+            throw new TaskException("You inputted a wrong value");
         } else {
             throw new TaskException("An error occurred while adding the task");
         }
@@ -120,7 +120,7 @@ public class TaskUtils {
         } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
             throw new TaskException("Task not found.");
         } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
-            throw new TaskException("Bad request");
+            throw new TaskException("You inputted a wrong value");
         } else {
             throw new TaskException("An error occurred while renaming the task");
         }

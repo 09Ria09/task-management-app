@@ -39,7 +39,7 @@ public class TaskController {
             @RequestBody final Task task
     ) {
         try {
-            if (task == null || task.getName() == null) {
+            if (task == null ||isNullOrEmpty(task.getName())) {
                 return ResponseEntity.badRequest().build();
             }
             Task createdTask = taskService.addTask(boardid, listid, task);

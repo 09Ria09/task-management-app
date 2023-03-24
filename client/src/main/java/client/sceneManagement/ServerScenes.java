@@ -1,9 +1,9 @@
-package client.utils;
+package client.sceneManagement;
 
-import client.scenes.SelectServerCtrl;
-import client.scenes.UnexpectedErrorCtrl;
-import client.scenes.ServerTimeoutCtrl;
-import client.scenes.WrongServerCtrl;
+import client.scenes.connectScenes.SelectServerCtrl;
+import client.scenes.connectScenes.UnexpectedErrorCtrl;
+import client.scenes.connectScenes.ServerTimeoutCtrl;
+import client.scenes.connectScenes.WrongServerCtrl;
 import javafx.scene.Parent;
 import javafx.util.Pair;
 
