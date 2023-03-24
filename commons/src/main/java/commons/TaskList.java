@@ -102,4 +102,14 @@ public class TaskList {
         tasks.add(newIndex, temp);
 
     }
+
+    public long findHighestTaskID() {
+        long res = -1;
+        for (Task task : tasks) {
+            if (res < task.getId()) {
+                res = task.getId();
+            }
+        }
+        return res;
+    }
 }
