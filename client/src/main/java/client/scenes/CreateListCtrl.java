@@ -2,8 +2,8 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import client.utils.TaskListUtils;
-import client.utils.customExceptions.BoardException;
-import client.utils.customExceptions.TaskListException;
+import client.customExceptions.BoardException;
+import client.customExceptions.TaskListException;
 import com.google.inject.Inject;
 import commons.TaskList;
 import javafx.fxml.FXML;

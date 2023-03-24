@@ -1,6 +1,6 @@
 package client.utils;
 
-import client.utils.customExceptions.TaskException;
+import client.customExceptions.TaskException;
 import com.google.inject.Inject;
 import commons.Task;
 import jakarta.ws.rs.client.ClientBuilder;

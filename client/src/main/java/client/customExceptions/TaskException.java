@@ -1,4 +1,4 @@
-package client.utils.customExceptions;
+package client.customExceptions;
 
 public class TaskException extends Exception{
     public TaskException(final String message){

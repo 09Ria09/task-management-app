@@ -1,7 +1,7 @@
 package client.scenes;
 
 import client.utils.TaskListUtils;
-import client.utils.customExceptions.TaskListException;
+import client.customExceptions.TaskListException;
 import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;

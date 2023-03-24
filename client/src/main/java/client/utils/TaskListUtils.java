@@ -1,7 +1,7 @@
 package client.utils;
 
-import client.utils.customExceptions.BoardException;
-import client.utils.customExceptions.TaskListException;
+import client.customExceptions.BoardException;
+import client.customExceptions.TaskListException;
 import com.google.inject.Inject;
 import commons.TaskList;
 import jakarta.ws.rs.client.ClientBuilder;

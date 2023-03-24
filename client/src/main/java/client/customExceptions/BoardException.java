@@ -1,4 +1,4 @@
-package client.utils.customExceptions;
+package client.customExceptions;
 
 public class BoardException extends Exception{
     public BoardException(final String message){

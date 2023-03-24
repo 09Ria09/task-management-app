@@ -1,6 +1,6 @@
 package client.utils;
 
-import client.utils.customExceptions.BoardException;
+import client.customExceptions.BoardException;
 import com.google.inject.Inject;
 import commons.Board;
 import jakarta.ws.rs.client.ClientBuilder;

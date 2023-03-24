@@ -61,7 +61,7 @@ public class BoardController {
      */
     @PostMapping(path = { "", "/" })
     public ResponseEntity<Board> addBoard(@RequestBody final Board board) {
-        if (board == null || board.getName() == null) {
+        if (board == null || isNullOrEmpty(board.getName())) {
             return ResponseEntity.badRequest().build();
         }
         Board createdBoard = boardService.addBoard(board);
@@ -117,5 +117,9 @@ public class BoardController {
             e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
+    }
+
+    private static boolean isNullOrEmpty(final String s) {
+        return s == null || s.isEmpty();
     }
 }
