@@ -1,6 +1,8 @@
-package client.scenes;
+package client.scenes.connectScenes;
 
 
+
+import client.scenes.MainCtrl;
 
 import javax.inject.Inject;
 
