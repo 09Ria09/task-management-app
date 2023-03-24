@@ -22,7 +22,6 @@ import javafx.scene.control.Alert;
 import javafx.stage.Modality;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -69,7 +68,7 @@ public class ListCtrl implements Initializable {
 
     }
 
-    private void mouseExited(ListCtrl listCtrl, MouseEvent event) {
+    private void mouseExited(final ListCtrl listCtrl, final MouseEvent event) {
         ListView<Task> lv = listCtrl.list;
         lv.getSelectionModel().clearSelection();
     }
@@ -139,7 +138,8 @@ public class ListCtrl implements Initializable {
                 taskUtils.addTask(listCtrl.boardID, taskList.id, task);
                 if(taskList.getTasks().size() > 0 && indexToDrop >= 0) {
                     TaskList updatedList = taskListUtils.getTaskList(listCtrl.boardID, taskList.id);
-                    Optional<Task> optionalTask= updatedList.getTaskById(updatedList.findHighestTaskID());
+                    Optional<Task> optionalTask =
+                            updatedList.getTaskById(updatedList.findHighestTaskID());
                     if(optionalTask.isPresent()) {
                         task = optionalTask.get();
                     }
