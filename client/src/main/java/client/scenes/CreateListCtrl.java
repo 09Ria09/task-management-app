@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.CustomAlert;
 import client.utils.ServerUtils;
 import client.utils.TaskListUtils;
 import client.customExceptions.BoardException;
@@ -9,7 +10,6 @@ import commons.TaskList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
-import javafx.stage.Modality;
 
 
 public class CreateListCtrl {
@@ -17,6 +17,7 @@ public class CreateListCtrl {
     private final ServerUtils server;
     private final TaskListUtils listUtils;
     private final MainCtrl mainCtrl;
+    private final CustomAlert customAlert;
 
     @FXML
     private TextField listNameInput;
@@ -39,10 +40,11 @@ public class CreateListCtrl {
      */
     @Inject
     public CreateListCtrl(final ServerUtils server, final TaskListUtils listUtils,
-                          final MainCtrl mainCtrl) {
+                          final MainCtrl mainCtrl, final CustomAlert customAlert) {
         this.server = server;
         this.listUtils = listUtils;
         this.mainCtrl = mainCtrl;
+        this.customAlert = customAlert;
     }
 
     /**
@@ -58,9 +60,7 @@ public class CreateListCtrl {
             boardIdInput.clear();
             showServerBoards();
         } catch (BoardException | TaskListException | NumberFormatException e) {
-            var alert = new Alert(Alert.AlertType.ERROR);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setContentText(e.getMessage());
+            Alert alert = customAlert.showAlert(e.getMessage());
             alert.showAndWait();
         }
     }

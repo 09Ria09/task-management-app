@@ -91,7 +91,7 @@ public class TaskListUtils {
         } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
             throw new BoardException("Board not found.");
         } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
-            throw new TaskListException("Bad request");
+            throw new TaskListException("You inputted a wrong value");
         } else {
             throw new TaskListException("An error occurred while creating the task list");
         }
@@ -119,7 +119,7 @@ public class TaskListUtils {
         } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
             throw new TaskListException("Task list not found.");
         } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
-            throw new TaskListException("Bad request");
+            throw new TaskListException("You inputted a wrong value");
         } else {
             throw new TaskListException("An error occurred while updating the task list");
         }

@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.CustomAlert;
 import client.utils.ServerUtils;
 import client.utils.TaskListUtils;
 import client.utils.TaskUtils;
@@ -27,6 +28,8 @@ import java.util.ResourceBundle;
 public class ListCtrl implements Initializable {
     private static final DataFormat taskCustom = new DataFormat("task.custom");
     private MainCtrl mainCtrl;
+
+    private final CustomAlert customAlert;
     @FXML
     ListView<Task> list;
     @FXML
@@ -45,10 +48,11 @@ public class ListCtrl implements Initializable {
 
     @Inject
     public ListCtrl(final MainCtrl mainCtrl, final TaskListUtils taskListUtils,
-                    final TaskUtils taskUtils) {
+                    final TaskUtils taskUtils, final CustomAlert customAlert) {
         this.taskListUtils = taskListUtils;
         this.taskUtils = taskUtils;
         this.mainCtrl = mainCtrl;
+        this.customAlert = customAlert;
     }
 
     private void setDragHandlers(final ListCtrl listCtrl) {
@@ -180,7 +184,7 @@ public class ListCtrl implements Initializable {
                         var cardLoader = new FXMLLoader(getClass().getResource("Card.fxml"));
                         Node card = cardLoader.load();
                         CardCtrl cardCtrl = cardLoader.getController();
-                        cardCtrl.initialize(task, controller, taskListUtils);
+                        cardCtrl.initialize(task, controller, taskListUtils, customAlert);
                         setGraphic(card);
                     } catch (IOException e) {
                         throw new RuntimeException(e);

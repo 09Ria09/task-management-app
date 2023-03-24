@@ -68,7 +68,7 @@ public class BoardUtils {
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             return response.readEntity(Board.class);
         } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
-            throw new BoardException("Bad request");
+            throw new BoardException("You inputted a wrong value");
         } else {
             throw new BoardException("An error occurred while adding the board");
         }
@@ -96,7 +96,7 @@ public class BoardUtils {
         } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
             throw new BoardException("Board not found.");
         } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
-            throw new BoardException("Bad request");
+            throw new BoardException("You inputted a wrong value");
         }else {
             throw new BoardException("An error occurred while renaming the board");
         }

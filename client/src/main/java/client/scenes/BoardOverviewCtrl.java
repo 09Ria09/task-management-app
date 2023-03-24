@@ -15,6 +15,7 @@
  */
 package client.scenes;
 
+import client.CustomAlert;
 import client.utils.ServerUtils;
 import client.utils.TaskListUtils;
 import client.utils.TaskUtils;
@@ -29,7 +30,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.HBox;
-import javafx.stage.Modality;
 
 import java.io.IOException;
 import java.net.URL;
@@ -40,6 +40,7 @@ public class BoardOverviewCtrl implements Initializable {
     private final ServerUtils server;
     private final TaskListUtils taskListUtils;
     private final MainCtrl mainCtrl;
+    private final CustomAlert customAlert;
     private final Map<Long, ListCtrl> listsMap;
     private long currentBoardId;
 
@@ -51,13 +52,15 @@ public class BoardOverviewCtrl implements Initializable {
     private HBox listsContainer;
 
     @Inject
-    public BoardOverviewCtrl(final ServerUtils server, final MainCtrl mainCtrl) {
+    public BoardOverviewCtrl(final ServerUtils server, final MainCtrl mainCtrl,
+                             final CustomAlert customAlert) {
         this.mainCtrl = mainCtrl;
         this.server = server;
         this.taskListUtils = new TaskListUtils(server);
         this.listsMap = new HashMap<>();
         this.taskLists = new ArrayList<>();
         refreshTimer = new Timer();
+        this.customAlert = customAlert;
     }
 
     /**
@@ -83,7 +86,7 @@ public class BoardOverviewCtrl implements Initializable {
         var kids = listsContainer.getChildren();
         var listLoader = new FXMLLoader(getClass().getResource("List.fxml"));
         listLoader.setControllerFactory(type -> new ListCtrl(mainCtrl, new TaskListUtils(server),
-            new TaskUtils(server)));
+            new TaskUtils(server), customAlert));
         try {
             Node list = listLoader.load();
             ListCtrl listCtrl = listLoader.getController();
@@ -151,9 +154,7 @@ public class BoardOverviewCtrl implements Initializable {
             try {
                 taskLists = taskListUtils.getTaskLists(currentBoardId);
             } catch (TaskListException e) {
-                var alert = new Alert(Alert.AlertType.ERROR);
-                alert.initModality(Modality.APPLICATION_MODAL);
-                alert.setContentText(e.getMessage());
+                Alert alert = customAlert.showAlert(e.getMessage());
                 alert.showAndWait();
             }
             //System.out.println(data);

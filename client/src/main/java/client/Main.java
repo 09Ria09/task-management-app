@@ -49,8 +49,10 @@ public class Main extends Application {
         var deleteList = FXML.load(DeleteListCtrl.class, "client", "scenes", "DeleteList.fxml");
         var renameList = FXML.load(RenameListCtrl.class, "client", "scenes", "RenameList.fxml");
         var serverSelection = FXML
-                .load(SelectServerCtrl.class, "client", "scenes", "connectScenes", "SelectServer.fxml");
-        var wrongServer = FXML.load(WrongServerCtrl.class, "client", "scenes", "connectScenes", "WrongServer.fxml");
+                .load(SelectServerCtrl.class, "client",
+                        "scenes", "connectScenes", "SelectServer.fxml");
+        var wrongServer = FXML.load(WrongServerCtrl.class, "client",
+                "scenes", "connectScenes", "WrongServer.fxml");
         var serverTimeout = FXML.load(ServerTimeoutCtrl.class, "client",
                 "scenes", "connectScenes", "ConnectionTimeout.fxml");
         var unexpectedError = FXML.load(UnexpectedErrorCtrl.class, "client",
