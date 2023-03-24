@@ -16,9 +16,9 @@
 package client;
 
 import client.scenes.*;
-import client.utils.ListScenes;
-import client.utils.ServerScenes;
-import client.utils.TaskScenes;
+import client.scene_management.ListScenes;
+import client.scene_management.ServerScenes;
+import client.scene_management.TaskScenes;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import javafx.application.Application;

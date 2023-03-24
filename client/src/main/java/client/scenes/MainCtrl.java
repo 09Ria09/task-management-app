@@ -15,10 +15,10 @@
  */
 package client.scenes;
 
-//import client.utils.ListScenes;
-import client.utils.ListScenes;
-import client.utils.ServerScenes;
-import client.utils.TaskScenes;
+//import client.scene_management.ListScenes;
+import client.scene_management.ListScenes;
+import client.scene_management.ServerScenes;
+import client.scene_management.TaskScenes;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
