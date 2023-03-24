@@ -191,9 +191,11 @@ public class ListCtrl implements Initializable {
                     if(optionalTask.isPresent()) {
                         draggedTask = optionalTask.get();
                     }
-                    taskListUtils.reorderTask(listCtrl.boardID, taskList.id, draggedTask.id, indexToDrop);
+                    taskListUtils.reorderTask(listCtrl.boardID, taskList.id,
+                            draggedTask.id, indexToDrop);
 
-                    taskListUtils.reorderTask(listCtrl.boardID, taskList.id, draggedTask.id, indexToDrop);
+                    taskListUtils.reorderTask(listCtrl.boardID, taskList.id,
+                            draggedTask.id, indexToDrop);
                 } catch (TaskException | TaskListException e) {
                     throw new RuntimeException(e);
                 }
