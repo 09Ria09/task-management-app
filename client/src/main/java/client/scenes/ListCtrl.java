@@ -23,6 +23,7 @@ import javafx.stage.Modality;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ListCtrl implements Initializable {
@@ -37,6 +38,7 @@ public class ListCtrl implements Initializable {
     @FXML
     VBox vBox;
 
+    private int indexToDrop;
     private Task draggedTask;
     private int totalAmountOfTasks;
     private TaskList taskList;
@@ -62,7 +64,15 @@ public class ListCtrl implements Initializable {
         list.setOnDragExited(event -> dragExited(listCtrl, event));
         list.setOnDragDropped(event -> dragDropped(listCtrl, event));
         list.setOnDragDone(event -> dragDone(listCtrl, event));
+        list.setOnMouseExited(event -> mouseExited(listCtrl, event));
+
     }
+
+    private void mouseExited(final ListCtrl listCtrl, final MouseEvent event) {
+        ListView<Task> lv = listCtrl.list;
+        lv.getSelectionModel().clearSelection();
+    }
+
     public void dragDetected(final ListCtrl listCtrl, final MouseEvent event) {
         ListView<Task> lv = listCtrl.list;
         Dragboard dragboard = lv.startDragAndDrop(TransferMode.MOVE);
@@ -70,6 +80,7 @@ public class ListCtrl implements Initializable {
         if (lv.getSelectionModel().getSelectedItem() == null)
             return;
         var selectedTask=lv.getSelectionModel().getSelectedItem();
+        indexToDrop = lv.getSelectionModel().getSelectedIndex();
         cc.put(taskCustom, selectedTask);
         dragboard.setContent(cc);
 
@@ -126,7 +137,18 @@ public class ListCtrl implements Initializable {
 
             try {
                 taskUtils.addTask(listCtrl.boardID, taskList.id, task);
-            } catch (TaskException e) {
+                if(taskList.getTasks().size() > 0 && indexToDrop >= 0) {
+                    TaskList updatedList = taskListUtils.getTaskList(listCtrl.boardID, taskList.id);
+                    Optional<Task> optionalTask =
+                            updatedList.getTaskById(updatedList.findHighestTaskID());
+                    if(optionalTask.isPresent()) {
+                        task = optionalTask.get();
+                    }
+                    taskListUtils.reorderTask(listCtrl.boardID, taskList.id, task.id, indexToDrop);
+                    updatedList = taskListUtils.getTaskList(listCtrl.boardID, taskList.id);
+                    hardRefresh(updatedList, listCtrl.boardID);
+                }
+            } catch (TaskException | TaskListException e) {
                 throw new RuntimeException(e);
             }
 
@@ -135,6 +157,7 @@ public class ListCtrl implements Initializable {
             event.setDropCompleted(false);
         event.consume();
     }
+
 
     /**
      * When the drag is done it will clean everything up in the database and overview
@@ -161,7 +184,19 @@ public class ListCtrl implements Initializable {
             if(count != totalAmountOfTasks) {
                 try {
                     taskUtils.addTask(listCtrl.boardID, taskList.id, draggedTask);
-                } catch (TaskException e) {
+
+                    TaskList updatedList = taskListUtils.getTaskList(listCtrl.boardID, taskList.id);
+                    Optional<Task> optionalTask =
+                            updatedList.getTaskById(updatedList.findHighestTaskID());
+                    if(optionalTask.isPresent()) {
+                        draggedTask = optionalTask.get();
+                    }
+                    taskListUtils.reorderTask(listCtrl.boardID, taskList.id,
+                            draggedTask.id, indexToDrop);
+
+                    taskListUtils.reorderTask(listCtrl.boardID, taskList.id,
+                            draggedTask.id, indexToDrop);
+                } catch (TaskException | TaskListException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -173,24 +208,35 @@ public class ListCtrl implements Initializable {
     public void initialize(final URL location, final ResourceBundle resources) {
         ListCtrl controller = this;
         setDragHandlers(controller);
-        list.setCellFactory(param -> new ListCell<>() {
-            @Override
-            protected void updateItem(final Task task, final boolean empty) {
-                super.updateItem(task, empty);
-                if (task == null || empty) {
-                    setGraphic(null);
-                } else {
-                    try {
-                        var cardLoader = new FXMLLoader(getClass().getResource("Card.fxml"));
-                        Node card = cardLoader.load();
-                        CardCtrl cardCtrl = cardLoader.getController();
-                        cardCtrl.initialize(task, controller, taskListUtils, customAlert);
-                        setGraphic(card);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+        list.setCellFactory(lv -> {
+            ListCell<Task> cell = new ListCell<>() {
+                @Override
+                protected void updateItem(final Task task, final boolean empty) {
+                    super.updateItem(task, empty);
+                    if (task == null || empty) {
+                        setGraphic(null);
+                    } else {
+                        try {
+                            var cardLoader = new FXMLLoader(getClass().getResource("Card.fxml"));
+                            Node card = cardLoader.load();
+                            CardCtrl cardCtrl = cardLoader.getController();
+                            cardCtrl.initialize(task, controller, taskListUtils, customAlert);
+                            setGraphic(card);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
-            }
+            };
+            cell.setOnDragEntered(event -> {
+                if(cell.getIndex() >= taskList.getTasks().size()) {
+                    indexToDrop = taskList.getTasks().size();
+                } else {
+                    indexToDrop = cell.getIndex();
+                }
+                event.consume();
+            });
+            return cell;
         });
     }
 
