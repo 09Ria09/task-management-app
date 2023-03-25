@@ -203,4 +203,8 @@ public class BoardOverviewCtrl implements Initializable {
     public List<TaskList> getTaskLists() {
         return taskLists;
     }
+
+    public long getCurrentBoardId() {
+        return this.currentBoardId;
+    }
 }
