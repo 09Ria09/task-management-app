@@ -16,6 +16,7 @@ public class CreateListCtrl {
 
     private final ServerUtils server;
     private final TaskListUtils listUtils;
+    private final BoardOverviewCtrl boardOverviewCtrl;
     private final MainCtrl mainCtrl;
     private final CustomAlert customAlert;
 
@@ -36,13 +37,16 @@ public class CreateListCtrl {
      *
      * @param server
      * @param listUtils
+     * @param boardOverviewCtrl
      * @param mainCtrl
      */
     @Inject
     public CreateListCtrl(final ServerUtils server, final TaskListUtils listUtils,
-                          final MainCtrl mainCtrl, final CustomAlert customAlert) {
+                          final BoardOverviewCtrl boardOverviewCtrl, final MainCtrl mainCtrl,
+                          final CustomAlert customAlert) {
         this.server = server;
         this.listUtils = listUtils;
+        this.boardOverviewCtrl = boardOverviewCtrl;
         this.mainCtrl = mainCtrl;
         this.customAlert = customAlert;
     }
@@ -53,11 +57,10 @@ public class CreateListCtrl {
     public void confirm() {
         try {
             listName = listNameInput.getText();
-            boardId = Long.parseLong(boardIdInput.getText());
+            boardId = boardOverviewCtrl.getCurrentBoardId();
             TaskList list = new TaskList(listName);
             listUtils.createTaskList(boardId, list);
             listNameInput.clear();
-            boardIdInput.clear();
             showServerBoards();
         } catch (BoardException | TaskListException | NumberFormatException e) {
             Alert alert = customAlert.showAlert(e.getMessage());

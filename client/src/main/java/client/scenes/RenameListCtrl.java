@@ -5,7 +5,6 @@ import client.utils.TaskListUtils;
 import client.customExceptions.TaskListException;
 import com.google.inject.Inject;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 
 public class RenameListCtrl {
@@ -14,15 +13,11 @@ public class RenameListCtrl {
     private final CustomAlert customAlert;
 
     @FXML
-    private TextField boardIdInput;
-    @FXML
-    private TextField listIdInput;
-    @FXML
     private TextField listNameInput;
 
-    private long boardId;
-    private long listId;
     private String listName;
+
+    RenameListSingleton renameListSingleton = RenameListSingleton.getInstance();
 
     @Inject
     public RenameListCtrl(final TaskListUtils listUtils, final MainCtrl mainCtrl,
@@ -36,8 +31,6 @@ public class RenameListCtrl {
      * Returns user to board overview
      */
     public void cancel() {
-        boardIdInput.clear();
-        listIdInput.clear();
         listNameInput.clear();
         mainCtrl.showBoardOverview();
     }
@@ -45,19 +38,16 @@ public class RenameListCtrl {
     /**
      * When user hits confirm, it renames the list
      */
-    public void confirm() {
+    public void confirm() throws TaskListException {
         try {
-            boardId = Long.parseLong(boardIdInput.getText());
-            listId = Long.parseLong(listIdInput.getText());
-            listName = listNameInput.getText();
-            listUtils.renameTaskList(boardId, listId, listName);
-            boardIdInput.clear();
-            listIdInput.clear();
+            String newName = listNameInput.getText();
+            long boardId = renameListSingleton.getBoardId();
+            long listId = renameListSingleton.getListId();
+            listUtils.renameTaskList(boardId, listId, newName);
             listNameInput.clear();
             mainCtrl.showBoardOverview();
-        } catch (TaskListException e) {
-            Alert alert = customAlert.showAlert(e.getMessage());
-            alert.showAndWait();
+        } catch(Exception e) {
+            throw new TaskListException("Renaming task list unsuccessful");
         }
     }
 
