@@ -45,6 +45,9 @@ public class ListCtrl implements Initializable {
     private TaskUtils taskUtils;
     private ServerUtils server;
 
+    RenameListSingleton renameListSingleton = RenameListSingleton.getInstance();
+
+
 
     @Inject
     public ListCtrl(final MainCtrl mainCtrl, final TaskListUtils taskListUtils,
@@ -288,4 +291,27 @@ public class ListCtrl implements Initializable {
         this.taskUtils = new TaskUtils(server);
         this.taskListUtils = new TaskListUtils(server);
     }
+
+    /**
+     * deletes list from board by delete button
+     * @throws TaskListException
+     */
+    public void delete() throws TaskListException {
+        long id = getTaskList().id;
+        taskListUtils.deleteTaskList(getBoardID(), id);
+    }
+
+    /**
+     * renames list by button in list that feeds the board id and list id to a singleton
+     * and brings the user to a new scene where they input name and the list is renamed
+     * using that input name and the ids from the RenameListSingleton
+     * @throws TaskListException
+     */
+    public void rename() throws TaskListException {
+        renameListSingleton.setIds(getBoardID(), getTaskList().id);
+        mainCtrl.showRenameList();
+//        System.out.println(newName);
+//        taskListUtils.renameTaskList(getBoardID(), getTaskList().id, newName);
+    }
+
 }

@@ -14,15 +14,11 @@ public class RenameListCtrl {
     private final CustomAlert customAlert;
 
     @FXML
-    private TextField boardIdInput;
-    @FXML
-    private TextField listIdInput;
-    @FXML
     private TextField listNameInput;
 
-    private long boardId;
-    private long listId;
     private String listName;
+
+    RenameListSingleton renameListSingleton = RenameListSingleton.getInstance();
 
     @Inject
     public RenameListCtrl(final TaskListUtils listUtils, final MainCtrl mainCtrl,
@@ -36,8 +32,6 @@ public class RenameListCtrl {
      * Returns user to board overview
      */
     public void cancel() {
-        boardIdInput.clear();
-        listIdInput.clear();
         listNameInput.clear();
         mainCtrl.showBoardOverview();
     }
@@ -45,20 +39,13 @@ public class RenameListCtrl {
     /**
      * When user hits confirm, it renames the list
      */
-    public void confirm() {
-        try {
-            boardId = Long.parseLong(boardIdInput.getText());
-            listId = Long.parseLong(listIdInput.getText());
-            listName = listNameInput.getText();
-            listUtils.renameTaskList(boardId, listId, listName);
-            boardIdInput.clear();
-            listIdInput.clear();
-            listNameInput.clear();
-            mainCtrl.showBoardOverview();
-        } catch (TaskListException e) {
-            Alert alert = customAlert.showAlert(e.getMessage());
-            alert.showAndWait();
-        }
+    public void confirm() throws TaskListException {
+        String newName = listNameInput.getText();
+        long boardId = renameListSingleton.getBoardId();
+        long listId = renameListSingleton.getListId();
+        listUtils.renameTaskList(boardId, listId, newName);
+        listNameInput.clear();
+        mainCtrl.showBoardOverview();
     }
 
 }

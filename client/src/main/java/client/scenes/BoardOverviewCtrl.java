@@ -112,9 +112,7 @@ public class BoardOverviewCtrl implements Initializable {
         //mainCtrl.showCreateTask();
     }
 
-    public void deleteList() {
-        mainCtrl.showDeleteList();
-    }
+
 
     public void renameList() {
         mainCtrl.showRenameList();
