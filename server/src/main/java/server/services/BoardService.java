@@ -89,4 +89,18 @@ public class BoardService {
         Board b = new Board("Main", List.of(todo, inprogress, done), new ArrayList<>());
         this.addBoard(b);
     }
+
+    /**
+     * Adds a member to a board, if the board exists.
+     * @param boardID the id of the board to add the member to.
+     * @param memberName the name of the member to add.
+     * @return the board with the new member.
+     */
+    public Board joinBoard(final long boardID, final String memberName) {
+        Board board = getBoard(boardID);
+        board.getBoardMembers().add(memberName);
+        boardRepository.save(board);
+        return board;
+    }
+
 }

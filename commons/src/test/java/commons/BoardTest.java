@@ -94,7 +94,7 @@ public class BoardTest {
     void testToString() {
         board.addTaskList(taskList1);
         String boardString = "Board (" + board.getId() + ") : Test board\nLists:\n"
-                + taskList1.toString() + "\nTags:\n";
+                + taskList1.toString() + "\nTags:\n" + "Members:\n";
         assertEquals(boardString, board.toString());
     }
 }

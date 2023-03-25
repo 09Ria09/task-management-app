@@ -16,6 +16,8 @@ public class Board {
 
     private String name;
     private String inviteKey;
+    @ElementCollection
+    private List<String> boardMembers;
     @OneToMany(cascade=CascadeType.ALL, orphanRemoval = true)
     private List<TaskList> taskLists;
     @OneToMany(cascade=CascadeType.ALL)
@@ -26,6 +28,7 @@ public class Board {
         this.taskLists = listTaskList;
         this.tags = tags;
         this.inviteKey = generateInviteKey();
+        this.boardMembers= new ArrayList<>();
     }
 
     public Board() {
@@ -115,6 +118,17 @@ public class Board {
         return inviteKey;
     }
 
+    /**
+     * method used for returning the board members of a board
+     * this way we can try and identify further which boards
+     * a user (which should be identified further by their connection
+     * string) has joined
+     * @return
+     */
+    public List<String> getBoardMembers() {
+        return boardMembers;
+    }
+
     @Override
     public boolean equals(final Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
@@ -135,6 +149,11 @@ public class Board {
         res = res + "Tags:\n";
         for(Tag tag : this.tags) {
             res = res + tag.toString() + "\n";
+        }
+
+        res = res + "Members:\n";
+        for(String member : this.boardMembers) {
+            res = res + member + "\n";
         }
 
         return res;

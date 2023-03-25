@@ -27,10 +27,9 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import java.util.List;
 import java.util.Optional;
 
-import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
+
 
 public class ServerUtils {
 
@@ -81,23 +80,6 @@ public class ServerUtils {
         }
     }
 
-    /**
-     * Get all lists from a specific board.
-     *
-     * @param boardid The id of the board.
-     * @return A list of lists.'
-     * I KEPT THIS ONE HERE JUST SO THAT THE BUILD RUNS
-     * THIS IS NOT THE FINAL VERSION OF THIS METHOD
-     */
-    public List<TaskList> getLists(final Long boardid) {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                //endpoint still needs to be created
-                .target(serverAddress).path("api/lists/" + boardid + "/tasklists")
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .get(new GenericType<List<TaskList>>() {
-                });
-    }
     /**
      * Set the server address
      * @param serverAddress the server address
