@@ -1,10 +1,9 @@
 package server.api;
 
 import commons.Board;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import server.BoardService;
+import server.services.BoardService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -19,7 +18,7 @@ public class BoardController {
      * Initialize the Board Controller. If the JPA Repository is empty, a default board is created
      * @param boardService the service used to interact with the JPA Repository
      */
-    @Autowired
+
     public BoardController(final BoardService boardService) {
         this.boardService = boardService;
         if(this.boardService.getBoards().isEmpty()){

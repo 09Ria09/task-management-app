@@ -1,11 +1,10 @@
 package server.api;
 
 import commons.Task;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import server.BoardService;
-import server.TaskService;
+import server.services.BoardService;
+import server.services.TaskService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -17,7 +16,7 @@ public class TaskController {
 
     private final TaskService taskService;
 
-    @Autowired
+
     public TaskController(final TaskService taskService, final BoardService boardService) {
         this.taskService = taskService;
         if(boardService.getBoards().isEmpty()){
