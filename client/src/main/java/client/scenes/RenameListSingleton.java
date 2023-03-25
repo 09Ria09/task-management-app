@@ -16,7 +16,7 @@ public class RenameListSingleton {
      * @param boardId id of board that the list to be renamed belongs to.
      * @param listId id of list to be renamed
      */
-    public void setIds(long boardId, long listId) {
+    public void setIds(final long boardId, final long listId) {
         this.boardId = boardId;
         this.listId = listId;
     }

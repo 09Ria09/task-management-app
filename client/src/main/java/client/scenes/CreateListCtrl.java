@@ -42,7 +42,8 @@ public class CreateListCtrl {
      */
     @Inject
     public CreateListCtrl(final ServerUtils server, final TaskListUtils listUtils,
-                          BoardOverviewCtrl boardOverviewCtrl, final MainCtrl mainCtrl, final CustomAlert customAlert) {
+                          final BoardOverviewCtrl boardOverviewCtrl, final MainCtrl mainCtrl,
+                          final CustomAlert customAlert) {
         this.server = server;
         this.listUtils = listUtils;
         this.boardOverviewCtrl = boardOverviewCtrl;

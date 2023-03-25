@@ -5,7 +5,6 @@ import client.utils.TaskListUtils;
 import client.customExceptions.TaskListException;
 import com.google.inject.Inject;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 
 public class RenameListCtrl {
