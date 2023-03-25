@@ -15,7 +15,7 @@ public class Board {
     public long id;
 
     private String name;
-
+    private String inviteKey;
     @OneToMany(cascade=CascadeType.ALL, orphanRemoval = true)
     private List<TaskList> taskLists;
     @OneToMany(cascade=CascadeType.ALL)
@@ -25,6 +25,7 @@ public class Board {
         this.name = name;
         this.taskLists = listTaskList;
         this.tags = tags;
+        this.inviteKey = generateInviteKey();
     }
 
     public Board() {
@@ -79,6 +80,39 @@ public class Board {
 
     public void removeTag(final Tag tag) {
         tags.remove(tag);
+    }
+
+    /**
+     *  This basically generates a random string of two uppercase letters
+     *  for the invite key so that it is nice and easy to remember
+     * @return a new string of two uppercase letters chosen at random
+     */
+    private String createKeyPart() {
+        String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        char[] keyCharacters = new char[2];
+        for(int i = 0; i < 2; i++) {
+            int randomIndex = (int) (Math.random() * alphabet.length());
+            keyCharacters[i] = alphabet.charAt(randomIndex);
+        }
+        return new String(keyCharacters);
+    }
+
+    /**
+     * this generates the actual invite key for a board
+     * @return a string of the form "123XD" where the first three
+     * digits are just the board id
+     */
+    private String generateInviteKey() {
+        return String.format("%03d", id) + createKeyPart();
+    }
+
+    /**
+     * method used for getting the invite key of a board
+     * used for copying the invite key in the overview
+     * @return the invite key of a board
+     */
+    public String getInviteKey() {
+        return inviteKey;
     }
 
     @Override

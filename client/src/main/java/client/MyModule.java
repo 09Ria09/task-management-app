@@ -17,7 +17,6 @@ package client;
 
 import client.scenes.BoardOverviewCtrl;
 import client.scenes.MainCtrl;
-import client.scenes.QuoteOverviewCtrl;
 import client.utils.ServerUtils;
 import client.utils.TaskListUtils;
 import com.google.inject.Binder;
@@ -29,7 +28,6 @@ public class MyModule implements Module {
     @Override
     public void configure(final Binder binder) {
         binder.bind(MainCtrl.class).in(Scopes.SINGLETON);
-        binder.bind(QuoteOverviewCtrl.class).in(Scopes.SINGLETON);
         binder.bind(BoardOverviewCtrl.class).in(Scopes.SINGLETON);
         binder.bind(TaskListUtils.class).in(Scopes.SINGLETON);
         binder.bind(ServerUtils.class).in(Scopes.SINGLETON);
