@@ -112,9 +112,7 @@ public class BoardOverviewCtrl implements Initializable {
         //mainCtrl.showCreateTask();
     }
 
-    public void deleteList() {
-        mainCtrl.showDeleteList();
-    }
+
 
     public void renameList() {
         mainCtrl.showRenameList();
@@ -202,5 +200,9 @@ public class BoardOverviewCtrl implements Initializable {
 
     public List<TaskList> getTaskLists() {
         return taskLists;
+    }
+
+    public long getCurrentBoardId() {
+        return this.currentBoardId;
     }
 }
