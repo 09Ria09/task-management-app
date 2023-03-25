@@ -39,12 +39,16 @@ public class RenameListCtrl {
      * When user hits confirm, it renames the list
      */
     public void confirm() throws TaskListException {
-        String newName = listNameInput.getText();
-        long boardId = renameListSingleton.getBoardId();
-        long listId = renameListSingleton.getListId();
-        listUtils.renameTaskList(boardId, listId, newName);
-        listNameInput.clear();
-        mainCtrl.showBoardOverview();
+        try {
+            String newName = listNameInput.getText();
+            long boardId = renameListSingleton.getBoardId();
+            long listId = renameListSingleton.getListId();
+            listUtils.renameTaskList(boardId, listId, newName);
+            listNameInput.clear();
+            mainCtrl.showBoardOverview();
+        } catch(Exception e) {
+            throw new TaskListException("Renaming task list unsuccessful");
+        }
     }
 
 }

@@ -297,8 +297,12 @@ public class ListCtrl implements Initializable {
      * @throws TaskListException
      */
     public void delete() throws TaskListException {
-        long id = getTaskList().id;
-        taskListUtils.deleteTaskList(getBoardID(), id);
+        try {
+            long id = getTaskList().id;
+            taskListUtils.deleteTaskList(getBoardID(), id);
+        } catch (Exception e) {
+            throw new TaskListException("Deleting task list unsuccessful");
+        }
     }
 
     /**
@@ -308,10 +312,12 @@ public class ListCtrl implements Initializable {
      * @throws TaskListException
      */
     public void rename() throws TaskListException {
-        renameListSingleton.setIds(getBoardID(), getTaskList().id);
-        mainCtrl.showRenameList();
-//        System.out.println(newName);
-//        taskListUtils.renameTaskList(getBoardID(), getTaskList().id, newName);
+        try {
+            renameListSingleton.setIds(getBoardID(), getTaskList().id);
+            mainCtrl.showRenameList();
+        } catch (Exception e) {
+            throw new TaskListException("Loading rename task list scene unsuccessful");
+        }
     }
 
 }
