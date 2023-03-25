@@ -128,7 +128,8 @@ public class TaskService {
         return task;
     }
 
-    public Task renameDescription(long boardid, long listid, long taskid, String description) {
+    public Task renameDescription(final long boardid, final long listid,
+                                  final long taskid, final String description) {
         Board board = getBoard(boardid);
         Task task = getTask(boardid, listid, taskid);
 

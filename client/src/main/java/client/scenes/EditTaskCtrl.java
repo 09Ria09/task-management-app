@@ -77,7 +77,7 @@ public class EditTaskCtrl {
     }
 
 
-    public void setCardCtrl(CardCtrl cardCtrl) {
+    public void setCardCtrl(final CardCtrl cardCtrl) {
         this.cardCtrl = cardCtrl;
     }
 

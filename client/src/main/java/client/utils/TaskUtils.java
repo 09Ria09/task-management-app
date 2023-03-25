@@ -152,7 +152,9 @@ public class TaskUtils {
         }
     }
 
-    public Task renameDescription(long boardId, long taskListId, long taskId, String newDescription) throws TaskException {
+    public Task renameDescription(final long boardId, final long taskListId,
+                                  final long taskId,
+                                  final String newDescription) throws TaskException {
         String serverAddress = server.getServerAddress();
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
                 .path("api/tasks/" + boardId + "/" + taskListId + "/desc/" + taskId)
