@@ -8,15 +8,8 @@
         <TextField fx:id="newTaskName" layoutX="23.0" layoutY="69.0" prefHeight="25.0" prefWidth="167.0" promptText="Task Name" />
         <TextArea fx:id="newTaskDesc" layoutX="24.0" layoutY="102.0" prefHeight="247.0" prefWidth="395.0" promptText="Task Description" />
         <Label alignment="CENTER" layoutX="212.0" layoutY="14.0" prefHeight="41.0" prefWidth="178.0" style="-fx-font-size: 30;" text="Create Task" />
-<!--        <ListView editable="true" layoutX="429.0" layoutY="103.0" prefHeight="207.0" prefWidth="149.0" />-->
-<!--        <Button layoutX="469.0" layoutY="316.0" mnemonicParsing="false" text="Add Label" />-->
-<!--        <Label alignment="CENTER" layoutX="452.0" layoutY="71.0" prefHeight="21.0" prefWidth="104.0" style="-fx-font-size: 15;" text="Labels" />-->
-        <ButtonBar layoutX="219.0" layoutY="349.0" prefHeight="40.0" prefWidth="200.0">
-            <buttons>
-                <Button mnemonicParsing="false" onAction="#cancel" prefHeight="25.0" prefWidth="63.0" text="Cancel" />
-                <Button mnemonicParsing="false" onAction="#confirm" prefHeight="25.0" prefWidth="80.0" text="Confirm" />
-            </buttons>
-        </ButtonBar>
+          <Button layoutX="212.0" layoutY="68.0" mnemonicParsing="false" onAction="#confirmTask" prefHeight="25.0" prefWidth="128.0" text="Change Task Name" />
+          <Button layoutX="33.0" layoutY="354.0" mnemonicParsing="false" onAction="#cancel" prefHeight="25.0" prefWidth="63.0" text="Go Back" />
+          <Button layoutX="300.0" layoutY="353.0" mnemonicParsing="false" onAction="#confirmDesc" prefHeight="26.0" prefWidth="161.0" text="Change Task Description" />
     </children>
 </Pane>
-

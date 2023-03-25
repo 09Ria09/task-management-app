@@ -29,23 +29,18 @@ public class EditTaskCtrl {
     }
 
     public void cancel() {
-        clearFields();
+        newTaskDesc.clear();
+        newTaskName.clear();
         mainCtrl.showBoardOverview();
     }
 
-    public void confirm() {
+    public void confirmTask() {
         try {
             String newName = newTaskName.getText();
-            String newDesc = newTaskDesc.getText();
             TaskUtils taskUtils = cardCtrl.getTaskUtils();
 
             if(newName != null) {
                 taskUtils.renameTask(cardCtrl.getListController().getBoardID(),
-                        cardCtrl.getListController().getTaskList().id,
-                        cardCtrl.getTask().id, newName);
-            }
-            if(newDesc != null) {
-                taskUtils.renameDescription(cardCtrl.getListController().getBoardID(),
                         cardCtrl.getListController().getTaskList().id,
                         cardCtrl.getTask().id, newName);
             }
@@ -57,14 +52,30 @@ public class EditTaskCtrl {
             return;
         }
 
-        clearFields();
-        mainCtrl.showBoardOverview();
-    }
-
-    private void clearFields() {
-        newTaskDesc.clear();
         newTaskName.clear();
     }
+
+    public void confirmDesc() {
+        try {
+            String newDesc = newTaskDesc.getText();
+            TaskUtils taskUtils = cardCtrl.getTaskUtils();
+
+            if(newDesc != null) {
+                taskUtils.renameDescription(cardCtrl.getListController().getBoardID(),
+                        cardCtrl.getListController().getTaskList().id,
+                        cardCtrl.getTask().id, newDesc);
+            }
+        } catch (TaskException e) {
+            var alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+            return;
+        }
+
+        newTaskDesc.clear();
+    }
+
 
     public void setCardCtrl(CardCtrl cardCtrl) {
         this.cardCtrl = cardCtrl;

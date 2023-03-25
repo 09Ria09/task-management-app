@@ -132,7 +132,7 @@ public class TaskService {
         Board board = getBoard(boardid);
         Task task = getTask(boardid, listid, taskid);
 
-        task.setName(description);
+        task.setDescription(description);
 
         //I am not sure whether this actually updates the list in the board.
         boardRepository.save(board);
