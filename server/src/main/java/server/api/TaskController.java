@@ -138,7 +138,7 @@ public class TaskController {
     }
 
     @PutMapping("/{boardid}/{listid}/desc/{taskid}")
-    public ResponseEntity<Task> renameDescription(
+    public ResponseEntity<Task> editDescription(
             @PathVariable("boardid") final long boardid,
             @PathVariable("listid") final long listid,
             @PathVariable("taskid") final long taskid,
@@ -148,7 +148,7 @@ public class TaskController {
             if (description == null || description.isEmpty()) {
                 return ResponseEntity.badRequest().build();
             }
-            Task task = taskService.renameDescription(boardid, listid, taskid, description);
+            Task task = taskService.editDescription(boardid, listid, taskid, description);
             return ResponseEntity.ok(task);
         }
         catch (NoSuchElementException e) { return ResponseEntity.notFound().build(); }

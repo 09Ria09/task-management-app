@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.CustomAlert;
 import client.customExceptions.TaskException;
 import client.utils.ServerUtils;
 import client.utils.TaskUtils;
@@ -21,6 +22,7 @@ public class EditTaskCtrl {
 
     @FXML
     private TextArea newTaskDesc;
+    private CustomAlert customAlert;
 
     @Inject
     public EditTaskCtrl(final ServerUtils server, final MainCtrl mainCtrl) {
@@ -45,9 +47,7 @@ public class EditTaskCtrl {
                         cardCtrl.getTask().id, newName);
             }
         } catch (TaskException e) {
-            var alert = new Alert(Alert.AlertType.ERROR);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setContentText(e.getMessage());
+            Alert alert = customAlert.showAlert(e.getMessage());
             alert.showAndWait();
             return;
         }
@@ -61,14 +61,12 @@ public class EditTaskCtrl {
             TaskUtils taskUtils = cardCtrl.getTaskUtils();
 
             if(newDesc != null) {
-                taskUtils.renameDescription(cardCtrl.getListController().getBoardID(),
+                taskUtils.editDescription(cardCtrl.getListController().getBoardID(),
                         cardCtrl.getListController().getTaskList().id,
                         cardCtrl.getTask().id, newDesc);
             }
         } catch (TaskException e) {
-            var alert = new Alert(Alert.AlertType.ERROR);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setContentText(e.getMessage());
+            Alert alert = customAlert.showAlert(e.getMessage());
             alert.showAndWait();
             return;
         }
@@ -79,6 +77,10 @@ public class EditTaskCtrl {
 
     public void setCardCtrl(final CardCtrl cardCtrl) {
         this.cardCtrl = cardCtrl;
+    }
+
+    public void setCustomAlert(final CustomAlert customAlert) {
+        this.customAlert = customAlert;
     }
 
 }

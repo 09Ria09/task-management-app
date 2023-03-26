@@ -46,7 +46,6 @@ public class Main extends Application {
 
         var lists = FXML.load(BoardOverviewCtrl.class, "client", "scenes", "BoardOverview.fxml");
         var createList = FXML.load(CreateListCtrl.class, "client", "scenes", "CreateList.fxml");
-        var deleteList = FXML.load(DeleteListCtrl.class, "client", "scenes", "DeleteList.fxml");
         var renameList = FXML.load(RenameListCtrl.class, "client", "scenes", "RenameList.fxml");
         var serverSelection = FXML
                 .load(SelectServerCtrl.class, "client",
@@ -57,7 +56,7 @@ public class Main extends Application {
                 "scenes", "connectScenes", "ConnectionTimeout.fxml");
         var unexpectedError = FXML.load(UnexpectedErrorCtrl.class, "client",
                 "scenes", "connectScenes", "UnexpectedError.fxml");
-        var listScenes = new ListScenes(createList, deleteList, renameList);
+        var listScenes = new ListScenes(createList, renameList);
         var serverScenes = new ServerScenes(serverSelection, wrongServer,
                 serverTimeout, unexpectedError);
         var createTask = FXML.load(CreateTaskCtrl.class, "client", "scenes", "CreateTask.fxml");

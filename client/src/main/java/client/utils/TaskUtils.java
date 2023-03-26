@@ -152,7 +152,7 @@ public class TaskUtils {
         }
     }
 
-    public Task renameDescription(final long boardId, final long taskListId,
+    public Task editDescription(final long boardId, final long taskListId,
                                   final long taskId,
                                   final String newDescription) throws TaskException {
         String serverAddress = server.getServerAddress();

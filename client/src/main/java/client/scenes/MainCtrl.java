@@ -16,6 +16,7 @@
 package client.scenes;
 
 //import client.sceneManagement.ListScenes;
+import client.CustomAlert;
 import client.sceneManagement.ListScenes;
 import client.sceneManagement.ServerScenes;
 import client.sceneManagement.TaskScenes;
@@ -45,9 +46,6 @@ public class MainCtrl {
 
     private EditTaskCtrl editTaskCtrl;
     private Scene editTask;
-
-    private DeleteListCtrl deleteListCtrl;
-    private Scene deleteList;
 
     private RenameListCtrl renameListCtrl;
     private Scene renameList;
@@ -98,8 +96,6 @@ public class MainCtrl {
         this.createListCtrl = listScenes.getCreateList().getKey();
         this.createList = new Scene(listScenes.getCreateList().getValue());
 
-        this.deleteListCtrl = listScenes.getDeleteList().getKey();
-        this.deleteList = new Scene(listScenes.getDeleteList().getValue());
 
         this.renameListCtrl = listScenes.getRenameList().getKey();
         this.renameList = new Scene(listScenes.getRenameList().getValue());
@@ -146,20 +142,19 @@ public class MainCtrl {
         createTaskCtrl.setListCtrl(ctrl);
     }
 
-    public void showEditTask(final CardCtrl cardCtrl) {
+    /**
+     * Changed scene to a scene where a user can edit a task
+     *
+     * @param cardCtrl    the cradCtrl from that specific task
+     * @param customAlert
+     */
+    public void showEditTask(final CardCtrl cardCtrl, CustomAlert customAlert) {
         primaryStage.setTitle("Talio : Edit Task");
         primaryStage.setScene(editTask);
         editTaskCtrl.setCardCtrl(cardCtrl);
+        editTaskCtrl.setCustomAlert(customAlert);
     }
 
-    /**
-     * Changes scene to popup where a user can delete a task list.
-     * NOTE: should be changed from popup to delete button on a list.
-     */
-    public void showDeleteList() {
-        primaryStage.setTitle("Talio: Delete List");
-        primaryStage.setScene(deleteList);
-    }
 
     /**
      * Changes scene to a scene where a user can rename a task list.

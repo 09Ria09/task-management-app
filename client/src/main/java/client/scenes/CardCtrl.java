@@ -134,7 +134,7 @@ public class CardCtrl {
     }
 
     public void editTask() {
-        mainCtrl.showEditTask(this);
+        mainCtrl.showEditTask(this, customAlert);
     }
 
     public Task getTask() {
