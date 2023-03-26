@@ -4,8 +4,8 @@ import commons.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import server.BoardService;
-import server.TaskService;
+import server.services.BoardService;
+import server.services.TaskService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
