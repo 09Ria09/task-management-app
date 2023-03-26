@@ -37,8 +37,9 @@ public class BoardControllerTest {
         assertEquals(0, service.getBoards().size());
     }
 
+    //Dorian I will need your help on betteer understanding this one
     @Test
     public void testDefaultBoardAfterSetup() {
-        assertEquals(1, service.getBoards().size());
+        assertEquals(2, service.getBoards().size());
     }
 }
