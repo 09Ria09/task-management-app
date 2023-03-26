@@ -39,13 +39,20 @@ public class BoardService {
 
     /**
      * Adds a new board to the repository to make it persistent.
-     *
+     * I have adapted this such that we can access the id of a board
+     * once it is saved and then update it with the invite key
+     * I am not sure if this is the best approach, but I havent
+     * found anything better
      * @param board the board that will be added.
      * @return the board that was added.
      */
     public Board addBoard(final Board board) {
-        boardRepository.save(board);
-        return board;
+        Board saved = boardRepository.save(board);
+        String inviteKey = generateInviteKey(saved.getId());
+        Board updateWithInviteKey = new Board(saved.getName(), saved.getListTaskList(),
+                saved.getTags(), inviteKey);
+        updateWithInviteKey.id = saved.getId();
+        return boardRepository.save(updateWithInviteKey);
     }
 
     /**
@@ -101,6 +108,31 @@ public class BoardService {
         board.getBoardMembers().add(memberName);
         boardRepository.save(board);
         return board;
+    }
+
+    /**
+     *  This basically generates a random string of two uppercase letters
+     *  for the invite key so that it is nice and easy to remember
+     * @return a new string of two uppercase letters chosen at random
+     */
+    private String createKeyPart() {
+        String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        char[] keyCharacters = new char[2];
+        for(int i = 0; i < 2; i++) {
+            int randomIndex = (int) (Math.random() * alphabet.length());
+            keyCharacters[i] = alphabet.charAt(randomIndex);
+        }
+        return new String(keyCharacters);
+    }
+
+    /**
+     * this actually generates the invite key
+     * by combining the id and the random part
+     * @param boardId the id of the board
+     * @return the invite key
+     */
+    private String generateInviteKey(final long boardId) {
+        return String.format("%03d", boardId) + createKeyPart();
     }
 
 }

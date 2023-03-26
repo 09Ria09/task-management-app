@@ -31,5 +31,6 @@ public class MyModule implements Module {
         binder.bind(BoardOverviewCtrl.class).in(Scopes.SINGLETON);
         binder.bind(TaskListUtils.class).in(Scopes.SINGLETON);
         binder.bind(ServerUtils.class).in(Scopes.SINGLETON);
+        binder.bind(CustomAlert.class).in(Scopes.SINGLETON);
     }
 }

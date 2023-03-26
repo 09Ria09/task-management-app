@@ -16,10 +16,7 @@
 package client.utils;
 
 
-import commons.TaskList;
-import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.core.GenericType;
-import org.glassfish.jersey.client.ClientConfig;
+
 
 import java.io.IOException;
 import java.net.URI;

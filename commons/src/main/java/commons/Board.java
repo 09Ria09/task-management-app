@@ -27,8 +27,27 @@ public class Board {
         this.name = name;
         this.taskLists = listTaskList;
         this.tags = tags;
-        this.inviteKey = generateInviteKey();
         this.boardMembers= new ArrayList<>();
+    }
+
+    /**
+     * I added this separate constructor in order to create the key in the
+     * service based on the id. We can't access the id before the board
+     * is actually saved so that is why this process was moved to the
+     * boardservice
+     *
+     * @param name the name of the board
+     * @param listTaskList the list of tasklists
+     * @param tags the list of tags
+     * @param inviteKey the key to invite people to the board
+     */
+    public Board(final String name, final List<TaskList> listTaskList,
+                 final List<Tag> tags, final String inviteKey) {
+        this.name = name;
+        this.taskLists = listTaskList;
+        this.tags = tags;
+        this.boardMembers = new ArrayList<>();
+        this.inviteKey = inviteKey;
     }
 
     public Board() {
@@ -85,29 +104,6 @@ public class Board {
         tags.remove(tag);
     }
 
-    /**
-     *  This basically generates a random string of two uppercase letters
-     *  for the invite key so that it is nice and easy to remember
-     * @return a new string of two uppercase letters chosen at random
-     */
-    private String createKeyPart() {
-        String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        char[] keyCharacters = new char[2];
-        for(int i = 0; i < 2; i++) {
-            int randomIndex = (int) (Math.random() * alphabet.length());
-            keyCharacters[i] = alphabet.charAt(randomIndex);
-        }
-        return new String(keyCharacters);
-    }
-
-    /**
-     * this generates the actual invite key for a board
-     * @return a string of the form "123XD" where the first three
-     * digits are just the board id
-     */
-    private String generateInviteKey() {
-        return String.format("%03d", id) + createKeyPart();
-    }
 
     /**
      * method used for getting the invite key of a board
@@ -123,7 +119,7 @@ public class Board {
      * this way we can try and identify further which boards
      * a user (which should be identified further by their connection
      * string) has joined
-     * @return
+     * @return the list of board members
      */
     public List<String> getBoardMembers() {
         return boardMembers;

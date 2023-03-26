@@ -61,8 +61,9 @@ public class Main extends Application {
                 serverTimeout, unexpectedError);
         var createTask = FXML.load(CreateTaskCtrl.class, "client", "scenes", "CreateTask.fxml");
         var taskScenes = new TaskScenes(createTask);
+        var joinBoard = FXML.load(JoinBoardCtrl.class, "client", "scenes", "JoinBoard.fxml");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage,lists, listScenes, serverScenes, taskScenes);
+        mainCtrl.initialize(primaryStage,lists, listScenes, serverScenes, taskScenes, joinBoard);
     }
 }
