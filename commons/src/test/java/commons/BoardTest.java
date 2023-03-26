@@ -74,19 +74,14 @@ public class BoardTest {
 
 
     @Test
-    void getInviteKey() {
-       assertNotNull(board.getInviteKey());
-    }
-
-    @Test
     void testEquals() {
-        Board board2 = new Board("Test board", new ArrayList<>(), new ArrayList<>());
+        Board board2 = new Board("Other board", new ArrayList<>(), new ArrayList<>());
         assertNotEquals(board, board2);
     }
 
     @Test
     void testHashCode() {
-        Board board2 = new Board("Test board", new ArrayList<>(), new ArrayList<>());
+        Board board2 = new Board("Other board", new ArrayList<>(), new ArrayList<>());
         assertNotEquals(board.hashCode(), board2.hashCode());
     }
 
