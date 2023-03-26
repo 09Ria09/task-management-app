@@ -15,7 +15,9 @@ public class Board {
     public long id;
 
     private String name;
-
+    private String inviteKey;
+    @ElementCollection
+    private List<String> boardMembers;
     @OneToMany(cascade=CascadeType.ALL, orphanRemoval = true)
     private List<TaskList> taskLists;
     @OneToMany(cascade=CascadeType.ALL)
@@ -25,6 +27,27 @@ public class Board {
         this.name = name;
         this.taskLists = listTaskList;
         this.tags = tags;
+        this.boardMembers= new ArrayList<>();
+    }
+
+    /**
+     * I added this separate constructor in order to create the key in the
+     * service based on the id. We can't access the id before the board
+     * is actually saved so that is why this process was moved to the
+     * boardservice
+     *
+     * @param name the name of the board
+     * @param listTaskList the list of tasklists
+     * @param tags the list of tags
+     * @param inviteKey the key to invite people to the board
+     */
+    public Board(final String name, final List<TaskList> listTaskList,
+                 final List<Tag> tags, final String inviteKey) {
+        this.name = name;
+        this.taskLists = listTaskList;
+        this.tags = tags;
+        this.boardMembers = new ArrayList<>();
+        this.inviteKey = inviteKey;
     }
 
     public Board() {
@@ -81,6 +104,27 @@ public class Board {
         tags.remove(tag);
     }
 
+
+    /**
+     * method used for getting the invite key of a board
+     * used for copying the invite key in the overview
+     * @return the invite key of a board
+     */
+    public String getInviteKey() {
+        return inviteKey;
+    }
+
+    /**
+     * method used for returning the board members of a board
+     * this way we can try and identify further which boards
+     * a user (which should be identified further by their connection
+     * string) has joined
+     * @return the list of board members
+     */
+    public List<String> getBoardMembers() {
+        return boardMembers;
+    }
+
     @Override
     public boolean equals(final Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
@@ -101,6 +145,11 @@ public class Board {
         res = res + "Tags:\n";
         for(Tag tag : this.tags) {
             res = res + tag.toString() + "\n";
+        }
+
+        res = res + "Members:\n";
+        for(String member : this.boardMembers) {
+            res = res + member + "\n";
         }
 
         return res;

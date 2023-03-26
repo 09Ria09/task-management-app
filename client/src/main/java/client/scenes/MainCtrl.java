@@ -63,6 +63,9 @@ public class MainCtrl {
     private UnexpectedErrorCtrl unexpectedErrorCtrl;
     private Scene unexpectedError;
 
+    private JoinBoardCtrl joinBoardCtrl;
+    private Scene joinBoard;
+
 
 
     /**
@@ -74,12 +77,10 @@ public class MainCtrl {
      */
     public void initialize(final Stage primaryStage,
                            final Pair<BoardOverviewCtrl, Parent> boardOverview,
-//                           final Pair<CreateListCtrl, Parent> createList,
-//                           final Pair<DeleteListCtrl, Parent> deleteList,
-//                           final Pair<RenameListCtrl, Parent> renameList,
                            final ListScenes listScenes,
                            final ServerScenes serverScenes,
-                           final TaskScenes taskScenes){
+                           final TaskScenes taskScenes,
+                           final Pair<JoinBoardCtrl, Parent> joinBoard){
         this.primaryStage = primaryStage;
         primaryStage.getIcons().add(new javafx.scene
                 .image.Image("file:src/main/resources/client/images/icon.png"));
@@ -111,6 +112,9 @@ public class MainCtrl {
 
         this.unexpectedErrorCtrl = serverScenes.getUnexpectedError().getKey();
         this.unexpectedError = new Scene(serverScenes.getUnexpectedError().getValue());
+
+        this.joinBoardCtrl = joinBoard.getKey();
+        this.joinBoard = new Scene(joinBoard.getValue());
 
         showSelectServer();
         primaryStage.show();
@@ -192,5 +196,10 @@ public class MainCtrl {
     public void showUnexpectedError() {
         primaryStage.setTitle("Talio: unexpected error");
         primaryStage.setScene(unexpectedError);
+    }
+
+    public void showJoinBoard() {
+        primaryStage.setTitle("Talio: Join Board");
+        primaryStage.setScene(joinBoard);
     }
 }
