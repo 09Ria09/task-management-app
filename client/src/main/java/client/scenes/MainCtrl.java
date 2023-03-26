@@ -148,7 +148,7 @@ public class MainCtrl {
      * @param cardCtrl    the cradCtrl from that specific task
      * @param customAlert
      */
-    public void showEditTask(final CardCtrl cardCtrl, CustomAlert customAlert) {
+    public void showEditTask(final CardCtrl cardCtrl, final CustomAlert customAlert) {
         primaryStage.setTitle("Talio : Edit Task");
         primaryStage.setScene(editTask);
         editTaskCtrl.setCardCtrl(cardCtrl);
