@@ -67,7 +67,8 @@ public class JoinBoardCtrl {
 
     public void createBoard() {
         try {
-            Board board = new Board(boardNameInput.getText(), new ArrayList<TaskList>(), new ArrayList<Tag>());
+            Board board = new Board(boardNameInput.getText(), new ArrayList<TaskList>(),
+                    new ArrayList<Tag>());
             Board createdBoard = boardUtils.addBoard(board);
             boardOverviewCtrl.setCurrentBoardId(createdBoard.getId());
             mainCtrl.showBoardOverview();
