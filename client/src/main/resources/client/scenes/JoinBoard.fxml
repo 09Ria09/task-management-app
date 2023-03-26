@@ -17,7 +17,7 @@
             <Button fx:id="joinButton" maxWidth="-Infinity" mnemonicParsing="false" onAction="#joinBoard" text="Join!" />
             <Label maxWidth="-Infinity" text="...Or create one!" />
             <TextField fx:id="boardNameInput" maxWidth="-Infinity" promptText="Choose board name" />
-            <Button fx:id="createButton" maxWidth="-Infinity" mnemonicParsing="false" text="Create Board" />
+            <Button fx:id="createButton" maxWidth="-Infinity" mnemonicParsing="false" onAction="#createBoard" text="Create Board" />
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
