@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.EditTaskCtrl">
+    <children>
+        <TextField fx:id="newTaskName" layoutX="23.0" layoutY="69.0" prefHeight="25.0" prefWidth="167.0" promptText="Task Name" />
+        <TextArea fx:id="newTaskDesc" layoutX="24.0" layoutY="102.0" prefHeight="247.0" prefWidth="395.0" promptText="Task Description" />
+        <Label alignment="CENTER" layoutX="212.0" layoutY="14.0" prefHeight="41.0" prefWidth="178.0" style="-fx-font-size: 30;" text="Create Task" />
+          <Button layoutX="212.0" layoutY="68.0" mnemonicParsing="false" onAction="#confirmTask" prefHeight="25.0" prefWidth="128.0" text="Change Task Name" />
+          <Button layoutX="33.0" layoutY="354.0" mnemonicParsing="false" onAction="#cancel" prefHeight="25.0" prefWidth="63.0" text="Go Back" />
+          <Button layoutX="300.0" layoutY="353.0" mnemonicParsing="false" onAction="#confirmDesc" prefHeight="26.0" prefWidth="161.0" text="Change Task Description" />
+    </children>
+</Pane>

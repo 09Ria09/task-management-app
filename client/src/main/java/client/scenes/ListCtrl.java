@@ -223,7 +223,8 @@ public class ListCtrl implements Initializable {
                             var cardLoader = new FXMLLoader(getClass().getResource("Card.fxml"));
                             Node card = cardLoader.load();
                             CardCtrl cardCtrl = cardLoader.getController();
-                            cardCtrl.initialize(task, controller, taskListUtils, customAlert);
+                            cardCtrl.initialize(task, controller, taskListUtils,
+                                    customAlert, taskUtils, mainCtrl);
                             setGraphic(card);
                         } catch (IOException e) {
                             throw new RuntimeException(e);

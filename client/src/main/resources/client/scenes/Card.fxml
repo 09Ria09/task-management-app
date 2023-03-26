@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="77.0" prefWidth="150.0" style="-fx-background-radius: 15px; -fx-border-radius: 15px;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.CardCtrl">
    <children>
-      <Text fx:id="text" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Loading..." textAlignment="CENTER" wrappingWidth="150.0">
+      <Text fx:id="text" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Loading..." textAlignment="CENTER" wrappingWidth="114.0">
          <font>
             <Font size="17.0" />
          </font></Text>
-      <Button layoutX="99.0" layoutY="38.0" mnemonicParsing="false" pickOnBounds="false" style="-fx-background-color: #282E58;" text="Edit" textFill="WHITE" />
-      <Button layoutX="43.0" layoutY="38.0" mnemonicParsing="false" onAction="#moveUp" pickOnBounds="false" style="-fx-background-color: #282E58;" text="↑" textFill="WHITE" />
-      <Button layoutX="14.0" layoutY="38.0" mnemonicParsing="false" onAction="#moveDown" pickOnBounds="false" style="-fx-background-color: #282E58;" text="↓" textFill="WHITE" />
+      <Button layoutX="14.0" layoutY="39.0" mnemonicParsing="false" onAction="#editTask" pickOnBounds="false" style="-fx-background-color: #282E58;" text="Edit" textFill="WHITE" />
+      <Button layoutX="114.0" layoutY="11.0" mnemonicParsing="false" onAction="#moveUp" pickOnBounds="false" style="-fx-background-color: #282E58;" text="↑" textFill="WHITE" />
+      <Button layoutX="114.0" layoutY="39.0" mnemonicParsing="false" onAction="#moveDown" pickOnBounds="false" style="-fx-background-color: #282E58;" text="↓" textFill="WHITE" />
+      <Button layoutX="57.0" layoutY="39.0" mnemonicParsing="false" onAction="#deleteTask" style="-fx-background-color: red; -fx-opacity: 80%;" text="Delete">
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets></Button>
    </children>
 </Pane>

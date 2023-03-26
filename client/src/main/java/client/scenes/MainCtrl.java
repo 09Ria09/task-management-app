@@ -16,6 +16,7 @@
 package client.scenes;
 
 //import client.sceneManagement.ListScenes;
+import client.CustomAlert;
 import client.sceneManagement.ListScenes;
 import client.sceneManagement.ServerScenes;
 import client.sceneManagement.TaskScenes;
@@ -43,7 +44,8 @@ public class MainCtrl {
 
     private Scene createTask;
 
-
+    private EditTaskCtrl editTaskCtrl;
+    private Scene editTask;
 
     private RenameListCtrl renameListCtrl;
     private Scene renameList;
@@ -87,6 +89,9 @@ public class MainCtrl {
 
         this.createTaskCtrl = taskScenes.getCreateTask().getKey();
         this.createTask = new Scene(taskScenes.getCreateTask().getValue());
+
+        this.editTaskCtrl = taskScenes.getEditTask().getKey();
+        this.editTask = new Scene(taskScenes.getEditTask().getValue());
 
         this.createListCtrl = listScenes.getCreateList().getKey();
         this.createList = new Scene(listScenes.getCreateList().getValue());
@@ -137,6 +142,18 @@ public class MainCtrl {
         createTaskCtrl.setListCtrl(ctrl);
     }
 
+    /**
+     * Changed scene to a scene where a user can edit a task
+     *
+     * @param cardCtrl    the cradCtrl from that specific task
+     * @param customAlert
+     */
+    public void showEditTask(final CardCtrl cardCtrl, final CustomAlert customAlert) {
+        primaryStage.setTitle("Talio : Edit Task");
+        primaryStage.setScene(editTask);
+        editTaskCtrl.setCardCtrl(cardCtrl);
+        editTaskCtrl.setCustomAlert(customAlert);
+    }
 
 
     /**

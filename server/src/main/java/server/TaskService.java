@@ -128,4 +128,16 @@ public class TaskService {
         return task;
     }
 
+    public Task editDescription(final long boardid, final long listid,
+                                  final long taskid, final String description) {
+        Board board = getBoard(boardid);
+        Task task = getTask(boardid, listid, taskid);
+
+        task.setDescription(description);
+
+        //I am not sure whether this actually updates the list in the board.
+        boardRepository.save(board);
+
+        return task;
+    }
 }

@@ -1,8 +1,10 @@
 package client.scenes;
 
 import client.CustomAlert;
+import client.customExceptions.TaskException;
 import client.utils.TaskListUtils;
 import client.customExceptions.TaskListException;
+import client.utils.TaskUtils;
 import commons.Task;
 import commons.TaskList;
 import javafx.fxml.FXML;
@@ -19,8 +21,10 @@ public class CardCtrl {
     @FXML
     public Text text;
 
+    private MainCtrl mainCtrl;
     private ListCtrl listController;
     private TaskListUtils taskListUtils;
+    private TaskUtils taskUtils;
     private CustomAlert customAlert;
 
     /**
@@ -29,12 +33,15 @@ public class CardCtrl {
      */
     @Inject
     public void initialize(final Task task, final ListCtrl listCtrl,
-                           final TaskListUtils listUtils, final CustomAlert customAlert) {
+                           final TaskListUtils listUtils, final CustomAlert customAlert,
+                           final TaskUtils taskUtils, final MainCtrl mainCtrl) {
         this.task= task;
         this.text.setText(task.getName());
         this.listController = listCtrl;
         this.taskListUtils = listUtils;
         this.customAlert = customAlert;
+        this.taskUtils = taskUtils;
+        this.mainCtrl = mainCtrl;
     }
 
     /**
@@ -112,5 +119,33 @@ public class CardCtrl {
             alert.showAndWait();
             return false;
         }
+    }
+
+    public boolean deleteTask() {
+        try {
+            TaskList taskList = listController.getTaskList();
+            taskUtils.deleteTask(listController.getBoardID(), taskList.id, task.id);
+            return true;
+        } catch (TaskException e){
+            Alert alert = customAlert.showAlert(e.getMessage());
+            alert.showAndWait();
+            return false;
+        }
+    }
+
+    public void editTask() {
+        mainCtrl.showEditTask(this, customAlert);
+    }
+
+    public Task getTask() {
+        return task;
+    }
+
+    public TaskUtils getTaskUtils() {
+        return taskUtils;
+    }
+
+    public ListCtrl getListController() {
+        return listController;
     }
 }

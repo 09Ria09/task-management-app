@@ -60,7 +60,8 @@ public class Main extends Application {
         var serverScenes = new ServerScenes(serverSelection, wrongServer,
                 serverTimeout, unexpectedError);
         var createTask = FXML.load(CreateTaskCtrl.class, "client", "scenes", "CreateTask.fxml");
-        var taskScenes = new TaskScenes(createTask);
+        var editTask = FXML.load(EditTaskCtrl.class, "client", "scenes", "EditTask.fxml");
+        var taskScenes = new TaskScenes(createTask, editTask);
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         mainCtrl.initialize(primaryStage,lists, listScenes, serverScenes, taskScenes);
