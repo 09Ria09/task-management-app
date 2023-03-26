@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.springframework.test.util.ReflectionTestUtils;
-import server.services.BoardService;
+import server.BoardService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

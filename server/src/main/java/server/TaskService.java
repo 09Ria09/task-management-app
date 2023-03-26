@@ -1,4 +1,4 @@
-package server.services;
+package server;
 
 import commons.Board;
 import commons.Task;
