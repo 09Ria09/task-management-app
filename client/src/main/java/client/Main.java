@@ -61,7 +61,8 @@ public class Main extends Application {
                 serverTimeout, unexpectedError);
         var createTask = FXML.load(CreateTaskCtrl.class, "client", "scenes", "CreateTask.fxml");
         var editTask = FXML.load(EditTaskCtrl.class, "client", "scenes", "EditTask.fxml");
-        var taskScenes = new TaskScenes(createTask, editTask);
+        var detailedTaskView = FXML.load(DetailedTaskViewCtrl.class, "client", "scenes", "DetailedTaskView.fxml");
+        var taskScenes = new TaskScenes(createTask, editTask, detailedTaskView);
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         mainCtrl.initialize(primaryStage,lists, listScenes, serverScenes, taskScenes);
