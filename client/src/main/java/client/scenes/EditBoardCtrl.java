@@ -1,17 +1,13 @@
 package client.scenes;
 
 import client.CustomAlert;
-import client.customExceptions.BoardException;
 import client.utils.BoardUtils;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
-import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
-import javafx.stage.Modality;
-import org.glassfish.jersey.internal.inject.Custom;
 
 public class EditBoardCtrl {
 
