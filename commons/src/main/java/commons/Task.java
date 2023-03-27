@@ -81,4 +81,19 @@ public class Task implements Serializable {
     }
 
     public long getId() {return this.id;}
+
+    /**
+     * It computes the proportion of completed subtasks.
+     * Tthe progress is returned as a number between 0 and 1.
+     * If there are no subtasks, -1 is returned.
+     * @return the progress of the task (between 0 and 1)
+     */
+    public double getProgress(){
+        if(this.subtasks.isEmpty())
+            return -1.0d;
+        else
+            return ((double)this.subtasks.stream()
+                    .filter(SubTask::isCompleted)
+                    .count())/((double)this.subtasks.size());
+    }
 }

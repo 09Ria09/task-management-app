@@ -9,17 +9,37 @@ import commons.Task;
 import commons.TaskList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 public class CardCtrl {
     private Task task;
     @FXML
-    public Text text;
+    public Label title;
+
+    @FXML
+    private Label description;
+
+    @FXML
+    private Button editButton;
+
+    @FXML
+    private Button deleteButton;
+
+    @FXML
+    private Rectangle progressBar;
+
+    @FXML
+    private StackPane progressPane;
 
     private MainCtrl mainCtrl;
     private ListCtrl listController;
@@ -36,12 +56,18 @@ public class CardCtrl {
                            final TaskListUtils listUtils, final CustomAlert customAlert,
                            final TaskUtils taskUtils, final MainCtrl mainCtrl) {
         this.task= task;
-        this.text.setText(task.getName());
+        this.title.setText(task.getName());
+        this.description.setText(task.getDescription());
+        if(this.task.getProgress() < 0)
+            this.progressPane.setVisible(false);
+        else
+            this.progressBar.setWidth(this.task.getProgress()*280.0D);
         this.listController = listCtrl;
         this.taskListUtils = listUtils;
         this.customAlert = customAlert;
         this.taskUtils = taskUtils;
         this.mainCtrl = mainCtrl;
+        this.onUnhover();
     }
 
     /**
@@ -147,5 +173,49 @@ public class CardCtrl {
 
     public ListCtrl getListController() {
         return listController;
+    }
+
+    /**
+     * When the card is hovered, the edit and delete buttons are shown
+     */
+    public void onHover(){
+        this.editButton.setOpacity(1.0d);
+        this.deleteButton.setOpacity(1.0d);
+    }
+
+    /**
+     * When the card is not hovered, the edit and delete buttons are hidden
+     */
+    public void onUnhover(){
+        this.editButton.setOpacity(0.0d);
+        this.deleteButton.setOpacity(0.0d);
+    }
+
+    /**
+     * When the edit button is hovered, the background is set to grey.
+     */
+    public void onHoverEdit(){
+        this.editButton.setStyle("-fx-background-color: #BBBBBB;");
+    }
+
+    /**
+     * When the edit button is not hovered, the background is set to transparent.
+     */
+    public void onUnhoverEdit(){
+        this.editButton.setStyle("-fx-background-color: transparent;");
+    }
+
+    /**
+     * When the delete button is hovered, the background is set to grey.
+     */
+    public void onHoverDelete(){
+        this.deleteButton.setStyle("-fx-background-color: #BBBBBB;");
+    }
+
+    /**
+     * When the delete button is not hovered, the background is set to transparent.
+     */
+    public void onUnhoverDelete(){
+        this.deleteButton.setStyle("-fx-background-color: transparent;");
     }
 }
