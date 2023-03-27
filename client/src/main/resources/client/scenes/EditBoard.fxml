@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.EditBoardCtrl">
+    <children>
+        <Text layoutX="216.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="EditBoard" textAlignment="CENTER">
+            <font>
+                <Font size="21.0" />
+            </font>
+        </Text>
+        <Button layoutX="14.0" layoutY="16.0" mnemonicParsing="false" onAction="#cancel" text="Cancel" />
+        <TextField fx:id="boardName" layoutX="166.0" layoutY="175.0" prefHeight="25.0" prefWidth="269.0" promptText="Board Title" />
+        <Button layoutX="259.0" layoutY="303.0" mnemonicParsing="false" onAction="#confirm" prefHeight="38.0" prefWidth="82.0" text="Confirm" />
+    </children>
+</AnchorPane>

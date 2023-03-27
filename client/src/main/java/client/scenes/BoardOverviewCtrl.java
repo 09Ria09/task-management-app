@@ -23,6 +23,7 @@ import client.utils.TaskListUtils;
 import client.utils.TaskUtils;
 import client.customExceptions.TaskListException;
 import com.google.inject.Inject;
+import commons.Board;
 import commons.TaskList;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -59,6 +60,8 @@ public class BoardOverviewCtrl implements Initializable {
 
     private Timer refreshTimer;
 
+    private final EditBoardCtrl editBoardCtrl;
+
     @FXML
     private HBox listsContainer;
 
@@ -68,15 +71,17 @@ public class BoardOverviewCtrl implements Initializable {
 
     @Inject
     public BoardOverviewCtrl(final ServerUtils server, final MainCtrl mainCtrl,
-                             final CustomAlert customAlert, final BoardUtils boardUtils) {
+                             final CustomAlert customAlert, final BoardUtils boardUtils,
+                             final EditBoardCtrl editBoardCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
         this.taskListUtils = new TaskListUtils(server);
-        this.boardUtils = boardUtils;
         this.listsMap = new HashMap<>();
         this.taskLists = new ArrayList<>();
         refreshTimer = new Timer();
         this.customAlert = customAlert;
+        this.boardUtils = boardUtils;
+        this.editBoardCtrl = editBoardCtrl;
     }
 
     /**
@@ -220,6 +225,26 @@ public class BoardOverviewCtrl implements Initializable {
 
     public long getCurrentBoardId() {
         return this.currentBoardId;
+    }
+
+    public Board deleteBoard() throws BoardException {
+        System.out.println(currentBoardId);
+        Long idToDelete = getCurrentBoardId();
+        System.out.println(idToDelete);
+        setCurrentBoardId(196);
+        mainCtrl.showJoinBoard();
+        Board board = boardUtils.deleteBoard(idToDelete);
+        System.out.println(board);
+        return board;
+    }
+
+    public Board renameBoard() throws BoardException {
+        System.out.println(currentBoardId);
+        Board board = boardUtils.getBoard(currentBoardId);
+        editBoardCtrl.setBoard(board);
+        mainCtrl.showEditBoard();
+        setCurrentBoardId(1);
+        return board;
     }
 
     public void copyInviteKey() {
