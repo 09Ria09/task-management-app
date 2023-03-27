@@ -62,9 +62,8 @@ public class MainCtrl {
 
     private UnexpectedErrorCtrl unexpectedErrorCtrl;
     private Scene unexpectedError;
-
-    private JoinBoardCtrl joinBoardCtrl;
-    private Scene joinBoard;
+    private BoardCatalogueCtrl boardCatalogueCtrl;
+    private Scene boardCatalogue;
 
 
 
@@ -80,7 +79,7 @@ public class MainCtrl {
                            final ListScenes listScenes,
                            final ServerScenes serverScenes,
                            final TaskScenes taskScenes,
-                           final Pair<JoinBoardCtrl, Parent> joinBoard){
+                           final Pair<BoardCatalogueCtrl, Parent> boardCatalogue){
         this.primaryStage = primaryStage;
         primaryStage.getIcons().add(new javafx.scene
                 .image.Image("file:src/main/resources/client/images/icon.png"));
@@ -113,8 +112,8 @@ public class MainCtrl {
         this.unexpectedErrorCtrl = serverScenes.getUnexpectedError().getKey();
         this.unexpectedError = new Scene(serverScenes.getUnexpectedError().getValue());
 
-        this.joinBoardCtrl = joinBoard.getKey();
-        this.joinBoard = new Scene(joinBoard.getValue());
+        this.boardCatalogueCtrl=boardCatalogue.getKey();
+        this.boardCatalogue=new Scene(boardCatalogue.getValue());
 
         showSelectServer();
         primaryStage.show();
@@ -132,9 +131,19 @@ public class MainCtrl {
     /**
      * Changes the scene to the popup that allows users to create a new task list and name it.
      */
-    public void showCreateList() {
+    public void showCreateList(final long boardId) {
         primaryStage.setTitle("Talio: Create List");
+        createListCtrl.boardId=boardId;
         primaryStage.setScene(createList);
+    }
+
+    /**
+     * Changes the scene to the tab pane of boards.
+     */
+    public void showBoardCatalogue() {
+        primaryStage.setTitle("Talio");
+        boardCatalogueCtrl.populate();
+        primaryStage.setScene(boardCatalogue);
     }
 
     /**
@@ -196,10 +205,5 @@ public class MainCtrl {
     public void showUnexpectedError() {
         primaryStage.setTitle("Talio: unexpected error");
         primaryStage.setScene(unexpectedError);
-    }
-
-    public void showJoinBoard() {
-        primaryStage.setTitle("Talio: Join Board");
-        primaryStage.setScene(joinBoard);
     }
 }

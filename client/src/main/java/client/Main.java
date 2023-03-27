@@ -27,6 +27,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import objects.Servers;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -42,7 +43,7 @@ public class Main extends Application {
 
     @Override
     public void start(final Stage primaryStage) throws IOException {
-
+        Servers.getInstance().load();
 
         var lists = FXML.load(BoardOverviewCtrl.class, "client", "scenes", "BoardOverview.fxml");
         var createList = FXML.load(CreateListCtrl.class, "client", "scenes", "CreateList.fxml");
@@ -62,9 +63,14 @@ public class Main extends Application {
         var createTask = FXML.load(CreateTaskCtrl.class, "client", "scenes", "CreateTask.fxml");
         var joinBoard = FXML.load(JoinBoardCtrl.class, "client", "scenes", "JoinBoard.fxml");
         var editTask = FXML.load(EditTaskCtrl.class, "client", "scenes", "EditTask.fxml");
+        var boardCatalogue = FXML.load(BoardCatalogueCtrl.class,
+            "client", "scenes", "BoardCatalogue.fxml");
         var taskScenes = new TaskScenes(createTask, editTask);
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage,lists, listScenes, serverScenes, taskScenes, joinBoard);
+        mainCtrl.initialize(primaryStage,lists, listScenes, serverScenes, taskScenes,
+            boardCatalogue);
+
+        primaryStage.setOnCloseRequest(e-> Servers.getInstance().save());
     }
 }

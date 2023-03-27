@@ -32,7 +32,7 @@ public class CreateTaskCtrl {
     //this is run when the cancel button is pressed, it sends the user back to the overview
     public void cancel() {
         clearFields();
-        mainCtrl.showBoardOverview();
+        mainCtrl.showBoardCatalogue();
     }
 
     //this is run when the confirm button is pressed,
@@ -52,7 +52,7 @@ public class CreateTaskCtrl {
         }
 
         clearFields();
-        mainCtrl.showBoardOverview();
+        mainCtrl.showBoardCatalogue();
     }
 
     //this is run to get the description and name of

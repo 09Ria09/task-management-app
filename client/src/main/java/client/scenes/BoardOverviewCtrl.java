@@ -17,11 +17,11 @@ package client.scenes;
 
 import client.CustomAlert;
 import client.customExceptions.BoardException;
+import client.customExceptions.TaskListException;
 import client.utils.BoardUtils;
 import client.utils.ServerUtils;
 import client.utils.TaskListUtils;
 import client.utils.TaskUtils;
-import client.customExceptions.TaskListException;
 import com.google.inject.Inject;
 import commons.TaskList;
 import javafx.animation.KeyFrame;
@@ -31,7 +31,6 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
@@ -42,10 +41,9 @@ import javafx.scene.layout.HBox;
 import javafx.util.Duration;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.*;
 
-public class BoardOverviewCtrl implements Initializable {
+public class BoardOverviewCtrl {
 
     private final ServerUtils server;
     private final TaskListUtils taskListUtils;
@@ -80,21 +78,6 @@ public class BoardOverviewCtrl implements Initializable {
     }
 
     /**
-     * Initializes the board overview by setting the board to refresh at a fixed rate
-     * @param location
-     * The location used to resolve relative paths for the root object, or
-     * {@code null} if the location is not known.
-     *
-     * @param resources
-     * The resources used to localize the root object, or {@code null} if
-     * the root object was not localized.
-     */
-    @Override
-    public void initialize(final URL location, final ResourceBundle resources) {
-        setCurrentBoardId(1);
-    }
-
-    /**
      * adds a list to the board
      * @param taskList the list to be added
      */
@@ -121,7 +104,7 @@ public class BoardOverviewCtrl implements Initializable {
     }
 
     public void addList() {
-        mainCtrl.showCreateList();
+        mainCtrl.showCreateList(currentBoardId);
     }
 
     public void addTask() {
