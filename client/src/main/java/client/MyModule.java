@@ -16,6 +16,7 @@
 package client;
 
 import client.scenes.BoardOverviewCtrl;
+import client.scenes.EditBoardCtrl;
 import client.scenes.MainCtrl;
 import client.utils.ServerUtils;
 import client.utils.TaskListUtils;
@@ -32,5 +33,6 @@ public class MyModule implements Module {
         binder.bind(TaskListUtils.class).in(Scopes.SINGLETON);
         binder.bind(ServerUtils.class).in(Scopes.SINGLETON);
         binder.bind(CustomAlert.class).in(Scopes.SINGLETON);
+        binder.bind(EditBoardCtrl.class).in(Scopes.SINGLETON);
     }
 }

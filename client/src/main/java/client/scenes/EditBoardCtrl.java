@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.CustomAlert;
 import client.customExceptions.BoardException;
 import client.utils.BoardUtils;
 import client.utils.ServerUtils;
@@ -10,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Modality;
+import org.glassfish.jersey.internal.inject.Custom;
 
 public class EditBoardCtrl {
 
@@ -17,6 +19,8 @@ public class EditBoardCtrl {
     private final MainCtrl mainCtrl;
 
     private final BoardUtils boardUtils;
+
+    private final CustomAlert customAlert;
 
 
     private Board board;
@@ -27,10 +31,11 @@ public class EditBoardCtrl {
     //this sets up the server and mainctrl variables
     @Inject
     public EditBoardCtrl(final ServerUtils server, final MainCtrl mainCtrl,
-                         final BoardUtils boardUtils) {
+                         final BoardUtils boardUtils, final CustomAlert customAlert) {
         this.mainCtrl = mainCtrl;
         this.server = server;
         this.boardUtils = boardUtils;
+        this.customAlert = customAlert;
     }
 
     public void setBoard(final Board board) {
@@ -50,17 +55,10 @@ public class EditBoardCtrl {
         try {
             board.setName(boardName.getText());
             boardUtils.renameBoard(board.id, boardName.getText());
-        } catch (WebApplicationException e) {
-
-            var alert = new Alert(Alert.AlertType.ERROR);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setContentText(e.getMessage());
+        } catch (Exception e) {
+            Alert alert = customAlert.showAlert(e.getMessage());
             alert.showAndWait();
-            return;
-        } catch (BoardException e) {
-            throw new RuntimeException(e);
         }
-
         clearFields();
         mainCtrl.showBoardOverview();
     }

@@ -228,22 +228,18 @@ public class BoardOverviewCtrl implements Initializable {
     }
 
     public Board deleteBoard() throws BoardException {
-        System.out.println(currentBoardId);
         Long idToDelete = getCurrentBoardId();
         System.out.println(idToDelete);
-        setCurrentBoardId(196);
+        setCurrentBoardId(1);
         mainCtrl.showJoinBoard();
         Board board = boardUtils.deleteBoard(idToDelete);
-        System.out.println(board);
         return board;
     }
 
     public Board renameBoard() throws BoardException {
-        System.out.println(currentBoardId);
         Board board = boardUtils.getBoard(currentBoardId);
         editBoardCtrl.setBoard(board);
         mainCtrl.showEditBoard();
-        setCurrentBoardId(1);
         return board;
     }
 
