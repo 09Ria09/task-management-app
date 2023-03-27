@@ -52,4 +52,26 @@ public class TaskTest {
         Task testTask = new Task("Task1", "This is task 1");
         assertNotNull(testTask.toString());
     }
+
+    @Test
+    public void testNoProgress(){
+        Task t = new Task("title", "desc");
+        assertEquals(-1.0D, t.getProgress());
+    }
+
+    @Test
+    public void testZeroProgress(){
+        Task t = new Task("title", "desc");
+        for(int i = 1; i <= 10; i++)
+            t.addSubtask(new SubTask("Step " + i, false));
+        assertEquals(0.0D, t.getProgress());
+    }
+
+    @Test
+    public void testHalfProgress(){
+        Task t = new Task("title", "desc");
+        for(int i = 1; i <= 10; i++)
+            t.addSubtask(new SubTask("Step " + i, i%2 == 0));
+        assertEquals(0.5D, t.getProgress());
+    }
 }
