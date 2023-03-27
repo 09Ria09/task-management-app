@@ -56,19 +56,22 @@ public class BoardCatalogueCtrl implements Initializable {
         try {
             Board board = boardUtils.getBoard(boardId);
             var boardLoader = new FXMLLoader(getClass().getResource("BoardOverview.fxml"));
-            BoardOverviewCtrl boardOverviewCtrl=new BoardOverviewCtrl(serverUtils, mainCtrl,
+            BoardOverviewCtrl boardOverviewCtrl = new BoardOverviewCtrl(serverUtils, mainCtrl,
                 customAlert, boardUtils);
             boardOverviewCtrl.setCurrentBoardId(boardId);
             boardOverviewCtrl.refreshTimer(500);
             boardLoader.setControllerFactory(type -> boardOverviewCtrl);
             Node boardOverview = boardLoader.load();
-            var tab=new Tab(board.getName(), boardOverview);
+            var tab = new Tab(board.getName(), boardOverview);
             tab.setClosable(true);
-            tab.setOnClosed(event -> Servers.getInstance().getServers()
-                .get(serverUtils.getServerAddress()).remove(boardId));
-            catalogue.getTabs().add(catalogue.getTabs().size()-1, tab);
+            tab.setOnClosed(event -> {
+                Servers.getInstance().getServers()
+                    .get(serverUtils.getServerAddress()).remove(boardId);
+                boardOverviewCtrl.clear();
+            });
+            catalogue.getTabs().add(catalogue.getTabs().size() - 1, tab);
             //TODO: sort them alphabetically
-            return catalogue.getTabs().size()-1;
+            return catalogue.getTabs().size() - 1;
         } catch (BoardException | IOException e) {
             throw new RuntimeException(e);
         }
@@ -82,8 +85,16 @@ public class BoardCatalogueCtrl implements Initializable {
         }
     }
 
-    public void addNew(final long boardId){
+    public void addNew(final long boardId) {
         Servers.getInstance().getServers().get(serverUtils.getServerAddress()).add(boardId);
         catalogue.getSelectionModel().select(addBoard(boardId));
+    }
+
+    public void close() {
+        Servers.getInstance().save();
+        for (Tab tab : catalogue.getTabs()) {
+            if (tab.getOnClosed() != null)
+                tab.getOnClosed().handle(null);
+        }
     }
 }

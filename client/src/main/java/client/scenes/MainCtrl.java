@@ -34,14 +34,10 @@ public class MainCtrl {
 
     private Stage primaryStage;
 
-    private BoardOverviewCtrl boardOverviewCtrl;
-    private Scene boardOverview;
-
     private Scene createList;
     private CreateListCtrl createListCtrl;
 
     private CreateTaskCtrl createTaskCtrl;
-
     private Scene createTask;
 
     private EditTaskCtrl editTaskCtrl;
@@ -69,13 +65,8 @@ public class MainCtrl {
 
     /**
      * Initializes the main controller.
-     * @param primaryStage the primary stage
-     * @param boardOverview the board overview scene
-     * @param listScenes the list scenes
-     * @param serverScenes the server scenes
      */
     public void initialize(final Stage primaryStage,
-                           final Pair<BoardOverviewCtrl, Parent> boardOverview,
                            final ListScenes listScenes,
                            final ServerScenes serverScenes,
                            final TaskScenes taskScenes,
@@ -83,9 +74,6 @@ public class MainCtrl {
         this.primaryStage = primaryStage;
         primaryStage.getIcons().add(new javafx.scene
                 .image.Image("file:src/main/resources/client/images/icon.png"));
-
-        this.boardOverviewCtrl = boardOverview.getKey();
-        this.boardOverview = new Scene(boardOverview.getValue());
 
         this.createTaskCtrl = taskScenes.getCreateTask().getKey();
         this.createTask = new Scene(taskScenes.getCreateTask().getValue());
@@ -114,18 +102,12 @@ public class MainCtrl {
 
         this.boardCatalogueCtrl=boardCatalogue.getKey();
         this.boardCatalogue=new Scene(boardCatalogue.getValue());
+        primaryStage.setOnCloseRequest(e-> {
+            boardCatalogue.getKey().close();
+        });
 
         showSelectServer();
         primaryStage.show();
-    }
-
-    /**
-     * Shows the board overview scene.
-     */
-    public void showBoardOverview() {
-        primaryStage.setTitle("Talio: Board Overview");
-        boardOverviewCtrl.refreshTimer(500);
-        primaryStage.setScene(boardOverview);
     }
 
     /**

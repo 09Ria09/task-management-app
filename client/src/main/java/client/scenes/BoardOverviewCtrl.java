@@ -73,7 +73,6 @@ public class BoardOverviewCtrl {
         this.boardUtils = boardUtils;
         this.listsMap = new HashMap<>();
         this.taskLists = new ArrayList<>();
-        refreshTimer = new Timer();
         this.customAlert = customAlert;
     }
 
@@ -135,6 +134,8 @@ public class BoardOverviewCtrl {
      * @param refreshPeriod the time period in miliseconds
      */
     public void refreshTimer(final long refreshPeriod) {
+        if(refreshTimer==null)
+            refreshTimer = new Timer();
         refreshTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -192,7 +193,7 @@ public class BoardOverviewCtrl {
 
     public void clear() {
         refreshTimer.cancel();
-        refreshTimer = new Timer();
+        refreshTimer.purge();
         listsContainer.getChildren().clear();
         listsMap.clear();
     }
