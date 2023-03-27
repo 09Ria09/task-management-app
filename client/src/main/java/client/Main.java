@@ -60,11 +60,12 @@ public class Main extends Application {
         var serverScenes = new ServerScenes(serverSelection, wrongServer,
                 serverTimeout, unexpectedError);
         var createTask = FXML.load(CreateTaskCtrl.class, "client", "scenes", "CreateTask.fxml");
+        var joinBoard = FXML.load(JoinBoardCtrl.class, "client", "scenes", "JoinBoard.fxml");
         var editTask = FXML.load(EditTaskCtrl.class, "client", "scenes", "EditTask.fxml");
         var detailedTaskView = FXML.load(DetailedTaskViewCtrl.class, "client", "scenes", "DetailedTaskView.fxml");
         var taskScenes = new TaskScenes(createTask, editTask, detailedTaskView);
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage,lists, listScenes, serverScenes, taskScenes);
+        mainCtrl.initialize(primaryStage,lists, listScenes, serverScenes, taskScenes, joinBoard);
     }
 }

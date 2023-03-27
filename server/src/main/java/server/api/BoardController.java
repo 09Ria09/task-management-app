@@ -4,7 +4,7 @@ import commons.Board;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import server.BoardService;
+import server.services.BoardService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -114,6 +114,37 @@ public class BoardController {
             return ResponseEntity.notFound().build();
         }catch (Exception e) {
             // Log the error and perform error-handling
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    /**
+     * Put request to join a board
+     * I was not sure how else we could implement joining a board
+     * without keeping a reference to some sort of joined members
+     * I believe each member will basically be replaced/mapped eventually
+     * by a connection string, but for now I will follow this simpler
+     * approach
+     * @param boardid the id of the board that will be joined
+     * @param memberName the name of the member that will join the board
+     * @return the board with the new member if it was joined successfully,
+     * otherwise a not found/error response
+     */
+    @PutMapping("/{boardid}/join")
+    public ResponseEntity<Board> joinBoard(
+            @PathVariable("boardid") final long boardid,
+            @RequestParam final String memberName
+    ) {
+        if(isNullOrEmpty(memberName)){
+            return ResponseEntity.badRequest().build();
+        }
+        try{
+            boardService.joinBoard(boardid, memberName);
+            return ResponseEntity.ok(boardService.getBoard(boardid));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }

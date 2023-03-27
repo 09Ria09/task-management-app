@@ -2,6 +2,7 @@ package client.utils;
 
 import client.customExceptions.TaskException;
 import com.google.inject.Inject;
+import commons.SubTask;
 import commons.Task;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
@@ -172,5 +173,21 @@ public class TaskUtils {
         } else {
             throw new TaskException("An error occurred while renaming the task");
         }
+    }
+
+    /**
+     * Computes the progress of a given task. If the task has no subtasks,
+     * the progress returned is -1. Else the progress is the amount of completed tasks
+     * divided by the total amount of tasks.
+     * @param task the task from which the progress is computed
+     * @return the progress of the given task (between 0 and 1, or -1)
+     */
+    public double getProgress(final Task task){
+        if(task.getSubtasks().isEmpty())
+            return -1.0d;
+        else
+            return ((double)task.getSubtasks().stream()
+                    .filter(SubTask::isCompleted)
+                    .count())/((double)task.getSubtasks().size());
     }
 }
