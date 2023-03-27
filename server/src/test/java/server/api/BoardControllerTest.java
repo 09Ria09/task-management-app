@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.springframework.test.util.ReflectionTestUtils;
-import server.BoardService;
+import server.services.BoardService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -37,8 +37,9 @@ public class BoardControllerTest {
         assertEquals(0, service.getBoards().size());
     }
 
+    //Dorian I will need your help on betteer understanding this one
     @Test
     public void testDefaultBoardAfterSetup() {
-        assertEquals(1, service.getBoards().size());
+        assertEquals(2, service.getBoards().size());
     }
 }

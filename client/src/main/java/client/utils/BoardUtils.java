@@ -126,4 +126,55 @@ public class BoardUtils {
         }
     }
 
+
+    /**
+     * Join a board on the server
+     *
+     * @param inviteKey the invite key of the board to join
+     * @param memberName the name of the member joining the board
+     *   (will either be kept as username or will relate to IP address of client)
+     * @return a response indicating whether the board was joined successfully or not
+     * @throws BoardException if the invite key is invalid/not found/other errors
+     */
+    public Board joinBoard(final String inviteKey, final String memberName) throws BoardException {
+        long boardId;
+        try {
+            boardId = Long.parseLong(inviteKey.substring(0, 3));
+            Board board = getBoard(boardId);
+            if (!inviteKey.equals(board.getInviteKey())) {
+                throw new BoardException("Wrong invite key");
+            }
+            String serverAddress = server.getServerAddress();
+            Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
+                    .path("api/boards/" + boardId + "/join")
+                    .queryParam("memberName", memberName)
+                    .request()
+                    .accept(APPLICATION_JSON)
+                    .put(Entity.entity(memberName, APPLICATION_JSON));
+            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+                return response.readEntity(Board.class);
+            } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
+                throw new BoardException("Board not found.");
+            } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
+                throw new BoardException("You inputted a wrong value");
+            } else {
+                throw new BoardException("An error occurred while joining the board");
+            }
+        } catch (NumberFormatException | IndexOutOfBoundsException  e) {
+            throw new BoardException("Invalid invite key format");
+        }
+    }
+
+    /**
+     * get the invite key of a board based on its id
+     * (used for copying inv code)
+     * @param boardId the id of the board
+     * @return the invite key of the board
+     * @throws BoardException if the board is not found/other errors
+     */
+    public String getBoardInviteKey(final long boardId) throws BoardException{
+        Board board = getBoard(boardId);
+        return board.getInviteKey();
+    }
+
 }

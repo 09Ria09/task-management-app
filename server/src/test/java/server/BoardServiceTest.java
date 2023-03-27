@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 import server.api.TestBoardRepository;
+import server.services.BoardService;
 
 import java.util.NoSuchElementException;
 

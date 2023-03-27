@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="600.0" prefWidth="684.0"
-            style="-fx-background-color: #f0f0f0;" xmlns="http://javafx.com/javafx/17.0.2-ea"
-            fx:controller="client.scenes.BoardOverviewCtrl">
+
+<AnchorPane prefHeight="600.0" prefWidth="684.0" style="-fx-background-color: #f0f0f0;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BoardOverviewCtrl">
    <children>
-      <Button layoutX="589.0" layoutY="560.0" mnemonicParsing="false" onAction="#addTask"
-              style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;" text="Add Task"/>
+      <Button layoutX="132.0" layoutY="560.0" mnemonicParsing="false" onAction="#copyInviteKey" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold;" text="Copy Invite Key" />
+      <Button layoutX="589.0" layoutY="560.0" mnemonicParsing="false" onAction="#addTask" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;" text="Add Task" />
       <ScrollPane prefHeight="543.0" prefWidth="684.0" style="-fx-background-color: #f0f0f0;">
          <content>
-            <HBox fx:id="listsContainer" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                  prefHeight="380.0" style="-fx-padding: 10px 20px; -fx-spacing: 20px;"/>
+            <HBox fx:id="listsContainer" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="380.0" style="-fx-padding: 10px 20px; -fx-spacing: 20px;" />
          </content>
       </ScrollPane>
-      <Button layoutX="510.0" layoutY="560.0" mnemonicParsing="false" onAction="#addList"
-              style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;" text="Add List"/>
-      <Button layoutX="24.0" layoutY="560.0" mnemonicParsing="false" onAction="#switchServer"
-              style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold;" text="Switch server"/>
+      <Button layoutX="510.0" layoutY="560.0" mnemonicParsing="false" onAction="#addList" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;" text="Add List" />
+      <Button layoutX="24.0" layoutY="560.0" mnemonicParsing="false" onAction="#switchServer" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold;" text="Switch server" />
+      <Label fx:id="inviteKeyLabel" layoutX="132.0" layoutY="529.0" prefHeight="31.0" prefWidth="105.0" style="-fx-text-fill: #2196F3;" textAlignment="CENTER">
+      </Label>
 
    </children>
 </AnchorPane>
