@@ -6,10 +6,16 @@ import client.utils.BoardUtils;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
+import commons.Tag;
+import commons.TaskList;
+import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.stage.Modality;
+
+import java.util.ArrayList;
 
 public class JoinBoardCtrl {
     private final ServerUtils server;
@@ -57,5 +63,26 @@ public class JoinBoardCtrl {
             Alert alert = customAlert.showAlert(e.getMessage());
             alert.showAndWait();
         }
+    }
+
+    public void createBoard() {
+        try {
+            Board board = new Board(boardNameInput.getText(), new ArrayList<TaskList>(),
+                    new ArrayList<Tag>());
+            Board createdBoard = boardUtils.addBoard(board);
+            boardOverviewCtrl.setCurrentBoardId(createdBoard.getId());
+            mainCtrl.showBoardOverview();
+        } catch (WebApplicationException e) {
+
+            var alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+            return;
+        } catch (BoardException e) {
+            throw new RuntimeException(e);
+        }
+
+        boardNameInput.clear();
     }
 }
