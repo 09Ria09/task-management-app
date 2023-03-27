@@ -9,7 +9,12 @@ import commons.Task;
 import commons.TaskList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.text.Text;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Modality;
 
 import javax.inject.Inject;
@@ -19,7 +24,33 @@ import java.util.Objects;
 public class CardCtrl {
     private Task task;
     @FXML
-    public Text text;
+    public Label title;
+
+    @FXML
+    private Button editButton;
+
+    @FXML
+    private Button deleteButton;
+
+    @FXML
+    private Button descButton;
+
+    @FXML
+    private Rectangle progressBar;
+
+    @FXML
+    private StackPane progressPane;
+
+    @FXML
+    private AnchorPane cardPane;
+
+    @FXML
+    private ImageView descIcon;
+
+    @FXML
+    private ImageView arrowIcon;
+
+    @FXML Label description;
 
     private MainCtrl mainCtrl;
     private ListCtrl listController;
@@ -36,12 +67,23 @@ public class CardCtrl {
                            final TaskListUtils listUtils, final CustomAlert customAlert,
                            final TaskUtils taskUtils, final MainCtrl mainCtrl) {
         this.task= task;
-        this.text.setText(task.getName());
+        this.title.setText(task.getName());
         this.listController = listCtrl;
         this.taskListUtils = listUtils;
         this.customAlert = customAlert;
         this.taskUtils = taskUtils;
         this.mainCtrl = mainCtrl;
+        if(this.taskUtils.getProgress(task) < 0)
+            this.progressPane.setVisible(false);
+        else
+            this.progressBar.setWidth(this.taskUtils.getProgress(task)*280.0D);
+        this.onUnhover();
+        description.setVisible(false);
+        arrowIcon.setVisible(false);
+        if(Objects.equals(this.task.getDescription(), "")) {
+            this.descButton.setDisable(true);
+            descIcon.setVisible(false);
+        }
     }
 
     /**
@@ -147,5 +189,81 @@ public class CardCtrl {
 
     public ListCtrl getListController() {
         return listController;
+    }
+
+    /**
+     * When the card is hovered, the edit and delete buttons are shown
+     */
+    public void onHover(){
+        this.editButton.setOpacity(1.0d);
+        this.deleteButton.setOpacity(1.0d);
+    }
+
+    /**
+     * When the card is not hovered, the edit and delete buttons are hidden
+     */
+    public void onUnhover(){
+        this.editButton.setOpacity(0.0d);
+        this.deleteButton.setOpacity(0.0d);
+    }
+
+    /**
+     * When the edit button is hovered, the background is set to grey.
+     */
+    public void onHoverEdit(){
+        this.editButton.setStyle("-fx-background-color: #BBBBBB;");
+    }
+
+    /**
+     * When the edit button is not hovered, the background is set to transparent.
+     */
+    public void onUnhoverEdit(){
+        this.editButton.setStyle("-fx-background-color: transparent;");
+    }
+
+    /**
+     * When the delete button is hovered, the background is set to grey.
+     */
+    public void onHoverDelete(){
+        this.deleteButton.setStyle("-fx-background-color: #BBBBBB;");
+    }
+
+    /**
+     * When the delete button is not hovered, the background is set to transparent.
+     */
+    public void onUnhoverDelete(){
+        this.deleteButton.setStyle("-fx-background-color: transparent;");
+    }
+
+    /**
+     * When the description button is hovered, the background is set to grey.
+     */
+    public void onHoverDesc(){
+        this.descButton.setStyle("-fx-background-color: #BBBBBB;");
+    }
+
+    /**
+     * When the delete button is not hovered, the background is set to transparent.
+     */
+    public void onUnhoverDesc(){
+        this.descButton.setStyle("-fx-background-color: transparent;");
+    }
+
+    /**
+     * Shows the extended description
+     */
+    public void showDescription() {
+        if (this.cardPane.getPrefHeight() < 200.0d) {
+            this.cardPane.setPrefHeight(225.0d);
+            descIcon.setVisible(false);
+            arrowIcon.setVisible(true);
+            description.setText(this.task.getDescription());
+            description.setVisible(true);
+        } else {
+            this.cardPane.setPrefHeight(120.0d);
+            descIcon.setVisible(true);
+            arrowIcon.setVisible(false);
+            description.setVisible(false);
+        }
     }
 }
