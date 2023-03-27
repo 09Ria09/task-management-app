@@ -11,6 +11,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Modality;
@@ -25,19 +27,30 @@ public class CardCtrl {
     public Label title;
 
     @FXML
-    private Label description;
-
-    @FXML
     private Button editButton;
 
     @FXML
     private Button deleteButton;
 
     @FXML
+    private Button descButton;
+
+    @FXML
     private Rectangle progressBar;
 
     @FXML
     private StackPane progressPane;
+
+    @FXML
+    private AnchorPane cardPane;
+
+    @FXML
+    private ImageView descIcon;
+
+    @FXML
+    private ImageView arrowIcon;
+
+    @FXML Label description;
 
     private MainCtrl mainCtrl;
     private ListCtrl listController;
@@ -55,17 +68,22 @@ public class CardCtrl {
                            final TaskUtils taskUtils, final MainCtrl mainCtrl) {
         this.task= task;
         this.title.setText(task.getName());
-        this.description.setText(task.getDescription());
-        if(this.task.getProgress() < 0)
-            this.progressPane.setVisible(false);
-        else
-            this.progressBar.setWidth(this.task.getProgress()*280.0D);
         this.listController = listCtrl;
         this.taskListUtils = listUtils;
         this.customAlert = customAlert;
         this.taskUtils = taskUtils;
         this.mainCtrl = mainCtrl;
+        if(this.taskUtils.getProgress(task) < 0)
+            this.progressPane.setVisible(false);
+        else
+            this.progressBar.setWidth(this.taskUtils.getProgress(task)*280.0D);
         this.onUnhover();
+        description.setVisible(false);
+        arrowIcon.setVisible(false);
+        if(Objects.equals(this.task.getDescription(), "")) {
+            this.descButton.setDisable(true);
+            descIcon.setVisible(false);
+        }
     }
 
     /**
@@ -215,5 +233,37 @@ public class CardCtrl {
      */
     public void onUnhoverDelete(){
         this.deleteButton.setStyle("-fx-background-color: transparent;");
+    }
+
+    /**
+     * When the description button is hovered, the background is set to grey.
+     */
+    public void onHoverDesc(){
+        this.descButton.setStyle("-fx-background-color: #BBBBBB;");
+    }
+
+    /**
+     * When the delete button is not hovered, the background is set to transparent.
+     */
+    public void onUnhoverDesc(){
+        this.descButton.setStyle("-fx-background-color: transparent;");
+    }
+
+    /**
+     * Shows the extended description
+     */
+    public void showDescription() {
+        if (this.cardPane.getPrefHeight() < 200.0d) {
+            this.cardPane.setPrefHeight(225.0d);
+            descIcon.setVisible(false);
+            arrowIcon.setVisible(true);
+            description.setText(this.task.getDescription());
+            description.setVisible(true);
+        } else {
+            this.cardPane.setPrefHeight(120.0d);
+            descIcon.setVisible(true);
+            arrowIcon.setVisible(false);
+            description.setVisible(false);
+        }
     }
 }
