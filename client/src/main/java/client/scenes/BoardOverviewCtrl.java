@@ -16,12 +16,17 @@
 package client.scenes;
 
 import client.CustomAlert;
+import client.customExceptions.BoardException;
+import client.utils.BoardUtils;
 import client.utils.ServerUtils;
 import client.utils.TaskListUtils;
 import client.utils.TaskUtils;
 import client.customExceptions.TaskListException;
 import com.google.inject.Inject;
 import commons.TaskList;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -29,7 +34,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.effect.GaussianBlur;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.HBox;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
@@ -39,6 +49,7 @@ public class BoardOverviewCtrl implements Initializable {
 
     private final ServerUtils server;
     private final TaskListUtils taskListUtils;
+    private final BoardUtils boardUtils;
     private final MainCtrl mainCtrl;
     private final CustomAlert customAlert;
     private final Map<Long, ListCtrl> listsMap;
@@ -51,12 +62,17 @@ public class BoardOverviewCtrl implements Initializable {
     @FXML
     private HBox listsContainer;
 
+    @FXML
+
+    private Label inviteKeyLabel;
+
     @Inject
     public BoardOverviewCtrl(final ServerUtils server, final MainCtrl mainCtrl,
-                             final CustomAlert customAlert) {
+                             final CustomAlert customAlert, final BoardUtils boardUtils) {
         this.mainCtrl = mainCtrl;
         this.server = server;
         this.taskListUtils = new TaskListUtils(server);
+        this.boardUtils = boardUtils;
         this.listsMap = new HashMap<>();
         this.taskLists = new ArrayList<>();
         refreshTimer = new Timer();
@@ -204,5 +220,29 @@ public class BoardOverviewCtrl implements Initializable {
 
     public long getCurrentBoardId() {
         return this.currentBoardId;
+    }
+
+    public void copyInviteKey() {
+        try {
+            String inviteKey = boardUtils.getBoardInviteKey(currentBoardId);
+            Clipboard clipboard = Clipboard.getSystemClipboard();
+            ClipboardContent content = new ClipboardContent();
+            content.putString(inviteKey);
+            clipboard.setContent(content);
+            GaussianBlur blur = new GaussianBlur();
+            inviteKeyLabel.setEffect(blur);
+            inviteKeyLabel.setText("Invite key: " + inviteKey);
+            inviteKeyLabel.setVisible(true);
+
+            Timeline timeline = new Timeline(
+                    new KeyFrame(Duration.seconds(0), new KeyValue(blur.radiusProperty(), 0)),
+                    new KeyFrame(Duration.seconds(2), new KeyValue(blur.radiusProperty(), 10))
+            );
+            timeline.play();
+            timeline.setOnFinished( event -> inviteKeyLabel.setVisible(false));
+        } catch (BoardException e) {
+            Alert alert = customAlert.showAlert(e.getMessage());
+            alert.showAndWait();
+        }
     }
 }

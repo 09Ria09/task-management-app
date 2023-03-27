@@ -140,6 +140,10 @@ public class BoardUtils {
         long boardId;
         try {
             boardId = Long.parseLong(inviteKey.substring(0, 3));
+            Board board = getBoard(boardId);
+            if (!inviteKey.equals(board.getInviteKey())) {
+                throw new BoardException("Wrong invite key");
+            }
             String serverAddress = server.getServerAddress();
             Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
                     .path("api/boards/" + boardId + "/join")
