@@ -13,13 +13,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
 import javafx.stage.Modality;
 
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 
 public class CardCtrl {
     private Task task;
