@@ -35,7 +35,7 @@ public class SelectServerCtrl {
      */
 
     public void showServerBoards(){
-        String serverAddress = addressField.getText();
+        String serverAddress = addressField.getText().toLowerCase();
         server.setServerAddress(serverAddress);
         System.out.println(server.getServerAddress());
         try {
