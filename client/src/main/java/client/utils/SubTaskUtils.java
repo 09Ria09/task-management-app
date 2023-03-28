@@ -19,7 +19,8 @@ public class SubTaskUtils {
         this.server = server;
     }
 
-    public SubTask addSubTask(final long boardId, final long taskListId, final long taskId, final SubTask subTask)
+    public SubTask addSubTask(final long boardId, final long taskListId,
+                              final long taskId, final SubTask subTask)
             throws TaskException {
         String serverAddress = server.getServerAddress();
         Response response =  ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
