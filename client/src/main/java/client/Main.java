@@ -15,6 +15,7 @@
  */
 package client;
 
+import client.sceneManagement.BoardScenes;
 import client.scenes.*;
 import client.sceneManagement.ListScenes;
 import client.sceneManagement.ServerScenes;
@@ -64,9 +65,11 @@ public class Main extends Application {
         var boardCatalogue = FXML.load(BoardCatalogueCtrl.class,
             "client", "scenes", "BoardCatalogue.fxml");
         var taskScenes = new TaskScenes(createTask, editTask);
+        var editBoard = FXML.load(EditBoardCtrl.class, "client", "scenes", "EditBoard.fxml");
+        var boardScenes = new BoardScenes(editBoard, joinBoard);
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         mainCtrl.initialize(primaryStage, listScenes, serverScenes, taskScenes,
-            boardCatalogue);
+            boardCatalogue, boardScenes);
     }
 }

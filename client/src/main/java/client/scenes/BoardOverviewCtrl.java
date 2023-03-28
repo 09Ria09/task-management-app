@@ -23,6 +23,7 @@ import client.utils.ServerUtils;
 import client.utils.TaskListUtils;
 import client.utils.TaskUtils;
 import com.google.inject.Inject;
+import commons.Board;
 import commons.TaskList;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -58,6 +59,8 @@ public class BoardOverviewCtrl {
 
     private Timer refreshTimer;
 
+    private final EditBoardCtrl editBoardCtrl;
+
     @FXML
     private HBox listsContainer;
 
@@ -68,15 +71,17 @@ public class BoardOverviewCtrl {
     @Inject
     public BoardOverviewCtrl(final ServerUtils server, final MainCtrl mainCtrl,
                              final CustomAlert customAlert, final BoardUtils boardUtils,
-                             final BoardCatalogueCtrl boardCatalogueCtrl) {
+                             final BoardCatalogueCtrl boardCatalogueCtrl,
+                             final EditBoardCtrl editBoardCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
         this.taskListUtils = new TaskListUtils(server);
-        this.boardUtils = boardUtils;
         this.listsMap = new HashMap<>();
         this.taskLists = new ArrayList<>();
         this.customAlert = customAlert;
         this.boardCatalogueCtrl=boardCatalogueCtrl;
+        this.boardUtils = boardUtils;
+        this.editBoardCtrl = editBoardCtrl;
     }
 
     /**
@@ -207,6 +212,22 @@ public class BoardOverviewCtrl {
 
     public long getCurrentBoardId() {
         return this.currentBoardId;
+    }
+
+    public Board deleteBoard() throws BoardException {
+        Long idToDelete = getCurrentBoardId();
+        System.out.println(idToDelete);
+        setCurrentBoardId(1);
+        mainCtrl.showJoinBoard();
+        Board board = boardUtils.deleteBoard(idToDelete);
+        return board;
+    }
+
+    public Board renameBoard() throws BoardException {
+        Board board = boardUtils.getBoard(currentBoardId);
+        editBoardCtrl.setBoard(board);
+        mainCtrl.showEditBoard();
+        return board;
     }
 
     public void copyInviteKey() {
