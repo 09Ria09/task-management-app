@@ -89,7 +89,7 @@ public class BoardUtils {
                 .queryParam("name", newName)
                 .request()
                 .accept(APPLICATION_JSON)
-                .post(Entity.entity(newName, APPLICATION_JSON));
+                .put(Entity.entity(newName, APPLICATION_JSON));
 
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             return response.readEntity(Board.class);

@@ -17,6 +17,7 @@ package client.scenes;
 
 //import client.sceneManagement.ListScenes;
 import client.CustomAlert;
+import client.sceneManagement.BoardScenes;
 import client.sceneManagement.ListScenes;
 import client.sceneManagement.ServerScenes;
 import client.sceneManagement.TaskScenes;
@@ -66,6 +67,10 @@ public class MainCtrl {
     private JoinBoardCtrl joinBoardCtrl;
     private Scene joinBoard;
 
+    private EditBoardCtrl editBoardCtrl;
+
+    private Scene editBoard;
+
 
 
     /**
@@ -80,7 +85,7 @@ public class MainCtrl {
                            final ListScenes listScenes,
                            final ServerScenes serverScenes,
                            final TaskScenes taskScenes,
-                           final Pair<JoinBoardCtrl, Parent> joinBoard){
+                           final BoardScenes boardScenes){
         this.primaryStage = primaryStage;
         primaryStage.getIcons().add(new javafx.scene
                 .image.Image("file:src/main/resources/client/images/icon.png"));
@@ -113,8 +118,11 @@ public class MainCtrl {
         this.unexpectedErrorCtrl = serverScenes.getUnexpectedError().getKey();
         this.unexpectedError = new Scene(serverScenes.getUnexpectedError().getValue());
 
-        this.joinBoardCtrl = joinBoard.getKey();
-        this.joinBoard = new Scene(joinBoard.getValue());
+        this.joinBoardCtrl = boardScenes.getJoinBoard().getKey();
+        this.joinBoard = new Scene(boardScenes.getJoinBoard().getValue());
+
+        this.editBoardCtrl = boardScenes.getEditBoard().getKey();
+        this.editBoard = new Scene(boardScenes.getEditBoard().getValue());
 
         showSelectServer();
         primaryStage.show();
@@ -135,6 +143,11 @@ public class MainCtrl {
     public void showCreateList() {
         primaryStage.setTitle("Talio: Create List");
         primaryStage.setScene(createList);
+    }
+
+    public void showEditBoard() {
+        primaryStage.setTitle("Talio: Edit Board");
+        primaryStage.setScene(editBoard);
     }
 
     /**
