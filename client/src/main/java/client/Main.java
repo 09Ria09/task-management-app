@@ -15,6 +15,7 @@
  */
 package client;
 
+import client.sceneManagement.BoardScenes;
 import client.scenes.*;
 import client.sceneManagement.ListScenes;
 import client.sceneManagement.ServerScenes;
