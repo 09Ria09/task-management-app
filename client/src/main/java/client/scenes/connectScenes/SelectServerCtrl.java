@@ -42,6 +42,7 @@ public class SelectServerCtrl {
             Optional<String> result = server.isTalioServer();
             if (result.isEmpty()) {
                 addressField.clear();
+                mainCtrl.populateBoardCatalogue();
                 mainCtrl.showBoardCatalogue();
             } else if(result.get().equals("Not a Talio server")||
                     result.get().equals("Unexpected response status")) {

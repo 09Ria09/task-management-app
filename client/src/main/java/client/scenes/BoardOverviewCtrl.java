@@ -48,6 +48,7 @@ public class BoardOverviewCtrl {
     private final ServerUtils server;
     private final TaskListUtils taskListUtils;
     private final BoardUtils boardUtils;
+    private final BoardCatalogueCtrl boardCatalogueCtrl;
     private final MainCtrl mainCtrl;
     private final CustomAlert customAlert;
     private final Map<Long, ListCtrl> listsMap;
@@ -66,7 +67,8 @@ public class BoardOverviewCtrl {
 
     @Inject
     public BoardOverviewCtrl(final ServerUtils server, final MainCtrl mainCtrl,
-                             final CustomAlert customAlert, final BoardUtils boardUtils) {
+                             final CustomAlert customAlert, final BoardUtils boardUtils,
+                             final BoardCatalogueCtrl boardCatalogueCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
         this.taskListUtils = new TaskListUtils(server);
@@ -74,6 +76,7 @@ public class BoardOverviewCtrl {
         this.listsMap = new HashMap<>();
         this.taskLists = new ArrayList<>();
         this.customAlert = customAlert;
+        this.boardCatalogueCtrl=boardCatalogueCtrl;
     }
 
     /**
@@ -123,7 +126,7 @@ public class BoardOverviewCtrl {
     Currently all it does is switch the scene but
      */
     public void switchServer() {
-        clear();
+        boardCatalogueCtrl.close();
         mainCtrl.showSelectServer();
         server.disconnect();
     }

@@ -124,7 +124,6 @@ public class MainCtrl {
      */
     public void showBoardCatalogue() {
         primaryStage.setTitle("Talio");
-        boardCatalogueCtrl.populate();
         primaryStage.setScene(boardCatalogue);
     }
 
@@ -187,5 +186,10 @@ public class MainCtrl {
     public void showUnexpectedError() {
         primaryStage.setTitle("Talio: unexpected error");
         primaryStage.setScene(unexpectedError);
+    }
+
+    /** Populate the Board Catalogue */
+    public void populateBoardCatalogue() {
+        boardCatalogueCtrl.populate();
     }
 }
