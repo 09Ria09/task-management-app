@@ -65,7 +65,7 @@ public class DetailedTaskViewCtrl {
     private void update() {
         taskNameText.setText(this.task.getName());
         taskDescriptionText.setText(this.task.getDescription());
-        eventHandlers();
+        setEventHandlers();
         subTasks.setCellFactory(lv -> {
             ListCell<SubTask> cell = new ListCell<>() {
                 @Override
@@ -123,6 +123,9 @@ public class DetailedTaskViewCtrl {
     public boolean saveDescription() {
         try {
             String newDesc = taskDescriptionText.getText();
+            if(newDesc.equals(task.getDescription())) {
+                return false;
+            }
             taskUtils.editDescription(listController.getBoardID(),
                     listController.getTaskList().id,
                     task.id, newDesc);
@@ -136,7 +139,7 @@ public class DetailedTaskViewCtrl {
 
     public boolean saveName(final String newName) {
         try {
-            if(!newName.equals("")) {
+            if(!newName.equals("") && !newName.equals(task.getName())) {
                 taskUtils.renameTask(listController.getBoardID(),
                         listController.getTaskList().id,
                         task.id, newName);
@@ -150,7 +153,7 @@ public class DetailedTaskViewCtrl {
         return false;
     }
 
-    public void eventHandlers() {
+    public void setEventHandlers() {
         taskDescriptionText.setOnKeyReleased(this::keyReleasedDesc);
     }
 
@@ -189,19 +192,19 @@ public class DetailedTaskViewCtrl {
         SubTask subTask;
 
         if (newName.isPresent()) {
-            subTask = saveSubTask(newName.get());
+            subTask = makeSubTask(newName.get());
             addCard(subTask);
         }
     }
 
-    public SubTask saveSubTask(final String name) {
+    public SubTask makeSubTask(final String name) {
         return new SubTask(name, false);
     }
 
     public void addCard(final SubTask subTask) {
         try {
             if (subTasks == null) {
-                subTasks = new ListView<SubTask>();
+                subTasks = new ListView<>();
             }
             subTasks.getItems().add(subTask);
             subTaskUtils.addSubTask(listController.getBoardID(),
