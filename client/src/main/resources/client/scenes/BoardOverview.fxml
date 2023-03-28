@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
 <AnchorPane prefHeight="600.0" prefWidth="684.0" style="-fx-background-color: #f0f0f0;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BoardOverviewCtrl">
    <children>
@@ -17,6 +14,8 @@
       </ScrollPane>
       <Button layoutX="510.0" layoutY="560.0" mnemonicParsing="false" onAction="#addList" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;" text="Add List" />
       <Button layoutX="24.0" layoutY="560.0" mnemonicParsing="false" onAction="#switchServer" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold;" text="Switch server" />
+      <Button layoutX="252.0" layoutY="560.0" mnemonicParsing="false" onAction="#deleteBoard" style="-fx-background-color: #D22B2B; -fx-text-fill: white; -fx-font-weight: bold;" text="Delete Board" />
+      <Button layoutX="355.0" layoutY="560.0" mnemonicParsing="false" onAction="#renameBoard" style="-fx-background-color: #D22B2B; -fx-text-fill: white; -fx-font-weight: bold;" text="Rename Board" />
       <Label fx:id="inviteKeyLabel" layoutX="132.0" layoutY="529.0" prefHeight="31.0" prefWidth="105.0" style="-fx-text-fill: #2196F3;" textAlignment="CENTER">
       </Label>
 
