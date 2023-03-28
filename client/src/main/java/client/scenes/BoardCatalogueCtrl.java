@@ -37,6 +37,7 @@ public class BoardCatalogueCtrl implements Initializable {
         this.customAlert=customAlert;
     }
 
+    /** Initializes the catalogue */
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
         var joinBoardLoader = new FXMLLoader(getClass().getResource("JoinBoard.fxml"));
@@ -52,6 +53,11 @@ public class BoardCatalogueCtrl implements Initializable {
         }
     }
 
+    /**
+     * Adds a new board to the catalogue
+     * @param boardId the id of the board to add
+     * @return the index of the tab
+     */
     public int addBoard(final long boardId){
         try {
             Board board = boardUtils.getBoard(boardId);
@@ -77,6 +83,9 @@ public class BoardCatalogueCtrl implements Initializable {
         }
     }
 
+    /**
+     * Populates the catalogue with the boards of the current server
+     */
     public void populate() {
         var boards  = Servers.getInstance().getServers()
             .get(serverUtils.getServerAddress());
@@ -85,11 +94,16 @@ public class BoardCatalogueCtrl implements Initializable {
         }
     }
 
+    /**
+     * Adds a new board to the catalogue
+     * @param boardId the id of the board to add
+     */
     public void addNew(final long boardId) {
         Servers.getInstance().getServers().get(serverUtils.getServerAddress()).add(boardId);
         catalogue.getSelectionModel().select(addBoard(boardId));
     }
 
+    /** Closes all the tabs */
     public void close() {
         Servers.getInstance().save();
         for (Tab tab : catalogue.getTabs()) {
