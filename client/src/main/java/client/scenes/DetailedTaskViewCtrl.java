@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.CustomAlert;
 import client.customExceptions.TaskException;
+import client.utils.SubTaskUtils;
 import client.utils.TaskListUtils;
 import client.utils.TaskUtils;
 import com.google.inject.Inject;
@@ -11,17 +12,18 @@ import commons.TaskList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public class DetailedTaskViewCtrl {
 
+    @FXML
+    public Button editButton;
     @FXML
     private Text taskNameText;
     @FXML
@@ -34,21 +36,32 @@ public class DetailedTaskViewCtrl {
     private TaskUtils taskUtils;
     private TaskListUtils taskListUtils;
     private ListCtrl listController;
+    private SubTaskUtils subTaskUtils;
 
     @Inject
     public DetailedTaskViewCtrl(final MainCtrl mainCtrl, final TaskListUtils taskListUtils,
-                                final TaskUtils taskUtils, final CustomAlert customAlert) {
+                                final TaskUtils taskUtils, final CustomAlert customAlert,
+                                final SubTaskUtils subTaskUtils) {
         this.taskListUtils = taskListUtils;
         this.taskUtils = taskUtils;
         this.mainCtrl = mainCtrl;
         this.customAlert = customAlert;
+        this.subTaskUtils = subTaskUtils;
     }
 
-    public void setTask(Task task) {
+    /**
+     * Setter for the task, after it sets the task it will update
+     * the fields to the details of the task
+     * @param task
+     */
+    public void setTask(final Task task) {
         this.task = task;
         this.update();
     }
 
+    /**
+     * It will update all the fields with the new values from the task
+     */
     private void update() {
         taskNameText.setText(this.task.getName());
         taskDescriptionText.setText(this.task.getDescription());
@@ -82,9 +95,11 @@ public class DetailedTaskViewCtrl {
             });
             return cell;
         });
+
+        subTasks.getItems().setAll(task.getSubtasks());
     }
 
-    public void setListController(ListCtrl listController) {
+    public void setListController(final ListCtrl listController) {
         this.listController = listController;
     }
 
@@ -108,11 +123,23 @@ public class DetailedTaskViewCtrl {
     public boolean saveDescription() {
         try {
             String newDesc = taskDescriptionText.getText();
+            taskUtils.editDescription(listController.getBoardID(),
+                    listController.getTaskList().id,
+                    task.id, newDesc);
+            return true;
+        } catch (TaskException e) {
+            Alert alert = customAlert.showAlert(e.getMessage());
+            alert.showAndWait();
+            return false;
+        }
+    }
 
-            if(!newDesc.equals("")) {
-                taskUtils.editDescription(listController.getBoardID(),
+    public boolean saveName(final String newName) {
+        try {
+            if(!newName.equals("")) {
+                taskUtils.renameTask(listController.getBoardID(),
                         listController.getTaskList().id,
-                        task.id, newDesc);
+                        task.id, newName);
                 return true;
             }
         } catch (TaskException e) {
@@ -124,11 +151,66 @@ public class DetailedTaskViewCtrl {
     }
 
     public void eventHandlers() {
-        taskDescriptionText.setOnKeyReleased(event -> keyReleased(event));
+        taskDescriptionText.setOnKeyReleased(this::keyReleasedDesc);
     }
 
-    private void keyReleased(KeyEvent event) {
+    private void keyReleasedDesc(final KeyEvent event) {
         saveDescription();
         event.consume();
+    }
+
+
+    public void editName() {
+        TextInputDialog dialog = new TextInputDialog(this.task.getName());
+        dialog.setTitle("Talio: Change Your Name");
+        dialog.setHeaderText("Change Your Name:");
+        dialog.setContentText("Name:");
+
+        Optional<String> newName = dialog.showAndWait();
+
+        newName.ifPresent(this::saveName);
+        try {
+            task = taskUtils.getTask(listController.getBoardID(),
+                    listController.getTaskList().id, task.id);
+            taskNameText.setText(task.getName());
+        } catch (TaskException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    //This function still needs implementation, should be done by Edsard
+    public void addSubTask() {
+        TextInputDialog dialog = new TextInputDialog("Name");
+        dialog.setTitle("Talio:  Add A Sub Task");
+        dialog.setHeaderText("Create A New Sub Task:");
+        dialog.setContentText("Name:");
+
+        Optional<String> newName = dialog.showAndWait();
+        SubTask subTask;
+
+        if (newName.isPresent()) {
+            subTask = saveSubTask(newName.get());
+            addCard(subTask);
+        }
+    }
+
+    public SubTask saveSubTask(final String name) {
+        return new SubTask(name, false);
+    }
+
+    public void addCard(final SubTask subTask) {
+        try {
+            if (subTasks == null) {
+                subTasks = new ListView<SubTask>();
+            }
+            subTasks.getItems().add(subTask);
+            subTaskUtils.addSubTask(listController.getBoardID(),
+                    listController.getTaskList().id, task.id, subTask);
+        } catch (TaskException e) {
+            var alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
     }
 }

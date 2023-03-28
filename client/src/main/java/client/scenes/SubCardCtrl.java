@@ -5,7 +5,6 @@ import client.utils.TaskListUtils;
 import client.utils.TaskUtils;
 import com.google.inject.Inject;
 import commons.SubTask;
-import commons.Task;
 import javafx.fxml.FXML;
 import javafx.scene.text.Text;
 
