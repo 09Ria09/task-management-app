@@ -111,6 +111,7 @@ public class BoardOverviewCtrl implements Initializable {
         try {
             Node list = listLoader.load();
             ListCtrl listCtrl = listLoader.getController();
+            listCtrl.initialize();
             listCtrl.refresh(taskList, currentBoardId);
             listCtrl.setServer(server);
             if (!kids.isEmpty()) {

@@ -1,26 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
 <VBox fx:id="vBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-border-color: gray; -fx-border-style: solid;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ListCtrl">
    <children>
-      <HBox prefWidth="350.0" style="-fx-background-color: #4969e1; -fx-padding: 15px;">
+      <HBox prefWidth="350.0" spacing="75.0" style="-fx-background-color: #4969e1; -fx-padding: 15px;">
          <children>
-            <Text fx:id="title" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Loading..." textAlignment="CENTER" wrappingWidth="107.0">
-               <font>
-                  <Font size="20.0" />
-               </font></Text>
-            <MenuButton mnemonicParsing="false" style="-fx-background-color: transparent; -fx-padding: -5px;" text="⚙" textFill="WHITE">
-               <items>
-                  <MenuItem mnemonicParsing="false" onAction="#rename" text="Rename" />
-                  <MenuItem mnemonicParsing="false" onAction="#delete" text="Delete" />
-               </items>
-               <font>
-                  <Font name="JetBrains Mono Regular" size="17.0" />
-               </font>
-            </MenuButton>
+            <StackPane prefHeight="30.0" prefWidth="200.0">
+               <children>
+                  <Label fx:id="title" onMouseClicked="#onTitleClicked" prefHeight="30.0" prefWidth="200.0" text="List Name" textFill="WHITE">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="titleField" visible="false" />
+               </children>
+            </StackPane>
+            <Button maxHeight="20.0" maxWidth="20.0" mnemonicParsing="false" onAction="#delete" prefHeight="30.0" prefWidth="30.0" style="-fx-background-color: transparent;" AnchorPane.leftAnchor="75.0" AnchorPane.topAnchor="85.0">
+               <tooltip>
+                  <Tooltip text="Delete Task" />
+               </tooltip>
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <Image url="@../images/delete-icon.png" />
+                  </ImageView>
+               </graphic>
+            </Button>
          </children>
       </HBox>
       <ListView fx:id="list" prefWidth="200.0" />
