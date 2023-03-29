@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 public class Task implements Serializable {
@@ -81,4 +82,8 @@ public class Task implements Serializable {
     }
 
     public long getId() {return this.id;}
+
+    public Optional<SubTask> getSubTaskById(final long id){
+        return subtasks.stream().filter(x -> x.id == id).findFirst();
+    }
 }

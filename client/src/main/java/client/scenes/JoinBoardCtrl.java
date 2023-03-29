@@ -80,7 +80,8 @@ public class JoinBoardCtrl {
             alert.showAndWait();
             return;
         } catch (BoardException e) {
-            throw new RuntimeException(e);
+            Alert alert = customAlert.showAlert(e.getMessage());
+            alert.showAndWait();
         }
 
         boardNameInput.clear();

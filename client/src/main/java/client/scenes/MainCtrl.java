@@ -17,6 +17,7 @@ package client.scenes;
 
 //import client.sceneManagement.ListScenes;
 import client.CustomAlert;
+import client.sceneManagement.BoardScenes;
 import client.sceneManagement.ListScenes;
 import client.sceneManagement.ServerScenes;
 import client.sceneManagement.TaskScenes;
@@ -24,10 +25,12 @@ import client.scenes.connectScenes.SelectServerCtrl;
 import client.scenes.connectScenes.ServerTimeoutCtrl;
 import client.scenes.connectScenes.UnexpectedErrorCtrl;
 import client.scenes.connectScenes.WrongServerCtrl;
+import commons.Task;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+
 
 
 public class MainCtrl {
@@ -46,6 +49,9 @@ public class MainCtrl {
 
     private EditTaskCtrl editTaskCtrl;
     private Scene editTask;
+
+    private DetailedTaskViewCtrl detailedTaskViewCtrl;
+    private Scene detailedTaskView;
 
     private RenameListCtrl renameListCtrl;
     private Scene renameList;
@@ -66,6 +72,10 @@ public class MainCtrl {
     private JoinBoardCtrl joinBoardCtrl;
     private Scene joinBoard;
 
+    private EditBoardCtrl editBoardCtrl;
+
+    private Scene editBoard;
+
 
 
     /**
@@ -80,7 +90,7 @@ public class MainCtrl {
                            final ListScenes listScenes,
                            final ServerScenes serverScenes,
                            final TaskScenes taskScenes,
-                           final Pair<JoinBoardCtrl, Parent> joinBoard){
+                           final BoardScenes boardScenes){
         this.primaryStage = primaryStage;
         primaryStage.getIcons().add(new javafx.scene
                 .image.Image("file:src/main/resources/client/images/icon.png"));
@@ -93,6 +103,9 @@ public class MainCtrl {
 
         this.editTaskCtrl = taskScenes.getEditTask().getKey();
         this.editTask = new Scene(taskScenes.getEditTask().getValue());
+
+        this.detailedTaskViewCtrl = taskScenes.getDetailedTaskView().getKey();
+        this.detailedTaskView = new Scene(taskScenes.getDetailedTaskView().getValue());
 
         this.createListCtrl = listScenes.getCreateList().getKey();
         this.createList = new Scene(listScenes.getCreateList().getValue());
@@ -113,8 +126,11 @@ public class MainCtrl {
         this.unexpectedErrorCtrl = serverScenes.getUnexpectedError().getKey();
         this.unexpectedError = new Scene(serverScenes.getUnexpectedError().getValue());
 
-        this.joinBoardCtrl = joinBoard.getKey();
-        this.joinBoard = new Scene(joinBoard.getValue());
+        this.joinBoardCtrl = boardScenes.getJoinBoard().getKey();
+        this.joinBoard = new Scene(boardScenes.getJoinBoard().getValue());
+
+        this.editBoardCtrl = boardScenes.getEditBoard().getKey();
+        this.editBoard = new Scene(boardScenes.getEditBoard().getValue());
 
         showSelectServer();
         primaryStage.show();
@@ -135,6 +151,11 @@ public class MainCtrl {
     public void showCreateList() {
         primaryStage.setTitle("Talio: Create List");
         primaryStage.setScene(createList);
+    }
+
+    public void showEditBoard() {
+        primaryStage.setTitle("Talio: Edit Board");
+        primaryStage.setScene(editBoard);
     }
 
     /**
@@ -196,6 +217,13 @@ public class MainCtrl {
     public void showUnexpectedError() {
         primaryStage.setTitle("Talio: unexpected error");
         primaryStage.setScene(unexpectedError);
+    }
+
+    public void showDetailedTaskView(final Task task, final ListCtrl listController) {
+        primaryStage.setTitle("Talio: Detailed Task View");
+        primaryStage.setScene(detailedTaskView);
+        detailedTaskViewCtrl.setTask(task);
+        detailedTaskViewCtrl.setListController(listController);
     }
 
     public void showJoinBoard() {
