@@ -38,6 +38,7 @@ public class DetailedTaskViewCtrl {
     private ListCtrl listController;
     private SubTaskUtils subTaskUtils;
 
+
     @Inject
     public DetailedTaskViewCtrl(final MainCtrl mainCtrl, final TaskListUtils taskListUtils,
                                 final TaskUtils taskUtils, final CustomAlert customAlert,
@@ -79,7 +80,8 @@ public class DetailedTaskViewCtrl {
                             Node card = cardLoader.load();
                             SubCardCtrl subCardCtrl = cardLoader.getController();
                             subCardCtrl.initialize(subTask, listController, taskListUtils,
-                                    customAlert, taskUtils, mainCtrl);
+                                    customAlert, taskUtils, mainCtrl,
+                                    subTaskUtils, DetailedTaskViewCtrl.this);
                             setGraphic(card);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
@@ -215,5 +217,9 @@ public class DetailedTaskViewCtrl {
             alert.setContentText(e.getMessage());
             alert.showAndWait();
         }
+    }
+
+    public Task getTask() {
+        return this.task;
     }
 }

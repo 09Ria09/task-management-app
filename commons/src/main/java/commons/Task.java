@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Entity
@@ -72,6 +73,12 @@ public class Task implements Serializable {
     public List<SubTask> getSubtasks() {
         return subtasks;
     }
+
+    public SubTask getSubtaskById(final long subTaskId) {
+        return getSubtasks().stream().filter(x -> x.id == id).findFirst()
+                .orElseThrow(() -> new NoSuchElementException("Sub task not found"));
+    }
+
 
     public void addSubtask(final SubTask subtask){
         this.subtasks.add(subtask);
