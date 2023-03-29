@@ -20,7 +20,7 @@ public class Task implements Serializable {
     private String name;
     private String description;
 
-    @OneToMany(cascade=CascadeType.ALL)
+    @OneToMany(cascade=CascadeType.ALL, orphanRemoval = true)
     private List<SubTask> subtasks;
 
     public Task(){
@@ -75,7 +75,7 @@ public class Task implements Serializable {
     }
 
     public SubTask getSubtaskById(final long subTaskId) {
-        return getSubtasks().stream().filter(x -> x.id == id).findFirst()
+        return getSubtasks().stream().filter(x -> x.id == subTaskId).findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Sub task not found"));
     }
 
@@ -84,8 +84,8 @@ public class Task implements Serializable {
         this.subtasks.add(subtask);
     }
 
-    public boolean removeSubtask(final SubTask subTask){
-        return this.subtasks.remove(subTask);
+    public void removeSubtask(final SubTask subTask){
+        subtasks.remove(subTask);
     }
 
     public long getId() {return this.id;}

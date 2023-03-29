@@ -53,7 +53,7 @@ public class SubTaskController {
         }
     }
 
-    @GetMapping("/{boardid}/tasklist/{tasklistid}/tasks/{taskid}/subtasks/subtaskid")
+    @GetMapping("/{boardid}/tasklist/{tasklistid}/tasks/{taskid}/subtasks/{subtaskid}")
     public ResponseEntity<SubTask> getSubTask(@PathVariable("boardid") final long boardId,
                                               @PathVariable("tasklistid") final long listId,
                                               @PathVariable("taskid") final long taskId,
@@ -66,7 +66,7 @@ public class SubTaskController {
         }
     }
 
-    @PostMapping("/{boardid}/{tasklistid}/{taskid}/{subtaskid}")
+    @PutMapping("/{boardid}/{tasklistid}/{taskid}/{subtaskid}")
     public ResponseEntity<SubTask> renameSubTask(@PathVariable("boardid") final long boardId,
                                                  @PathVariable("tasklistid") final long listId,
                                                  @PathVariable("taskid") final long taskId,

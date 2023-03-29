@@ -102,7 +102,7 @@ public class SubTaskUtils {
         } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
             throw new SubTaskException("Bad request");
         } else {
-            throw new SubTaskException("An error occurred while renaming the sub task");
+            throw new SubTaskException("An error occurred while renaming the sub task"+response.getStatus());
         }
     }
 
