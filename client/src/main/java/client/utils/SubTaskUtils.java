@@ -48,8 +48,8 @@ public class SubTaskUtils {
                               final long taskId, final long subTaskId) throws SubTaskException {
         String serverAddress = server.getServerAddress();
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/subtasks" + boardId + "/tasklist" + taskListId +
-                        "/tasks" + taskId + "/subtasks" + subTaskId)
+                .path("api/subtasks/" + boardId + "/tasklist/" + taskListId +
+                        "/tasks/" + taskId + "/subtasks/" + subTaskId)
                 .request()
                 .accept(APPLICATION_JSON)
                 .get();
@@ -68,8 +68,8 @@ public class SubTaskUtils {
             throws SubTaskException {
         String serverAddress = server.getServerAddress();
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/subtasks" + boardId + "/tasklist" + taskListId +
-                        "/tasks" + taskId + "/subtasks")
+                .path("api/subtasks/" + boardId + "/tasklist/" + taskListId +
+                        "/tasks/" + taskId + "/subtasks")
                 .request()
                 .accept(APPLICATION_JSON)
                 .get();
@@ -116,7 +116,7 @@ public class SubTaskUtils {
                 .request()
                 .accept(APPLICATION_JSON)
                 .delete();
-
+        System.out.println(response.getStatus());
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             return response.readEntity(SubTask.class);
         } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {

@@ -43,7 +43,7 @@ public class SubTaskController {
 
     @GetMapping("/{boardid}/tasklist/{tasklistid}/tasks/{taskid}/subtasks")
     public ResponseEntity<List<SubTask>> getSubTasks(@PathVariable("boardid") final long boardId,
-                                                     @PathVariable("listid") final long listId,
+                                                     @PathVariable("tasklistid") final long listId,
                                                      @PathVariable("taskid") final long taskId) {
         try {
             List<SubTask> subTasks = subTaskService.getSubTasks(boardId, listId,taskId);
@@ -55,7 +55,7 @@ public class SubTaskController {
 
     @GetMapping("/{boardid}/tasklist/{tasklistid}/tasks/{taskid}/subtasks/subtaskid")
     public ResponseEntity<SubTask> getSubTask(@PathVariable("boardid") final long boardId,
-                                              @PathVariable("listid") final long listId,
+                                              @PathVariable("tasklistid") final long listId,
                                               @PathVariable("taskid") final long taskId,
                                               @PathVariable("subtaskid") final long subTaskId) {
         try {
@@ -68,7 +68,7 @@ public class SubTaskController {
 
     @PostMapping("/{boardid}/{tasklistid}/{taskid}/{subtaskid}")
     public ResponseEntity<SubTask> renameSubTask(@PathVariable("boardid") final long boardId,
-                                                 @PathVariable("listid") final long listId,
+                                                 @PathVariable("tasklistid") final long listId,
                                                  @PathVariable("taskid") final long taskId,
                                                  @PathVariable("subtaskid") final long subTaskid,
                                                  @RequestParam final String name) {
@@ -86,10 +86,13 @@ public class SubTaskController {
 
     @DeleteMapping("/{boardid}/{tasklistid}/{taskid}/{subtaskid}")
     public ResponseEntity<SubTask> deleteSubTask(@PathVariable("boardid") final long boardId,
-                                                 @PathVariable("listid") final long listId,
+                                                 @PathVariable("tasklistid") final long listId,
                                                  @PathVariable("taskid") final long taskId,
                                                  @PathVariable("subtaskid") final long subTaskid) {
         try {
+            System.out.println(
+                    "boardid"
+            );
             SubTask deletedSubTask = subTaskService.
                     removeSubTaskById(boardId, listId, taskId, subTaskid);
             return ResponseEntity.ok(deletedSubTask);
