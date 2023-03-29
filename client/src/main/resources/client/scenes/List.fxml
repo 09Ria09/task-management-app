@@ -15,13 +15,16 @@
                      <font>
                         <Font size="20.0" />
                      </font>
+                     <tooltip>
+                        <Tooltip text="Rename Task List" />
+                     </tooltip>
                   </Label>
                   <TextField fx:id="titleField" visible="false" />
                </children>
             </StackPane>
             <Button maxHeight="20.0" maxWidth="20.0" mnemonicParsing="false" onAction="#delete" prefHeight="30.0" prefWidth="30.0" style="-fx-background-color: transparent;" AnchorPane.leftAnchor="75.0" AnchorPane.topAnchor="85.0">
                <tooltip>
-                  <Tooltip text="Delete Task" />
+                  <Tooltip text="Delete Task List" />
                </tooltip>
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
