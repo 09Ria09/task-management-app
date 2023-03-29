@@ -17,10 +17,7 @@ package client.scenes;
 
 import client.CustomAlert;
 import client.customExceptions.BoardException;
-import client.utils.BoardUtils;
-import client.utils.ServerUtils;
-import client.utils.TaskListUtils;
-import client.utils.TaskUtils;
+import client.utils.*;
 import client.customExceptions.TaskListException;
 import com.google.inject.Inject;
 import commons.Board;
@@ -107,7 +104,7 @@ public class BoardOverviewCtrl implements Initializable {
         var kids = listsContainer.getChildren();
         var listLoader = new FXMLLoader(getClass().getResource("List.fxml"));
         listLoader.setControllerFactory(type -> new ListCtrl(mainCtrl, new TaskListUtils(server),
-            new TaskUtils(server), customAlert));
+            new TaskUtils(server), customAlert, new LayoutUtils()));
         try {
             Node list = listLoader.load();
             ListCtrl listCtrl = listLoader.getController();

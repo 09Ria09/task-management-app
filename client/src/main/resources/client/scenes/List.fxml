@@ -7,11 +7,11 @@
 
 <VBox fx:id="vBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-border-color: gray; -fx-border-style: solid;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ListCtrl">
    <children>
-      <HBox prefWidth="350.0" spacing="75.0" style="-fx-background-color: #4969e1; -fx-padding: 15px;">
+      <HBox prefWidth="350.0" spacing="5.0" style="-fx-background-color: #4969e1; -fx-padding: 15px;">
          <children>
-            <StackPane prefHeight="30.0" prefWidth="200.0">
+            <StackPane prefHeight="30.0" prefWidth="300.0">
                <children>
-                  <Label fx:id="title" onMouseClicked="#onTitleClicked" prefHeight="30.0" prefWidth="200.0" text="List Name" textFill="WHITE">
+                  <Label fx:id="title" onMouseClicked="#onTitleClicked" prefHeight="30.0" prefWidth="300.0" text="List Name" textFill="WHITE">
                      <font>
                         <Font size="20.0" />
                      </font>

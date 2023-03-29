@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.CustomAlert;
+import client.utils.LayoutUtils;
 import client.utils.ServerUtils;
 import client.utils.TaskListUtils;
 import client.utils.TaskUtils;
@@ -46,20 +47,26 @@ public class ListCtrl implements Initializable {
     private TaskUtils taskUtils;
     private ServerUtils server;
 
+    private LayoutUtils layoutUtils;
+
     RenameListSingleton renameListSingleton = RenameListSingleton.getInstance();
 
 
 
     @Inject
     public ListCtrl(final MainCtrl mainCtrl, final TaskListUtils taskListUtils,
-                    final TaskUtils taskUtils, final CustomAlert customAlert) {
+                    final TaskUtils taskUtils, final CustomAlert customAlert,
+                    final LayoutUtils layoutUtils) {
         this.taskListUtils = taskListUtils;
         this.taskUtils = taskUtils;
         this.mainCtrl = mainCtrl;
         this.customAlert = customAlert;
+        this.layoutUtils = layoutUtils;
     }
 
     public void initialize(){
+        this.titleField.textProperty().addListener(
+                this.layoutUtils.createMaxFieldLength(20, titleField));
         this.titleField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
             if(!newValue){
                 try {
