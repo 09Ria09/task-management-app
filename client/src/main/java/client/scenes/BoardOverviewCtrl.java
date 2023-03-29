@@ -257,8 +257,9 @@ public class BoardOverviewCtrl implements Initializable {
             inviteKeyLabel.setVisible(true);
 
             Timeline timeline = new Timeline(
-                    new KeyFrame(Duration.seconds(0), new KeyValue(blur.radiusProperty(), 0)),
-                    new KeyFrame(Duration.seconds(2), new KeyValue(blur.radiusProperty(), 10))
+                    new KeyFrame(Duration.millis(0), new KeyValue(blur.radiusProperty(), 0)),
+                    new KeyFrame(Duration.millis(1000), new KeyValue(blur.radiusProperty(), 0)),
+                    new KeyFrame(Duration.millis(1500), new KeyValue(blur.radiusProperty(), 10))
             );
             timeline.play();
             timeline.setOnFinished( event -> inviteKeyLabel.setVisible(false));
