@@ -2,12 +2,12 @@ package objects;
 
 import java.io.*;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Servers implements Serializable {
     private static final Servers serversSingleton = new Servers();
-    Map<String, List<Long>> map;
+    Map<String, Set<Long>> map;
 
     public Servers() {
         this.map = new HashMap<>();
@@ -17,11 +17,11 @@ public class Servers implements Serializable {
         return serversSingleton;
     }
 
-    public Map<String, List<Long>> getServers() {
+    public Map<String, Set<Long>> getServers() {
         return map;
     }
 
-    public void setServers(final Map<String, List<Long>> map) {
+    public void setServers(final Map<String, Set<Long>> map) {
         this.map = map;
     }
 

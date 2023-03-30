@@ -111,8 +111,6 @@ public class MainCtrl {
         primaryStage.setOnCloseRequest(e-> {
             boardCatalogue.getKey().close();
         });
-        this.joinBoardCtrl = boardScenes.getJoinBoard().getKey();
-        this.joinBoard = new Scene(boardScenes.getJoinBoard().getValue());
 
         this.editBoardCtrl = boardScenes.getEditBoard().getKey();
         this.editBoard = new Scene(boardScenes.getEditBoard().getValue());

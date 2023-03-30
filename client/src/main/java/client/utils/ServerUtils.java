@@ -26,7 +26,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.Optional;
 
 
@@ -60,7 +60,7 @@ public class ServerUtils {
             if (response.statusCode() == 200) {
                 if(Boolean.parseBoolean(response.body())){
                     if(!Servers.getInstance().getServers().containsKey(serverAddress))
-                        Servers.getInstance().getServers().put(serverAddress, new LinkedList<>());
+                        Servers.getInstance().getServers().put(serverAddress, new HashSet<>());
                     return Optional.empty();
                 }
                 else return Optional.of("Not a Talio server");

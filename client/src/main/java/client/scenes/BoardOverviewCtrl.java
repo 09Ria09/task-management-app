@@ -35,6 +35,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
@@ -54,8 +55,9 @@ public class BoardOverviewCtrl {
     private final CustomAlert customAlert;
     private final Map<Long, ListCtrl> listsMap;
     private long currentBoardId;
-
+    private Tab tab;
     private List<TaskList> taskLists;
+    private Board board;
 
     private Timer refreshTimer;
 
@@ -158,14 +160,17 @@ public class BoardOverviewCtrl {
     public void refresh() {
         Platform.runLater(() -> {
             try {
+                board = boardUtils.getBoard(currentBoardId);
                 taskLists = taskListUtils.getTaskLists(currentBoardId);
+                tab.setText(board.getName());
+                var data = FXCollections.observableList(taskLists);
+                refreshLists(data);
             } catch (TaskListException e) {
                 Alert alert = customAlert.showAlert(e.getMessage());
                 alert.showAndWait();
+            } catch (BoardException e){
+                tab.getOnClosed().handle(null);
             }
-            //System.out.println(data);
-            var data = FXCollections.observableList(taskLists);
-            refreshLists(data);
         });
     }
 
@@ -200,8 +205,11 @@ public class BoardOverviewCtrl {
     }
 
     public void clear() {
-        refreshTimer.cancel();
-        refreshTimer.purge();
+        if(refreshTimer!=null) {
+            refreshTimer.cancel();
+            refreshTimer.purge();
+            refreshTimer=null;
+        }
         listsContainer.getChildren().clear();
         listsMap.clear();
     }
@@ -217,9 +225,8 @@ public class BoardOverviewCtrl {
     public Board deleteBoard() throws BoardException {
         Long idToDelete = getCurrentBoardId();
         System.out.println(idToDelete);
-        setCurrentBoardId(1);
-        mainCtrl.showJoinBoard();
         Board board = boardUtils.deleteBoard(idToDelete);
+        refresh();
         return board;
     }
 
@@ -227,6 +234,7 @@ public class BoardOverviewCtrl {
         Board board = boardUtils.getBoard(currentBoardId);
         editBoardCtrl.setBoard(board);
         mainCtrl.showEditBoard();
+        refresh();
         return board;
     }
 
@@ -252,5 +260,22 @@ public class BoardOverviewCtrl {
             Alert alert = customAlert.showAlert(e.getMessage());
             alert.showAndWait();
         }
+    }
+
+    public void setTab(final Tab tab) {
+        this.tab = tab;
+        tab.setOnSelectionChanged(event -> {
+            if (tab.isSelected()) {
+                refresh();
+                refreshTimer(250);
+            }
+            else {
+                if(refreshTimer==null)
+                    return;
+                refreshTimer.cancel();
+                refreshTimer.purge();
+                refreshTimer=null;
+            }
+        });
     }
 }

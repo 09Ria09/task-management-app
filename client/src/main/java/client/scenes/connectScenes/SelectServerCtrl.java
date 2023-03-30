@@ -55,7 +55,7 @@ public class SelectServerCtrl {
             }
         } catch (Exception e) {
             mainCtrl.showUnexpectedError();
-            System.err.println(e);
+            e.printStackTrace();
         }
     }
 

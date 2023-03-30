@@ -15,6 +15,7 @@ public class CreateTaskCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
     private ListCtrl listCtrl;
+    private final BoardCatalogueCtrl boardCatalogueCtrl;
 
     @FXML
     private TextField taskName;
@@ -24,9 +25,11 @@ public class CreateTaskCtrl {
 
     //this sets up the server, mainctrl and listctrl variables
     @Inject
-    public CreateTaskCtrl(final ServerUtils server, final MainCtrl mainCtrl) {
+    public CreateTaskCtrl(final ServerUtils server, final MainCtrl mainCtrl,
+                          final BoardCatalogueCtrl boardCatalogueCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
+        this.boardCatalogueCtrl=boardCatalogueCtrl;
     }
 
     //this is run when the cancel button is pressed, it sends the user back to the overview
