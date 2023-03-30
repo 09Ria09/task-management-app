@@ -177,14 +177,14 @@ public class DetailedTaskViewCtrl {
     }
 
     public void goBack() {
-        mainCtrl.showBoardOverview();
+        mainCtrl.showBoardCatalogue();
     }
 
     public boolean deleteTask() {
         try {
             TaskList taskList = listController.getTaskList();
             taskUtils.deleteTask(listController.getBoardID(), taskList.id, task.id);
-            mainCtrl.showBoardOverview();
+            mainCtrl.showBoardCatalogue();
             return true;
         } catch (TaskException e){
             Alert alert = customAlert.showAlert(e.getMessage());

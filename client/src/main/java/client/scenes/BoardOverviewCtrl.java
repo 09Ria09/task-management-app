@@ -17,8 +17,8 @@ package client.scenes;
 
 import client.CustomAlert;
 import client.customExceptions.BoardException;
-import client.utils.*;
 import client.customExceptions.TaskListException;
+import client.utils.*;
 import com.google.inject.Inject;
 import commons.Board;
 import commons.TaskList;
@@ -29,10 +29,10 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
@@ -40,20 +40,21 @@ import javafx.scene.layout.HBox;
 import javafx.util.Duration;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.*;
 
-public class BoardOverviewCtrl implements Initializable {
+public class BoardOverviewCtrl {
 
     private final ServerUtils server;
     private final TaskListUtils taskListUtils;
     private final BoardUtils boardUtils;
+    private final BoardCatalogueCtrl boardCatalogueCtrl;
     private final MainCtrl mainCtrl;
     private final CustomAlert customAlert;
     private final Map<Long, ListCtrl> listsMap;
     private long currentBoardId;
-
+    private Tab tab;
     private List<TaskList> taskLists;
+    private Board board;
 
     private Timer refreshTimer;
 
@@ -69,31 +70,17 @@ public class BoardOverviewCtrl implements Initializable {
     @Inject
     public BoardOverviewCtrl(final ServerUtils server, final MainCtrl mainCtrl,
                              final CustomAlert customAlert, final BoardUtils boardUtils,
+                             final BoardCatalogueCtrl boardCatalogueCtrl,
                              final EditBoardCtrl editBoardCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
         this.taskListUtils = new TaskListUtils(server);
         this.listsMap = new HashMap<>();
         this.taskLists = new ArrayList<>();
-        refreshTimer = new Timer();
         this.customAlert = customAlert;
+        this.boardCatalogueCtrl=boardCatalogueCtrl;
         this.boardUtils = boardUtils;
         this.editBoardCtrl = editBoardCtrl;
-    }
-
-    /**
-     * Initializes the board overview by setting the board to refresh at a fixed rate
-     * @param location
-     * The location used to resolve relative paths for the root object, or
-     * {@code null} if the location is not known.
-     *
-     * @param resources
-     * The resources used to localize the root object, or {@code null} if
-     * the root object was not localized.
-     */
-    @Override
-    public void initialize(final URL location, final ResourceBundle resources) {
-        setCurrentBoardId(1);
     }
 
     /**
@@ -124,7 +111,7 @@ public class BoardOverviewCtrl implements Initializable {
     }
 
     public void addList() {
-        mainCtrl.showCreateList();
+        mainCtrl.showCreateList(currentBoardId);
     }
 
     public void addTask() {
@@ -144,7 +131,7 @@ public class BoardOverviewCtrl implements Initializable {
     Currently all it does is switch the scene but
      */
     public void switchServer() {
-        clear();
+        boardCatalogueCtrl.close();
         mainCtrl.showSelectServer();
         server.disconnect();
     }
@@ -155,6 +142,8 @@ public class BoardOverviewCtrl implements Initializable {
      * @param refreshPeriod the time period in miliseconds
      */
     public void refreshTimer(final long refreshPeriod) {
+        if(refreshTimer==null)
+            refreshTimer = new Timer();
         refreshTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -169,14 +158,17 @@ public class BoardOverviewCtrl implements Initializable {
     public void refresh() {
         Platform.runLater(() -> {
             try {
+                board = boardUtils.getBoard(currentBoardId);
                 taskLists = taskListUtils.getTaskLists(currentBoardId);
+                tab.setText(board.getName());
+                var data = FXCollections.observableList(taskLists);
+                refreshLists(data);
             } catch (TaskListException e) {
                 Alert alert = customAlert.showAlert(e.getMessage());
                 alert.showAndWait();
+            } catch (BoardException e){
+                tab.getOnClosed().handle(null);
             }
-            //System.out.println(data);
-            var data = FXCollections.observableList(taskLists);
-            refreshLists(data);
         });
     }
 
@@ -211,8 +203,11 @@ public class BoardOverviewCtrl implements Initializable {
     }
 
     public void clear() {
-        refreshTimer.cancel();
-        refreshTimer = new Timer();
+        if(refreshTimer!=null) {
+            refreshTimer.cancel();
+            refreshTimer.purge();
+            refreshTimer=null;
+        }
         listsContainer.getChildren().clear();
         listsMap.clear();
     }
@@ -228,9 +223,8 @@ public class BoardOverviewCtrl implements Initializable {
     public Board deleteBoard() throws BoardException {
         Long idToDelete = getCurrentBoardId();
         System.out.println(idToDelete);
-        setCurrentBoardId(1);
-        mainCtrl.showJoinBoard();
         Board board = boardUtils.deleteBoard(idToDelete);
+        refresh();
         return board;
     }
 
@@ -238,6 +232,7 @@ public class BoardOverviewCtrl implements Initializable {
         Board board = boardUtils.getBoard(currentBoardId);
         editBoardCtrl.setBoard(board);
         mainCtrl.showEditBoard();
+        refresh();
         return board;
     }
 
@@ -264,5 +259,22 @@ public class BoardOverviewCtrl implements Initializable {
             Alert alert = customAlert.showAlert(e.getMessage());
             alert.showAndWait();
         }
+    }
+
+    public void setTab(final Tab tab) {
+        this.tab = tab;
+        tab.setOnSelectionChanged(event -> {
+            if (tab.isSelected()) {
+                refresh();
+                refreshTimer(250);
+            }
+            else {
+                if(refreshTimer==null)
+                    return;
+                refreshTimer.cancel();
+                refreshTimer.purge();
+                refreshTimer=null;
+            }
+        });
     }
 }

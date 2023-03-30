@@ -32,19 +32,14 @@ import javafx.stage.Stage;
 import javafx.util.Pair;
 
 
-
 public class MainCtrl {
 
     private Stage primaryStage;
-
-    private BoardOverviewCtrl boardOverviewCtrl;
-    private Scene boardOverview;
 
     private Scene createList;
     private CreateListCtrl createListCtrl;
 
     private CreateTaskCtrl createTaskCtrl;
-
     private Scene createTask;
 
     private EditTaskCtrl editTaskCtrl;
@@ -68,9 +63,8 @@ public class MainCtrl {
 
     private UnexpectedErrorCtrl unexpectedErrorCtrl;
     private Scene unexpectedError;
-
-    private JoinBoardCtrl joinBoardCtrl;
-    private Scene joinBoard;
+    private BoardCatalogueCtrl boardCatalogueCtrl;
+    private Scene boardCatalogue;
 
     private EditBoardCtrl editBoardCtrl;
 
@@ -80,23 +74,16 @@ public class MainCtrl {
 
     /**
      * Initializes the main controller.
-     * @param primaryStage the primary stage
-     * @param boardOverview the board overview scene
-     * @param listScenes the list scenes
-     * @param serverScenes the server scenes
      */
     public void initialize(final Stage primaryStage,
-                           final Pair<BoardOverviewCtrl, Parent> boardOverview,
                            final ListScenes listScenes,
                            final ServerScenes serverScenes,
                            final TaskScenes taskScenes,
+                           final Pair<BoardCatalogueCtrl, Parent> boardCatalogue,
                            final BoardScenes boardScenes){
         this.primaryStage = primaryStage;
         primaryStage.getIcons().add(new javafx.scene
                 .image.Image("file:src/main/resources/client/images/icon.png"));
-
-        this.boardOverviewCtrl = boardOverview.getKey();
-        this.boardOverview = new Scene(boardOverview.getValue());
         primaryStage.setMinHeight(720);
         primaryStage.setMinWidth(1280);
 
@@ -111,7 +98,6 @@ public class MainCtrl {
 
         this.createListCtrl = listScenes.getCreateList().getKey();
         this.createList = new Scene(listScenes.getCreateList().getValue());
-
 
         this.renameListCtrl = listScenes.getRenameList().getKey();
         this.renameList = new Scene(listScenes.getRenameList().getValue());
@@ -128,8 +114,11 @@ public class MainCtrl {
         this.unexpectedErrorCtrl = serverScenes.getUnexpectedError().getKey();
         this.unexpectedError = new Scene(serverScenes.getUnexpectedError().getValue());
 
-        this.joinBoardCtrl = boardScenes.getJoinBoard().getKey();
-        this.joinBoard = new Scene(boardScenes.getJoinBoard().getValue());
+        this.boardCatalogueCtrl=boardCatalogue.getKey();
+        this.boardCatalogue=new Scene(boardCatalogue.getValue());
+        primaryStage.setOnCloseRequest(e-> {
+            boardCatalogue.getKey().close();
+        });
 
         this.editBoardCtrl = boardScenes.getEditBoard().getKey();
         this.editBoard = new Scene(boardScenes.getEditBoard().getValue());
@@ -139,22 +128,21 @@ public class MainCtrl {
     }
 
     /**
-     * Shows the board overview scene.
+     * Changes the scene to the popup that allows users to create a new task list and name it.
      */
-    public void showBoardOverview() {
-        primaryStage.setTitle("Talio: Board Overview");
-        boardOverviewCtrl.refreshTimer(500);
+    public void showCreateList(final long boardId) {
+        primaryStage.setTitle("Talio: Create List");
+        createListCtrl.boardId=boardId;
         resize();
-        primaryStage.setScene(boardOverview);
+        primaryStage.setScene(createList);
     }
 
     /**
-     * Changes the scene to the popup that allows users to create a new task list and name it.
+     * Changes the scene to the tab pane of boards.
      */
-    public void showCreateList() {
-        primaryStage.setTitle("Talio: Create List");
-        resize();
-        primaryStage.setScene(createList);
+    public void showBoardCatalogue() {
+        primaryStage.setTitle("Talio");
+        primaryStage.setScene(boardCatalogue);
     }
 
     public void showEditBoard() {
@@ -231,18 +219,17 @@ public class MainCtrl {
         primaryStage.setScene(unexpectedError);
     }
 
+    /** Populate the Board Catalogue */
+    public void populateBoardCatalogue() {
+        boardCatalogueCtrl.populate();
+    }
+
     public void showDetailedTaskView(final Task task, final ListCtrl listController) {
         primaryStage.setTitle("Talio: Detailed Task View");
         resize();
         primaryStage.setScene(detailedTaskView);
         detailedTaskViewCtrl.setTask(task);
         detailedTaskViewCtrl.setListController(listController);
-    }
-
-    public void showJoinBoard() {
-        primaryStage.setTitle("Talio: Join Board");
-        resize();
-        primaryStage.setScene(joinBoard);
     }
 
     private void resize(){

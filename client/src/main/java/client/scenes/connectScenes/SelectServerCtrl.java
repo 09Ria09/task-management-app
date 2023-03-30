@@ -1,5 +1,6 @@
 package client.scenes.connectScenes;
 
+import client.scenes.BoardCatalogueCtrl;
 import client.scenes.MainCtrl;
 import client.utils.LayoutUtils;
 import client.utils.ServerUtils;
@@ -18,6 +19,7 @@ public class SelectServerCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
 
+    private final BoardCatalogueCtrl boardCatalogueCtrl;
     private final LayoutUtils layoutUtils;
 
     @FXML
@@ -37,9 +39,11 @@ public class SelectServerCtrl {
 
     @Inject
     public SelectServerCtrl(final ServerUtils server, final MainCtrl mainCtrl,
+                            final BoardCatalogueCtrl boardCatalogueCtrl,
                             final LayoutUtils layoutUtils) {
         this.server = server;
         this.mainCtrl = mainCtrl;
+        this.boardCatalogueCtrl=boardCatalogueCtrl;
         this.layoutUtils = layoutUtils;
     }
 
@@ -65,7 +69,7 @@ public class SelectServerCtrl {
 
     public void showServerBoards(){
         connectButton.setText("Connecting...");
-        String serverAddress = addressField.getText();
+        String serverAddress = addressField.getText().toLowerCase();
         server.setServerAddress(serverAddress);
         System.out.println(server.getServerAddress());
         try {
@@ -73,7 +77,8 @@ public class SelectServerCtrl {
             if (result.isEmpty()) {
                 addressField.clear();
                 connectButton.setText("Connect!");
-                mainCtrl.showJoinBoard();
+                mainCtrl.populateBoardCatalogue();
+                mainCtrl.showBoardCatalogue();
             } else if(result.get().equals("Not a Talio server")||
                     result.get().equals("Unexpected response status")) {
                 connectButton.setText("Connect!");
@@ -88,6 +93,7 @@ public class SelectServerCtrl {
             }
         } catch (Exception e) {
             mainCtrl.showUnexpectedError();
+            e.printStackTrace();
         }
     }
 

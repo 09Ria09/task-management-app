@@ -39,7 +39,7 @@ public class CreateListCtrl {
     @FXML
     private VBox root;
 
-    long boardId;
+    public long boardId;
     String listName;
 
     /**
@@ -84,7 +84,6 @@ public class CreateListCtrl {
     public void confirm() {
         try {
             listName = listNameInput.getText();
-            boardId = boardOverviewCtrl.getCurrentBoardId();
             TaskList list = new TaskList(listName);
             listUtils.createTaskList(boardId, list);
             listNameInput.clear();
@@ -99,7 +98,7 @@ public class CreateListCtrl {
      * Method to return to board overview scene
      */
     public void showServerBoards(){
-        mainCtrl.showBoardOverview();
+        mainCtrl.showBoardCatalogue();
     }
 
     /**
