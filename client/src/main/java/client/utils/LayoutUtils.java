@@ -4,7 +4,6 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.value.ChangeListener;
-import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Font;
@@ -45,7 +44,8 @@ public class LayoutUtils {
      * @return a font binding with the properties above.
      */
     public ObjectBinding<Font> createFontBinding(final Region root, final double multiplier,
-                                                 final double max, final String name, final FontWeight fontWeight){
+                                                 final double max, final String name,
+                                                 final FontWeight fontWeight){
         return Bindings.createObjectBinding(() -> {
             double fontSize = Math.min(root.getHeight(), root.getWidth()/2.0D) * multiplier;
             return Font.font(name, fontWeight, Math.min(fontSize, max));
