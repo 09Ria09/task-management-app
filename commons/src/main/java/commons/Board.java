@@ -132,7 +132,7 @@ public class Board {
      * existing members.
      * @param member the member that will be added.
      */
-    public void addBoardMember(String member){
+    public void addBoardMember(final String member){
         if(!this.boardMembers.contains(member))
             this.boardMembers.add(member);
     }
@@ -142,7 +142,7 @@ public class Board {
      * existing members.
      * @param member the member that will be removed.
      */
-    public void removeBoardMember(String member){
+    public void removeBoardMember(final String member){
         this.boardMembers.remove(member);
     }
 
