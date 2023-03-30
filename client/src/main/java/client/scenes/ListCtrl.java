@@ -15,8 +15,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.TextField;
 import javafx.scene.input.*;
 import javafx.scene.layout.VBox;
+import javafx.scene.control.Alert;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
@@ -45,6 +47,9 @@ public class ListCtrl implements Initializable {
     private TaskListUtils taskListUtils;
     private TaskUtils taskUtils;
     private ServerUtils server;
+    @FXML
+    TextField simpleTaskNameInput;
+    String simpleTaskName;
 
     private LayoutUtils layoutUtils;
 
@@ -400,6 +405,20 @@ public class ListCtrl implements Initializable {
         } catch (TaskListException e) {
             throw new TaskListException("Renaming task list unsuccessful");
         }
+    }
+
+    public void addSimpleTask() throws TaskException {
+        simpleTaskName = simpleTaskNameInput.getText();
+        simpleTaskNameInput.clear();
+        try {
+            if(!simpleTaskName.isEmpty() || simpleTaskName != null) {
+                Task task = new Task(simpleTaskName, null);
+                taskUtils.addTask(boardID, taskList.id, task);
+            }
+        } catch (TaskException e) {
+            throw new TaskException("Task must have a name.");
+        }
+
     }
 
 }
