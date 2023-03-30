@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.FontWeight;
 
 import java.util.Optional;
 
@@ -43,12 +44,14 @@ public class SelectServerCtrl {
     }
 
     public void initialize(){
-        title.fontProperty().bind(layoutUtils.createFontBinding(root, 0.12D, 48.0d));
+        title.fontProperty().bind(layoutUtils.createFontBinding(root, 0.12D, 48.0d, "verdana",
+                FontWeight.BOLD));
         connectButton.fontProperty().bind(layoutUtils.createFontBinding(root, 0.075D, 36.0D));
         connectButton.maxWidthProperty().bind(root.widthProperty().multiply(0.35D));
         connectButton.maxHeightProperty().bind(root.heightProperty().multiply(0.2D));
 
-        addressLabel.fontProperty().bind(layoutUtils.createFontBinding(root, 0.05D, 36.0D));
+        addressLabel.fontProperty().bind(layoutUtils.createFontBinding(root, 0.05D, 36.0D,
+                "verdana", FontWeight.BOLD));
         addressField.fontProperty().bind(layoutUtils.createFontBinding(root, 0.05D, 36.0D));
     }
 

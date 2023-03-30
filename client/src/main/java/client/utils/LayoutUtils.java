@@ -4,14 +4,16 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.value.ChangeListener;
+import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 public class LayoutUtils {
 
     /**
-     * This method creates a font binding that will binds the font to the size of the given
+     * This method creates a font binding that will bind the font to the size of the given
      * root region. The font returned will have a size corresponding to the following formula :
      * Math.min(root.getHeight(), root.getWidth()/2.0D) * multiplier.
      * If the formula gives a size bigger than the max size given, then the font will be set
@@ -26,6 +28,27 @@ public class LayoutUtils {
         return Bindings.createObjectBinding(() -> {
             double fontSize = Math.min(root.getHeight(), root.getWidth()/2.0D) * multiplier;
             return Font.font(Math.min(fontSize, max));
+        }, root.heightProperty());
+    }
+
+    /**
+     * This method creates a font binding that will bind the font to the size of the given
+     * root region. The font returned will have a size corresponding to the following formula :
+     * Math.min(root.getHeight(), root.getWidth()/2.0D) * multiplier.
+     * If the formula gives a size bigger than the max size given, then the font will be set
+     * to the max size.
+     * @param root the root region
+     * @param multiplier the size multiplier
+     * @param max the maximum font size allowed.
+     * @param name the font family
+     * @param fontWeight the font weight
+     * @return a font binding with the properties above.
+     */
+    public ObjectBinding<Font> createFontBinding(final Region root, final double multiplier,
+                                                 final double max, final String name, final FontWeight fontWeight){
+        return Bindings.createObjectBinding(() -> {
+            double fontSize = Math.min(root.getHeight(), root.getWidth()/2.0D) * multiplier;
+            return Font.font(name, fontWeight, Math.min(fontSize, max));
         }, root.heightProperty());
     }
 
