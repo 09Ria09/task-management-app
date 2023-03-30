@@ -24,6 +24,8 @@ public class Tag {
     }
 
     public Tag() {
+        this.name = "";
+        this.color = 0;
     }
 
     public String getName() {
