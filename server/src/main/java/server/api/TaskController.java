@@ -39,7 +39,7 @@ public class TaskController {
             @RequestBody final Task task
     ) {
         try {
-            if (task == null ||isNullOrEmpty(task.getName())) {
+            if (task == null ||isNullOrEmpty(task.getName().replaceAll("\\s", ""))) {
                 return ResponseEntity.badRequest().build();
             }
             Task createdTask = taskService.addTask(boardid, listid, task);
@@ -101,7 +101,7 @@ public class TaskController {
             @RequestParam final String name
     ) {
         try {
-            if (name == null || name.isEmpty()) {
+            if (name == null || name.replaceAll("\\s", "").isEmpty()) {
                 return ResponseEntity.badRequest().build();
             }
             Task task = taskService.renameTask(boardid, listid, taskid, name);
