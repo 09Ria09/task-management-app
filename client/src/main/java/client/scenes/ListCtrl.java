@@ -17,7 +17,6 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
@@ -330,9 +329,7 @@ public class ListCtrl implements Initializable {
             list.getItems().add(task);
             taskUtils.addTask(boardID, this.getTaskList().id, task);
         } catch (TaskException e) {
-            var alert = new Alert(Alert.AlertType.ERROR);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setContentText(e.getMessage());
+            Alert alert = customAlert.showAlert(e.getMessage());
             alert.showAndWait();
         }
     }
