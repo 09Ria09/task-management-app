@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.CustomAlert;
+import client.customExceptions.BoardException;
 import client.utils.ServerUtils;
 import client.utils.TaskListUtils;
 import client.utils.TaskUtils;
@@ -15,6 +16,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.input.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -46,6 +48,9 @@ public class ListCtrl implements Initializable {
     private TaskListUtils taskListUtils;
     private TaskUtils taskUtils;
     private ServerUtils server;
+    @FXML
+    TextField simpleTaskNameInput;
+    String simpleTaskName;
 
     RenameListSingleton renameListSingleton = RenameListSingleton.getInstance();
 
@@ -370,6 +375,15 @@ public class ListCtrl implements Initializable {
         } catch (Exception e) {
             throw new TaskListException("Loading rename task list scene unsuccessful");
         }
+    }
+
+    public void addSimpleTask() throws TaskListException, BoardException, TaskException {
+        simpleTaskName = simpleTaskNameInput.getText();
+        if(!simpleTaskName.isEmpty() || simpleTaskName != null) {
+            Task task = new Task(simpleTaskName, null);
+            taskUtils.addTask(boardID, taskList.id, task);
+        }
+        simpleTaskNameInput.clear();
     }
 
 }
