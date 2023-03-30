@@ -145,7 +145,7 @@ public class TaskController {
             @RequestParam final String description
     ) {
         try {
-            if (description == null || description.isEmpty()) {
+            if (description == null) {
                 return ResponseEntity.badRequest().build();
             }
             Task task = taskService.editDescription(boardid, listid, taskid, description);

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="335.0" xmlns:fx="http://javafx.com/javafx/17.0.2-ea" fx:controller="client.scenes.SubCardCtrl">
+   <children>
+      <Text fx:id="text" layoutX="14.0" layoutY="21.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Loading...">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Text>
+      <CheckBox layoutX="313.0" layoutY="7.0" mnemonicParsing="false" />
+   </children>
+</Pane>

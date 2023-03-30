@@ -240,6 +240,11 @@ public class ListCtrl implements Initializable {
                 }
                 event.consume();
             });
+            cell.setOnMouseClicked(event -> {
+                if(cell.getIndex() < taskList.getTasks().size() && event.getClickCount() == 2) {
+                    mainCtrl.showDetailedTaskView(cell.getItem(), this);
+                }
+            });
             return cell;
         });
     }

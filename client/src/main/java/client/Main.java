@@ -65,6 +65,9 @@ public class Main extends Application {
         var boardCatalogue = FXML.load(BoardCatalogueCtrl.class,
             "client", "scenes", "BoardCatalogue.fxml");
         var taskScenes = new TaskScenes(createTask, editTask);
+        var detailedTaskView = FXML.load(DetailedTaskViewCtrl.class,
+                "client", "scenes", "DetailedTaskView.fxml");
+        var taskScenes = new TaskScenes(createTask, editTask, detailedTaskView);
         var editBoard = FXML.load(EditBoardCtrl.class, "client", "scenes", "EditBoard.fxml");
         var boardScenes = new BoardScenes(editBoard);
 

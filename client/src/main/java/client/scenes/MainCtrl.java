@@ -25,6 +25,7 @@ import client.scenes.connectScenes.SelectServerCtrl;
 import client.scenes.connectScenes.ServerTimeoutCtrl;
 import client.scenes.connectScenes.UnexpectedErrorCtrl;
 import client.scenes.connectScenes.WrongServerCtrl;
+import commons.Task;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -43,6 +44,9 @@ public class MainCtrl {
 
     private EditTaskCtrl editTaskCtrl;
     private Scene editTask;
+
+    private DetailedTaskViewCtrl detailedTaskViewCtrl;
+    private Scene detailedTaskView;
 
     private RenameListCtrl renameListCtrl;
     private Scene renameList;
@@ -87,9 +91,11 @@ public class MainCtrl {
         this.editTaskCtrl = taskScenes.getEditTask().getKey();
         this.editTask = new Scene(taskScenes.getEditTask().getValue());
 
+        this.detailedTaskViewCtrl = taskScenes.getDetailedTaskView().getKey();
+        this.detailedTaskView = new Scene(taskScenes.getDetailedTaskView().getValue());
+
         this.createListCtrl = listScenes.getCreateList().getKey();
         this.createList = new Scene(listScenes.getCreateList().getValue());
-
 
         this.renameListCtrl = listScenes.getRenameList().getKey();
         this.renameList = new Scene(listScenes.getRenameList().getValue());
@@ -206,4 +212,15 @@ public class MainCtrl {
     public void populateBoardCatalogue() {
         boardCatalogueCtrl.populate();
     }
+
+    public void showDetailedTaskView(final Task task, final ListCtrl listController) {
+        primaryStage.setTitle("Talio: Detailed Task View");
+        primaryStage.setScene(detailedTaskView);
+        detailedTaskViewCtrl.setTask(task);
+        detailedTaskViewCtrl.setListController(listController);
+    }
+
+    public void showJoinBoard() {
+        primaryStage.setTitle("Talio: Join Board");
+        primaryStage.setScene(joinBoard);
 }
