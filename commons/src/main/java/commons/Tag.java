@@ -56,4 +56,12 @@ public class Tag {
     public String toString() {
         return "Tag (" + id + ") : " + name + " -> color=" + color;
     }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 }

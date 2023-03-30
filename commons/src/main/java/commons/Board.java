@@ -96,6 +96,10 @@ public class Board {
         return taskLists.stream().filter(x -> x.id == id).findFirst();
     }
 
+    public Optional<Tag> getTagById(final long id) {
+        return tags.stream().filter(x -> x.id == id).findFirst();
+    }
+
     public void addTag(final Tag tag) {
         tags.add(tag);
     }
