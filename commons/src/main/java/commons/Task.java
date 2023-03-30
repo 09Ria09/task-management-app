@@ -22,7 +22,7 @@ public class Task implements Serializable {
     @OneToMany(cascade=CascadeType.ALL)
     private List<SubTask> subtasks;
 
-    @OneToMany(cascade=CascadeType.ALL)
+    @OneToMany
     private List<Tag> tags;
 
     public Task(){

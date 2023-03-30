@@ -120,7 +120,8 @@ public class TagController {
             @RequestBody final Tag tag
     ) {
         try {
-            if(tag == null || isNullOrEmpty(tag.getName())) {
+            if(tag == null || isNullOrEmpty(tag.getName())
+                    || isNullOrEmpty(tag.getColor())) {
                 return ResponseEntity.badRequest().build();
             }
             Tag addedTag = tagService.addBoardTag(boardid, tag);
@@ -194,7 +195,7 @@ public class TagController {
     public ResponseEntity<Tag> recolorTag(
             @PathVariable("boardid") final long boardid,
             @PathVariable("tagid") final long tagid,
-            @RequestParam final int color
+            @RequestParam final String color
     ) {
         try {
             Tag tag = tagService.recolorTag(boardid, tagid, color);

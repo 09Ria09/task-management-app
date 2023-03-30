@@ -266,4 +266,9 @@ public class BoardOverviewCtrl implements Initializable {
             alert.showAndWait();
         }
     }
+
+    public void tagOverview() throws BoardException {
+        Board board = boardUtils.getBoard(currentBoardId);
+        mainCtrl.showTagOverview(board);
+    }
 }

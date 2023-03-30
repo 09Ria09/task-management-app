@@ -16,9 +16,9 @@ public class Tag {
     public long id;
 
     private String name;
-    private int color;
+    private String color;
 
-    public Tag(final String name, final int color) {
+    public Tag(final String name, final String color) {
         this.name = name;
         this.color = color;
     }
@@ -34,11 +34,11 @@ public class Tag {
         this.name = name;
     }
 
-    public int getColor() {
+    public String getColor() {
         return color;
     }
 
-    public void setColor(final int color) {
+    public void setColor(final String color) {
         this.color = color;
     }
 
@@ -54,7 +54,7 @@ public class Tag {
 
     @Override
     public String toString() {
-        return "Tag (" + id + ") : " + name + " -> color=" + color;
+        return "Tag (" + id + ") : " + name + " -> color=#" + color;
     }
 
     public long getId() {

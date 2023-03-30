@@ -25,6 +25,7 @@ import client.scenes.connectScenes.SelectServerCtrl;
 import client.scenes.connectScenes.ServerTimeoutCtrl;
 import client.scenes.connectScenes.UnexpectedErrorCtrl;
 import client.scenes.connectScenes.WrongServerCtrl;
+import commons.Board;
 import commons.Task;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -75,6 +76,9 @@ public class MainCtrl {
     private EditBoardCtrl editBoardCtrl;
 
     private Scene editBoard;
+
+    private TagOverviewCtrl tagOverviewCtrl;
+    private Scene tagOverview;
 
 
 
@@ -131,6 +135,9 @@ public class MainCtrl {
 
         this.editBoardCtrl = boardScenes.getEditBoard().getKey();
         this.editBoard = new Scene(boardScenes.getEditBoard().getValue());
+
+        this.tagOverviewCtrl = boardScenes.getTagOverview().getKey();
+        this.tagOverview = new Scene(boardScenes.getTagOverview().getValue());
 
         showSelectServer();
         primaryStage.show();
@@ -230,4 +237,13 @@ public class MainCtrl {
         primaryStage.setTitle("Talio: Join Board");
         primaryStage.setScene(joinBoard);
     }
+
+    public void showTagOverview(Board board) {
+        primaryStage.setTitle("Talio: Tag Overview");
+        tagOverviewCtrl.setBoard(board);
+        tagOverviewCtrl.refreshTimer(500);
+        primaryStage.setScene(tagOverview);
+    }
+
+
 }

@@ -143,7 +143,7 @@ public class TagUtils {
             throw new TagException("Board not found.");
         } else if(response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
             throw new TagException("You inputted a wrong value");
-        }else {
+        } else {
             throw new TagException("An error occurred while adding the tag");
         }
     }
@@ -172,7 +172,7 @@ public class TagUtils {
             throw new TagException("Board not found.");
         } else if(response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
             throw new TagException("You inputted a wrong value");
-        }else {
+        } else {
             throw new TagException("An error occurred while adding the tag");
         }
     }
@@ -214,7 +214,7 @@ public class TagUtils {
      * @throws TagException throws an exception if something goes wrong
      */
     public Tag recolorTag(final long boardId, final long tagId,
-                         final int newColor) throws TagException {
+                         final String newColor) throws TagException {
         String serverAddress = server.getServerAddress();
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
                 .path("api/tags/" + boardId + "/" + tagId + "/recolor")

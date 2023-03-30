@@ -43,6 +43,23 @@ public class TagService {
     }
 
     /**
+     * Returns all tasks in a given board
+     * @param boardID ID of the board
+     * @return a list of tasks
+     */
+    public List<Task> getAllTasks(final long boardID) {
+        Board board = getBoard(boardID);
+        List<TaskList> taskLists = board.getListTaskList();
+        List<Task> tasks = new ArrayList<>();
+
+        for(TaskList taskList : taskLists) {
+            tasks.addAll(taskList.getTasks());
+        }
+
+        return tasks;
+    }
+
+    /**
      * Returns a list of all tags in a board
      * @param boardID the ID of the board
      * @return a list containing all the tags
@@ -146,7 +163,7 @@ public class TagService {
      * @param newColor the new color of the tag
      * @return the tag with a different color
      */
-    public Tag recolorTag(final long boardID, final long tagID, final int newColor) {
+    public Tag recolorTag(final long boardID, final long tagID, final String newColor) {
         Board board = getBoard(boardID);
         Tag tag = getBoardTagByID(boardID, tagID);
 
@@ -165,6 +182,12 @@ public class TagService {
     public Tag removeBoardTag(final long boardID, final long tagID) {
         Board board = getBoard(boardID);
         Tag tag = getBoardTagByID(boardID, tagID);
+        List<Task> tasks = getAllTasks(boardID);
+
+        for(Task task : tasks) {
+            task.getTags().remove(tag);
+        }
+
         board.removeTag(tag);
 
         boardRepository.save(board);

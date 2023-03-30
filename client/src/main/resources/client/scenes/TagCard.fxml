@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<Pane fx:id="pane" prefHeight="34.0" prefWidth="135.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.TagCardCtrl">
+   <children>
+      <Label fx:id="tagName" layoutY="7.0" prefHeight="21.0" prefWidth="91.0" text="Loading...">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <Button layoutX="109.0" layoutY="5.0" mnemonicParsing="false" onAction="#deleteTag" text="X" />
+   </children>
+</Pane>
