@@ -15,6 +15,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -222,7 +223,9 @@ public class DetailedTaskViewCtrl {
             subTaskUtils.addSubTask(listController.getBoardID(),
                     listController.getTaskList().id, task.id, subTask);
         } catch (TaskException e) {
-            Alert alert = customAlert.showAlert(e.getMessage());
+            var alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setContentText(e.getMessage());
             alert.showAndWait();
         }
     }
