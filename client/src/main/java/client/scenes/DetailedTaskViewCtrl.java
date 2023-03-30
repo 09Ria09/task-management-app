@@ -13,8 +13,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.text.Text;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -24,9 +24,13 @@ public class DetailedTaskViewCtrl {
     @FXML
     public Button editButton;
     @FXML
-    private Text taskNameText;
+    private Label taskNameText;
     @FXML
-    private TextArea taskDescriptionText;
+    private TextField taskNameTextField;
+    @FXML
+    private Label taskDescriptionText;
+    @FXML
+    private TextArea taskDescriptionTextArea;
     @FXML
     private ListView<SubTask> subTasks;
     private Task task;
@@ -48,6 +52,74 @@ public class DetailedTaskViewCtrl {
         this.subTaskUtils = subTaskUtils;
     }
 
+    public void initialize() {
+        this.taskNameTextField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
+            if(!newValue){
+                try {
+                    this.onFocusLostTaskName();
+                } catch (TaskException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        }));
+
+        this.taskDescriptionTextArea.focusedProperty().addListener(((observable,
+                                                                     oldValue, newValue) -> {
+            if(!newValue){
+                try {
+                    this.onFocusLostTaskDescription();
+                } catch (TaskException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        }));
+    }
+
+    public void onTaskNameClicked(final MouseEvent event){
+        if(event.getButton() != MouseButton.PRIMARY)
+            return;
+        this.taskNameTextField.setText(this.taskNameText.getText());
+        this.taskNameTextField.setVisible(true);
+        this.taskNameText.setVisible(false);
+    }
+
+    public void onTaskDescriptionClicked(final MouseEvent event){
+        if(event.getButton() != MouseButton.PRIMARY)
+            return;
+        this.taskDescriptionTextArea.setText(this.taskDescriptionText.getText());
+        this.taskDescriptionTextArea.setVisible(true);
+        this.taskDescriptionText.setVisible(false);
+    }
+
+    private void onFocusLostTaskName() throws TaskException {
+        this.taskNameText.setText(this.taskNameTextField.getText());
+        this.taskNameTextField.setVisible(false);
+        this.taskNameText.setVisible(true);
+        if(this.taskNameTextField.getText().equals(task.getName()))
+            return;
+        try {
+            this.taskUtils.renameTask(listController.getBoardID(), listController.getTaskList().id,
+                    task.getId(), this.taskNameTextField.getText());
+        } catch (TaskException e) {
+            throw new TaskException("Renaming task unsuccessful");
+        }
+    }
+
+    private void onFocusLostTaskDescription() throws TaskException {
+        this.taskDescriptionText.setText(this.taskDescriptionTextArea.getText());
+        this.taskDescriptionTextArea.setVisible(false);
+        this.taskDescriptionText.setVisible(true);
+        if(this.taskDescriptionTextArea.getText().equals(task.getDescription()))
+            return;
+        try {
+            this.taskUtils.editDescription(listController.getBoardID(),
+                    listController.getTaskList().id,
+                    task.getId(), this.taskDescriptionTextArea.getText());
+        } catch (TaskException e) {
+            throw new TaskException("Editing the description of the task unsuccessful");
+        }
+    }
+
     /**
      * Setter for the task, after it sets the task it will update
      * the fields to the details of the task
@@ -62,9 +134,10 @@ public class DetailedTaskViewCtrl {
      * It will update all the fields with the new values from the task
      */
     private void update() {
+        taskNameText.setVisible(true);
+        taskDescriptionText.setVisible(true);
         taskNameText.setText(this.task.getName());
         taskDescriptionText.setText(this.task.getDescription());
-        setEventHandlers();
         subTasks.setCellFactory(lv -> {
             ListCell<SubTask> cell = new ListCell<>() {
                 @Override
@@ -119,66 +192,6 @@ public class DetailedTaskViewCtrl {
         }
     }
 
-    public boolean saveDescription() {
-        try {
-            String newDesc = taskDescriptionText.getText();
-            if(newDesc.equals(task.getDescription())) {
-                return false;
-            }
-            taskUtils.editDescription(listController.getBoardID(),
-                    listController.getTaskList().id,
-                    task.id, newDesc);
-            return true;
-        } catch (TaskException e) {
-            Alert alert = customAlert.showAlert(e.getMessage());
-            alert.showAndWait();
-            return false;
-        }
-    }
-
-    public boolean saveName(final String newName) {
-        try {
-            if(!newName.equals("") && !newName.equals(task.getName())) {
-                taskUtils.renameTask(listController.getBoardID(),
-                        listController.getTaskList().id,
-                        task.id, newName);
-                return true;
-            }
-        } catch (TaskException e) {
-            Alert alert = customAlert.showAlert(e.getMessage());
-            alert.showAndWait();
-            return false;
-        }
-        return false;
-    }
-
-    public void setEventHandlers() {
-        taskDescriptionText.setOnKeyReleased(this::keyReleasedDesc);
-    }
-
-    private void keyReleasedDesc(final KeyEvent event) {
-        saveDescription();
-        event.consume();
-    }
-
-
-    public void editName() {
-        TextInputDialog dialog = new TextInputDialog(this.task.getName());
-        dialog.setTitle("Talio: Change Your Name");
-        dialog.setHeaderText("Change Your Name:");
-        dialog.setContentText("Name:");
-
-        Optional<String> newName = dialog.showAndWait();
-
-        newName.ifPresent(this::saveName);
-        try {
-            task = taskUtils.getTask(listController.getBoardID(),
-                    listController.getTaskList().id, task.id);
-            taskNameText.setText(task.getName());
-        } catch (TaskException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     //This function still needs implementation, should be done by Edsard
     public void addSubTask() {
