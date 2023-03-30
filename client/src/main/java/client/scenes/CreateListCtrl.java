@@ -65,14 +65,17 @@ public class CreateListCtrl {
     public void initialize(){
         listNameInput.textProperty().addListener(
                 this.layoutUtils.createMaxFieldLength(20, listNameInput));
-        listNameInput.fontProperty().bind(layoutUtils.createFontBinding(root, 0.08D, 30.0d));
+        //DORIAN PLS LMK WHat you think of this, take a look at the scene
+        //and see if you think it looks good, I found it easier to do it in scene builder
+        //but we can try doing it in java if you want to stick to this as well
+   /*     listNameInput.fontProperty().bind(layoutUtils.createFontBinding(root, 0.08D, 30.0d));
         title.fontProperty().bind(layoutUtils.createFontBinding(root, 0.12D, 48.0d));
         confirmButton.prefHeightProperty().bind(root.heightProperty().multiply(0.075D));
         confirmButton.prefWidthProperty().bind(root.widthProperty().multiply(0.15D));
         confirmButton.fontProperty().bind(layoutUtils.createFontBinding(root, 0.08D, 30.0d));
         cancelButton.prefHeightProperty().bind(root.heightProperty().multiply(0.075D));
         cancelButton.prefWidthProperty().bind(root.widthProperty().multiply(0.15D));
-        cancelButton.fontProperty().bind(layoutUtils.createFontBinding(root, 0.08D, 30.0d));
+        cancelButton.fontProperty().bind(layoutUtils.createFontBinding(root, 0.08D, 30.0d)); */
     }
 
     /**

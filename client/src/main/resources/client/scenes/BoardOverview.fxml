@@ -31,31 +31,31 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label fx:id="inviteKeyLabel" prefHeight="20.0" prefWidth="114.0" style="-fx-text-fill: #2196F3;" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+            <Label fx:id="inviteKeyLabel" prefHeight="20.0" prefWidth="114.0" style="-fx-text-fill: #4969e1;" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
       </Label>
             <HBox alignment="CENTER" prefHeight="86.0" prefWidth="240.0" spacing="10.0" GridPane.rowIndex="1">
                <children>
-                  <Button alignment="CENTER" mnemonicParsing="false" onAction="#switchServer" prefHeight="25.0" prefWidth="100.0" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold;" text="Switch server" textAlignment="CENTER" HBox.hgrow="ALWAYS">
+                  <Button alignment="CENTER" mnemonicParsing="false" onAction="#switchServer" prefHeight="25.0" prefWidth="100.0" style="-fx-background-color: #D32F2F; -fx-text-fill: white; -fx-font-weight: bold;" text="Disconnect" textAlignment="CENTER" HBox.hgrow="ALWAYS">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>
                   </Button>
-                  <Button alignment="CENTER" mnemonicParsing="false" onAction="#copyInviteKey" prefHeight="25.0" prefWidth="115.0" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold;" text="Copy Invite Key" textAlignment="CENTER" />
                </children>
             </HBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="240.0" spacing="10.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <children>
-                  <Button mnemonicParsing="false" onAction="#deleteBoard" style="-fx-background-color: #D22B2B; -fx-text-fill: white; -fx-font-weight: bold;" text="Delete Board" textAlignment="CENTER" HBox.hgrow="ALWAYS" />
-                  <Button mnemonicParsing="false" onAction="#renameBoard" style="-fx-background-color: #D22B2B; -fx-text-fill: white; -fx-font-weight: bold;" text="Rename Board" textAlignment="CENTER" HBox.hgrow="ALWAYS">
+                  <Button alignment="CENTER" mnemonicParsing="false" onAction="#copyInviteKey" prefHeight="25.0" prefWidth="115.0" style="-fx-background-color: #4969e1; -fx-text-fill: white; -fx-font-weight: bold;" text="Copy Invite Key" textAlignment="CENTER" />
+                  <Button mnemonicParsing="false" onAction="#renameBoard" style="-fx-background-color: #4969e1; -fx-text-fill: white; -fx-font-weight: bold;" text="Rename Board" textAlignment="CENTER" HBox.hgrow="ALWAYS">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>
                   </Button>
+                  <Button mnemonicParsing="false" onAction="#deleteBoard" style="-fx-background-color: #D32F2F; -fx-text-fill: white; -fx-font-weight: bold;" text="Delete Board" textAlignment="CENTER" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
             <HBox alignment="CENTER" prefHeight="86.0" prefWidth="240.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <children>
-                  <Button mnemonicParsing="false" onAction="#addList" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;" text="Add List" textAlignment="CENTER" />
+                  <Button mnemonicParsing="false" onAction="#addList" style="-fx-background-color: #57A773; -fx-text-fill: white; -fx-font-weight: bold;" text="Add List" textAlignment="CENTER" />
                </children>
                <padding>
                   <Insets right="10.0" />
