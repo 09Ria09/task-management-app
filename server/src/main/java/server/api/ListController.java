@@ -38,7 +38,7 @@ public class ListController {
             @RequestBody final TaskList taskList
     ) {
         try{
-            if (taskList == null || isNullOrEmpty(taskList.getName())) {
+            if (taskList == null || isNullOrEmpty(taskList.getName().replaceAll("\\s", ""))) {
                 return ResponseEntity.badRequest().build();
             }
             TaskList createdTaskList = listService.addList(boardid, taskList);
@@ -99,7 +99,7 @@ public class ListController {
             @RequestParam final String name
     ) {
         try {
-            if(name == null|| name.isEmpty()){
+            if(name == null|| name.replaceAll("\\s", "").isEmpty()){
                 return ResponseEntity.badRequest().build();
             }
             TaskList list = listService.renameList(boardid, tasklistid, name);
