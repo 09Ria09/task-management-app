@@ -15,7 +15,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Modality;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -127,10 +126,7 @@ public class CardCtrl {
                 return false;
             }
         }catch (TaskListException e){
-            var alert = new Alert(Alert.AlertType.ERROR);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setHeaderText("Oops, something went wrong!");
-            alert.setContentText("We're sorry :( something went wrong : "+ e.getMessage());
+            Alert alert = customAlert.showAlert(e.getMessage());
             alert.showAndWait();
             return false;
         }

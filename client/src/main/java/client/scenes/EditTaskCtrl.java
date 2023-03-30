@@ -32,7 +32,7 @@ public class EditTaskCtrl {
     public void cancel() {
         newTaskDesc.clear();
         newTaskName.clear();
-        mainCtrl.showBoardOverview();
+        mainCtrl.showBoardCatalogue();
     }
 
     public void confirmTask() {
