@@ -110,4 +110,19 @@ public class SubTaskService {
         boardRepository.save(board);
         return subTask;
     }
+
+    public SubTask reorderSubTask(final long boardId, final long listId,
+                                  final long taskId, final long subTaskId,
+                                  final int newIndex) {
+        Board board = boardRepository.getById(boardId);
+        TaskList list = board.getTaskListById(listId)
+                .orElseThrow(() -> new NoSuchElementException("No such task list"));
+        Optional<Task> task = list.getTaskById(taskId);
+        if(task.isPresent()) {
+            task.get().reorderSubTasks(subTaskId, newIndex);
+            boardRepository.save(board);
+            return task.get().getSubtaskById(subTaskId);
+        }
+        throw new NoSuchElementException("No such task");
+    }
 }

@@ -102,7 +102,8 @@ public class SubTaskUtils {
         } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
             throw new SubTaskException("Bad request");
         } else {
-            throw new SubTaskException("An error occurred while renaming the sub task"+response.getStatus());
+            throw new SubTaskException("An error occurred while renaming the sub task"
+                    +response.getStatus());
         }
     }
 
@@ -124,6 +125,28 @@ public class SubTaskUtils {
         } else {
             throw new SubTaskException("An error occurred while deleting the sub task"
                     + response.getStatus());
+        }
+    }
+
+    public SubTask reorderTask(final long boardId, final long taskListId,
+                               final long taskId, final long subTaskId,
+                               final int newIndex) throws SubTaskException {
+        System.out.println(newIndex);
+        String serverAddress = server.getServerAddress();
+        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
+                .path("api/subtask/" + boardId + "/" + taskListId + "/" +
+                        taskId + "/reorder/" + subTaskId)
+                .queryParam("newIndex", newIndex)
+                .request()
+                .accept(APPLICATION_JSON)
+                .put(Entity.entity(newIndex, APPLICATION_JSON));
+
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+            return response.readEntity(SubTask.class);
+        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
+            throw new SubTaskException("Task not found.");
+        } else {
+            throw new SubTaskException("An error occurred while reordering the sub tasks");
         }
     }
 }

@@ -103,4 +103,20 @@ public class SubTaskController {
         }
     }
 
+    @PutMapping("/{boardid}/{tasklistid}/{taskid}/reorder/{subtaskid}")
+    public ResponseEntity<SubTask> reorderSubTasks(
+            @PathVariable("boardid") final long boardid,
+            @PathVariable("tasklistid") final long tasklistid,
+            @PathVariable ("taskid") final long taskid,
+            @PathVariable("subtaskid") final long subtaskid,
+            @RequestParam final int newIndex) {
+        try {
+            SubTask subTask = subTaskService.reorderSubTask(boardid, tasklistid,
+                    taskid, subtaskid, newIndex);
+            return ResponseEntity.ok(subTask);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }

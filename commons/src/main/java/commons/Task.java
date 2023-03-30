@@ -93,4 +93,18 @@ public class Task implements Serializable {
     public Optional<SubTask> getSubTaskById(final long id){
         return subtasks.stream().filter(x -> x.id == id).findFirst();
     }
+
+    public void reorderSubTasks(final long subTaskId, final int newIndex) {
+        var subTask = getSubTaskById(subTaskId);
+        if(subTask.isEmpty()) {
+            return;
+        }
+        int index = subtasks.indexOf(subTask.get());
+
+        if(index == newIndex) {
+            return;
+        }
+        SubTask temp = subtasks.remove(index);
+        subtasks.add(newIndex, temp);
+    }
 }
