@@ -54,6 +54,8 @@ public class Board {
         this.taskLists = new ArrayList<>();
         this.tags = new ArrayList<>();
         this.name = "";
+        this.boardMembers = new ArrayList<>();
+        this.inviteKey = "";
     }
 
     public String getName() {
@@ -123,6 +125,25 @@ public class Board {
      */
     public List<String> getBoardMembers() {
         return boardMembers;
+    }
+
+    /**
+     * This method adds a new member to the list of
+     * existing members.
+     * @param member the member that will be added.
+     */
+    public void addBoardMember(String member){
+        if(!this.boardMembers.contains(member))
+            this.boardMembers.add(member);
+    }
+
+    /**
+     * This method removes a current member to the list of
+     * existing members.
+     * @param member the member that will be removed.
+     */
+    public void removeBoardMember(String member){
+        this.boardMembers.remove(member);
     }
 
     @Override

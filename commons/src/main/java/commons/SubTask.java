@@ -23,6 +23,8 @@ public class SubTask {
     }
 
     public SubTask() {
+        this.name = "";
+        this.completed = false;
     }
 
     public String getName() {
