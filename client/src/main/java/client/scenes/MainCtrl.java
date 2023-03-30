@@ -219,8 +219,4 @@ public class MainCtrl {
         detailedTaskViewCtrl.setTask(task);
         detailedTaskViewCtrl.setListController(listController);
     }
-
-    public void showJoinBoard() {
-        primaryStage.setTitle("Talio: Join Board");
-        primaryStage.setScene(joinBoard);
 }
