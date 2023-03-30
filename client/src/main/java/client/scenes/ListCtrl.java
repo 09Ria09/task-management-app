@@ -377,13 +377,18 @@ public class ListCtrl implements Initializable {
         }
     }
 
-    public void addSimpleTask() throws TaskListException, BoardException, TaskException {
+    public void addSimpleTask() throws TaskException {
         simpleTaskName = simpleTaskNameInput.getText();
-        if(!simpleTaskName.isEmpty() || simpleTaskName != null) {
-            Task task = new Task(simpleTaskName, null);
-            taskUtils.addTask(boardID, taskList.id, task);
-        }
         simpleTaskNameInput.clear();
+        try {
+            if(!simpleTaskName.isEmpty() || simpleTaskName != null) {
+                Task task = new Task(simpleTaskName, null);
+                taskUtils.addTask(boardID, taskList.id, task);
+            }
+        } catch (TaskException e) {
+            throw new TaskException("Task must have a name.");
+        }
+
     }
 
 }
