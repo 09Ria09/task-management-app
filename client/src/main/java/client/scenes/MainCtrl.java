@@ -97,6 +97,8 @@ public class MainCtrl {
 
         this.boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
+        primaryStage.setMinHeight(720);
+        primaryStage.setMinWidth(1280);
 
         this.createTaskCtrl = taskScenes.getCreateTask().getKey();
         this.createTask = new Scene(taskScenes.getCreateTask().getValue());
@@ -142,6 +144,7 @@ public class MainCtrl {
     public void showBoardOverview() {
         primaryStage.setTitle("Talio: Board Overview");
         boardOverviewCtrl.refreshTimer(500);
+        resize();
         primaryStage.setScene(boardOverview);
     }
 
@@ -150,11 +153,13 @@ public class MainCtrl {
      */
     public void showCreateList() {
         primaryStage.setTitle("Talio: Create List");
+        resize();
         primaryStage.setScene(createList);
     }
 
     public void showEditBoard() {
         primaryStage.setTitle("Talio: Edit Board");
+        resize();
         primaryStage.setScene(editBoard);
     }
 
@@ -163,6 +168,7 @@ public class MainCtrl {
      */
     public void showCreateTask(final ListCtrl ctrl) {
         primaryStage.setTitle("Talio: Create Task");
+        resize();
         primaryStage.setScene(createTask);
         createTaskCtrl.setListCtrl(ctrl);
     }
@@ -175,6 +181,7 @@ public class MainCtrl {
      */
     public void showEditTask(final CardCtrl cardCtrl, final CustomAlert customAlert) {
         primaryStage.setTitle("Talio : Edit Task");
+        resize();
         primaryStage.setScene(editTask);
         editTaskCtrl.setCardCtrl(cardCtrl);
         editTaskCtrl.setCustomAlert(customAlert);
@@ -186,6 +193,7 @@ public class MainCtrl {
      */
     public void showRenameList() {
         primaryStage.setTitle("Talio: Rename List");
+        resize();
         primaryStage.setScene(renameList);
     }
 
@@ -194,6 +202,7 @@ public class MainCtrl {
      */
     public void showSelectServer() {
         primaryStage.setTitle("Talio: Select Your Server");
+        resize();
         primaryStage.setScene(selectServer);
     }
     /**
@@ -201,6 +210,7 @@ public class MainCtrl {
      */
     public void showWrongServer() {
         primaryStage.setTitle("Talio: server not found");
+        resize();
         primaryStage.setScene(wrongServer);
 
     }
@@ -209,6 +219,7 @@ public class MainCtrl {
      */
     public void showTimeout() {
         primaryStage.setTitle("Talio: server timed out");
+        resize();
         primaryStage.setScene(serverTimeout);
     }
     /**
@@ -216,11 +227,13 @@ public class MainCtrl {
      */
     public void showUnexpectedError() {
         primaryStage.setTitle("Talio: unexpected error");
+        resize();
         primaryStage.setScene(unexpectedError);
     }
 
     public void showDetailedTaskView(final Task task, final ListCtrl listController) {
         primaryStage.setTitle("Talio: Detailed Task View");
+        resize();
         primaryStage.setScene(detailedTaskView);
         detailedTaskViewCtrl.setTask(task);
         detailedTaskViewCtrl.setListController(listController);
@@ -228,6 +241,12 @@ public class MainCtrl {
 
     public void showJoinBoard() {
         primaryStage.setTitle("Talio: Join Board");
+        resize();
         primaryStage.setScene(joinBoard);
+    }
+
+    private void resize(){
+        primaryStage.setHeight(primaryStage.getHeight());
+        primaryStage.setWidth(primaryStage.getWidth());
     }
 }

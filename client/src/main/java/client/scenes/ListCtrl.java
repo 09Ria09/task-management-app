@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.CustomAlert;
+import client.utils.LayoutUtils;
 import client.utils.ServerUtils;
 import client.utils.TaskListUtils;
 import client.utils.TaskUtils;
@@ -13,13 +14,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import javafx.scene.control.Alert;
-import javafx.stage.Modality;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
@@ -34,7 +31,9 @@ public class ListCtrl implements Initializable {
     @FXML
     ListView<Task> list;
     @FXML
-    Text title;
+    Label title;
+    @FXML
+    TextField titleField;
     @FXML
     VBox vBox;
 
@@ -47,17 +46,35 @@ public class ListCtrl implements Initializable {
     private TaskUtils taskUtils;
     private ServerUtils server;
 
+    private LayoutUtils layoutUtils;
+
     RenameListSingleton renameListSingleton = RenameListSingleton.getInstance();
 
 
 
     @Inject
     public ListCtrl(final MainCtrl mainCtrl, final TaskListUtils taskListUtils,
-                    final TaskUtils taskUtils, final CustomAlert customAlert) {
+                    final TaskUtils taskUtils, final CustomAlert customAlert,
+                    final LayoutUtils layoutUtils) {
         this.taskListUtils = taskListUtils;
         this.taskUtils = taskUtils;
         this.mainCtrl = mainCtrl;
         this.customAlert = customAlert;
+        this.layoutUtils = layoutUtils;
+    }
+
+    public void initialize(){
+        this.titleField.textProperty().addListener(
+                this.layoutUtils.createMaxFieldLength(20, titleField));
+        this.titleField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
+            if(!newValue){
+                try {
+                    this.onFocusLostTitle();
+                } catch (TaskListException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        }));
     }
 
     private void setDragHandlers(final ListCtrl listCtrl) {
@@ -312,9 +329,7 @@ public class ListCtrl implements Initializable {
             list.getItems().add(task);
             taskUtils.addTask(boardID, this.getTaskList().id, task);
         } catch (TaskException e) {
-            var alert = new Alert(Alert.AlertType.ERROR);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setContentText(e.getMessage());
+            Alert alert = customAlert.showAlert(e.getMessage());
             alert.showAndWait();
         }
     }
@@ -358,17 +373,32 @@ public class ListCtrl implements Initializable {
     }
 
     /**
-     * renames list by button in list that feeds the board id and list id to a singleton
-     * and brings the user to a new scene where they input name and the list is renamed
-     * using that input name and the ids from the RenameListSingleton
-     * @throws TaskListException
+     * Fired when the list title is clicked. It hides the Label and shows a textfield instead.
+     * @param event the mouse click event
      */
-    public void rename() throws TaskListException {
+    public void onTitleClicked(final MouseEvent event){
+        if(event.getButton() != MouseButton.PRIMARY)
+            return;
+        this.titleField.setText(this.title.getText());
+        this.titleField.setVisible(true);
+        this.title.setVisible(false);
+    }
+
+    /**
+     * Fired when the task list title fields loses the focus. It then checks if the name
+     * is different. If it is, the change is sent to the server.
+     * @throws TaskListException if there was an error when changing the name to the server.
+     */
+    public void onFocusLostTitle() throws TaskListException{
+        this.title.setText(this.titleField.getText());
+        this.titleField.setVisible(false);
+        this.title.setVisible(true);
+        if(this.titleField.getText().equals(taskList.getName()))
+            return;
         try {
-            renameListSingleton.setIds(getBoardID(), getTaskList().id);
-            mainCtrl.showRenameList();
-        } catch (Exception e) {
-            throw new TaskListException("Loading rename task list scene unsuccessful");
+            this.taskListUtils.renameTaskList(boardID, taskList.getId(), this.titleField.getText());
+        } catch (TaskListException e) {
+            throw new TaskListException("Renaming task list unsuccessful");
         }
     }
 
