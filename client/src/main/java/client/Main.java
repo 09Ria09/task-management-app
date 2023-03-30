@@ -57,9 +57,11 @@ public class Main extends Application {
                 "scenes", "connectScenes", "ConnectionTimeout.fxml");
         var unexpectedError = FXML.load(UnexpectedErrorCtrl.class, "client",
                 "scenes", "connectScenes", "UnexpectedError.fxml");
+        var adminBoard = FXML.load(AdminBoardCtrl.class, "client", "scenes", "AdminBoards.fxml");
+        var adminLogin = FXML.load(AdminLoginCtrl.class, "client", "scenes", "AdminLogin.fxml");
         var listScenes = new ListScenes(createList, renameList);
         var serverScenes = new ServerScenes(serverSelection, wrongServer,
-                serverTimeout, unexpectedError);
+                serverTimeout, unexpectedError, adminLogin, adminBoard);
         var createTask = FXML.load(CreateTaskCtrl.class, "client", "scenes", "CreateTask.fxml");
         var joinBoard = FXML.load(JoinBoardCtrl.class, "client", "scenes", "JoinBoard.fxml");
         var editTask = FXML.load(EditTaskCtrl.class, "client", "scenes", "EditTask.fxml");

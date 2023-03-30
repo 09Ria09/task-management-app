@@ -18,6 +18,12 @@ package client.utils;
 
 
 
+import client.customExceptions.BoardException;
+import commons.Board;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.core.Response;
+import org.glassfish.jersey.client.ClientConfig;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -26,6 +32,7 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.Optional;
 
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 
 public class ServerUtils {
@@ -92,5 +99,20 @@ public class ServerUtils {
 
     public String getServerAddress() {
         return serverAddress;
+    }
+
+    public String getAdminKey() throws Exception {
+        String serverAddress = this.serverAddress;
+        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
+                .path("api/talio/admin")
+                .request()
+                .accept(APPLICATION_JSON)
+                .get();
+
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+            return response.readEntity(String.class);
+        } else {
+            throw new Exception("An error occurred while accessing the key");
+        }
     }
 }

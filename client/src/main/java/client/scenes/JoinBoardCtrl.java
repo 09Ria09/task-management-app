@@ -48,6 +48,10 @@ public class JoinBoardCtrl {
         this.boardUtils = boardUtils;
     }
 
+    public void adminLogin() {
+        mainCtrl.showAdminLogin();
+    }
+
     /**
      * joins a board based on the invite key
      * inputted by the user

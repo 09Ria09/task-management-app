@@ -1,5 +1,7 @@
 package client.sceneManagement;
 
+import client.scenes.AdminBoardCtrl;
+import client.scenes.AdminLoginCtrl;
 import client.scenes.connectScenes.SelectServerCtrl;
 import client.scenes.connectScenes.UnexpectedErrorCtrl;
 import client.scenes.connectScenes.ServerTimeoutCtrl;
@@ -20,14 +22,22 @@ public class ServerScenes {
     private final Pair<ServerTimeoutCtrl, Parent> serverTimeout;
     private final Pair<UnexpectedErrorCtrl, Parent> unexpectedError;
 
+    private final Pair<AdminLoginCtrl, Parent> adminLogin;
+
+    private final Pair<AdminBoardCtrl, Parent> adminBoard;
+
     public ServerScenes(final Pair<SelectServerCtrl, Parent> selectServer,
                         final Pair<WrongServerCtrl, Parent> wrongServer,
                         final Pair<ServerTimeoutCtrl, Parent> serverTimeout,
-                        final Pair<UnexpectedErrorCtrl, Parent> unexpectedError) {
+                        final Pair<UnexpectedErrorCtrl, Parent> unexpectedError,
+                        final Pair<AdminLoginCtrl, Parent> adminLogin,
+                        final Pair<AdminBoardCtrl, Parent> adminBoard) {
         this.selectServer = selectServer;
         this.wrongServer = wrongServer;
         this.serverTimeout = serverTimeout;
         this.unexpectedError = unexpectedError;
+        this.adminLogin = adminLogin;
+        this.adminBoard = adminBoard;
     }
 
     public Pair<SelectServerCtrl, Parent> getSelectServer() {
@@ -45,4 +55,8 @@ public class ServerScenes {
     public Pair<UnexpectedErrorCtrl, Parent> getUnexpectedError() {
         return unexpectedError;
     }
+
+    public Pair<AdminLoginCtrl, Parent> getAdminLogin() { return adminLogin; }
+
+    public Pair<AdminBoardCtrl, Parent> getAdminBoard() { return adminBoard; }
 }

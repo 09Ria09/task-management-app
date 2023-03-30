@@ -5,8 +5,11 @@ import com.google.inject.Inject;
 import commons.Board;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
+
+import java.util.List;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -27,6 +30,24 @@ public class BoardUtils {
     @Inject
     public BoardUtils(final ServerUtils server) {
         this.server = server;
+    }
+
+    public List<Board> getBoards() throws BoardException {
+        String serverAddress = server.getServerAddress();
+        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
+                .path("api/boards")
+                .request()
+                .accept(APPLICATION_JSON)
+                .get();
+
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+            return response.readEntity(new GenericType<List<Board>>() {
+            });
+        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
+            throw new BoardException("Boards not found.");
+        } else {
+            throw new BoardException("An error occurred while fetching the board");
+        }
     }
 
     /**

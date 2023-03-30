@@ -76,6 +76,12 @@ public class MainCtrl {
 
     private Scene editBoard;
 
+    private AdminLoginCtrl adminLoginCtrl;
+    private AdminBoardCtrl adminBoardCtrl;
+
+    private Scene adminLogin;
+    private Scene adminBoards;
+
 
 
     /**
@@ -132,6 +138,12 @@ public class MainCtrl {
         this.editBoardCtrl = boardScenes.getEditBoard().getKey();
         this.editBoard = new Scene(boardScenes.getEditBoard().getValue());
 
+        this.adminLoginCtrl = serverScenes.getAdminLogin().getKey();
+        this.adminLogin = new Scene(serverScenes.getAdminLogin().getValue());
+
+        this.adminBoardCtrl = serverScenes.getAdminBoard().getKey();
+        this.adminBoards = new Scene(serverScenes.getAdminBoard().getValue());
+
         showSelectServer();
         primaryStage.show();
     }
@@ -143,6 +155,16 @@ public class MainCtrl {
         primaryStage.setTitle("Talio: Board Overview");
         boardOverviewCtrl.refreshTimer(500);
         primaryStage.setScene(boardOverview);
+    }
+
+    public void showAdminLogin() {
+        primaryStage.setTitle("Talio: Admin Portal");
+        primaryStage.setScene(adminLogin);
+    }
+
+    public void showAdminBoard() {
+        primaryStage.setTitle("Talio: Admin Boards");
+        primaryStage.setScene(adminBoards);
     }
 
     /**
