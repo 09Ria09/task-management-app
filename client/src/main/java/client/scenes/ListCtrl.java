@@ -1,7 +1,6 @@
 package client.scenes;
 
 import client.CustomAlert;
-import client.customExceptions.BoardException;
 import client.utils.ServerUtils;
 import client.utils.TaskListUtils;
 import client.utils.TaskUtils;
