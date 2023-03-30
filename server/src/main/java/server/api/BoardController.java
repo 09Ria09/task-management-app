@@ -61,7 +61,7 @@ public class BoardController {
      */
     @PostMapping(path = { "", "/" })
     public ResponseEntity<Board> addBoard(@RequestBody final Board board) {
-        if (board == null || isNullOrEmpty(board.getName())) {
+        if (board == null || isNullOrEmpty(board.getName().replaceAll("\\s", ""))) {
             return ResponseEntity.badRequest().build();
         }
         Board createdBoard = boardService.addBoard(board);
@@ -104,7 +104,7 @@ public class BoardController {
             @PathVariable("boardid") final long boardid,
             @RequestParam final String name
     ) {
-        if (name == null || name.isEmpty()) {
+        if (name == null || name.replaceAll("\\s", "").isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
         try{
