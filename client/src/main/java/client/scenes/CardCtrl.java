@@ -176,7 +176,7 @@ public class CardCtrl {
     }
 
     public void editTask() {
-        mainCtrl.showEditTask(this, customAlert);
+        mainCtrl.showDetailedTaskView(task, listController);
     }
 
     public Task getTask() {
