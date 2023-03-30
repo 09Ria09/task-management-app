@@ -13,10 +13,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.text.Text;
 import javafx.stage.Modality;
 
 import java.io.IOException;
@@ -66,7 +64,8 @@ public class DetailedTaskViewCtrl {
             }
         }));
 
-        this.taskDescriptionTextArea.focusedProperty().addListener(((observable, oldValue, newValue) -> {
+        this.taskDescriptionTextArea.focusedProperty().addListener(((observable,
+                                                                     oldValue, newValue) -> {
             if(!newValue){
                 try {
                     this.onFocusLostTaskDescription();
@@ -114,7 +113,8 @@ public class DetailedTaskViewCtrl {
         if(this.taskDescriptionTextArea.getText().equals(task.getDescription()))
             return;
         try {
-            this.taskUtils.editDescription(listController.getBoardID(), listController.getTaskList().id,
+            this.taskUtils.editDescription(listController.getBoardID(),
+                    listController.getTaskList().id,
                     task.getId(), this.taskDescriptionTextArea.getText());
         } catch (TaskException e) {
             throw new TaskException("Editing the description of the task unsuccessful");
