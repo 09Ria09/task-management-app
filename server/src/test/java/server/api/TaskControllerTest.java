@@ -199,7 +199,7 @@ public class TaskControllerTest {
     @Test
     public void testDeleteTaskEndpointInternalServerError() throws Exception {
         Mockito.when(taskService.removeTaskById(1, 2, 3))
-            .thenThrow(Exception.class);
+            .thenThrow(RuntimeException.class);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/tasks/1/2/3"))
             .andExpect(status().isInternalServerError());
