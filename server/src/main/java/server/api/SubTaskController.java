@@ -3,6 +3,7 @@ package server.api;
 import commons.SubTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import server.services.BoardService;
 import server.services.SubTaskService;
@@ -14,10 +15,15 @@ import java.util.NoSuchElementException;
 public class SubTaskController {
 
     private final SubTaskService subTaskService;
+    private final BoardService boardService;
+    private final SimpMessagingTemplate messages;
 
     @Autowired
-    public SubTaskController(final SubTaskService subTaskService, final BoardService boardService) {
+    public SubTaskController(final SubTaskService subTaskService, final BoardService boardService, 
+                             final SimpMessagingTemplate messages) {
         this.subTaskService = subTaskService;
+        this.boardService = boardService;
+        this.messages = messages;
         if(boardService.getBoards().isEmpty()){
             boardService.createDefaultBoard();
         }

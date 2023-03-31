@@ -3,6 +3,7 @@ package server.api;
 import commons.TaskList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import server.services.BoardService;
 import server.services.ListService;
@@ -15,10 +16,15 @@ import java.util.NoSuchElementException;
 public class ListController {
 
     private final ListService listService;
+    private final BoardService boardService;
+    private final SimpMessagingTemplate messages;
 
     @Autowired
-    public ListController(final ListService listService, final BoardService boardService) {
+    public ListController(final ListService listService, final BoardService boardService,
+                          final SimpMessagingTemplate messages) {
         this.listService = listService;
+        this.boardService = boardService;
+        this.messages = messages;
         if(boardService.getBoards().isEmpty()){
             boardService.createDefaultBoard();
         }

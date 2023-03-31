@@ -3,6 +3,7 @@ package server.api;
 import commons.Board;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import server.services.BoardService;
 
@@ -14,14 +15,17 @@ import java.util.NoSuchElementException;
 public class BoardController {
 
     private final BoardService boardService;
+    private final SimpMessagingTemplate messages;
 
     /**
      * Initialize the Board Controller. If the JPA Repository is empty, a default board is created
      * @param boardService the service used to interact with the JPA Repository
      */
     @Autowired
-    public BoardController(final BoardService boardService) {
+    public BoardController(final BoardService boardService,
+                           final SimpMessagingTemplate messages) {
         this.boardService = boardService;
+        this.messages = messages;
         if(this.boardService.getBoards().isEmpty()){
             this.boardService.createDefaultBoard();
         }

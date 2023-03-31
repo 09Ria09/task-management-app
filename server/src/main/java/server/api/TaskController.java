@@ -3,6 +3,7 @@ package server.api;
 import commons.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import server.services.BoardService;
 import server.services.TaskService;
@@ -16,10 +17,15 @@ public class TaskController {
 
 
     private final TaskService taskService;
+    private final BoardService boardService;
+    private final SimpMessagingTemplate messages;
 
     @Autowired
-    public TaskController(final TaskService taskService, final BoardService boardService) {
+    public TaskController(final TaskService taskService, final BoardService boardService,
+                          final SimpMessagingTemplate messages) {
         this.taskService = taskService;
+        this.boardService = boardService;
+        this.messages = messages;
         if(boardService.getBoards().isEmpty()){
             boardService.createDefaultBoard();
         }
