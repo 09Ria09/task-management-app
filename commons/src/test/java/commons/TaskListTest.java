@@ -5,9 +5,19 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class TaskListTest {
+
+    @Test
+    public void testConstructors(){
+        TaskList list1 = new TaskList();
+        assertNotNull(list1);
+        TaskList list2 = new TaskList("GGGGGGGGG");
+        assertNotNull(list2);
+        TaskList list3 = new TaskList("A", new ArrayList<>());
+        assertNotNull(list3);
+    }
 
     @Test
     void getName() {
@@ -96,6 +106,55 @@ class TaskListTest {
         taskList2.addTask(task1);
         taskList2.addTask(task2);
         assertEquals(taskList1.hashCode(), taskList2.hashCode());
+    }
 
+    @Test
+    public void testGetTaskById(){
+        TaskList list = new TaskList("A");
+        Task task1 = new Task("ABBA", "IS GREAT !");
+        task1.id = 666;
+        List<Task> tasks = new ArrayList<>(List.of(new Task("Voulez-vous", "Waterloo"), task1));
+        list.setTasks(tasks);
+        assertTrue(list.getTaskById(666).isPresent());
+        assertEquals(task1, list.getTaskById(666).get());
+    }
+
+    @Test
+    public void testGetHighestTaskId(){
+        TaskList list = new TaskList("A");
+        Task task1 = new Task("I LOVE", "IKEA !");
+        Task task2 = new Task("I", "DON'T !");
+        task1.id = 666;
+        task2.id = 333;
+        List<Task> tasks = new ArrayList<>(List.of(task1, task2));
+        list.setTasks(tasks);
+        assertEquals(666, list.findHighestTaskID());
+    }
+
+    @Test
+    public void testReorder(){
+        TaskList list = new TaskList("A");
+        Task task1 = new Task("I LOVE", "IKEA !");
+        Task task2 = new Task("I", "DON'T !");
+        task1.id = 666;
+        task2.id = 333;
+        List<Task> tasks = new ArrayList<>(List.of(task1, task2));
+        list.setTasks(tasks);
+        list.reorder(333, 0);
+        assertEquals(task2, list.getTasks().get(0));
+    }
+
+    @Test
+    public void testNotReorder(){
+        TaskList list = new TaskList("A");
+        Task task1 = new Task("I LOVE", "IKEA !");
+        Task task2 = new Task("I", "DON'T !");
+        task1.id = 666;
+        task2.id = 333;
+        List<Task> tasks = new ArrayList<>(List.of(task1, task2));
+        list.setTasks(tasks);
+        list.reorder(1, 3);
+        list.reorder(333, 1);
+        assertEquals(tasks, list.getTasks());
     }
 }

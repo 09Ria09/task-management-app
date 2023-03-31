@@ -123,8 +123,7 @@ public class ListController {
             @PathVariable("tasklistid") final long tasklistid
     ) {
         try {
-            TaskList list = listService.removeList(boardid,
-                    listService.getList(boardid, tasklistid));
+            TaskList list = listService.removeListByID(boardid, tasklistid);
             return ResponseEntity.ok(list);
         } catch(NoSuchElementException e) {
             return ResponseEntity.notFound().build();
