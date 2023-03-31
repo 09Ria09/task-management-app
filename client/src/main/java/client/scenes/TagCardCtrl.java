@@ -9,12 +9,13 @@ import commons.Tag;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.AnchorPane;
+
 
 public class TagCardCtrl {
 
     @FXML
-    private Pane pane;
+    private AnchorPane pane;
     @FXML
     private Label tagName;
     private Tag tag;
@@ -27,7 +28,7 @@ public class TagCardCtrl {
                            final Board board, final CustomAlert customAlert) {
         this.tag = tag;
         this.tagName.setText(tag.getName());
-        this.pane.setStyle("-fx-background-color: #" + tag.getColor() + ";");
+        this.pane.setStyle("-fx-background-radius: 20px; -fx-border-radius: 20px; -fx-background-color: #" + tag.getColor() + ";");
         this.tagUtils = tagUtils;
         this.board = board;
         this.customAlert = customAlert;

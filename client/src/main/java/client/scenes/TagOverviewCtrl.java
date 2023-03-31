@@ -13,15 +13,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.Pane;
 
 import java.io.IOException;
 import java.util.*;
 
 public class TagOverviewCtrl {
 
-    @FXML
-    private Pane pane;
     @FXML
     private ListView<Tag> tags;
     @FXML
@@ -35,19 +32,22 @@ public class TagOverviewCtrl {
     private CustomAlert customAlert;
     private Timer refreshTimer;
     private BoardUtils boardUtils;
+    private MainCtrl mainCtrl;
 
     @Inject
     public TagOverviewCtrl(final TagUtils tagUtils, final CustomAlert customAlert,
-                           BoardUtils boardUtils) {
+                           final BoardUtils boardUtils, final MainCtrl mainCtrl) {
         this.tagUtils = tagUtils;
         this.customAlert = customAlert;
         this.boardUtils = boardUtils;
         refreshTimer = new Timer();
+        this.mainCtrl = mainCtrl;
     }
 
     public void setBoard(Board board) {
         this.board = board;
         update();
+        hardRefresh(board.getTags());
     }
 
     private void update() {
@@ -76,6 +76,11 @@ public class TagOverviewCtrl {
             });
             cell.setOnMouseExited(event -> {
                 lv.getSelectionModel().clearSelection(cell.getIndex());
+            });
+            cell.setOnMouseClicked(event -> {
+                if(event.getClickCount() == 2) {
+                    System.out.println(cell.getItem().toString());
+                }
             });
             return cell;
         });
@@ -119,7 +124,7 @@ public class TagOverviewCtrl {
                 List<Tag> newTags = board.getTags();
 
                 if(!oldTags.equals(newTags)) {
-                    tags.getItems().setAll(newTags);
+                    hardRefresh(newTags);
                 }
             } catch (BoardException e) {
                 Alert alert = customAlert.showAlert(e.getMessage());
@@ -128,8 +133,12 @@ public class TagOverviewCtrl {
         });
     }
 
-    public void goBack() {
+    private void hardRefresh(final List<Tag> newTags) {
+        tags.getItems().setAll(newTags);
+    }
 
+    public void goBack() {
+        mainCtrl.showBoardCatalogue();
     }
 
 }
