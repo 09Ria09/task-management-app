@@ -131,10 +131,9 @@ public class SubTaskUtils {
     public SubTask reorderTask(final long boardId, final long taskListId,
                                final long taskId, final long subTaskId,
                                final int newIndex) throws SubTaskException {
-        System.out.println(newIndex);
         String serverAddress = server.getServerAddress();
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/subtask/" + boardId + "/" + taskListId + "/" +
+                .path("api/subtasks/" + boardId + "/" + taskListId + "/" +
                         taskId + "/reorder/" + subTaskId)
                 .queryParam("newIndex", newIndex)
                 .request()

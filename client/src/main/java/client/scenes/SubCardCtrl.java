@@ -125,8 +125,33 @@ public class SubCardCtrl {
         return false;
     }
 
-    public void moveSubTaskDown() {
-
+    public boolean moveSubTaskDown() {
+        try {
+            long boardId = listController.getBoardID();
+            long listId = listController.getTaskList().id;
+            Task task = detailedTaskViewCtrl.getTask();
+            List<SubTask> subTasks = task.getSubtasks();
+            int index = subTasks.indexOf(subTask);
+            if (index < listController.getTaskList().getTasks().size() - 1) {
+                subTaskUtils.reorderTask(boardId,
+                        listId, task.id, subTask.id, index + 1);
+                task.reorderSubTasks(subTask.id, index + 1);
+                if(!Objects.equals(task.getName(), text.getText())){
+                    text.setText(text.getText());
+                    return true;
+                }
+            } else {
+                return false;
+            }
+        }catch (Exception e){
+            var alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setHeaderText("Oops, something went wrong!");
+            alert.setContentText("We're sorry :( something went wrong : "+ e.getMessage());
+            alert.showAndWait();
+            return false;
+        }
+        return false;
     }
 
 }
