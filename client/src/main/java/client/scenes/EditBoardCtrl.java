@@ -41,7 +41,7 @@ public class EditBoardCtrl {
     //this is run when the cancel button is pressed, it sends the user back to the board list
     public void cancel() {
         clearFields();
-        mainCtrl.showBoardOverview();
+        mainCtrl.showBoardCatalogue();
     }
 
     //this is run when the confirm button is pressed,
@@ -56,7 +56,7 @@ public class EditBoardCtrl {
             alert.showAndWait();
         }
         clearFields();
-        mainCtrl.showBoardOverview();
+        mainCtrl.showBoardCatalogue();
     }
 
     //this clears the text fields of the UI to allow them to be reusable

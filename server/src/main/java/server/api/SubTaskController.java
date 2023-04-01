@@ -32,7 +32,8 @@ public class SubTaskController {
             @RequestBody final SubTask subTask
     ) {
         try {
-            if (subTask == null || subTask.getName() == null || subTask.getName().equals("")) {
+            if (subTask == null || subTask.getName() == null || subTask.getName()
+                    .replaceAll("\\s", "").equals("")) {
                 return ResponseEntity.badRequest().build();
             }
             SubTask createdSubTask = subTaskService.addSubTask(boardid, listid, taskid, subTask);

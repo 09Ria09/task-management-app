@@ -1,21 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-
-<AnchorPane prefHeight="287.0" prefWidth="544.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.connectScenes.SelectServerCtrl" style="-fx-background-color: #f0f0f0;">
-   <children>
-      <Text layoutX="167.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to talio!" textAlignment="CENTER" wrappingWidth="217.673828125">
-         <font>
-            <Font size="24.0" />
-         </font>
-      </Text>
-      <Text layoutX="49.0" layoutY="124.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please enter your server address to continue:" fontSmoothingType="LCD" />
-      <TextField fx:id="addressField" layoutX="310.0" layoutY="107.0" promptText="Server Address" text="localhost"/>
-      <Button layoutX="353.0" layoutY="144.0" mnemonicParsing="false" onAction="#showServerBoards" text="Connect!" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;" />
-   </children>
-</AnchorPane>
+<VBox fx:id="root" alignment="CENTER" prefHeight="600.0" prefWidth="1000.0" spacing="30.0" style="-fx-background-color: #f0f0f0;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.connectScenes.SelectServerCtrl">
+   <padding>
+      <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
+   </padding>
+   <Label fx:id="title" alignment="CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Welcome to Talio!" textAlignment="CENTER" wrapText="true" VBox.vgrow="ALWAYS">
+      <font>
+         <Font size="24" />
+      </font>
+   </Label>
+   <FlowPane alignment="CENTER" columnHalignment="CENTER" hgap="10.0" prefWrapLength="600.0" VBox.vgrow="ALWAYS">
+      <Label fx:id="addressLabel" maxHeight="Infinity" maxWidth="Infinity" text="Please enter your server address to continue:">
+         <tooltip>
+            <Tooltip text="Only the IP address is needed, not the port number.">
+               <font>
+                  <Font size="16" />
+               </font>
+            </Tooltip>
+         </tooltip>
+      </Label>
+      <TextField fx:id="addressField" alignment="BOTTOM_CENTER" promptText="Server Address" style="-fx-alignment: center;">
+         <tooltip>
+            <Tooltip text="Only the IP address is needed, not the port number.">
+               <font>
+                  <Font size="16" />
+               </font>
+            </Tooltip>
+         </tooltip>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </TextField>
+   </FlowPane>
+   <Button fx:id="connectButton" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#showServerBoards" style="-fx-background-color: #4969e1; -fx-font-weight: bold; -fx-alignment: center; -fx-content-display: center; -fx-background-radius: 10;" text="Connect!" textAlignment="CENTER" textFill="WHITE">
+      <padding>
+         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+      </padding></Button>
+</VBox>
