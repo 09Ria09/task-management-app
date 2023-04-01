@@ -32,7 +32,7 @@ public class RenameListCtrl {
      */
     public void cancel() {
         listNameInput.clear();
-        mainCtrl.showBoardOverview();
+        mainCtrl.showBoardCatalogue();
     }
 
     /**
@@ -45,7 +45,7 @@ public class RenameListCtrl {
             long listId = renameListSingleton.getListId();
             listUtils.renameTaskList(boardId, listId, newName);
             listNameInput.clear();
-            mainCtrl.showBoardOverview();
+            mainCtrl.showBoardCatalogue();
         } catch(Exception e) {
             throw new TaskListException("Renaming task list unsuccessful");
         }

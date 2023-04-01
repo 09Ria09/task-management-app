@@ -20,8 +20,7 @@ import java.util.ArrayList;
 public class JoinBoardCtrl {
     private final ServerUtils server;
     private final BoardUtils boardUtils;
-    private final MainCtrl mainCtrl;
-    private final BoardOverviewCtrl boardOverviewCtrl;
+    private final BoardCatalogueCtrl boardCatalogueCtrl;
     private final CustomAlert customAlert;
 
 
@@ -38,11 +37,10 @@ public class JoinBoardCtrl {
     private Button createButton;
 
     @Inject
-    public JoinBoardCtrl(final ServerUtils server, final MainCtrl mainCtrl,
+    public JoinBoardCtrl(final ServerUtils server,
                          final CustomAlert customAlert, final BoardUtils boardUtils,
-                         final BoardOverviewCtrl boardOverviewCtrl) {
-        this.mainCtrl = mainCtrl;
-        this.boardOverviewCtrl = boardOverviewCtrl;
+                         final BoardCatalogueCtrl boardCatalogueCtrl) {
+        this.boardCatalogueCtrl = boardCatalogueCtrl;
         this.server = server;
         this.customAlert = customAlert;
         this.boardUtils = boardUtils;
@@ -61,8 +59,7 @@ public class JoinBoardCtrl {
         String memberName = "toBeImplemented";
         try{
             Board joinedBoard = boardUtils.joinBoard(inviteKey, memberName);
-            boardOverviewCtrl.setCurrentBoardId(joinedBoard.getId());
-            mainCtrl.showBoardOverview();
+            boardCatalogueCtrl.addNew(joinedBoard.getId());
         } catch (BoardException e) {
             Alert alert = customAlert.showAlert(e.getMessage());
             alert.showAndWait();
@@ -74,8 +71,7 @@ public class JoinBoardCtrl {
             Board board = new Board(boardNameInput.getText(), new ArrayList<TaskList>(),
                     new ArrayList<Tag>());
             Board createdBoard = boardUtils.addBoard(board);
-            boardOverviewCtrl.setCurrentBoardId(createdBoard.getId());
-            mainCtrl.showBoardOverview();
+            boardCatalogueCtrl.addNew(createdBoard.getId());
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);

@@ -7,11 +7,6 @@
 <Pane focusTraversable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="447.0" prefWidth="662.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.DetailedTaskViewCtrl">
    <children>
       <Button layoutX="35.0" layoutY="371.0" mnemonicParsing="false" onAction="#goBack" prefHeight="54.0" prefWidth="74.0" text="Go back" />
-      <Text fx:id="taskNameText" layoutX="33.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Loading..." wrappingWidth="516.0">
-         <font>
-            <Font size="22.0" />
-         </font>
-      </Text>
       <Button layoutX="549.0" layoutY="371.0" mnemonicParsing="false" onAction="#deleteTask" prefHeight="54.0" prefWidth="82.0" text="Delete" />
       <ListView fx:id="subTasks" layoutX="33.0" layoutY="177.0" prefHeight="146.0" prefWidth="448.0" />
       <Text layoutX="33.0" layoutY="164.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sub Tasks">
@@ -19,13 +14,33 @@
             <Font size="15.0" />
          </font>
       </Text>
-      <TextArea fx:id="taskDescriptionText" layoutX="33.0" layoutY="75.0" onInputMethodTextChanged="#saveDescription" prefHeight="73.0" prefWidth="448.0" />
-      <Button fx:id="editButton" layoutX="481.0" layoutY="18.0" mnemonicParsing="false" onAction="#editName" text="Edit Name" />
       <Text layoutX="34.0" layoutY="64.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description">
          <font>
             <Font size="15.0" />
          </font>
       </Text>
       <Button layoutX="392.0" layoutY="338.0" mnemonicParsing="false" onAction="#addSubTask" text="Add Sub Task" />
+      <StackPane layoutX="27.0" layoutY="14.0">
+         <children>
+            <Label fx:id="taskNameText" onMouseClicked="#onTaskNameClicked" prefHeight="34.0" prefWidth="448.0" text="Loading...">
+               <font>
+                  <Font size="23.0" />
+               </font>
+            </Label>
+            <TextField fx:id="taskNameTextField" prefHeight="6.0" prefWidth="461.0" text="Loading..." visible="false">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </TextField>
+
+         </children>
+      </StackPane>
+      <StackPane layoutX="33.0" layoutY="68.0">
+         <children>
+            <Label fx:id="taskDescriptionText" onMouseClicked="#onTaskDescriptionClicked" prefHeight="73.0" prefWidth="468.0" wrapText="true" />
+            <TextArea fx:id="taskDescriptionTextArea" prefHeight="73.0" prefWidth="448.0" visible="false" wrapText="true" />
+         </children>
+      </StackPane>
    </children>
 </Pane>
+

@@ -1,24 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.connectScenes.WrongServerCtrl">
-   <Label alignment="CENTER" layoutX="201.0" layoutY="27.0" text="Ooh No !" textAlignment="CENTER" AnchorPane.bottomAnchor="312.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="30.0">
+<VBox fx:id="root" alignment="CENTER" prefHeight="600.0" prefWidth="1000.0" spacing="10.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.connectScenes.WrongServerCtrl">
+   <Label fx:id="text1" alignment="CENTER" text="Uh oh!" wrapText="true" VBox.vgrow="ALWAYS">
       <font>
          <Font size="40.0" />
       </font>
    </Label>
-   <Button layoutX="269.0" layoutY="336.0" mnemonicParsing="false" onAction="#showSelectServer" style="-fx-background-color: #2196F3; -fx-font-weight: bold; -fx-text-fill: white;" text="Back to main screen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" />
-   <Label alignment="CENTER" contentDisplay="CENTER" layoutX="164.0" layoutY="96.0" text="It seems that you tried to join a non-talio server" textAlignment="CENTER" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0">
+   <Label fx:id="text2" alignment="CENTER" contentDisplay="CENTER" text="It seems like you try to join a non-talio server" textAlignment="CENTER" wrapText="true" VBox.vgrow="ALWAYS">
       <font>
          <Font size="18.0" />
       </font>
    </Label>
-   <Label alignment="CENTER" contentDisplay="CENTER" layoutX="282.0" layoutY="123.0" text="Please try to connect to a different server" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" />
-   <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="225.0" layoutY="125.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="85.0" AnchorPane.topAnchor="165.0">
+   <Label fx:id="text3" alignment="CENTER" contentDisplay="CENTER" text="Please try a different server, or contact the administrator" textAlignment="CENTER" wrapText="true" VBox.vgrow="ALWAYS" />
+   <ImageView fx:id="image" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="NEVER">
       <Image url="@/client/images/wrong-server.png" />
+      <VBox.margin>
+         <Insets />
+      </VBox.margin>
    </ImageView>
-</AnchorPane>
+   <Button fx:id="backButton" layoutX="200.0" layoutY="336.0" mnemonicParsing="false" onAction="#showSelectServer" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10;" text="OK" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0">
+   </Button>
+</VBox>

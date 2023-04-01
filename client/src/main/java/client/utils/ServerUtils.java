@@ -22,12 +22,15 @@ import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 
+import objects.Servers;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.HashSet;
 import java.util.Optional;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -60,9 +63,12 @@ public class ServerUtils {
                     .send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200) {
-                return Boolean.parseBoolean(response.body())
-                        ? Optional.empty()
-                        : Optional.of("Not a Talio server");
+                if(Boolean.parseBoolean(response.body())){
+                    if(!Servers.getInstance().getServers().containsKey(serverAddress))
+                        Servers.getInstance().getServers().put(serverAddress, new HashSet<>());
+                    return Optional.empty();
+                }
+                else return Optional.of("Not a Talio server");
             }
             else if (response.statusCode() == 404) {
                 return Optional.of("Not a Talio server");
