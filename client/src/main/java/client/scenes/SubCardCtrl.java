@@ -26,7 +26,6 @@ public class SubCardCtrl {
     private TaskListUtils taskListUtils;
     private CustomAlert customAlert;
     private TaskUtils taskUtils;
-    private MainCtrl mainCtrl;
     private SubTaskUtils subTaskUtils;
     private DetailedTaskViewCtrl detailedTaskViewCtrl;
 
@@ -34,8 +33,8 @@ public class SubCardCtrl {
     @Inject
     void initialize(final SubTask subTask, final ListCtrl listCtrl,
                     final TaskListUtils listUtils, final CustomAlert customAlert,
-                    final TaskUtils taskUtils, final MainCtrl mainCtrl,
-                    final SubTaskUtils subTaskUtils, final DetailedTaskViewCtrl detailedTaskViewCtrl
+                    final TaskUtils taskUtils, final SubTaskUtils subTaskUtils,
+                    final DetailedTaskViewCtrl detailedTaskViewCtrl
     ) {
         this.subTask= subTask;
         this.text.setText(subTask.getName());
@@ -43,7 +42,6 @@ public class SubCardCtrl {
         this.taskListUtils = listUtils;
         this.customAlert = customAlert;
         this.taskUtils = taskUtils;
-        this.mainCtrl = mainCtrl;
         this.subTaskUtils = subTaskUtils;
         this.detailedTaskViewCtrl = detailedTaskViewCtrl;
     }

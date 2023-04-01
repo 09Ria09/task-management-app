@@ -80,7 +80,7 @@ public class DetailedTaskViewCtrl {
                             Node card = cardLoader.load();
                             SubCardCtrl subCardCtrl = cardLoader.getController();
                             subCardCtrl.initialize(subTask, listController, taskListUtils,
-                                    customAlert, taskUtils, mainCtrl,
+                                    customAlert, taskUtils,
                                     subTaskUtils, DetailedTaskViewCtrl.this);
                             setGraphic(card);
                         } catch (IOException e) {
