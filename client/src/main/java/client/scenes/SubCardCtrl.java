@@ -4,7 +4,6 @@ import client.CustomAlert;
 import client.customExceptions.SubTaskException;
 import client.utils.SubTaskUtils;
 import client.utils.TaskListUtils;
-import client.utils.TaskUtils;
 import com.google.inject.Inject;
 import commons.SubTask;
 import commons.Task;
@@ -25,7 +24,6 @@ public class SubCardCtrl {
     private ListCtrl listController;
     private TaskListUtils taskListUtils;
     private CustomAlert customAlert;
-    private TaskUtils taskUtils;
     private SubTaskUtils subTaskUtils;
     private DetailedTaskViewCtrl detailedTaskViewCtrl;
 
@@ -33,7 +31,7 @@ public class SubCardCtrl {
     @Inject
     void initialize(final SubTask subTask, final ListCtrl listCtrl,
                     final TaskListUtils listUtils, final CustomAlert customAlert,
-                    final TaskUtils taskUtils, final SubTaskUtils subTaskUtils,
+                     final SubTaskUtils subTaskUtils,
                     final DetailedTaskViewCtrl detailedTaskViewCtrl
     ) {
         this.subTask= subTask;
@@ -41,7 +39,6 @@ public class SubCardCtrl {
         this.listController = listCtrl;
         this.taskListUtils = listUtils;
         this.customAlert = customAlert;
-        this.taskUtils = taskUtils;
         this.subTaskUtils = subTaskUtils;
         this.detailedTaskViewCtrl = detailedTaskViewCtrl;
     }
