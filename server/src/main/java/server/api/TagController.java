@@ -198,6 +198,9 @@ public class TagController {
             @RequestParam final String color
     ) {
         try {
+            if(isNullOrEmpty(color)) {
+                return ResponseEntity.badRequest().build();
+            }
             Tag tag = tagService.recolorTag(boardid, tagid, color);
             return ResponseEntity.ok(tag);
         } catch(NoSuchElementException e) {

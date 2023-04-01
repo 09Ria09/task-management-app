@@ -12,10 +12,14 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Popup;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.Timer;
 
 public class TagOverviewCtrl {
 
@@ -44,7 +48,7 @@ public class TagOverviewCtrl {
         this.mainCtrl = mainCtrl;
     }
 
-    public void setBoard(Board board) {
+    public void setBoard(final Board board) {
         this.board = board;
         update();
         hardRefresh(board.getTags());
@@ -79,7 +83,20 @@ public class TagOverviewCtrl {
             });
             cell.setOnMouseClicked(event -> {
                 if(event.getClickCount() == 2) {
-                    System.out.println(cell.getItem().toString());
+                    try {
+                        var tagEditLoader = new FXMLLoader(getClass().getResource("TagEdit.fxml"));
+                        Node tagEdit = tagEditLoader.load();
+                        TagEditCtrl tagEditCtrl = tagEditLoader.getController();
+                        tagEditCtrl.initialize(cell.getItem(), tagUtils, board, customAlert);
+
+                        Popup popup = new Popup();
+                        popup.getContent().add(tagEdit);
+                        popup.setAutoHide(true);
+
+                        mainCtrl.showTagEdit(popup);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             });
             return cell;
@@ -91,6 +108,12 @@ public class TagOverviewCtrl {
         String color = colorPicker.getValue().toString().substring(2, 8);
         if(name.equals("")) {
             Alert alert = customAlert.showAlert("The tag should have a name");
+            alert.showAndWait();
+            return false;
+        }
+
+        if(name.length() > 16) {
+            Alert alert = customAlert.showAlert("The name of the tag should be shorter than 16 characters");
             alert.showAndWait();
             return false;
         }

@@ -29,6 +29,7 @@ import commons.Board;
 import commons.Task;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
@@ -244,11 +245,15 @@ public class MainCtrl {
         primaryStage.setWidth(primaryStage.getWidth());
     }
 
-    public void showTagOverview(Board board) {
+    public void showTagOverview(final Board board) {
         primaryStage.setTitle("Talio: Tag Overview");
         tagOverviewCtrl.setBoard(board);
         tagOverviewCtrl.refreshTimer(500);
         primaryStage.setScene(tagOverview);
+    }
+
+    public void showTagEdit(final Popup popup) {
+        popup.show(primaryStage);
     }
 
 

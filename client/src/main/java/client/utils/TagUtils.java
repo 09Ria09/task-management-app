@@ -190,6 +190,7 @@ public class TagUtils {
         String serverAddress = server.getServerAddress();
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
                 .path("api/tags/" + boardId + "/" + tagId + "/rename")
+                .queryParam("name", newName)
                 .request()
                 .accept(APPLICATION_JSON)
                 .put(Entity.entity(newName, APPLICATION_JSON));
@@ -218,6 +219,7 @@ public class TagUtils {
         String serverAddress = server.getServerAddress();
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
                 .path("api/tags/" + boardId + "/" + tagId + "/recolor")
+                .queryParam("color", newColor)
                 .request()
                 .accept(APPLICATION_JSON)
                 .put(Entity.entity(newColor, APPLICATION_JSON));
