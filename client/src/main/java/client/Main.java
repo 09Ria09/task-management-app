@@ -20,6 +20,8 @@ import client.scenes.*;
 import client.sceneManagement.ListScenes;
 import client.sceneManagement.ServerScenes;
 import client.sceneManagement.TaskScenes;
+import client.scenes.adminScenes.AdminBoardCtrl;
+import client.scenes.adminScenes.AdminLoginCtrl;
 import client.scenes.connectScenes.SelectServerCtrl;
 import client.scenes.connectScenes.ServerTimeoutCtrl;
 import client.scenes.connectScenes.UnexpectedErrorCtrl;

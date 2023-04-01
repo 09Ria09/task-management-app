@@ -21,6 +21,8 @@ import client.sceneManagement.BoardScenes;
 import client.sceneManagement.ListScenes;
 import client.sceneManagement.ServerScenes;
 import client.sceneManagement.TaskScenes;
+import client.scenes.adminScenes.AdminBoardCtrl;
+import client.scenes.adminScenes.AdminLoginCtrl;
 import client.scenes.connectScenes.SelectServerCtrl;
 import client.scenes.connectScenes.ServerTimeoutCtrl;
 import client.scenes.connectScenes.UnexpectedErrorCtrl;
@@ -106,41 +108,32 @@ public class MainCtrl {
 
         this.createTaskCtrl = taskScenes.getCreateTask().getKey();
         this.createTask = new Scene(taskScenes.getCreateTask().getValue());
-
         this.editTaskCtrl = taskScenes.getEditTask().getKey();
         this.editTask = new Scene(taskScenes.getEditTask().getValue());
-
         this.detailedTaskViewCtrl = taskScenes.getDetailedTaskView().getKey();
         this.detailedTaskView = new Scene(taskScenes.getDetailedTaskView().getValue());
 
         this.createListCtrl = listScenes.getCreateList().getKey();
         this.createList = new Scene(listScenes.getCreateList().getValue());
-
-
         this.renameListCtrl = listScenes.getRenameList().getKey();
         this.renameList = new Scene(listScenes.getRenameList().getValue());
 
         this.selectServerCtrl = serverScenes.getSelectServer().getKey();
         this.selectServer = new Scene(serverScenes.getSelectServer().getValue());
-
         this.wrongServerCtrl = serverScenes.getWrongServer().getKey();
         this.wrongServer = new Scene(serverScenes.getWrongServer().getValue());
-
         this.serverTimeoutCtrl = serverScenes.getServerTimeout().getKey();
         this.serverTimeout = new Scene(serverScenes.getServerTimeout().getValue());
-
         this.unexpectedErrorCtrl = serverScenes.getUnexpectedError().getKey();
         this.unexpectedError = new Scene(serverScenes.getUnexpectedError().getValue());
 
         this.joinBoardCtrl = boardScenes.getJoinBoard().getKey();
         this.joinBoard = new Scene(boardScenes.getJoinBoard().getValue());
-
         this.editBoardCtrl = boardScenes.getEditBoard().getKey();
         this.editBoard = new Scene(boardScenes.getEditBoard().getValue());
 
         this.adminLoginCtrl = serverScenes.getAdminLogin().getKey();
         this.adminLogin = new Scene(serverScenes.getAdminLogin().getValue());
-
         this.adminBoardCtrl = serverScenes.getAdminBoard().getKey();
         this.adminBoards = new Scene(serverScenes.getAdminBoard().getValue());
 

@@ -1,7 +1,7 @@
 package client.sceneManagement;
 
-import client.scenes.AdminBoardCtrl;
-import client.scenes.AdminLoginCtrl;
+import client.scenes.adminScenes.AdminBoardCtrl;
+import client.scenes.adminScenes.AdminLoginCtrl;
 import client.scenes.connectScenes.SelectServerCtrl;
 import client.scenes.connectScenes.UnexpectedErrorCtrl;
 import client.scenes.connectScenes.ServerTimeoutCtrl;

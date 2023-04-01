@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
 
-<VBox fx:id="boardList" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-      minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AdminBoardCtrl">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.adminScenes.AdminBoardCtrl">
    <children>
-      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ADMIN BOARDS" textAlignment="CENTER">
-         <font>
-            <Font size="19.0" />
-         </font>
-      </Text>
+      <TableView fx:id="boardTableView" layoutX="14.0" layoutY="14.0" prefHeight="371.0" prefWidth="772.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
+         <columns>
+            <TableColumn fx:id="nameColumn" prefWidth="100.0" text="Name" />
+            <TableColumn fx:id="numOfListsColumn" prefWidth="100.0" text="No. of Lists" />
+            <TableColumn fx:id="tagsColumn" prefWidth="100.0" text="Tags" />
+            <TableColumn fx:id="inviteKeyColumn" prefWidth="200.0" text="Invite Key" />
+            <TableColumn fx:id="deleteColumn" prefWidth="100.0" text="Delete" />
+         </columns>
+      </TableView>
    </children>
-</VBox>
+</AnchorPane>

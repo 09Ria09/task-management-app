@@ -18,8 +18,6 @@ package client.utils;
 
 
 
-import client.customExceptions.BoardException;
-import commons.Board;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
