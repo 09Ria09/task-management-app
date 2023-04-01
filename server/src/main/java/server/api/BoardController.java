@@ -69,6 +69,8 @@ public class BoardController {
             return ResponseEntity.badRequest().build();
         }
         Board createdBoard = boardService.addBoard(board);
+        messages.convertAndSend("/topic/addboard",
+                createdBoard);
         return ResponseEntity.ok(createdBoard);
     }
 
@@ -86,6 +88,7 @@ public class BoardController {
             //so we can be certain that the getBoard will also return something non-null
             Board boardToDelete = boardService.getBoard(boardid);
             boardService.removeBoardByID(boardid);
+            messages.convertAndSend("/topic/deleteboard", boardToDelete);
             return ResponseEntity.ok(boardToDelete);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -113,6 +116,8 @@ public class BoardController {
         }
         try{
             boardService.renameBoard(boardid, name);
+            messages.convertAndSend("/topic/" + boardid + "/refreshboard",
+                    boardService.getBoard(boardid));
             return ResponseEntity.ok(boardService.getBoard(boardid));
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();

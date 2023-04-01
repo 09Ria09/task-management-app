@@ -49,6 +49,8 @@ public class TaskController {
                 return ResponseEntity.badRequest().build();
             }
             Task createdTask = taskService.addTask(boardid, listid, task);
+            messages.convertAndSend("/topic/" + boardid + "/refreshboard",
+                    boardService.getBoard(boardid));
             return ResponseEntity.ok(createdTask);
         }
         catch (NoSuchElementException e) { return ResponseEntity.notFound().build(); }
@@ -111,6 +113,8 @@ public class TaskController {
                 return ResponseEntity.badRequest().build();
             }
             Task task = taskService.renameTask(boardid, listid, taskid, name);
+            messages.convertAndSend("/topic/" + boardid + "/" + listid + "/modifytask",
+                    task);
             return ResponseEntity.ok(task);
         }
         catch (NoSuchElementException e) { return ResponseEntity.notFound().build(); }
@@ -133,6 +137,8 @@ public class TaskController {
     ) {
         try {
             Task removedTask = taskService.removeTaskById(boardid, listid, taskid);
+            messages.convertAndSend("/topic/" + boardid + "/" + listid + "/deletetask",
+                    removedTask);
             return ResponseEntity.ok(removedTask);
         }
         catch (NoSuchElementException e) { return ResponseEntity.notFound().build(); }
@@ -155,6 +161,8 @@ public class TaskController {
                 return ResponseEntity.badRequest().build();
             }
             Task task = taskService.editDescription(boardid, listid, taskid, description);
+            messages.convertAndSend("/topic/" + boardid + "/" + listid + "/modifytask",
+                    task);
             return ResponseEntity.ok(task);
         }
         catch (NoSuchElementException e) { return ResponseEntity.notFound().build(); }

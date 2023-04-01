@@ -48,6 +48,8 @@ public class ListController {
                 return ResponseEntity.badRequest().build();
             }
             TaskList createdTaskList = listService.addList(boardid, taskList);
+            messages.convertAndSend("/topic/" + boardid + "/refreshboard",
+                    boardService.getBoard(boardid));
             return ResponseEntity.ok(createdTaskList);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -109,6 +111,8 @@ public class ListController {
                 return ResponseEntity.badRequest().build();
             }
             TaskList list = listService.renameList(boardid, tasklistid, name);
+            messages.convertAndSend("/topic/" + boardid + "/refreshboard",
+                    boardService.getBoard(boardid));
             return ResponseEntity.ok(list);
         } catch(NoSuchElementException e){
             return ResponseEntity.notFound().build();
@@ -130,6 +134,8 @@ public class ListController {
     ) {
         try {
             TaskList list = listService.removeListByID(boardid, tasklistid);
+            messages.convertAndSend("/topic/" + boardid + "/deletelist",
+                    list);
             return ResponseEntity.ok(list);
         } catch(NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -159,6 +165,8 @@ public class ListController {
     ) {
         try {
             TaskList list = listService.reorderTask(boardid, tasklistid, taskid, newIndex);
+            messages.convertAndSend("/topic/" + boardid + "/refreshboard",
+                    boardService.getBoard(boardid));
             return ResponseEntity.ok(list);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
