@@ -99,7 +99,7 @@ public class SubCardCtrl {
             List<SubTask> subTasks = task.getSubtasks();
             int index = subTasks.indexOf(subTask);
             if (index > 0) {
-                subTaskUtils.reorderTask(boardId,
+                subTaskUtils.reorderSubTask(boardId,
                         listId, task.id, subTask.id, index - 1);
                 task.reorderSubTasks(subTask.id, index - 1);
                 if(!Objects.equals(task.getName(), text.getText())){
@@ -129,7 +129,7 @@ public class SubCardCtrl {
             int index = subTasks.indexOf(subTask);
             System.out.println(task.getSubtasks().size());
             if (index < task.getSubtasks().size() - 1) {
-                subTaskUtils.reorderTask(boardId,
+                subTaskUtils.reorderSubTask(boardId,
                         listId, task.id, subTask.id, index + 1);
                 task.reorderSubTasks(subTask.id, index + 1);
                 if(!Objects.equals(task.getName(), text.getText())){

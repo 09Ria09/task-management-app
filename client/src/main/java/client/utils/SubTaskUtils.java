@@ -128,9 +128,9 @@ public class SubTaskUtils {
         }
     }
 
-    public SubTask reorderTask(final long boardId, final long taskListId,
-                               final long taskId, final long subTaskId,
-                               final int newIndex) throws SubTaskException {
+    public SubTask reorderSubTask(final long boardId, final long taskListId,
+                                  final long taskId, final long subTaskId,
+                                  final int newIndex) throws SubTaskException {
         String serverAddress = server.getServerAddress();
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
                 .path("api/subtasks/" + boardId + "/" + taskListId + "/" +
