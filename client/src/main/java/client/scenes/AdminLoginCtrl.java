@@ -1,16 +1,12 @@
 package client.scenes;
 
-import client.customExceptions.BoardException;
 import client.utils.BoardUtils;
 import client.utils.ServerUtils;
-import commons.Board;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
 
 import javax.inject.Inject;
-import java.util.List;
 
 public class AdminLoginCtrl {
 
