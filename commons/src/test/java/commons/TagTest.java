@@ -22,9 +22,10 @@ public class TagTest {
 
     @Test
     public void testGetters() {
-        Tag testTag = new Tag("Tag1", 0x111111);
+        Tag testTag = new Tag("Tag1", 0x111111, 0x222222);
         assertEquals(testTag.getName(), "Tag1");
-        assertEquals(testTag.getColor(), 0x111111);
+        assertEquals(testTag.getColorBackground(), 0x111111);
+        assertEquals(testTag.getColorFont(), 0x222222);
     }
 
     @Test
@@ -32,8 +33,9 @@ public class TagTest {
         Tag testTag = new Tag("Tag1", 0xAA4A4A);
         testTag.setName("Tag2");
         assertEquals(testTag.getName(), "Tag2");
-        testTag.setColor(0);
-        assertNotEquals(testTag.getColor(), 0xAA4A4A);
+        testTag.setColors(0x000000, 0x111111);
+        assertNotEquals(testTag.getColorBackground(), 0xAA4A4A);
+        assertNotEquals(testTag.getColorFont(), 0xAA4A4A);
     }
 
     @Test

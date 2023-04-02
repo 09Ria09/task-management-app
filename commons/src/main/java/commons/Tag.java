@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.awt.*;
 
 @Entity
 public class Tag {
@@ -16,16 +17,25 @@ public class Tag {
     public long id;
 
     private String name;
-    private int color;
+    private int colorBackground;
+    private int colorFont;
 
-    public Tag(final String name, final int color) {
+    public Tag(final String name, final int colorBackground, final int colorFont) {
         this.name = name;
-        this.color = color;
+        this.colorBackground = colorBackground;
+        this.colorFont = colorFont;
+    }
+
+    public Tag(final String name, final int colorBackground) {
+        this.name = name;
+        this.colorBackground = colorBackground;
+        this.colorFont = 0xFFFFFF - colorBackground;
     }
 
     public Tag() {
         this.name = "";
-        this.color = 0;
+        this.colorBackground = 0x000000;
+        this.colorFont = 0xFFFFFF;
     }
 
     public String getName() {
@@ -36,12 +46,17 @@ public class Tag {
         this.name = name;
     }
 
-    public int getColor() {
-        return color;
+    public int getColorBackground() {
+        return colorBackground;
     }
 
-    public void setColor(final int color) {
-        this.color = color;
+    public int getColorFont() {
+        return colorFont;
+    }
+
+    public void setColors(final int colorBackground, final int colorFont) {
+        this.colorBackground = colorBackground;
+        this.colorFont = colorFont;
     }
 
     @Override
@@ -56,6 +71,6 @@ public class Tag {
 
     @Override
     public String toString() {
-        return "Tag (" + id + ") : " + name + " -> color=" + color;
+        return "Tag (" + id + ") : " + name + " -> color=" + colorBackground + " font=" + colorFont;
     }
 }
