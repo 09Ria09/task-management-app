@@ -21,7 +21,6 @@ import client.customExceptions.TaskListException;
 import client.utils.*;
 import com.google.inject.Inject;
 import commons.Board;
-import commons.Task;
 import commons.TaskList;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -71,13 +70,13 @@ public class BoardOverviewCtrl {
     private Label inviteKeyLabel;
 
     @Inject
-    public BoardOverviewCtrl(final ServerUtils server, final MainCtrl mainCtrl,
+    public BoardOverviewCtrl(final MainCtrl mainCtrl,
                              final CustomAlert customAlert, final BoardUtils boardUtils,
                              final BoardCatalogueCtrl boardCatalogueCtrl,
                              final EditBoardCtrl editBoardCtrl,
                              final WebSocketUtils webSocketUtils) {
         this.mainCtrl = mainCtrl;
-        this.server = server;
+        this.server = webSocketUtils.getServerUtils();
         this.taskListUtils = new TaskListUtils(server);
         this.listsMap = new HashMap<>();
         this.taskLists = new ArrayList<>();
@@ -99,8 +98,8 @@ public class BoardOverviewCtrl {
                     refreshLists(FXCollections.observableList(taskLists));
                 });
             };
-            webSocketUtils.registerForBoardMessages("/topic/" + board.id + "/refreshboard", consumer);
-            System.out.println("/topic/" + board.id + "/refreshboard");
+            webSocketUtils.registerForBoardMessages("/topic/" + board.id +
+                    "/refreshboard", consumer);
         }
         catch(BoardException e){
             System.out.println(e.getMessage());
@@ -158,6 +157,7 @@ public class BoardOverviewCtrl {
         boardCatalogueCtrl.close();
         mainCtrl.showSelectServer();
         server.disconnect();
+        webSocketUtils.disconnect();
     }
 
     /**

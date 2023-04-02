@@ -3,7 +3,6 @@ package client.utils;
 import commons.Board;
 import commons.Task;
 import commons.TaskList;
-import org.springframework.http.codec.cbor.Jackson2CborDecoder;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
@@ -29,12 +28,14 @@ public class WebSocketUtils {
     private Map<String, Consumer<Task>> taskConsumers = new HashMap<>();
 
     @Inject
-    public WebSocketUtils(ServerUtils utils){
+    public WebSocketUtils(final ServerUtils utils){
         this.serverUtils = utils;
         tryToConnect();
     }
 
     public void tryToConnect(){
+        if(this.session != null && this.session.isConnected())
+            return;
         if(!serverUtils.getWebsocketURL().isEmpty())
             this.session = connectTo(this.serverUtils.getWebsocketURL());
     }
@@ -43,7 +44,7 @@ public class WebSocketUtils {
         return session != null && session.isConnected();
     }
 
-    private StompSession connectTo(String url){
+    private StompSession connectTo(final String url){
         StandardWebSocketClient client = new StandardWebSocketClient();
         WebSocketStompClient stompClient = new WebSocketStompClient(client);
         stompClient.setMessageConverter(new MappingJackson2MessageConverter());
@@ -57,16 +58,16 @@ public class WebSocketUtils {
         throw new IllegalStateException();
     }
 
-    public <T> void registerForBoardMessages(String dest, Consumer<Board> consumer){
+    public <T> void registerForBoardMessages(final String dest, final Consumer<Board> consumer){
         if(boardConsumers.get(dest) == null) {
             session.subscribe(dest, new StompFrameHandler() {
                 @Override
-                public Type getPayloadType(StompHeaders headers) {
+                public Type getPayloadType(final StompHeaders headers) {
                     return Board.class;
                 }
 
                 @Override
-                public void handleFrame(StompHeaders headers, Object payload) {
+                public void handleFrame(final StompHeaders headers, final Object payload) {
                     try {
                         boardConsumers.getOrDefault(dest, (o) -> {
                         }).accept((Board) payload);
@@ -77,6 +78,58 @@ public class WebSocketUtils {
             });
         }
         boardConsumers.put(dest, consumer);
-        System.out.println("Registered correctly : " + dest);
+    }
+
+    public <T> void registerForListMessages(final String dest, final Consumer<TaskList> consumer){
+        if(boardConsumers.get(dest) == null) {
+            session.subscribe(dest, new StompFrameHandler() {
+                @Override
+                public Type getPayloadType(final StompHeaders headers) {
+                    return TaskList.class;
+                }
+
+                @Override
+                public void handleFrame(final StompHeaders headers, final Object payload) {
+                    try {
+                        listConsumers.getOrDefault(dest, (o) -> {
+                        }).accept((TaskList) payload);
+                    } catch (ClassCastException e) {
+                        System.out.println("Error during websocket handling : " + e.getMessage());
+                    }
+                }
+            });
+        }
+        listConsumers.put(dest, consumer);
+    }
+
+    public <T> void registerForTaskMessages(final String dest, final Consumer<Task> consumer){
+        if(taskConsumers.get(dest) == null) {
+            session.subscribe(dest, new StompFrameHandler() {
+                @Override
+                public Type getPayloadType(final StompHeaders headers) {
+                    return Task.class;
+                }
+
+                @Override
+                public void handleFrame(final StompHeaders headers, final Object payload) {
+                    try {
+                        taskConsumers.getOrDefault(dest, (o) -> {
+                        }).accept((Task) payload);
+                    } catch (ClassCastException e) {
+                        System.out.println("Error during websocket handling : " + e.getMessage());
+                    }
+                }
+            });
+        }
+        taskConsumers.put(dest, consumer);
+    }
+
+    public void disconnect(){
+        if(this.session != null)
+            this.session.disconnect();
+    }
+
+    public ServerUtils getServerUtils() {
+        return serverUtils;
     }
 }

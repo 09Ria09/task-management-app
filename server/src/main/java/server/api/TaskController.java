@@ -139,6 +139,9 @@ public class TaskController {
             Task removedTask = taskService.removeTaskById(boardid, listid, taskid);
             messages.convertAndSend("/topic/" + boardid + "/" + listid + "/deletetask",
                     removedTask);
+            System.out.println("/topic/" + boardid + "/" + listid + "/deletetask");
+            messages.convertAndSend("/topic/" + boardid + "/refreshboard",
+                    boardService.getBoard(boardid));
             return ResponseEntity.ok(removedTask);
         }
         catch (NoSuchElementException e) { return ResponseEntity.notFound().build(); }

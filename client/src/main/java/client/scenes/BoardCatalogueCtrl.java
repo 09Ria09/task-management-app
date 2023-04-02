@@ -73,7 +73,7 @@ public class BoardCatalogueCtrl implements Initializable {
             Board board = boardUtils.getBoard(boardId);
             var tab = new Tab(board.getName());
             var boardLoader = new FXMLLoader(getClass().getResource("BoardOverview.fxml"));
-            BoardOverviewCtrl boardOverviewCtrl = new BoardOverviewCtrl(serverUtils, mainCtrl,
+            BoardOverviewCtrl boardOverviewCtrl = new BoardOverviewCtrl(mainCtrl,
                 customAlert, boardUtils, this, editBoardCtrl, webSocketUtils);
             boardOverviewCtrl.setCurrentBoardId(boardId);
             boardOverviewCtrl.setTab(tab);
