@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 quizzzz.trace.db
 talio.trace.db
+servers
 **/*.mv.db
 
 **/*.swp

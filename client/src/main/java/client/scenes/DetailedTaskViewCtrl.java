@@ -5,10 +5,12 @@ import client.customExceptions.TaskException;
 import client.utils.SubTaskUtils;
 import client.utils.TaskListUtils;
 import client.utils.TaskUtils;
+import client.utils.WebSocketUtils;
 import com.google.inject.Inject;
 import commons.SubTask;
 import commons.Task;
 import commons.TaskList;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -19,6 +21,7 @@ import javafx.stage.Modality;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class DetailedTaskViewCtrl {
 
@@ -41,17 +44,20 @@ public class DetailedTaskViewCtrl {
     private TaskListUtils taskListUtils;
     private ListCtrl listController;
     private SubTaskUtils subTaskUtils;
+    private final WebSocketUtils webSocketUtils;
 
 
     @Inject
     public DetailedTaskViewCtrl(final MainCtrl mainCtrl, final TaskListUtils taskListUtils,
                                 final TaskUtils taskUtils, final CustomAlert customAlert,
-                                final SubTaskUtils subTaskUtils) {
+                                final SubTaskUtils subTaskUtils,
+                                final WebSocketUtils webSocketUtils) {
         this.taskListUtils = taskListUtils;
         this.taskUtils = taskUtils;
         this.mainCtrl = mainCtrl;
         this.customAlert = customAlert;
         this.subTaskUtils = subTaskUtils;
+        this.webSocketUtils = webSocketUtils;
     }
 
     public void initialize() {
@@ -64,7 +70,6 @@ public class DetailedTaskViewCtrl {
                 }
             }
         }));
-
         this.taskDescriptionTextArea.focusedProperty().addListener(((observable,
                                                                      oldValue, newValue) -> {
             if(!newValue){
@@ -75,6 +80,32 @@ public class DetailedTaskViewCtrl {
                 }
             }
         }));
+    }
+
+    public void registerWebSockets(){
+        Consumer<Task> taskConsumer = (task) -> {
+            System.out.println("Consumer !!!!! -> " + task.toString());
+            System.out.println(this.task.id + " " + (task.id == this.task.id));
+            if(task.id == this.task.id)
+                Platform.runLater(this::goBack);
+        };
+        Consumer<TaskList> listConsumer = (list) -> {
+            System.out.println("Consumer !!!!! -> " + list.toString());
+            for(Task t : list.getTasks()){
+                if(t.id == this.task.id) {
+                    Platform.runLater(this::goBack);
+                    return;
+                }
+            }
+        };
+        this.webSocketUtils.registerForTaskMessages("/topic/" + listController.getBoardID() +
+                "/" + listController.getTaskList().id + "/deletetask", taskConsumer);
+        this.webSocketUtils.registerForListMessages("/topic/" + listController.getBoardID() +
+                "/deletelist", listConsumer);
+        System.out.println("/topic/" + listController.getBoardID() +
+                "/" + listController.getTaskList().id + "/deletetask");
+        System.out.println("/topic/" + listController.getBoardID() +
+                "/deletelist");
     }
 
     public void onTaskNameClicked(final MouseEvent event){
@@ -179,6 +210,7 @@ public class DetailedTaskViewCtrl {
     }
 
     public void goBack() {
+        System.out.println("Go Back");
         mainCtrl.showBoardCatalogue();
     }
 

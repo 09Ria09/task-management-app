@@ -250,6 +250,7 @@ public class MainCtrl {
         primaryStage.setScene(detailedTaskView);
         detailedTaskViewCtrl.setTask(task);
         detailedTaskViewCtrl.setListController(listController);
+        detailedTaskViewCtrl.registerWebSockets();
     }
 
     private void resize(){
