@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
@@ -41,6 +42,9 @@ public class BoardControllerTest {
     @MockBean
     private BoardService boardService;
 
+    @MockBean
+    private SimpMessagingTemplate messages;
+
     @BeforeEach
     public void setup(final TestInfo info) {
         if(info.getTags()
@@ -51,7 +55,7 @@ public class BoardControllerTest {
         service = new BoardService();
         repo = new TestBoardRepository();
         ReflectionTestUtils.setField(service, "boardRepository", repo);
-        controller = new BoardController(service);
+        controller = new BoardController(service, messages);
     }
 
     @Test

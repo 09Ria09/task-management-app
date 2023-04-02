@@ -105,6 +105,12 @@ public class ServerUtils {
         return serverAddress;
     }
 
+    public String getWebsocketURL() {
+        if (serverAddress == null || serverAddress.isEmpty())
+            return "";
+        return serverAddress.replace("http://", "ws://") + "/websocket";
+    }
+
     public String getAdminKey() throws Exception {
         String serverAddress = this.serverAddress;
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)

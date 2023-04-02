@@ -5,6 +5,7 @@ import commons.BoardEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 import server.services.BoardService;
@@ -17,13 +18,17 @@ import java.util.function.Consumer;
 public class BoardController {
 
     private final BoardService boardService;
+    private final SimpMessagingTemplate messages;
+
     /**
      * Initialize the Board Controller. If the JPA Repository is empty, a default board is created
      * @param boardService the service used to interact with the JPA Repository
      */
     @Autowired
-    public BoardController(final BoardService boardService) {
+    public BoardController(final BoardService boardService,
+                           final SimpMessagingTemplate messages) {
         this.boardService = boardService;
+        this.messages = messages;
         if(this.boardService.getBoards().isEmpty()){
             this.boardService.createDefaultBoard();
         }
@@ -85,6 +90,8 @@ public class BoardController {
             return ResponseEntity.badRequest().build();
         }
         Board createdBoard = boardService.addBoard(board);
+        messages.convertAndSend("/topic/addboard",
+                createdBoard);
         BoardEvent event = new BoardEvent("ADD", createdBoard);
         listeners.forEach((k, l) -> l.accept(event));
         return ResponseEntity.ok(createdBoard);
@@ -106,6 +113,7 @@ public class BoardController {
             Board boardToDelete = boardService.getBoard(boardid);
             if(boardToDelete!=null) boardToDeleteCopy = new Board(boardToDelete);
             boardService.removeBoardByID(boardid);
+            messages.convertAndSend("/topic/deleteboard", boardToDelete);
             BoardEvent event = new BoardEvent("DELETE", boardToDeleteCopy);
             listeners.forEach((k, l) -> l.accept(event));
             return ResponseEntity.ok(boardToDeleteCopy);
@@ -135,6 +143,8 @@ public class BoardController {
         }
         try{
             boardService.renameBoard(boardid, name);
+            messages.convertAndSend("/topic/" + boardid + "/refreshboard",
+                    boardService.getBoard(boardid));
             return ResponseEntity.ok(boardService.getBoard(boardid));
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
