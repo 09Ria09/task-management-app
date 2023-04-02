@@ -136,11 +136,13 @@ public class MainCtrl {
 
     public void showAdminLogin() {
         primaryStage.setTitle("Talio: Admin Portal");
+        resize();
         primaryStage.setScene(adminLogin);
     }
 
     public void showAdminBoard() {
         primaryStage.setTitle("Talio: Admin Boards");
+        resize();
         primaryStage.setScene(adminBoards);
     }
 
@@ -159,6 +161,7 @@ public class MainCtrl {
      */
     public void showBoardCatalogue() {
         primaryStage.setTitle("Talio");
+        resize();
         primaryStage.setScene(boardCatalogue);
     }
 

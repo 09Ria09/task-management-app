@@ -37,7 +37,7 @@ public class ServerController {
             key += random.nextInt(1, 10) * Math.pow(10, i);
         }
         adminKey = new String(Long.toString(key));
-        System.out.println(adminKey);
+        System.out.println("ADMIN PASSWORD: " + adminKey);
     }
 
 
