@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BoardCatalogueCtrl">
+<AnchorPane xmlns="http://javafx.com/javafx/17.0.6-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BoardCatalogueCtrl">
    <children>
       <TabPane fx:id="catalogue" tabClosingPolicy="ALL_TABS" />
    </children>

@@ -99,4 +99,10 @@ public class ServerUtils {
     public String getServerAddress() {
         return serverAddress;
     }
+
+    public String getWebsocketURL() {
+        if(serverAddress == null || serverAddress.isEmpty())
+            return "";
+        return serverAddress.replace("http://", "ws://") + "/websocket";
+    }
 }

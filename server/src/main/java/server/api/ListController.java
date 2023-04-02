@@ -134,6 +134,8 @@ public class ListController {
     ) {
         try {
             TaskList list = listService.removeListByID(boardid, tasklistid);
+            messages.convertAndSend("/topic/" + boardid + "/refreshboard",
+                    boardService.getBoard(boardid));
             messages.convertAndSend("/topic/" + boardid + "/deletelist",
                     list);
             return ResponseEntity.ok(list);

@@ -4,6 +4,7 @@ import client.CustomAlert;
 import client.customExceptions.BoardException;
 import client.utils.BoardUtils;
 import client.utils.ServerUtils;
+import client.utils.WebSocketUtils;
 import com.google.inject.Inject;
 import commons.Board;
 import javafx.fxml.FXML;
@@ -23,6 +24,7 @@ import java.util.ResourceBundle;
 
 public class BoardCatalogueCtrl implements Initializable {
     ServerUtils serverUtils;
+    WebSocketUtils webSocketUtils;
     BoardUtils boardUtils;
     MainCtrl mainCtrl;
     EditBoardCtrl editBoardCtrl;
@@ -33,10 +35,11 @@ public class BoardCatalogueCtrl implements Initializable {
     TabPane catalogue;
 
     @Inject
-    public BoardCatalogueCtrl(final ServerUtils serverUtils, final BoardUtils boardUtils,
-                              final MainCtrl mainCtrl, final CustomAlert customAlert,
-                              final EditBoardCtrl editBoardCtrl){
+    public BoardCatalogueCtrl(final ServerUtils serverUtils, final WebSocketUtils webSocketUtils,
+                              final BoardUtils boardUtils, final MainCtrl mainCtrl,
+                              final CustomAlert customAlert, final EditBoardCtrl editBoardCtrl){
         this.serverUtils=serverUtils;
+        this.webSocketUtils = webSocketUtils;
         this.boardUtils=boardUtils;
         this.mainCtrl=mainCtrl;
         this.customAlert=customAlert;
@@ -71,7 +74,7 @@ public class BoardCatalogueCtrl implements Initializable {
             var tab = new Tab(board.getName());
             var boardLoader = new FXMLLoader(getClass().getResource("BoardOverview.fxml"));
             BoardOverviewCtrl boardOverviewCtrl = new BoardOverviewCtrl(serverUtils, mainCtrl,
-                customAlert, boardUtils, this, editBoardCtrl);
+                customAlert, boardUtils, this, editBoardCtrl, webSocketUtils);
             boardOverviewCtrl.setCurrentBoardId(boardId);
             boardOverviewCtrl.setTab(tab);
             boardLoader.setControllerFactory(type -> boardOverviewCtrl);

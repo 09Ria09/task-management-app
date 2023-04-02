@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="684.0" stylesheets="/client/styles/joinBoard.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.JoinBoardCtrl">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="684.0" stylesheets="/client/styles/joinBoard.css" xmlns="http://javafx.com/javafx/17.0.6-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.JoinBoardCtrl">
    <children>
       <VBox id="joinCreateBoard" alignment="CENTER" prefHeight="600.0" prefWidth="684.0" spacing="10.0">
          <children>

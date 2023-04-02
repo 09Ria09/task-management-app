@@ -21,6 +21,7 @@ import client.customExceptions.TaskListException;
 import client.utils.*;
 import com.google.inject.Inject;
 import commons.Board;
+import commons.Task;
 import commons.TaskList;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -41,10 +42,12 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Consumer;
 
 public class BoardOverviewCtrl {
 
     private final ServerUtils server;
+    private final WebSocketUtils webSocketUtils;
     private final TaskListUtils taskListUtils;
     private final BoardUtils boardUtils;
     private final BoardCatalogueCtrl boardCatalogueCtrl;
@@ -71,7 +74,8 @@ public class BoardOverviewCtrl {
     public BoardOverviewCtrl(final ServerUtils server, final MainCtrl mainCtrl,
                              final CustomAlert customAlert, final BoardUtils boardUtils,
                              final BoardCatalogueCtrl boardCatalogueCtrl,
-                             final EditBoardCtrl editBoardCtrl) {
+                             final EditBoardCtrl editBoardCtrl,
+                             final WebSocketUtils webSocketUtils) {
         this.mainCtrl = mainCtrl;
         this.server = server;
         this.taskListUtils = new TaskListUtils(server);
@@ -80,7 +84,27 @@ public class BoardOverviewCtrl {
         this.customAlert = customAlert;
         this.boardCatalogueCtrl=boardCatalogueCtrl;
         this.boardUtils = boardUtils;
+        this.webSocketUtils = webSocketUtils;
         this.editBoardCtrl = editBoardCtrl;
+    }
+
+    public void initialize(){
+        this.webSocketUtils.tryToConnect();
+        try{
+            board = boardUtils.getBoard(currentBoardId);
+            Consumer<Board> consumer = (board) -> {
+                Platform.runLater(() -> {
+                    this.board = board;
+                    this.taskLists = this.board.getListTaskList();
+                    refreshLists(FXCollections.observableList(taskLists));
+                });
+            };
+            webSocketUtils.registerForBoardMessages("/topic/" + board.id + "/refreshboard", consumer);
+            System.out.println("/topic/" + board.id + "/refreshboard");
+        }
+        catch(BoardException e){
+            System.out.println(e.getMessage());
+        }
     }
 
     /**
@@ -91,7 +115,7 @@ public class BoardOverviewCtrl {
         var kids = listsContainer.getChildren();
         var listLoader = new FXMLLoader(getClass().getResource("List.fxml"));
         listLoader.setControllerFactory(type -> new ListCtrl(mainCtrl, new TaskListUtils(server),
-            new TaskUtils(server), customAlert, new LayoutUtils()));
+            new TaskUtils(server), customAlert, new LayoutUtils(), webSocketUtils));
         try {
             Node list = listLoader.load();
             ListCtrl listCtrl = listLoader.getController();
@@ -266,7 +290,7 @@ public class BoardOverviewCtrl {
         tab.setOnSelectionChanged(event -> {
             if (tab.isSelected()) {
                 refresh();
-                refreshTimer(250);
+                refreshTimer(5000000);
             }
             else {
                 if(refreshTimer==null)

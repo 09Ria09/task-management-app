@@ -69,7 +69,7 @@ public class TaskList {
 
     @Override
     public String toString() {
-        StringBuilder string = new StringBuilder("TaskList (" + id + ") :\n");
+        StringBuilder string = new StringBuilder("TaskList (" + id + ") : " + name + "\n");
         for (Task task : tasks)
             string.append(task.toString()).append("\n");
         return string.toString();
