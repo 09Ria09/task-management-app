@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.BorderPane?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.adminScenes.AdminBoardCtrl">
+   <center>
+      <TableView fx:id="boardTableView" prefHeight="500.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+         <columns>
+            <TableColumn fx:id="nameColumn" prefWidth="200.0" text="Name" />
+            <TableColumn fx:id="numOfListsColumn" prefWidth="150.0" text="Number of Lists" />
+            <TableColumn fx:id="tagsColumn" prefWidth="200.0" text="Tags" />
+            <TableColumn fx:id="inviteKeyColumn" prefWidth="250.0" text="Invite Key" />
+            <TableColumn fx:id="deleteColumn" prefWidth="100.0" text="Delete" />
+         </columns>
+      </TableView>
+   </center>
+   <bottom>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="800.0">
+         <Button onAction="#goBack" text="Go Back" HBox.hgrow="ALWAYS" />
+      </HBox>
+   </bottom>
+</BorderPane>

@@ -1,6 +1,7 @@
 package server;
 
 import commons.Board;
+import commons.Task;
 import commons.TaskList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,7 +10,11 @@ import server.api.TestBoardRepository;
 import server.services.BoardService;
 import server.services.ListService;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.LinkedList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ListServiceTest {
     private ListService service;
@@ -23,8 +28,6 @@ public class ListServiceTest {
         ReflectionTestUtils.setField(service, "boardRepository", repo);
         ReflectionTestUtils.setField(boardService, "boardRepository", repo);
     }
-
-
 
     @Test
     public void testGetLists(){
@@ -71,5 +74,42 @@ public class ListServiceTest {
         assertEquals(2, service.getLists(b.id).size());
         service.removeList(b.id, l1);
         assertEquals(1, service.getLists(b.id).size());
+    }
+
+    @Test
+    public void testRemoveListByID() {
+        Board board = new Board("Test Board", new LinkedList<>(), new LinkedList<>());
+        TaskList list1 = new TaskList("List 1");
+        TaskList list2 = new TaskList("List 2");
+        board.addTaskList(list1);
+        board.addTaskList(list2);
+        boardService.addBoard(board);
+
+        service.removeListByID(board.getId(), list2.getId());
+        List<TaskList> lists = service.getLists(board.getId());
+        assertEquals(1, lists.size());
+        assertEquals(list1.getId(), lists.get(0).getId());
+    }
+
+    @Test
+    public void testReorderTask() {
+        Board board = new Board("Test Board", new LinkedList<>(), new LinkedList<>());
+        TaskList list = new TaskList("List 1");
+        Task task1 = new Task("Task 1", "description");
+        Task task2 = new Task("Task 2", "description");
+        Task task3 = new Task("Task 3", "description");
+        list.addTask(task1);
+        list.addTask(task2);
+        list.addTask(task3);
+        board.addTaskList(list);
+        boardService.addBoard(board);
+
+        service.reorderTask(board.getId(), list.getId(), task2.getId(), 0);
+
+        TaskList updatedList = service.getList(board.getId(), list.getId());
+        assertEquals(3, updatedList.getTasks().size());
+        assertEquals(task2.getId(), updatedList.getTasks().get(0).getId());
+        assertEquals(task1.getId(), updatedList.getTasks().get(1).getId());
+        assertEquals(task3.getId(), updatedList.getTasks().get(2).getId());
     }
 }
