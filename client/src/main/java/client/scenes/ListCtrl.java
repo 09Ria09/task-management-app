@@ -411,8 +411,10 @@ public class ListCtrl implements Initializable {
         simpleTaskName = simpleTaskNameInput.getText();
         simpleTaskNameInput.clear();
         try {
-            if(!simpleTaskName.isEmpty() || simpleTaskName != null) {
-                Task task = new Task(simpleTaskName, null);
+            if(simpleTaskName == null || simpleTaskName.isEmpty()) {
+                throw new TaskException("Task must have a name");
+            } else {
+                Task task = new Task(simpleTaskName, "");
                 taskUtils.addTask(boardID, taskList.id, task);
             }
         } catch (TaskException e) {

@@ -12,10 +12,8 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Popup;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.*;
@@ -27,8 +25,6 @@ public class TagOverviewCtrl {
     private ListView<Tag> tags;
     @FXML
     private ColorPicker colorPicker;
-    @FXML
-    private Button addButton;
     @FXML
     private TextField tagName;
     private Board board;

@@ -5,6 +5,7 @@ import client.customExceptions.TaskException;
 import client.utils.TaskListUtils;
 import client.customExceptions.TaskListException;
 import client.utils.TaskUtils;
+import commons.Tag;
 import commons.Task;
 import commons.TaskList;
 import javafx.fxml.FXML;
@@ -13,6 +14,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 
@@ -51,6 +54,9 @@ public class CardCtrl {
 
     @FXML Label description;
 
+    @FXML
+    private FlowPane tagList;
+
     private MainCtrl mainCtrl;
     private ListCtrl listController;
     private TaskListUtils taskListUtils;
@@ -83,6 +89,19 @@ public class CardCtrl {
             this.descButton.setDisable(true);
             descIcon.setVisible(false);
         }
+
+        tagList.setHgap(2.00);
+        tagList.setVgap(2.00);
+        setTags(this.task.getTags());
+    }
+
+    private void setTags(List<Tag> tags) {
+        for(Tag tag : tags) {
+            Pane tagPane = new Pane();
+            tagPane.setPrefSize(40, 10);
+            tagPane.setStyle("-fx-background-radius: 2px; -fx-border-radius: 2px; -fx-background-color: #" + tag.getColor() + ";");
+            tagList.getChildren().add(tagPane);
+        }
     }
 
     /**
@@ -109,7 +128,7 @@ public class CardCtrl {
      * This will move the card one position up in the listview
      * So in the list of tasks of a tasklist it will go 1 index down
      *
-     * @return it will return a boolean depending if the task could be moved up
+     * @return it will return a boolean depending on if the task could be moved up
      */
     public boolean moveUp() {
         try {
@@ -136,7 +155,7 @@ public class CardCtrl {
      * This will move the card one position down in the listview
      * So in the list of tasks of a tasklist it will go 1 index up
      *
-     * @return it will return a boolean depending if the task could be moved down
+     * @return it will return a boolean depending on if the task could be moved down
      */
     public boolean moveDown() {
         try {
