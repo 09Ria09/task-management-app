@@ -77,6 +77,7 @@ public class SubTaskController {
             if(name == null || name.isEmpty()) {
                 return ResponseEntity.badRequest().build();
             }
+
             SubTask renamedSubTask = subTaskService.
                     renameSubTask(boardId, listId, taskId, subTaskid, name);
             return ResponseEntity.ok(renamedSubTask);
@@ -94,9 +95,14 @@ public class SubTaskController {
             System.out.println(
                     "boardid"
             );
+            SubTask subTaskToDeleteCopy = null;
             SubTask deletedSubTask = subTaskService.
-                    removeSubTaskById(boardId, listId, taskId, subTaskid);
-            return ResponseEntity.ok(deletedSubTask);
+                    getSubTask(boardId, listId, taskId, subTaskid);
+            if(deletedSubTask!=null) {
+                subTaskToDeleteCopy = new SubTask(deletedSubTask);
+            }
+            subTaskService.removeSubTaskById(boardId, listId, taskId, subTaskid);
+            return ResponseEntity.ok(subTaskToDeleteCopy);
         } catch (NoSuchElementException e) {
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {

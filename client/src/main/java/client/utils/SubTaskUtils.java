@@ -111,6 +111,8 @@ public class SubTaskUtils {
                                  final long taskId, final long subTaskId)
             throws SubTaskException {
         String serverAddress = server.getServerAddress();
+        System.out.println("boardId = " + boardId + " taskListId = " + taskListId + " taskId = "
+                + taskId + " subTaskId = " + subTaskId);
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
                 .path("api/subtasks/" + boardId + "/" + taskListId
                         + "/" + taskId + "/" + subTaskId)

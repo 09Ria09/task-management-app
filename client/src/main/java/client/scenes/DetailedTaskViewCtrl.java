@@ -221,9 +221,10 @@ public class DetailedTaskViewCtrl {
             if (subTasks == null) {
                 subTasks = new ListView<>();
             }
-            subTasks.getItems().add(subTask);
-            subTaskUtils.addSubTask(listController.getBoardID(),
+            SubTask updatedSubTask = subTaskUtils.addSubTask(listController.getBoardID(),
                     listController.getTaskList().id, task.id, subTask);
+            subTasks.getItems().add(updatedSubTask);
+            refreshSubTasks();
         } catch (TaskException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
             alert.initModality(Modality.APPLICATION_MODAL);
@@ -231,7 +232,11 @@ public class DetailedTaskViewCtrl {
             alert.showAndWait();
         }
     }
-
+    public void refreshSubTasks() throws TaskException {
+        Task updatedTask = taskUtils.getTask(listController.getBoardID(),
+                listController.getTaskList().id, task.id);
+        setTask(updatedTask);
+    }
     public Task getTask() {
         return this.task;
     }

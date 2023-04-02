@@ -54,7 +54,10 @@ public class SubTaskService {
 
         boardRepository.save(board);
 
-        return subTask;
+        SubTask updateWithId = new SubTask(subTask.getName(), subTask.isCompleted());
+        updateWithId.id = subTask.getId();
+        System.out.println(updateWithId);
+        return updateWithId;
     }
 
     /**
