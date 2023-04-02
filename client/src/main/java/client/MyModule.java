@@ -18,6 +18,7 @@ package client;
 import client.scenes.*;
 import client.scenes.adminScenes.AdminBoardCtrl;
 import client.scenes.adminScenes.AdminLoginCtrl;
+import client.utils.BoardUtils;
 import client.utils.ServerUtils;
 import client.utils.TaskListUtils;
 import com.google.inject.Binder;
@@ -36,5 +37,6 @@ public class MyModule implements Module {
         binder.bind(EditBoardCtrl.class).in(Scopes.SINGLETON);
         binder.bind(AdminBoardCtrl.class).in(Scopes.SINGLETON);
         binder.bind(AdminLoginCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(BoardUtils.class).in(Scopes.SINGLETON);
     }
 }

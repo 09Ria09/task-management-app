@@ -94,10 +94,13 @@ public class BoardControllerTest {
 
     @Test
     public void testDeleteBoardEndpoint() throws Exception {
+        Board board = new Board("Test Board !", List.of(), List.of());
+        Mockito.when(boardService.getBoard(1)).thenReturn(board);
         Mockito.doNothing().when(boardService).removeBoardByID(1);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/1"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("name", is("Test Board !")));
         Mockito.verify(boardService, Mockito.times(1)).removeBoardByID(1);
     }
 

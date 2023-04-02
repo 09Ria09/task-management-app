@@ -31,6 +31,7 @@ public class AdminLoginCtrl {
         if (password.getText().equals(serverUtils.getAdminKey())) {
             mainCtrl.showAdminBoard();
             adminBoardCtrl.addAllBoards();
+            boardUtils.registerForUpdatesBoards(event -> adminBoardCtrl.solveEvent(event));
         } else {
             System.out.println("Password incorrect. Expected " + serverUtils.getAdminKey());
         }
@@ -39,6 +40,6 @@ public class AdminLoginCtrl {
     @FXML
     public void cancel() {
         password.clear();
-        mainCtrl.showJoinBoard();
+        mainCtrl.showBoardCatalogue();
     }
 }

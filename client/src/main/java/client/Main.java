@@ -77,5 +77,9 @@ public class Main extends Application {
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         mainCtrl.initialize(primaryStage, listScenes, serverScenes, taskScenes,
             boardCatalogue, boardScenes);
+
+        primaryStage.setOnCloseRequest(e -> {
+            adminBoard.getKey().stop();
+        });
     }
 }

@@ -1,10 +1,13 @@
 package client.scenes.adminScenes;
 
 import client.customExceptions.BoardException;
+import client.scenes.MainCtrl;
 import client.utils.BoardUtils;
 import commons.Board;
 import com.google.inject.Inject;
+import commons.BoardEvent;
 import commons.Tag;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -34,9 +37,12 @@ public class AdminBoardCtrl {
 
     private BoardUtils boardUtils;
 
+    private MainCtrl mainCtrl;
+
     @Inject
-    public AdminBoardCtrl(final BoardUtils boardUtils) {
+    public AdminBoardCtrl(final BoardUtils boardUtils, final MainCtrl mainCtrl) {
         this.boardUtils = boardUtils;
+        this.mainCtrl = mainCtrl;
     }
 
     @FXML
@@ -47,14 +53,15 @@ public class AdminBoardCtrl {
         tagsColumn.setCellValueFactory(cellData ->
                 new ReadOnlyObjectWrapper<>(cellData.getValue().getTags()
                         .stream().map(Tag::getName).reduce((a, b) -> a + ", " + b).orElse("")));
-        inviteKeyColumn.setCellValueFactory(new PropertyValueFactory<>("inviteKey"));
+        inviteKeyColumn.setCellValueFactory(cellData ->
+                new ReadOnlyObjectWrapper<>(cellData.getValue().getInviteKey()));
         deleteColumn.setCellFactory(param -> new TableCell<>() {
             private final Button deleteButton = new Button("Delete");
 
             {
                 deleteButton.setOnAction(event -> {
                     Board board = getTableRow().getItem();
-                    deleteBoard(board);
+                    deleteBoard(board, true);
                 });
             }
 
@@ -73,18 +80,57 @@ public class AdminBoardCtrl {
     public void addAllBoards() throws BoardException {
         List<Board> boards = boardUtils.getBoards();
         boardTableView.setItems(FXCollections.observableArrayList(boards));
+        System.out.println("Added all boards");
     }
 
-    private void deleteBoard(final Board board) {
+    private void deleteBoard(final Board board, final boolean adminAction) {
         try {
-
-            // Remove the board from the table view
-            boardTableView.getItems().remove(board);
-            // Use boardUtils to delete the board
-            boardUtils.deleteBoard(board.getId());
+            System.out.println("Deleting board " + board.getName());
+            Platform.runLater(() -> {
+                boardTableView.getItems().remove(board);
+            });
+            System.out.println(board);
+            //here I check if the deletion is done from the dashboard
+            //or by an user in the overview, so that I dont call
+            //the deleteBoard method twice
+            if (adminAction) {
+                boardUtils.deleteBoard(board.getId());
+            }
 
         } catch (BoardException e) {
             e.printStackTrace();
         }
+    }
+    public void addBoard(final Board board) {
+        System.out.println("Adding board " + board.getName());
+        Platform.runLater(() -> {
+            boardTableView.getItems().add(board);
+        });
+    }
+    public void stop() {
+        boardUtils.stop();
+    }
+
+    public void solveEvent(final BoardEvent event) {
+        String eventType = event.getEventType();
+        Board board = event.getBoard();
+        System.out.println("Solving event " + eventType + " for board " + board.getName());
+        switch (eventType) {
+            case "ADD":
+                addBoard(board);
+                break;
+            case "DELETE":
+                deleteBoard(board, false);
+                break;
+            default:
+                break;
+        }
+    }
+
+    @FXML
+    private void goBack() {
+        System.out.println("Going back to board catalogue");
+        boardUtils.stop();
+        mainCtrl.showBoardCatalogue();
     }
 }
