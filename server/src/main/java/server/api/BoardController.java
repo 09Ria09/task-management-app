@@ -18,11 +18,8 @@ import java.util.function.Consumer;
 public class BoardController {
 
     private final BoardService boardService;
-<<<<<<< HEAD
     private final SimpMessagingTemplate messages;
 
-=======
->>>>>>> main
     /**
      * Initialize the Board Controller. If the JPA Repository is empty, a default board is created
      * @param boardService the service used to interact with the JPA Repository
@@ -116,14 +113,10 @@ public class BoardController {
             Board boardToDelete = boardService.getBoard(boardid);
             if(boardToDelete!=null) boardToDeleteCopy = new Board(boardToDelete);
             boardService.removeBoardByID(boardid);
-<<<<<<< HEAD
             messages.convertAndSend("/topic/deleteboard", boardToDelete);
-            return ResponseEntity.ok(boardToDelete);
-=======
             BoardEvent event = new BoardEvent("DELETE", boardToDeleteCopy);
             listeners.forEach((k, l) -> l.accept(event));
             return ResponseEntity.ok(boardToDeleteCopy);
->>>>>>> main
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {

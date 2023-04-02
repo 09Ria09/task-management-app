@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<Pane focusTraversable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="447.0" prefWidth="662.0" xmlns="http://javafx.com/javafx/17.0.6-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.DetailedTaskViewCtrl">
+<Pane focusTraversable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="447.0" prefWidth="662.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.DetailedTaskViewCtrl">
    <children>
       <Button layoutX="35.0" layoutY="371.0" mnemonicParsing="false" onAction="#goBack" prefHeight="54.0" prefWidth="74.0" text="Go back" />
       <Button layoutX="549.0" layoutY="371.0" mnemonicParsing="false" onAction="#deleteTask" prefHeight="54.0" prefWidth="82.0" text="Delete" />

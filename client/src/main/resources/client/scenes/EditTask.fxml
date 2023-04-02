@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.6-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.EditTaskCtrl">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.EditTaskCtrl">
     <children>
         <TextField fx:id="newTaskName" layoutX="23.0" layoutY="69.0" prefHeight="25.0" prefWidth="167.0" promptText="Task Name" />
         <TextArea fx:id="newTaskDesc" layoutX="24.0" layoutY="102.0" prefHeight="247.0" prefWidth="395.0" promptText="Task Description" />
