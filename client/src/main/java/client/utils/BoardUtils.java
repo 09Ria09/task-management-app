@@ -1,12 +1,20 @@
 package client.utils;
 
 import client.customExceptions.BoardException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import commons.Board;
+import commons.BoardEvent;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
+
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -27,6 +35,24 @@ public class BoardUtils {
     @Inject
     public BoardUtils(final ServerUtils server) {
         this.server = server;
+    }
+
+    public List<Board> getBoards() throws BoardException {
+        String serverAddress = server.getServerAddress();
+        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
+                .path("api/boards")
+                .request()
+                .accept(APPLICATION_JSON)
+                .get();
+
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+            return response.readEntity(new GenericType<List<Board>>() {
+            });
+        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
+            throw new BoardException("Boards not found.");
+        } else {
+            throw new BoardException("An error occurred while fetching the board");
+        }
     }
 
     /**
@@ -177,4 +203,35 @@ public class BoardUtils {
         return board.getInviteKey();
     }
 
+    private static final ExecutorService EXEC = Executors.newSingleThreadExecutor();
+    public void registerForUpdatesBoards(final Consumer<BoardEvent> boardConsumer) {
+        System.out.println("registering for updates");
+        EXEC.submit(() -> {
+            while (!Thread.interrupted()) {
+                String serverAddress = server.getServerAddress();
+                Response response = ClientBuilder.newClient(new ClientConfig())
+                        .target(serverAddress)
+                        .path("api/boards/updates")
+                        .request()
+                        .accept(APPLICATION_JSON)
+                        .get();
+                if(response.getStatus() == 204 ) {
+                    continue;
+                }
+                String responseBody = response.readEntity(String.class);
+                BoardEvent event = null;
+                try {
+                    event = new ObjectMapper().readValue(responseBody, BoardEvent.class);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
+                }
+                boardConsumer.accept(event);
+            }
+        });
+    }
+
+    public void stop() {
+        EXEC.shutdownNow();
+    }
 }

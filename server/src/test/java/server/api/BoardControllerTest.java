@@ -1,8 +1,5 @@
 package server.api;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import commons.Board;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,11 +19,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import server.services.BoardService;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.NoSuchElementException;
+
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(BoardController.class)
@@ -97,10 +98,13 @@ public class BoardControllerTest {
 
     @Test
     public void testDeleteBoardEndpoint() throws Exception {
+        Board board = new Board("Test Board !", List.of(), List.of());
+        Mockito.when(boardService.getBoard(1)).thenReturn(board);
         Mockito.doNothing().when(boardService).removeBoardByID(1);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/1"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("name", is("Test Board !")));
         Mockito.verify(boardService, Mockito.times(1)).removeBoardByID(1);
     }
 
@@ -126,5 +130,126 @@ public class BoardControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("name", is("New Board")));
         Mockito.verify(boardService, Mockito.times(1)).addBoard(newBoard);
+    }
+
+    @Test
+    public void testGetBoardEndpointNotFound() throws Exception {
+        Mockito.when(boardService.getBoard(1234)).thenThrow(NoSuchElementException.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/boards/1234"))
+            .andExpect(status().isNotFound());
+
+        Mockito.verify(boardService, Mockito.times(1)).getBoard(1234);
+    }
+
+    @Test
+    public void testAddBoardEndpointInvalidName() throws Exception {
+        Board newBoard = new Board("", new LinkedList<>(),  new LinkedList<>());
+        String requestBody = new ObjectMapper().writeValueAsString(newBoard);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/boards/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+            .andExpect(status().isBadRequest());
+
+        Mockito.verify(boardService, Mockito.times(0)).addBoard(newBoard);
+    }
+
+    @Test
+    public void testDeleteBoardEndpointNotFound() throws Exception {
+        Mockito.doThrow(NoSuchElementException.class).when(boardService).removeBoardByID(1234);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/1234"))
+            .andExpect(status().isNotFound());
+
+        Mockito.verify(boardService, Mockito.times(1)).removeBoardByID(1234);
+    }
+
+    @Test
+    public void testDeleteBoardEndpointInternalServerError() throws Exception {
+        Mockito.doThrow(RuntimeException.class).when(boardService).removeBoardByID(1234);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/1234"))
+            .andExpect(status().isInternalServerError());
+
+        Mockito.verify(boardService, Mockito.times(1)).removeBoardByID(1234);
+    }
+
+    @Test
+    public void testRenameBoardEndpointInvalidName() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/boards/1234")
+                .param("name", ""))
+            .andExpect(status().isBadRequest());
+
+        Mockito.verify(boardService, Mockito.times(0)).renameBoard(1234, "");
+    }
+
+    @Test
+    public void testRenameBoardEndpointNotFound() throws Exception {
+        Mockito.doThrow(NoSuchElementException.class).when(boardService)
+            .renameBoard(1234, "Name");
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/boards/1234")
+                .param("name", "Name"))
+            .andExpect(status().isNotFound());
+
+        Mockito.verify(boardService, Mockito.times(1)).renameBoard(1234, "Name");
+    }
+
+    @Test
+    public void testRenameBoardEndpointInternalServerError() throws Exception {
+        Mockito.doThrow(RuntimeException.class).when(boardService).renameBoard(1234,
+            "Name");
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/boards/1234")
+                .param("name", "Name"))
+            .andExpect(status().isInternalServerError());
+
+        Mockito.verify(boardService, Mockito.times(1)).renameBoard(1234, "Name");
+    }
+
+    @Test
+    public void testJoinBoardOk() throws Exception {
+        Board board = new Board("Testing", new LinkedList<>(), new LinkedList<>());
+        Mockito.when(boardService.joinBoard(1234, "Test")).thenReturn(board);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/boards/1234/join")
+                .param("memberName", "Test"))
+            .andExpect(status().isOk());
+
+        Mockito.verify(boardService, Mockito.times(1)).joinBoard(1234, "Test");
+    }
+
+    @Test
+    public void testJoinBoardEndpointBadName() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/boards/1234/join")
+                .param("memberName", ""))
+            .andExpect(status().isBadRequest());
+
+        Mockito.verify(boardService, Mockito.times(0)).joinBoard(1234, "");
+    }
+
+    @Test
+    public void testJoinBoardEndpointNotFound() throws Exception {
+        Mockito.doThrow(NoSuchElementException.class).when(boardService)
+            .joinBoard(1234, "Test");
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/boards/1234/join")
+                .param("memberName", "Test"))
+            .andExpect(status().isNotFound());
+
+        Mockito.verify(boardService, Mockito.times(1)).joinBoard(1234, "Test");
+    }
+
+    @Test
+    public void testJoinBoardEndpointInternalServerError() throws Exception {
+        Mockito.doThrow(RuntimeException.class).when(boardService)
+            .joinBoard(1234, "Name");
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/boards/1234/join")
+                .param("memberName", "Name"))
+            .andExpect(status().isInternalServerError());
+
+        Mockito.verify(boardService, Mockito.times(1)).joinBoard(1234, "Name");
     }
 }

@@ -1,22 +1,28 @@
 package server.api;
 
 import commons.Board;
+import commons.BoardEvent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.async.DeferredResult;
 import server.services.BoardService;
 
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
+import java.util.function.Consumer;
 
 @RestController
 @RequestMapping("/api/boards")
 public class BoardController {
 
     private final BoardService boardService;
+<<<<<<< HEAD
     private final SimpMessagingTemplate messages;
 
+=======
+>>>>>>> main
     /**
      * Initialize the Board Controller. If the JPA Repository is empty, a default board is created
      * @param boardService the service used to interact with the JPA Repository
@@ -40,6 +46,24 @@ public class BoardController {
     public ResponseEntity<List<Board>> getBoards() {
         List<Board> boards = boardService.getBoards();
         return ResponseEntity.ok(boards);
+    }
+
+    private Map<Object, Consumer<BoardEvent>> listeners = new HashMap<>();
+
+    @GetMapping("/updates")
+    public DeferredResult<ResponseEntity<BoardEvent>> getUpdates() {
+
+        var noContent = ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        var res = new DeferredResult<ResponseEntity<BoardEvent>>(5000L, noContent);
+
+        var key = new Object();
+        listeners.put(key, event -> {
+            res.setResult(ResponseEntity.ok(event));
+        });
+        res.onCompletion(() -> {
+            listeners.remove(key);
+        });
+        return res;
     }
 
     /**
@@ -71,6 +95,8 @@ public class BoardController {
         Board createdBoard = boardService.addBoard(board);
         messages.convertAndSend("/topic/addboard",
                 createdBoard);
+        BoardEvent event = new BoardEvent("ADD", createdBoard);
+        listeners.forEach((k, l) -> l.accept(event));
         return ResponseEntity.ok(createdBoard);
     }
 
@@ -86,10 +112,18 @@ public class BoardController {
         try {
             //the remove method checks if the board exists anyway,
             //so we can be certain that the getBoard will also return something non-null
+            Board boardToDeleteCopy = null;
             Board boardToDelete = boardService.getBoard(boardid);
+            if(boardToDelete!=null) boardToDeleteCopy = new Board(boardToDelete);
             boardService.removeBoardByID(boardid);
+<<<<<<< HEAD
             messages.convertAndSend("/topic/deleteboard", boardToDelete);
             return ResponseEntity.ok(boardToDelete);
+=======
+            BoardEvent event = new BoardEvent("DELETE", boardToDeleteCopy);
+            listeners.forEach((k, l) -> l.accept(event));
+            return ResponseEntity.ok(boardToDeleteCopy);
+>>>>>>> main
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
