@@ -99,6 +99,15 @@ public class BoardCatalogueCtrl implements Initializable {
      * Populates the catalogue with the boards of the current server
      */
     public void populate() {
+        int index = -1;
+        if(this.catalogue.getTabs().size() > 1)
+            for(int i = 0; i < this.catalogue.getTabs().size()-1; i++)
+                if(this.catalogue.getTabs().get(i).isSelected())
+                    index = i;
+        this.boardsMap.clear();
+        if (catalogue.getTabs().size() > 1) {
+            this.catalogue.getTabs().subList(0, catalogue.getTabs().size() - 1).clear();
+        }
         var boards = Servers.getInstance().getServers()
             .get(serverUtils.getServerAddress());
         Iterator<Long> boardIterator = boards.iterator();
@@ -110,6 +119,8 @@ public class BoardCatalogueCtrl implements Initializable {
                 boardIterator.remove();
             }
         }
+        if(index >= 0 && this.catalogue.getTabs().size() > index+1)
+            this.catalogue.getSelectionModel().select(index);
     }
 
     /**

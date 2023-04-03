@@ -89,7 +89,26 @@ public class SubTaskController {
 
             SubTask renamedSubTask = subTaskService.
                     renameSubTask(boardId, listId, taskId, subTaskid, name);
+            messages.convertAndSend("/topic/" + boardId + "/" + listId + "/modifytask",
+                    taskService.getTask(boardId, listId, taskId));
             return ResponseEntity.ok(renamedSubTask);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PutMapping("/{boardid}/{tasklistid}/{taskid}/{subtaskid}/complete")
+    public ResponseEntity<SubTask> renameSubTask(@PathVariable("boardid") final long boardId,
+                                                 @PathVariable("tasklistid") final long listId,
+                                                 @PathVariable("taskid") final long taskId,
+                                                 @PathVariable("subtaskid") final long subTaskid,
+                                                 @RequestParam final Boolean complete) {
+        try {
+            SubTask changedSubTask = subTaskService.
+                    completeSubTask(boardId, listId, taskId, subTaskid, complete);
+            messages.convertAndSend("/topic/" + boardId + "/" + listId + "/modifytask",
+                    taskService.getTask(boardId, listId, taskId));
+            return ResponseEntity.ok(changedSubTask);
         } catch (NoSuchElementException e) {
             return ResponseEntity.badRequest().build();
         }
@@ -101,9 +120,6 @@ public class SubTaskController {
                                                  @PathVariable("taskid") final long taskId,
                                                  @PathVariable("subtaskid") final long subTaskid) {
         try {
-            System.out.println(
-                    "boardid"
-            );
             SubTask subTaskToDeleteCopy = null;
             SubTask deletedSubTask = subTaskService.
                     getSubTask(boardId, listId, taskId, subTaskid);
@@ -111,6 +127,8 @@ public class SubTaskController {
                 subTaskToDeleteCopy = new SubTask(deletedSubTask);
             }
             subTaskService.removeSubTaskById(boardId, listId, taskId, subTaskid);
+            messages.convertAndSend("/topic/" + boardId + "/" + listId + "/modifytask",
+                    taskService.getTask(boardId, listId, taskId));
             return ResponseEntity.ok(subTaskToDeleteCopy);
         } catch (NoSuchElementException e) {
             return ResponseEntity.badRequest().build();
@@ -129,6 +147,8 @@ public class SubTaskController {
         try {
             SubTask subTask = subTaskService.reorderSubTask(boardid, tasklistid,
                     taskid, subtaskid, newIndex);
+            messages.convertAndSend("/topic/" + boardid + "/" + tasklistid + "/modifytask",
+                    taskService.getTask(boardid, tasklistid, taskid));
             return ResponseEntity.ok(subTask);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();

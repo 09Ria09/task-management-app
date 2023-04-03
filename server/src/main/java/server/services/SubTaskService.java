@@ -84,6 +84,25 @@ public class SubTaskService {
      * @param boardId id of board to access
      * @param listId id of list to access
      * @param taskId id of task to access
+     * @param subTaskId id of sub task to access
+     * @param isComplete new completion state
+     * @return changed subtask
+     */
+    public SubTask completeSubTask(final long boardId, final long listId,
+                                 final long taskId, final long subTaskId,
+                                 final boolean isComplete) {
+        SubTask subTask = getSubTask(boardId, listId, taskId, subTaskId);
+        subTask.setCompleted(isComplete);
+        Board board = getBoard(boardId);
+        boardRepository.save(board);
+        return subTask;
+    }
+
+    /**
+     *
+     * @param boardId id of board to access
+     * @param listId id of list to access
+     * @param taskId id of task to access
      * @param subTask sub task to be removed from task
      * @return removed subtask
      */

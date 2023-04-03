@@ -8,10 +8,10 @@ import client.utils.TaskListUtils;
 import com.google.inject.Inject;
 import commons.SubTask;
 import commons.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TextInputDialog;
-import javafx.scene.text.Text;
+import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 
 import java.util.List;
@@ -21,7 +21,16 @@ import java.util.Optional;
 public class SubCardCtrl {
     private SubTask subTask;
     @FXML
-    private Text text;
+    private Label text;
+    @FXML
+    private Button editButton;
+    @FXML
+    private Button deleteButton;
+    @FXML
+    private CheckBox checkbox;
+    @FXML
+    private HBox root;
+
     private ListCtrl listController;
     private TaskListUtils taskListUtils;
     private CustomAlert customAlert;
@@ -42,6 +51,8 @@ public class SubCardCtrl {
         this.customAlert = customAlert;
         this.subTaskUtils = subTaskUtils;
         this.detailedTaskViewCtrl = detailedTaskViewCtrl;
+        this.checkbox.setSelected(subTask.isCompleted());
+        this.root.setOpacity(subTask.isCompleted() ? 0.5D : 1.0D);
     }
 
     public void deleteSubTask() throws SubTaskException {
@@ -159,4 +170,63 @@ public class SubCardCtrl {
         return false;
     }
 
+    /**
+     * When the card is hovered, the edit and delete buttons are shown
+     */
+    public void onHover(){
+        if(!checkbox.isSelected())
+            this.editButton.setOpacity(1.0d);
+        this.deleteButton.setOpacity(1.0d);
+    }
+
+    /**
+     * When the card is not hovered, the edit and delete buttons are hidden
+     */
+    public void onUnhover(){
+        this.editButton.setOpacity(0.0d);
+        this.deleteButton.setOpacity(0.0d);
+    }
+
+    /**
+     * When the edit button is hovered, the background is set to grey.
+     */
+    public void onHoverEdit(){
+        this.editButton.setStyle("-fx-background-color: #BBBBBB;");
+    }
+
+    /**
+     * When the edit button is not hovered, the background is set to transparent.
+     */
+    public void onUnhoverEdit(){
+        this.editButton.setStyle("-fx-background-color: transparent;");
+    }
+
+    /**
+     * When the delete button is hovered, the background is set to grey.
+     */
+    public void onHoverDelete(){
+        this.deleteButton.setStyle("-fx-background-color: #BBBBBB;");
+    }
+
+    /**
+     * When the delete button is not hovered, the background is set to transparent.
+     */
+    public void onUnhoverDelete(){
+        this.deleteButton.setStyle("-fx-background-color: transparent;");
+    }
+
+    public void onCheckboxChanged(final ActionEvent event){
+        boolean checked = checkbox.isSelected();
+        this.root.setOpacity(checked ? 0.5D : 1.0D);
+        try {
+            subTaskUtils.completeSubTask(listController.getBoardID(),
+                        listController.getTaskList().id,
+                        detailedTaskViewCtrl.getTask().id, subTask.id, checked);
+        } catch (SubTaskException e) {
+            Alert alert = customAlert.showAlert(e.getMessage());
+            alert.showAndWait();
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
 }
