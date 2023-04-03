@@ -22,7 +22,7 @@ public class Task implements Serializable {
     @OneToMany(cascade=CascadeType.ALL)
     private List<SubTask> subtasks;
 
-    @OneToMany(cascade=CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Tag> tags;
 
     public Task(){
@@ -33,12 +33,14 @@ public class Task implements Serializable {
         this.name = name;
         this.description = description;
         this.subtasks = new ArrayList<>();
+        this.tags = new ArrayList<>();
     }
 
     public Task(final String name, final String description, final List<SubTask> subtasks) {
         this.name = name;
         this.description = description;
         this.subtasks = subtasks;
+        this.tags = new ArrayList<>();
     }
 
     public Task(final String name, final String description, final List<SubTask> subtasks, final List<Tag> tags) {

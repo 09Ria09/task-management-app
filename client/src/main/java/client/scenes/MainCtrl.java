@@ -165,8 +165,8 @@ public class MainCtrl {
     public void showCreateTask(final ListCtrl ctrl) {
         primaryStage.setTitle("Talio: Create Task");
         resize();
-        primaryStage.setScene(createTask);
         createTaskCtrl.setListCtrl(ctrl);
+        primaryStage.setScene(createTask);
     }
 
     /**

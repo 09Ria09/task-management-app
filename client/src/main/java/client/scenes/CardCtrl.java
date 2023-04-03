@@ -90,16 +90,18 @@ public class CardCtrl {
             descIcon.setVisible(false);
         }
 
-        tagList.setHgap(2.00);
-        tagList.setVgap(2.00);
-        setTags(this.task.getTags());
+        tagList.setHgap(5.00);
+        tagList.setVgap(5.00);
+        if(this.task.getTags() != null) {
+            setTags(this.task.getTags());
+        }
     }
 
     private void setTags(List<Tag> tags) {
         for(Tag tag : tags) {
             Pane tagPane = new Pane();
-            tagPane.setPrefSize(40, 10);
-            tagPane.setStyle("-fx-background-radius: 2px; -fx-border-radius: 2px; -fx-background-color: #" + tag.getColor() + ";");
+            tagPane.setPrefSize(60, 10);
+            tagPane.setStyle("-fx-background-radius: 5px; -fx-border-radius: 5px; -fx-background-color: #" + tag.getColor() + ";");
             tagList.getChildren().add(tagPane);
         }
     }

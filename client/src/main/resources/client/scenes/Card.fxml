@@ -68,7 +68,7 @@
             </graphic>
          </Button>
          <Line endX="20.0" endY="111.0" layoutX="233.0" layoutY="9.0" startX="20.0" startY="-9.0" />
-         <FlowPane layoutX="11.0" layoutY="32.0" prefHeight="36.0" prefWidth="200.0" />
+         <FlowPane fx:id="tagList" layoutX="11.0" layoutY="32.0" prefHeight="36.0" prefWidth="200.0" />
       </AnchorPane>
    </children>
 </AnchorPane>
