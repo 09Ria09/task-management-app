@@ -30,9 +30,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
+import javafx.scene.control.*;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
@@ -66,6 +64,22 @@ public class BoardOverviewCtrl {
     @FXML
 
     private Label inviteKeyLabel;
+
+    @FXML
+    private ScrollPane listScrollPane;
+    @FXML
+    private Button disconnectButton;
+    @FXML
+    private Button colorManagementViewButton;
+    @FXML
+    private Button addListButton;
+    @FXML
+    private Button copyInviteKeyButton;
+    @FXML
+    private Button renameBoardButton;
+    @FXML
+    private Button deleteBoardButton;
+
 
     @Inject
     public BoardOverviewCtrl(final ServerUtils server, final MainCtrl mainCtrl,
@@ -163,6 +177,7 @@ public class BoardOverviewCtrl {
                 tab.setText(board.getName());
                 var data = FXCollections.observableList(taskLists);
                 refreshLists(data);
+                refreshColor();
             } catch (TaskListException e) {
                 Alert alert = customAlert.showAlert(e.getMessage());
                 alert.showAndWait();
@@ -220,6 +235,8 @@ public class BoardOverviewCtrl {
         return this.currentBoardId;
     }
 
+
+
     public Board deleteBoard() throws BoardException {
         Long idToDelete = getCurrentBoardId();
         System.out.println(idToDelete);
@@ -276,5 +293,34 @@ public class BoardOverviewCtrl {
                 refreshTimer=null;
             }
         });
+    }
+
+    public void colorManagementView() {
+        mainCtrl.showColorManagementView(board);
+    }
+
+    public void printColors() {
+        System.out.println(board.getBoardColorScheme().id + "\n" +
+                board.getBoardColorScheme().toString());
+    }
+    public Board getBoard() {
+        return board;
+    }
+
+    public void refreshColor() {
+        listScrollPane.setStyle("-fx-background:#" + board.getBoardColorScheme().
+                getBoardBackgroundColor().substring(2, 8) + ";");
+        disconnectButton.setStyle("-fx-text-fill:#" + board.getBoardColorScheme().
+                getBoardTextColor().substring(2, 8) + ";");
+        colorManagementViewButton.setStyle("-fx-text-fill:#" + board.getBoardColorScheme().
+                getBoardTextColor().substring(2, 8) + ";");
+        addListButton.setStyle("-fx-text-fill:#" + board.getBoardColorScheme().
+                getBoardTextColor().substring(2, 8) + ";");
+        copyInviteKeyButton.setStyle("-fx-text-fill:#" + board.getBoardColorScheme().
+                getBoardTextColor().substring(2, 8) + ";");
+        renameBoardButton.setStyle("-fx-text-fill:#" + board.getBoardColorScheme().
+                getBoardTextColor().substring(2, 8) + ";");
+        deleteBoardButton.setStyle("-fx-text-fill:#" + board.getBoardColorScheme().
+                getBoardTextColor().substring(2, 8) + ";");
     }
 }

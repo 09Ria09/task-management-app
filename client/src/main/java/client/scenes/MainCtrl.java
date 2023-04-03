@@ -25,6 +25,7 @@ import client.scenes.connectScenes.SelectServerCtrl;
 import client.scenes.connectScenes.ServerTimeoutCtrl;
 import client.scenes.connectScenes.UnexpectedErrorCtrl;
 import client.scenes.connectScenes.WrongServerCtrl;
+import commons.Board;
 import commons.Task;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -69,6 +70,9 @@ public class MainCtrl {
     private EditBoardCtrl editBoardCtrl;
 
     private Scene editBoard;
+
+    private ColorManagementViewCtrl colorManagementViewCtrl;
+    private Scene colorManagementView;
 
 
 
@@ -119,6 +123,9 @@ public class MainCtrl {
         primaryStage.setOnCloseRequest(e-> {
             boardCatalogue.getKey().close();
         });
+
+        this.colorManagementViewCtrl = boardScenes.getColorManagementView().getKey();
+        this.colorManagementView = new Scene(boardScenes.getColorManagementView().getValue());
 
         this.editBoardCtrl = boardScenes.getEditBoard().getKey();
         this.editBoard = new Scene(boardScenes.getEditBoard().getValue());
@@ -217,6 +224,13 @@ public class MainCtrl {
         primaryStage.setTitle("Talio: unexpected error");
         resize();
         primaryStage.setScene(unexpectedError);
+    }
+
+    public void showColorManagementView(final Board board) {
+        primaryStage.setTitle("Talio: color management view");
+        colorManagementViewCtrl.setBoard(board);
+        resize();
+        primaryStage.setScene(colorManagementView);
     }
 
     /** Populate the Board Catalogue */

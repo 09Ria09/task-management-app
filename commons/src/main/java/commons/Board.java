@@ -23,11 +23,16 @@ public class Board {
     @OneToMany(cascade=CascadeType.ALL)
     private List<Tag> tags;
 
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private BoardColorScheme boardColorScheme;
+
+
     public Board(final String name, final List<TaskList> listTaskList, final List<Tag> tags) {
         this.name = name;
         this.taskLists = listTaskList;
         this.tags = tags;
         this.boardMembers= new ArrayList<>();
+        boardColorScheme = new BoardColorScheme();
     }
 
     /**
@@ -48,6 +53,7 @@ public class Board {
         this.tags = tags;
         this.boardMembers = new ArrayList<>();
         this.inviteKey = inviteKey;
+        boardColorScheme = new BoardColorScheme();
     }
 
     public Board() {
@@ -56,6 +62,7 @@ public class Board {
         this.name = "";
         this.boardMembers = new ArrayList<>();
         this.inviteKey = "";
+        boardColorScheme = new BoardColorScheme();
     }
 
     public String getName() {
@@ -176,5 +183,11 @@ public class Board {
         return res;
     }
 
+    public BoardColorScheme getBoardColorScheme() {
+        return boardColorScheme;
+    }
 
+    public void setBoardColorScheme(final BoardColorScheme boardColorScheme) {
+        this.boardColorScheme = boardColorScheme;
+    }
 }

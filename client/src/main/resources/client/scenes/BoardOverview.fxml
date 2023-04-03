@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BoardOverviewCtrl">
+<BorderPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BoardOverviewCtrl">
    <center>
-      <ScrollPane prefHeight="642.0" prefWidth="1280.0" style="-fx-background-color: #f0f0f0;" BorderPane.alignment="CENTER">
+      <ScrollPane fx:id="listScrollPane" prefHeight="642.0" prefWidth="1280.0" BorderPane.alignment="CENTER">
          <content>
             <HBox fx:id="listsContainer" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="380.0" style="-fx-padding: 10px 20px; -fx-spacing: 20px;" />
          </content>
@@ -29,7 +35,7 @@
       </Label>
             <HBox alignment="CENTER" prefHeight="86.0" prefWidth="240.0" spacing="10.0" GridPane.rowIndex="1">
                <children>
-                  <Button alignment="CENTER" mnemonicParsing="false" onAction="#switchServer" prefHeight="25.0" prefWidth="100.0" style="-fx-background-color: #D32F2F; -fx-text-fill: white; -fx-font-weight: bold;" text="Disconnect" textAlignment="CENTER" HBox.hgrow="ALWAYS">
+                  <Button fx:id="disconnectButton" alignment="CENTER" mnemonicParsing="false" onAction="#switchServer" prefHeight="25.0" prefWidth="100.0" style="-fx-background-color: #D32F2F; -fx-text-fill: white; -fx-font-weight: bold;" text="Disconnect" textAlignment="CENTER" HBox.hgrow="ALWAYS">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>
@@ -38,18 +44,19 @@
             </HBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="240.0" spacing="10.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <children>
-                  <Button alignment="CENTER" mnemonicParsing="false" onAction="#copyInviteKey" prefHeight="25.0" prefWidth="115.0" style="-fx-background-color: #4969e1; -fx-text-fill: white; -fx-font-weight: bold;" text="Copy Invite Key" textAlignment="CENTER" />
-                  <Button mnemonicParsing="false" onAction="#renameBoard" style="-fx-background-color: #4969e1; -fx-text-fill: white; -fx-font-weight: bold;" text="Rename Board" textAlignment="CENTER" HBox.hgrow="ALWAYS">
+                  <Button fx:id="copyInviteKeyButton" alignment="CENTER" mnemonicParsing="false" onAction="#copyInviteKey" prefHeight="25.0" prefWidth="115.0" style="-fx-background-color: #4969e1; -fx-text-fill: white; -fx-font-weight: bold;" text="Copy Invite Key" textAlignment="CENTER" />
+                  <Button fx:id="renameBoardButton" mnemonicParsing="false" onAction="#renameBoard" style="-fx-background-color: #4969e1; -fx-text-fill: white; -fx-font-weight: bold;" text="Rename Board" textAlignment="CENTER" HBox.hgrow="ALWAYS">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" onAction="#deleteBoard" style="-fx-background-color: #D32F2F; -fx-text-fill: white; -fx-font-weight: bold;" text="Delete Board" textAlignment="CENTER" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="deleteBoardButton" mnemonicParsing="false" onAction="#deleteBoard" style="-fx-background-color: #D32F2F; -fx-text-fill: white; -fx-font-weight: bold;" text="Delete Board" textAlignment="CENTER" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
             <HBox alignment="CENTER" prefHeight="86.0" prefWidth="240.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <children>
-                  <Button mnemonicParsing="false" onAction="#addList" style="-fx-background-color: #57A773; -fx-text-fill: white; -fx-font-weight: bold;" text="Add List" textAlignment="CENTER" />
+                  <Button fx:id="colorManagementViewButton" mnemonicParsing="false" onAction="#colorManagementView" text="Color Management View" />
+                  <Button fx:id="addListButton" mnemonicParsing="false" onAction="#addList" style="-fx-background-color: #57A773; -fx-text-fill: white; -fx-font-weight: bold;" text="Add List" textAlignment="CENTER" />
                </children>
                <padding>
                   <Insets right="10.0" />

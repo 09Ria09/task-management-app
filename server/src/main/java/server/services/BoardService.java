@@ -1,6 +1,7 @@
 package server.services;
 
 import commons.Board;
+import commons.BoardColorScheme;
 import commons.TaskList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -108,6 +109,13 @@ public class BoardService {
         board.getBoardMembers().add(memberName);
         boardRepository.save(board);
         return board;
+    }
+
+    public BoardColorScheme setBoardColorScheme(final long boardID,
+                                                final BoardColorScheme boardColorScheme) {
+        Board board = getBoard(boardID);
+        board.setBoardColorScheme(boardColorScheme);
+        return boardRepository.save(board).getBoardColorScheme();
     }
 
     /**

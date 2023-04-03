@@ -68,7 +68,9 @@ public class Main extends Application {
                 "client", "scenes", "DetailedTaskView.fxml");
         var taskScenes = new TaskScenes(createTask, editTask, detailedTaskView);
         var editBoard = FXML.load(EditBoardCtrl.class, "client", "scenes", "EditBoard.fxml");
-        var boardScenes = new BoardScenes(editBoard);
+        var colorManagementView = FXML.load(ColorManagementViewCtrl.class,
+                "client", "scenes", "ColorManagementView.fxml");
+        var boardScenes = new BoardScenes(editBoard, colorManagementView);
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         mainCtrl.initialize(primaryStage, listScenes, serverScenes, taskScenes,

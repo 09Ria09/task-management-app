@@ -3,8 +3,10 @@ package client.utils;
 import client.customExceptions.BoardException;
 import com.google.inject.Inject;
 import commons.Board;
+import commons.BoardColorScheme;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 
@@ -175,6 +177,44 @@ public class BoardUtils {
     public String getBoardInviteKey(final long boardId) throws BoardException{
         Board board = getBoard(boardId);
         return board.getInviteKey();
+    }
+
+    public BoardColorScheme getBoardColorScheme(final long boardId) throws BoardException {
+        String serverAddress = server.getServerAddress();
+        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
+                .path("api/boards/" + boardId + "/boardcolorscheme")
+                .request()
+                .accept(APPLICATION_JSON)
+                .get();
+
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+            return response.readEntity(new GenericType<BoardColorScheme>() {});
+        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
+            throw new BoardException("Board not found.");
+        } else {
+            throw new BoardException("An error occurred while fetching the board's color scheme");
+        }
+
+    }
+///{boardid}/setboardcolorscheme
+    public BoardColorScheme setBoardColorScheme(final long boardId,
+                                                final BoardColorScheme boardColorScheme)
+            throws BoardException {
+        String serverAddress = server.getServerAddress();
+        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
+                .path("api/boards/" + boardId + "/setboardcolorscheme")
+                .request()
+                .accept(APPLICATION_JSON)
+                .put(Entity.entity(boardColorScheme, APPLICATION_JSON));
+
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+            return response.readEntity(new GenericType<BoardColorScheme>() {});
+        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
+            throw new BoardException("Board not found.");
+        } else {
+            throw new BoardException("An error occurred while fetching the board's color scheme");
+        }
+
     }
 
 }
