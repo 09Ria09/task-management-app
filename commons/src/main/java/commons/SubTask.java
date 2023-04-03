@@ -28,6 +28,12 @@ public class SubTask implements Serializable {
         this.completed = false;
     }
 
+    public SubTask(final SubTask deletedSubTask) {
+        this.id = deletedSubTask.id;
+        this.name = deletedSubTask.name;
+        this.completed = deletedSubTask.completed;
+    }
+
     public String getName() {
         return name;
     }
@@ -53,7 +59,9 @@ public class SubTask implements Serializable {
     public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
     }
-
+    public long getId() {
+        return id;
+    }
     @Override
     public String toString() {
         return "Subtask (" + id + ") : " + name + " -> " + (completed ? "" : "not") + " completed";

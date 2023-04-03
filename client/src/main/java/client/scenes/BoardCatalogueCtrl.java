@@ -4,6 +4,7 @@ import client.CustomAlert;
 import client.customExceptions.BoardException;
 import client.utils.BoardUtils;
 import client.utils.ServerUtils;
+import client.utils.WebSocketUtils;
 import com.google.inject.Inject;
 import commons.Board;
 import javafx.fxml.FXML;
@@ -23,6 +24,7 @@ import java.util.ResourceBundle;
 
 public class BoardCatalogueCtrl implements Initializable {
     ServerUtils serverUtils;
+    WebSocketUtils webSocketUtils;
     BoardUtils boardUtils;
     MainCtrl mainCtrl;
     EditBoardCtrl editBoardCtrl;
@@ -33,10 +35,11 @@ public class BoardCatalogueCtrl implements Initializable {
     TabPane catalogue;
 
     @Inject
-    public BoardCatalogueCtrl(final ServerUtils serverUtils, final BoardUtils boardUtils,
-                              final MainCtrl mainCtrl, final CustomAlert customAlert,
-                              final EditBoardCtrl editBoardCtrl){
+    public BoardCatalogueCtrl(final ServerUtils serverUtils, final WebSocketUtils webSocketUtils,
+                              final BoardUtils boardUtils, final MainCtrl mainCtrl,
+                              final CustomAlert customAlert, final EditBoardCtrl editBoardCtrl){
         this.serverUtils=serverUtils;
+        this.webSocketUtils = webSocketUtils;
         this.boardUtils=boardUtils;
         this.mainCtrl=mainCtrl;
         this.customAlert=customAlert;
@@ -48,8 +51,8 @@ public class BoardCatalogueCtrl implements Initializable {
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
         var joinBoardLoader = new FXMLLoader(getClass().getResource("JoinBoard.fxml"));
-        joinBoardLoader.setControllerFactory(type -> new JoinBoardCtrl(serverUtils,
-            customAlert, boardUtils, this));
+        joinBoardLoader.setControllerFactory(type -> new JoinBoardCtrl(serverUtils, mainCtrl,
+            customAlert, boardUtils, this ));
         try {
             Node joinBoard = joinBoardLoader.load();
             var tab=new Tab("Add Board +", joinBoard);
@@ -70,8 +73,8 @@ public class BoardCatalogueCtrl implements Initializable {
             Board board = boardUtils.getBoard(boardId);
             var tab = new Tab(board.getName());
             var boardLoader = new FXMLLoader(getClass().getResource("BoardOverview.fxml"));
-            BoardOverviewCtrl boardOverviewCtrl = new BoardOverviewCtrl(serverUtils, mainCtrl,
-                customAlert, boardUtils, this, editBoardCtrl);
+            BoardOverviewCtrl boardOverviewCtrl = new BoardOverviewCtrl(mainCtrl,
+                customAlert, boardUtils, this, editBoardCtrl, webSocketUtils);
             boardOverviewCtrl.setCurrentBoardId(boardId);
             boardOverviewCtrl.setTab(tab);
             boardLoader.setControllerFactory(type -> boardOverviewCtrl);
@@ -96,6 +99,15 @@ public class BoardCatalogueCtrl implements Initializable {
      * Populates the catalogue with the boards of the current server
      */
     public void populate() {
+        int index = -1;
+        if(this.catalogue.getTabs().size() > 1)
+            for(int i = 0; i < this.catalogue.getTabs().size()-1; i++)
+                if(this.catalogue.getTabs().get(i).isSelected())
+                    index = i;
+        this.boardsMap.clear();
+        if (catalogue.getTabs().size() > 1) {
+            this.catalogue.getTabs().subList(0, catalogue.getTabs().size() - 1).clear();
+        }
         var boards = Servers.getInstance().getServers()
             .get(serverUtils.getServerAddress());
         Iterator<Long> boardIterator = boards.iterator();
@@ -107,6 +119,8 @@ public class BoardCatalogueCtrl implements Initializable {
                 boardIterator.remove();
             }
         }
+        if(index >= 0 && this.catalogue.getTabs().size() > index+1)
+            this.catalogue.getSelectionModel().select(index);
     }
 
     /**

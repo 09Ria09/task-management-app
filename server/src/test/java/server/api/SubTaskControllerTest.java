@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -17,7 +18,7 @@ import server.services.ListService;
 import server.services.SubTaskService;
 import server.services.TaskService;
 
-import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -42,6 +43,9 @@ public class SubTaskControllerTest {
     @MockBean
     private ListService listService;
 
+    @MockBean
+    private SimpMessagingTemplate messages;
+
 
     @Test
     public void testAddSubTaskEndpoint() throws Exception {
@@ -56,5 +60,35 @@ public class SubTaskControllerTest {
                 .andExpect(jsonPath("name", is("New SubTask")))
                 .andExpect(jsonPath("completed", is(false)));
         Mockito.verify(subTaskService, Mockito.times(1)).addSubTask(1, 2, 15, newSubTask);
+    }
+
+    @Test
+    public void testAddSubTaskEndpointBadRequest() throws Exception {
+        SubTask invalidSubTask = new SubTask("", false);
+        String requestBody = new ObjectMapper().writeValueAsString(invalidSubTask);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/subtasks/1/2/3/subtask")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+            .andExpect(status().isBadRequest());
+
+        Mockito.verify(subTaskService, Mockito.times(0))
+            .addSubTask(1, 2, 3,invalidSubTask);
+    }
+
+    @Test
+    public void testAddSubTaskEndpointNotFound() throws Exception {
+        SubTask newSubTask = new SubTask("New SubTask", false);
+        String requestBody = new ObjectMapper().writeValueAsString(newSubTask);
+        Mockito.when(subTaskService.addSubTask(1, 2, 3, newSubTask))
+            .thenThrow(NoSuchElementException.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/subtasks/1/2/3/subtask")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+            .andExpect(status().isNotFound());
+
+        Mockito.verify(subTaskService, Mockito.times(1))
+            .addSubTask(1, 2, 3, newSubTask);
     }
 }

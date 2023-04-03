@@ -19,6 +19,7 @@ import java.util.ArrayList;
 
 public class JoinBoardCtrl {
     private final ServerUtils server;
+    private final MainCtrl mainCtrl;
     private final BoardUtils boardUtils;
     private final BoardCatalogueCtrl boardCatalogueCtrl;
     private final CustomAlert customAlert;
@@ -37,13 +38,18 @@ public class JoinBoardCtrl {
     private Button createButton;
 
     @Inject
-    public JoinBoardCtrl(final ServerUtils server,
+    public JoinBoardCtrl(final ServerUtils server, final MainCtrl mainCtrl,
                          final CustomAlert customAlert, final BoardUtils boardUtils,
                          final BoardCatalogueCtrl boardCatalogueCtrl) {
         this.boardCatalogueCtrl = boardCatalogueCtrl;
         this.server = server;
         this.customAlert = customAlert;
         this.boardUtils = boardUtils;
+        this.mainCtrl = mainCtrl;
+    }
+
+    public void adminLogin() {
+        mainCtrl.showAdminLogin();
     }
 
     /**

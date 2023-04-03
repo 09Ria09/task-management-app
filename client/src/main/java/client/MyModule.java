@@ -15,11 +15,13 @@
  */
 package client;
 
-import client.scenes.BoardOverviewCtrl;
-import client.scenes.EditBoardCtrl;
-import client.scenes.MainCtrl;
+import client.scenes.*;
+import client.scenes.adminScenes.AdminBoardCtrl;
+import client.scenes.adminScenes.AdminLoginCtrl;
+import client.utils.BoardUtils;
 import client.utils.ServerUtils;
 import client.utils.TaskListUtils;
+import client.utils.WebSocketUtils;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
@@ -32,7 +34,11 @@ public class MyModule implements Module {
         binder.bind(BoardOverviewCtrl.class).in(Scopes.SINGLETON);
         binder.bind(TaskListUtils.class).in(Scopes.SINGLETON);
         binder.bind(ServerUtils.class).in(Scopes.SINGLETON);
+        binder.bind(WebSocketUtils.class).in(Scopes.SINGLETON);
         binder.bind(CustomAlert.class).in(Scopes.SINGLETON);
         binder.bind(EditBoardCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(AdminBoardCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(AdminLoginCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(BoardUtils.class).in(Scopes.SINGLETON);
     }
 }

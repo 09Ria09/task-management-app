@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Entity
@@ -19,7 +20,7 @@ public class Task implements Serializable {
     private String name;
     private String description;
 
-    @OneToMany(cascade=CascadeType.ALL)
+    @OneToMany(cascade=CascadeType.ALL, orphanRemoval = true)
     private List<SubTask> subtasks;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -85,12 +86,18 @@ public class Task implements Serializable {
         return subtasks;
     }
 
+    public SubTask getSubtaskById(final long subTaskId) {
+        return getSubtasks().stream().filter(x -> x.id == subTaskId).findFirst()
+                .orElseThrow(() -> new NoSuchElementException("Sub task not found"));
+    }
+
+
     public void addSubtask(final SubTask subtask){
         this.subtasks.add(subtask);
     }
 
-    public boolean removeSubtask(final SubTask subTask){
-        return this.subtasks.remove(subTask);
+    public void removeSubtask(final SubTask subTask){
+        subtasks.remove(subTask);
     }
 
     public long getId() {return this.id;}
@@ -98,6 +105,7 @@ public class Task implements Serializable {
     public Optional<SubTask> getSubTaskById(final long id){
         return subtasks.stream().filter(x -> x.id == id).findFirst();
     }
+
 
     public List<Tag> getTags() {
         return this.tags;
@@ -113,5 +121,19 @@ public class Task implements Serializable {
 
     public Optional<Tag> getTagById(final long id) {
         return tags.stream().filter(x -> x.id == id).findFirst();
+    }
+
+    public void reorderSubTasks(final long subTaskId, final int newIndex) {
+        var subTask = getSubTaskById(subTaskId);
+        if(subTask.isEmpty()) {
+            return;
+        }
+        int index = subtasks.indexOf(subTask.get());
+
+        if(index == newIndex) {
+            return;
+        }
+        SubTask temp = subtasks.remove(index);
+        subtasks.add(newIndex, temp);
     }
 }

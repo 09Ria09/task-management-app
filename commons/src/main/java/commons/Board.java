@@ -58,6 +58,18 @@ public class Board {
         this.inviteKey = "";
     }
 
+    //this constructor is just for copying a board
+    // to solve the issue of deleting a board causing null
+    //pointer exceptions
+    public Board(final Board other) {
+        this.name = other.name;
+        this.taskLists = new ArrayList<>(other.taskLists);
+        this.tags = new ArrayList<>(other.tags);
+        this.boardMembers = new ArrayList<>(other.boardMembers);
+        this.id = other.id;
+        this.inviteKey = other.inviteKey;
+    }
+
     public String getName() {
         return name;
     }
