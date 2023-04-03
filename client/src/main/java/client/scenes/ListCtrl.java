@@ -37,6 +37,8 @@ public class ListCtrl implements Initializable {
     VBox vBox;
 
     private int indexToDrop;
+
+    private BoardOverviewCtrl boardOverviewCtrl;
     private Task draggedTask;
     private int totalAmountOfTasks;
     private TaskList taskList;
@@ -58,13 +60,15 @@ public class ListCtrl implements Initializable {
     @Inject
     public ListCtrl(final MainCtrl mainCtrl, final TaskListUtils taskListUtils,
                     final TaskUtils taskUtils, final CustomAlert customAlert,
-                    final LayoutUtils layoutUtils, final WebSocketUtils webSocketUtils) {
+                    final LayoutUtils layoutUtils, final WebSocketUtils webSocketUtils,
+                    final BoardOverviewCtrl boardOverviewCtrl) {
         this.taskListUtils = taskListUtils;
         this.taskUtils = taskUtils;
         this.mainCtrl = mainCtrl;
         this.customAlert = customAlert;
         this.layoutUtils = layoutUtils;
         this.webSocketUtils = webSocketUtils;
+        this.boardOverviewCtrl = boardOverviewCtrl;
     }
 
     public void initialize(){
@@ -245,7 +249,7 @@ public class ListCtrl implements Initializable {
                             Node card = cardLoader.load();
                             CardCtrl cardCtrl = cardLoader.getController();
                             cardCtrl.initialize(task, controller, taskListUtils,
-                                    customAlert, taskUtils, mainCtrl);
+                                    customAlert, taskUtils, mainCtrl, boardOverviewCtrl);
                             setGraphic(card);
                         } catch (IOException e) {
                             throw new RuntimeException(e);

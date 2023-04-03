@@ -5,6 +5,7 @@ import client.customExceptions.TaskException;
 import client.utils.TaskListUtils;
 import client.customExceptions.TaskListException;
 import client.utils.TaskUtils;
+import commons.Board;
 import commons.Task;
 import commons.TaskList;
 import javafx.fxml.FXML;
@@ -22,6 +23,8 @@ import java.util.Objects;
 
 public class CardCtrl {
     private Task task;
+
+    private BoardOverviewCtrl boardOverviewCtrl;
     @FXML
     public Label title;
 
@@ -64,7 +67,8 @@ public class CardCtrl {
     @Inject
     public void initialize(final Task task, final ListCtrl listCtrl,
                            final TaskListUtils listUtils, final CustomAlert customAlert,
-                           final TaskUtils taskUtils, final MainCtrl mainCtrl) {
+                           final TaskUtils taskUtils, final MainCtrl mainCtrl,
+                           final BoardOverviewCtrl boardOverviewCtrl) {
         this.task= task;
         this.title.setText(task.getName());
         this.listController = listCtrl;
@@ -72,6 +76,7 @@ public class CardCtrl {
         this.customAlert = customAlert;
         this.taskUtils = taskUtils;
         this.mainCtrl = mainCtrl;
+        this.boardOverviewCtrl = boardOverviewCtrl;
         if(this.taskUtils.getProgress(task) < 0)
             this.progressPane.setVisible(false);
         else
@@ -83,6 +88,14 @@ public class CardCtrl {
             this.descButton.setDisable(true);
             descIcon.setVisible(false);
         }
+
+        cardPane.setOnMouseEntered(event -> {
+            boardOverviewCtrl.setSelectedTask(task);
+            // do something
+        });
+        cardPane.setOnMouseExited(event -> {
+            // do something else
+        });
     }
 
     /**

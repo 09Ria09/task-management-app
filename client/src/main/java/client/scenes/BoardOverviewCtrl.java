@@ -125,7 +125,7 @@ public class BoardOverviewCtrl {
         var kids = listsContainer.getChildren();
         var listLoader = new FXMLLoader(getClass().getResource("List.fxml"));
         listLoader.setControllerFactory(type -> new ListCtrl(mainCtrl, new TaskListUtils(server),
-            new TaskUtils(server), customAlert, new LayoutUtils(), webSocketUtils));
+            new TaskUtils(server), customAlert, new LayoutUtils(), webSocketUtils, this));
         try {
             Node list = listLoader.load();
             ListCtrl listCtrl = listLoader.getController();
@@ -148,33 +148,12 @@ public class BoardOverviewCtrl {
         mainCtrl.showCreateList(currentBoardId);
     }
 
-    public void addTask() {
-        //mainCtrl.showCreateTask();
+    public void setSelectedTask(Task task) {
+        System.out.println(task);
     }
 
-    @FXML
-    public void handleKeyPressed(KeyEvent event) {
-        if (event.getCode() == KeyCode.W) {
-            MoveUp();
-        }
-        else if (event.getCode() == KeyCode.S) {
-            MoveDown();
-        }
-        else if (event.getCode() == KeyCode.E) {
-            ShortEdit();
-        }
-        else if (event.getCode() == KeyCode.DELETE) {
-            ShortDelete();
-        }
-        else if (event.getCode() == KeyCode.P) {
-            ShortClose();
-        }
-        else if (event.getCode() == KeyCode.O) {
-            ShortOpen();
-        }
-        else if (event.getCode() == KeyCode.H) {
-            Help();
-        }
+    public void addTask() {
+        //mainCtrl.showCreateTask();
     }
 
     public void renameList() {
@@ -334,97 +313,5 @@ public class BoardOverviewCtrl {
                 refreshTimer=null;
             }
         });
-    }
-
-    public TaskList getSelectedTaskList() throws TaskListException {
-        this.scene = listsContainer.getScene();
-        int num = 0;
-        for (int i = 0; i < listsContainer.getChildren().size(); i++) {
-            if (listsContainer.getChildren().get(i).equals(scene.getFocusOwner())) {
-                num = i;
-            }
-        }
-
-        System.out.println(num);
-
-        return taskListUtils.getTaskLists(currentBoardId).get(num);
-    }
-
-    public Task getSelectedTask() {
-        ListView list = (ListView) listsContainer.getScene().getFocusOwner();
-        this.scene = list.getChildren().get(0).getScene();
-        int num = 0;
-        for (int i = 0; i < list.getChildren().size(); i++) {
-            if (list.getChildren().get(i).equals(scene.getFocusOwner())) {
-                num = i;
-            }
-        }
-        System.out.println(num);
-
-        return getListController().list.getItems().get(num);
-    }
-
-    public List<Task> getSelectedTasks() {
-        return getListController().list.getItems();
-    }
-
-    public ListCtrl getListController() {
-        ListView list = (ListView) listsContainer.getScene().getFocusOwner();
-        this.scene = list.getChildren().get(0).getScene();
-
-        FXMLLoader fxmlLoader = (FXMLLoader) (scene.getUserData());
-        ListCtrl controller = fxmlLoader.getController();
-
-        return controller;
-    }
-
-    //BELOW THIS POINT ARE KEY CONTROLS FOR THE SHORTCUTS
-    public void ShortEdit() {
-
-    }
-
-    public void ShortDelete() {
-
-    }
-
-    public void ShortOpen() {
-
-    }
-
-    public void ShortClose() {
-
-    }
-
-    public boolean MoveUp() {
-        try {
-            TaskList taskList = getSelectedTaskList();
-            List<Task> tasks = getSelectedTasks();
-            Task selectedTask = getSelectedTask();
-            ListCtrl listController = getListController();
-
-
-            int index = tasks.indexOf(selectedTask);
-            if (index > 0) {
-                taskListUtils.reorderTask(listController.getBoardID(),
-                        taskList.id, selectedTask.id, index - 1);
-                taskList.reorder(selectedTask.id, index - 1);
-                listController.hardRefresh(taskList, listController.getBoardID());
-                return true;
-            } else {
-                return false;
-            }
-        }catch (TaskListException e){
-            Alert alert = customAlert.showAlert(e.getMessage());
-            alert.showAndWait();
-            return false;
-        }
-    }
-
-    public void MoveDown() {
-
-    }
-
-    public void Help() {
-
     }
 }
