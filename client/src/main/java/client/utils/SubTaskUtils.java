@@ -107,6 +107,31 @@ public class SubTaskUtils {
         }
     }
 
+    public SubTask completeSubTask(final long boardId, final long taskListId,
+                                 final long taskId, final long subTaskId,
+                                 final boolean isComplete)
+            throws SubTaskException {
+        String serverAddress = server.getServerAddress();
+        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
+                .path("api/subtasks/" + boardId + "/" + taskListId + "/" + taskId + "/"
+                        + subTaskId + "/complete")
+                .queryParam("complete", isComplete)
+                .request()
+                .accept(APPLICATION_JSON)
+                .put(Entity.entity(isComplete, APPLICATION_JSON));
+
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+            return response.readEntity(SubTask.class);
+        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
+            throw new SubTaskException("Sub task not found.");
+        } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
+            throw new SubTaskException("Bad request");
+        } else {
+            throw new SubTaskException("An error occurred while completing the sub task"
+                    +response.getStatus());
+        }
+    }
+
     public SubTask deleteSubTask(final long boardId, final long taskListId,
                                  final long taskId, final long subTaskId)
             throws SubTaskException {

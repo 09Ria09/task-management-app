@@ -26,8 +26,6 @@ import java.util.function.Consumer;
 public class DetailedTaskViewCtrl {
 
     @FXML
-    public Button editButton;
-    @FXML
     private Label taskNameText;
     @FXML
     private TextField taskNameTextField;
@@ -84,13 +82,10 @@ public class DetailedTaskViewCtrl {
 
     public void registerWebSockets(){
         Consumer<Task> taskConsumer = (task) -> {
-            System.out.println("Consumer !!!!! -> " + task.toString());
-            System.out.println(this.task.id + " " + (task.id == this.task.id));
             if(task.id == this.task.id)
                 Platform.runLater(this::goBack);
         };
         Consumer<TaskList> listConsumer = (list) -> {
-            System.out.println("Consumer !!!!! -> " + list.toString());
             for(Task t : list.getTasks()){
                 if(t.id == this.task.id) {
                     Platform.runLater(this::goBack);
@@ -98,14 +93,19 @@ public class DetailedTaskViewCtrl {
                 }
             }
         };
+        Consumer<Task> modifyTaskConsumer = (task) -> {
+            Platform.runLater(() -> {
+                if(task.id == this.task.id)
+                    this.setTask(task);
+            });
+        };
+
         this.webSocketUtils.registerForTaskMessages("/topic/" + listController.getBoardID() +
                 "/" + listController.getTaskList().id + "/deletetask", taskConsumer);
         this.webSocketUtils.registerForListMessages("/topic/" + listController.getBoardID() +
                 "/deletelist", listConsumer);
-        System.out.println("/topic/" + listController.getBoardID() +
-                "/" + listController.getTaskList().id + "/deletetask");
-        System.out.println("/topic/" + listController.getBoardID() +
-                "/deletelist");
+        this.webSocketUtils.registerForTaskMessages("/topic/" + listController.getBoardID() +
+                "/" + listController.getTaskList().id + "/modifytask", modifyTaskConsumer);
     }
 
     public void onTaskNameClicked(final MouseEvent event){
@@ -168,8 +168,11 @@ public class DetailedTaskViewCtrl {
      */
     private void update() {
         taskNameText.setVisible(true);
+        taskNameTextField.setVisible(false);
         taskDescriptionText.setVisible(true);
+        taskDescriptionTextArea.setVisible(false);
         taskNameText.setText(this.task.getName());
+
         taskDescriptionText.setText(this.task.getDescription());
         subTasks.setCellFactory(lv -> {
             ListCell<SubTask> cell = new ListCell<>() {
@@ -210,7 +213,6 @@ public class DetailedTaskViewCtrl {
     }
 
     public void goBack() {
-        System.out.println("Go Back");
         mainCtrl.showBoardCatalogue();
     }
 

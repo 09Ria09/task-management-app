@@ -90,6 +90,7 @@ public class BoardOverviewCtrl {
     public void initialize(){
         this.webSocketUtils.tryToConnect();
         try{
+            refresh();
             board = boardUtils.getBoard(currentBoardId);
             Consumer<Board> consumer = (board) -> {
                 Platform.runLater(() -> {
