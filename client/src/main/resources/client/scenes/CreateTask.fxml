@@ -98,7 +98,12 @@
                </font>
             </Label>
             <ChoiceBox fx:id="tagChoice" prefWidth="150.0" />
-            <Button mnemonicParsing="false" onAction="#addTag" text="Add Tag" />
+            <Label fx:id="tagMessage" text="There are no tags created">
+               <font>
+                  <Font size="22.0" />
+               </font>
+            </Label>
+            <Button fx:id="addTagButton" mnemonicParsing="false" onAction="#addTag" text="Add Tag" />
          </children>
          <GridPane.margin>
             <Insets bottom="20.0" />

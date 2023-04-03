@@ -27,6 +27,10 @@ public class CreateTaskCtrl {
     private final CustomAlert customAlert;
 
     @FXML
+    private Label tagMessage;
+    @FXML
+    private Button addTagButton;
+    @FXML
     private ChoiceBox<Tag> tagChoice;
     @FXML
     private ListView<Tag> tagsView;
@@ -46,15 +50,6 @@ public class CreateTaskCtrl {
         this.boardCatalogueCtrl=boardCatalogueCtrl;
         this.tagUtils = tagUtils;
         this.customAlert = customAlert;
-    }
-
-    private void setChoiceBox() {
-        try {
-            tagChoice.getItems().setAll(tagUtils.getBoardTags(listCtrl.getBoardID()));
-        } catch (TagException e) {
-            Alert alert = customAlert.showAlert(e.getMessage());
-            alert.showAndWait();
-        }
     }
 
     private void setTagsList() {
@@ -137,7 +132,33 @@ public class CreateTaskCtrl {
 
     public void addTag() {
         if(tagChoice.getValue() != null) {
-            tagsView.getItems().add(tagChoice.getValue());
+            Tag tag = tagChoice.getValue();
+            if(!tagsView.getItems().contains(tag)) {
+                tagsView.getItems().add(tag);
+            } else {
+                Alert alert = customAlert.showAlert("This tag is already selected");
+                alert.showAndWait();
+            }
         }
     }
+
+    private void setChoiceBox() {
+        try {
+            tagChoice.getItems().setAll(tagUtils.getBoardTags(listCtrl.getBoardID()));
+            if(!tagChoice.getItems().isEmpty()) {
+                tagChoice.setVisible(true);
+                addTagButton.setVisible(true);
+                tagMessage.setVisible(false);
+                tagChoice.setValue(tagChoice.getItems().get(0));
+            } else {
+                tagChoice.setVisible(false);
+                addTagButton.setVisible(false);
+                tagMessage.setVisible(true);
+            }
+        } catch (TagException e) {
+            Alert alert = customAlert.showAlert(e.getMessage());
+            alert.showAndWait();
+        }
+    }
+
 }
