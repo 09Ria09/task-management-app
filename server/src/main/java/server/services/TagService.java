@@ -99,7 +99,8 @@ public class TagService {
      * @param tagID ID of the tag that will be returned
      * @return the tag that is found with the corresponding ID's
      */
-    public Tag getTaskTagByID(final long boardID, final long listID, final long taskID, final long tagID) {
+    public Tag getTaskTagByID(final long boardID, final long listID,
+                              final long taskID, final long tagID) {
         Task task = getTask(boardID, listID, taskID);
         return task.getTagById(tagID)
                 .orElseThrow(() -> new NoSuchElementException("Tag not found"));
@@ -128,7 +129,8 @@ public class TagService {
      * @param tagID the tag that will be added
      * @return the tag that is added
      */
-    public Tag addTaskTag(final long boardID, final long listID, final long taskID, final long tagID) {
+    public Tag addTaskTag(final long boardID, final long listID,
+                          final long taskID, final long tagID) {
         Board board = getBoard(boardID);
         Tag tag = getBoardTagByID(boardID, tagID);
         Task task = getTask(boardID, listID, taskID);
@@ -202,7 +204,8 @@ public class TagService {
      * @param tagID ID of the tag that will be removed
      * @return the removed tag
      */
-    public Tag removeTaskTag(final long boardID, final long listID, final long taskID, final long tagID) {
+    public Tag removeTaskTag(final long boardID, final long listID,
+                             final long taskID, final long tagID) {
         Board board = getBoard(boardID);
         Task task = getTask(boardID, listID, taskID);
         Tag tag = getBoardTagByID(boardID, tagID);

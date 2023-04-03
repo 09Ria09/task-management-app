@@ -62,7 +62,8 @@ public class CreateTaskCtrl {
                         setGraphic(null);
                     } else {
                         try {
-                            var cardLoader = new FXMLLoader(getClass().getResource("TaskTagCard.fxml"));
+                            var cardLoader = new FXMLLoader(getClass()
+                                    .getResource("TaskTagCard.fxml"));
                             Node card = cardLoader.load();
                             TaskTagCardCtrl taskTagCardCtrl = cardLoader.getController();
                             taskTagCardCtrl.initialize(tag);

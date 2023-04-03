@@ -86,11 +86,12 @@ public class CardCtrl {
         this.title.setText(task.getName());
     }
 
-    private void setTags(List<Tag> tags) {
+    private void setTags(final List<Tag> tags) {
         for(Tag tag : tags) {
             Pane tagPane = new Pane();
             tagPane.setPrefSize(60, 10);
-            tagPane.setStyle("-fx-background-radius: 5px; -fx-border-radius: 5px; -fx-background-color: #" + tag.getColor() + ";");
+            tagPane.setStyle("-fx-background-radius: 5px; -fx-border-radius: 5px;" +
+                    " -fx-background-color: #" + tag.getColor() + ";");
             tagList.getChildren().add(tagPane);
         }
     }

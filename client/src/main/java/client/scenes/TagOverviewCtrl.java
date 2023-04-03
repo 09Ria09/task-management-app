@@ -109,7 +109,8 @@ public class TagOverviewCtrl {
         }
 
         if(name.length() > 16) {
-            Alert alert = customAlert.showAlert("The name of the tag should be shorter than 16 characters");
+            Alert alert = customAlert
+                    .showAlert("The name of the tag should be shorter than 16 characters");
             alert.showAndWait();
             return false;
         }

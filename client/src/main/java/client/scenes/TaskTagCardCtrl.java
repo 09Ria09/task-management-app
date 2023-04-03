@@ -17,6 +17,7 @@ public class TaskTagCardCtrl {
     public void initialize(final Tag tag) {
         this.tag = tag;
         this.tagName.setText(tag.getName());
-        this.pane.setStyle("-fx-background-radius: 20px; -fx-border-radius: 20px; -fx-background-color: #" + tag.getColor() + ";");
+        this.pane.setStyle("-fx-background-radius: 20px; -fx-border-radius: 20px;" +
+                " -fx-background-color: #" + tag.getColor() + ";");
     }
 }

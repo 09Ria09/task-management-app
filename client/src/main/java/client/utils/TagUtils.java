@@ -272,7 +272,7 @@ public class TagUtils {
                              final long taskId, final long tagId) throws TagException {
         String serverAddress = server.getServerAddress();
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/tags/" + boardId + "/" + listId + "/" + taskId + "/" + tagId)
+                .path("api/tags/" + boardId + "/" + listId + "/" + taskId + "/delete/" + tagId)
                 .request()
                 .accept(APPLICATION_JSON)
                 .delete();

@@ -35,7 +35,8 @@ public class TagEditCtrl {
                            final Board board, final CustomAlert customAlert) {
         this.tag = tag;
         labelName.setText(tag.getName());
-        this.pane.setStyle("-fx-background-radius: 20px; -fx-border-radius: 20px; -fx-background-color: #" + tag.getColor() + ";");
+        this.pane.setStyle("-fx-background-radius: 20px; -fx-border-radius: 20px;" +
+                " -fx-background-color: #" + tag.getColor() + ";");
         this.tagUtils = tagUtils;
         this.board = board;
         this.customAlert = customAlert;
@@ -84,7 +85,8 @@ public class TagEditCtrl {
         try {
             tagUtils.recolorTag(board.id, tag.id, newColor);
             this.pane.setStyle("-fx-background-radius: 20px; -fx-border-radius: 20px;" +
-                    " -fx-background-color: #" + tagUtils.getBoardTag(board.id, tag.id).getColor() + ";");
+                    " -fx-background-color: #" +
+                    tagUtils.getBoardTag(board.id, tag.id).getColor() + ";");
             return true;
         } catch(TagException e) {
             Alert alert = customAlert.showAlert(e.getMessage());

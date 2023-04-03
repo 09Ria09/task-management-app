@@ -44,7 +44,8 @@ public class Task implements Serializable {
         this.tags = new ArrayList<>();
     }
 
-    public Task(final String name, final String description, final List<SubTask> subtasks, final List<Tag> tags) {
+    public Task(final String name, final String description,
+                final List<SubTask> subtasks, final List<Tag> tags) {
         this.name = name;
         this.description = description;
         this.subtasks = subtasks;

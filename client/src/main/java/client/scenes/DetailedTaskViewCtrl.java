@@ -1,13 +1,12 @@
 package client.scenes;
 
 import client.CustomAlert;
+import client.customExceptions.TagException;
 import client.customExceptions.TaskException;
-import client.utils.SubTaskUtils;
-import client.utils.TaskListUtils;
-import client.utils.TaskUtils;
-import client.utils.WebSocketUtils;
+import client.utils.*;
 import com.google.inject.Inject;
 import commons.SubTask;
+import commons.Tag;
 import commons.Task;
 import commons.TaskList;
 import javafx.application.Platform;
@@ -35,6 +34,10 @@ public class DetailedTaskViewCtrl {
     private TextArea taskDescriptionTextArea;
     @FXML
     private ListView<SubTask> subTasks;
+    @FXML
+    private ListView<Tag> tagView;
+    @FXML
+    private ChoiceBox<Tag> tagChoice;
     private Task task;
     private CustomAlert customAlert;
     private MainCtrl mainCtrl;
@@ -43,19 +46,20 @@ public class DetailedTaskViewCtrl {
     private ListCtrl listController;
     private SubTaskUtils subTaskUtils;
     private final WebSocketUtils webSocketUtils;
+    private TagUtils tagUtils;
 
 
     @Inject
-    public DetailedTaskViewCtrl(final MainCtrl mainCtrl, final TaskListUtils taskListUtils,
+    public DetailedTaskViewCtrl(final TaskListUtils taskListUtils,
                                 final TaskUtils taskUtils, final CustomAlert customAlert,
-                                final SubTaskUtils subTaskUtils,
+                                final SubTaskUtils subTaskUtils, final TagUtils tagUtils,
                                 final WebSocketUtils webSocketUtils) {
         this.taskListUtils = taskListUtils;
         this.taskUtils = taskUtils;
-        this.mainCtrl = mainCtrl;
         this.customAlert = customAlert;
         this.subTaskUtils = subTaskUtils;
         this.webSocketUtils = webSocketUtils;
+        this.tagUtils = tagUtils;
     }
 
     public void initialize() {
@@ -205,11 +209,84 @@ public class DetailedTaskViewCtrl {
             return cell;
         });
 
+        initializeTagView();
+        tagView.getItems().setAll(task.getTags());
+
         subTasks.getItems().setAll(task.getSubtasks());
+    }
+
+    public void initializeTagView() {
+        tagView.setCellFactory(lv -> {
+            ListCell<Tag> cell = new ListCell<>() {
+                @Override
+                protected void updateItem(final Tag tag, final boolean empty) {
+                    super.updateItem(tag, empty);
+                    if (tag == null || empty) {
+                        setGraphic(null);
+                    } else {
+                        try {
+                            var cardLoader = new FXMLLoader(getClass()
+                                    .getResource("TaskTagCard.fxml"));
+                            Node card = cardLoader.load();
+                            TaskTagCardCtrl taskTagCardCtrl = cardLoader.getController();
+                            taskTagCardCtrl.initialize(tag);
+                            setGraphic(card);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            };
+            cell.setOnMouseClicked(event -> {
+                try {
+                    tagUtils.deleteTaskTag(listController.getBoardID(),
+                            listController.getTaskList().id, task.id, cell.getItem().getId());
+                    tagView.getItems().remove(cell.getItem());
+                } catch(TagException e) {
+                    Alert alert = customAlert.showAlert(e.getMessage());
+                    alert.showAndWait();
+                }
+                event.consume();
+            });
+            return cell;
+        });
+    }
+
+    public void addTag() {
+        try {
+            if(tagChoice.getValue() != null) {
+                Tag tag = tagChoice.getValue();
+                if(!tagView.getItems().contains(tag)) {
+                    tagView.getItems().add(tag);
+                    tagUtils.addTaskTag(listController.getBoardID(),
+                            listController.getTaskList().getId(), task.id, tag);
+                } else {
+                    Alert alert = customAlert.showAlert("This tag is already selected");
+                    alert.showAndWait();
+                }
+            }
+        } catch(TagException e) {
+            Alert alert = customAlert.showAlert(e.getMessage());
+            alert.showAndWait();
+        }
+
+    }
+
+    private void initializeChoiceBox() {
+        try {
+            tagChoice.getItems().setAll(tagUtils.getBoardTags(listController.getBoardID()));
+            if(!tagChoice.getItems().isEmpty()) {
+                tagChoice.setValue(tagChoice.getItems().get(0));
+            }
+        } catch (TagException e) {
+            Alert alert = customAlert.showAlert(e.getMessage());
+            alert.showAndWait();
+        }
     }
 
     public void setListController(final ListCtrl listController) {
         this.listController = listController;
+        initializeChoiceBox();
     }
 
     public void goBack() {
@@ -273,5 +350,9 @@ public class DetailedTaskViewCtrl {
     }
     public Task getTask() {
         return this.task;
+    }
+
+    public void setMainCtrl(final MainCtrl mainCtrl) {
+        this.mainCtrl = mainCtrl;
     }
 }

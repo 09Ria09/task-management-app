@@ -256,6 +256,7 @@ public class MainCtrl {
         resize();
         primaryStage.setScene(detailedTaskView);
         detailedTaskViewCtrl.setTask(task);
+        detailedTaskViewCtrl.setMainCtrl(this);
         detailedTaskViewCtrl.setListController(listController);
         detailedTaskViewCtrl.registerWebSockets();
     }
