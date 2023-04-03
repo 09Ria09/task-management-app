@@ -69,12 +69,14 @@ public class ColorManagementViewCtrl {
     }
 
     public void createTaskColorPreset() {
+        System.out.println("y");
         taskColorPresetName = taskColorPresetNameInput.getText();
         if(taskColorPresetName.isEmpty()|| taskColorPresetName == null) {
             throw new IllegalArgumentException("Empty name not allowed");
         }
         TaskPreset taskpreset = new TaskPreset(taskColorPresetName);
-
+        board.getBoardColorScheme().addTaskPreset(taskpreset);
+        System.out.println(board.getBoardColorScheme().toString());
     }
 
     public void back() throws BoardException {
@@ -96,6 +98,7 @@ public class ColorManagementViewCtrl {
         board.getBoardColorScheme().setListBackgroundColor("0xD29FE3");
         board.getBoardColorScheme().setListTextColor("0x000000");
     }
+
 
 
 

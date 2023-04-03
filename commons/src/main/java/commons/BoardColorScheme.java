@@ -1,9 +1,8 @@
 package commons;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class BoardColorScheme {
@@ -18,22 +17,29 @@ public class BoardColorScheme {
     private String listBackgroundColor;
 
     private String listTextColor;
+    @OneToMany
+    private List<TaskPreset> taskPresets;
 
     public BoardColorScheme() {
         this.boardBackgroundColor = "0xcce6ff";
         this.boardTextColor = "0x000000";
         this.listBackgroundColor = "0xD29FE3";
         this.listTextColor = "0x000000";
+        this.taskPresets = new ArrayList<>();
     }
 
-    public void resetBoardColors() {
-        this.boardBackgroundColor = "0xFFFFFF";
-        this.boardTextColor = "0x000000";
-    }
+//    public void resetBoardColors() {
+//        this.boardBackgroundColor = "0xFFFFFF";
+//        this.boardTextColor = "0x000000";
+//    }
+//
+//    public void resetListColors() {
+//        this.listBackgroundColor = "0xFFFFFF";
+//        this.listTextColor = "0x000000";
+//    }
 
-    public void resetListColors() {
-        this.listBackgroundColor = "0xFFFFFF";
-        this.listTextColor = "0x000000";
+    public void addTaskPreset(final TaskPreset taskPreset) {
+        this.taskPresets.add(taskPreset);
     }
 
     public String getBoardBackgroundColor() {
@@ -71,11 +77,13 @@ public class BoardColorScheme {
     @Override
     public String toString() {
         return "BoardColorScheme{" +
-                "boardBackgroundColor=" + boardBackgroundColor +
-                ", boardTextColor=" + boardTextColor +
-                ", listBackgroundColor=" + listBackgroundColor +
-                ", listTextColor=" + listTextColor +
-                '}' + id;
+                "id=" + id +
+                ", boardBackgroundColor='" + boardBackgroundColor + '\'' +
+                ", boardTextColor='" + boardTextColor + '\'' +
+                ", listBackgroundColor='" + listBackgroundColor + '\'' +
+                ", listTextColor='" + listTextColor + '\'' +
+                ", taskPresets=" +
+                '}';
     }
 
     public long getId() {

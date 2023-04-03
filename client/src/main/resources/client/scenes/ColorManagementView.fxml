@@ -43,7 +43,7 @@
          </font>
       </Text>
       <TextField fx:id="taskColorPresetNameInput" layoutX="364.0" layoutY="314.0" promptText="Enter task color name" />
-      <Button fx:id="createTaskColorPreset" layoutX="526.0" layoutY="314.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="22.0" text="+">
+      <Button layoutX="526.0" layoutY="314.0" mnemonicParsing="false" onAction="#createTaskColorPreset" prefHeight="25.0" prefWidth="22.0" text="+">
          <font>
             <Font size="11.0" />
          </font>

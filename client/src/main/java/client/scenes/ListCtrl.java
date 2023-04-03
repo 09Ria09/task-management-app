@@ -430,10 +430,9 @@ public class ListCtrl implements Initializable {
     public void refreshColor(){
         try {
             board = boardUtils.getBoard(getBoardID());
-            System.out.println(board.getBoardColorScheme().
-                    getListBackgroundColor());
             list.setStyle("-fx-background-color:#" + board.getBoardColorScheme().
                     getListBackgroundColor().substring(2, 8) + ";");
+
             title.setStyle("-fx-text-fill:#" + board.getBoardColorScheme().
                     getListTextColor().substring(2, 8) + ";");
             addTaskButton.setStyle("-fx-text-fill:#" + board.getBoardColorScheme().

@@ -12,7 +12,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="cardOutline" style="-fx-background-color: tranparent;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.CardCtrl">
+<AnchorPane fx:id="cardOutline" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.CardCtrl">
    <children>
       <AnchorPane fx:id="cardPane" layoutX="7.0" layoutY="7.0" maxHeight="123.0" maxWidth="303.0" minHeight="120.0" minWidth="300.0" onMouseEntered="#onHover" onMouseExited="#onUnhover" prefHeight="123.0" prefWidth="303.0" style="-fx-background-radius: 15px; -fx-border-radius: 15px; -fx-background-color: #CBD2D0;" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
          <Label fx:id="description" text="Description" wrapText="true" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="130.0">

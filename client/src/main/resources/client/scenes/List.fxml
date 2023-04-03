@@ -43,7 +43,7 @@
             </Button>
          </children>
       </HBox>
-      <ListView fx:id="list" blendMode="SRC_ATOP" prefWidth="200.0" style="-fx-padding: 10;" />
+      <ListView fx:id="list" blendMode="SRC_ATOP" prefHeight="400.0" prefWidth="290.0" style="-fx-padding: 10; -fx-border-width: 10;" />
       <ButtonBar prefHeight="40.0" prefWidth="200.0" style="-fx-padding: 5px 10px;">
          <buttons>
             <Button fx:id="addTaskButton" mnemonicParsing="false" onAction="#addCard" prefHeight="25.0" prefWidth="20.0" style="-fx-background-radius: 25px; -fx-background-color: #4969e1; -fx-padding: -4px 4px; -fx-border-style: solid; -fx-border-radius: 25px; -fx-border-color: white;" text="Add task" textFill="WHITE">

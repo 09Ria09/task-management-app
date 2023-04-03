@@ -217,4 +217,13 @@ public class BoardUtils {
 
     }
 
+//    public TaskPreset setTaskPreset(final long boardColorSchemeId, final TaskPreset taskPreset) {
+//        String serverAddress = server.getServerAddress();
+//        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
+//                .path("api/boards/" + boardColorSchemeId + "/taskpresets/")
+//                .request()
+//                .accept(APPLICATION_JSON)
+//                .put(Entity.entity(boardColorScheme, APPLICATION_JSON));
+//    }
+
 }
