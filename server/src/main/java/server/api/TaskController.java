@@ -3,6 +3,7 @@ package server.api;
 import commons.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import server.services.BoardService;
 import server.services.TaskService;
@@ -16,10 +17,15 @@ public class TaskController {
 
 
     private final TaskService taskService;
+    private final BoardService boardService;
+    private final SimpMessagingTemplate messages;
 
     @Autowired
-    public TaskController(final TaskService taskService, final BoardService boardService) {
+    public TaskController(final TaskService taskService, final BoardService boardService,
+                          final SimpMessagingTemplate messages) {
         this.taskService = taskService;
+        this.boardService = boardService;
+        this.messages = messages;
         if(boardService.getBoards().isEmpty()){
             boardService.createDefaultBoard();
         }
@@ -43,6 +49,8 @@ public class TaskController {
                 return ResponseEntity.badRequest().build();
             }
             Task createdTask = taskService.addTask(boardid, listid, task);
+            messages.convertAndSend("/topic/" + boardid + "/refreshboard",
+                    boardService.getBoard(boardid));
             return ResponseEntity.ok(createdTask);
         }
         catch (NoSuchElementException e) { return ResponseEntity.notFound().build(); }
@@ -105,6 +113,8 @@ public class TaskController {
                 return ResponseEntity.badRequest().build();
             }
             Task task = taskService.renameTask(boardid, listid, taskid, name);
+            messages.convertAndSend("/topic/" + boardid + "/" + listid + "/modifytask",
+                    task);
             return ResponseEntity.ok(task);
         }
         catch (NoSuchElementException e) { return ResponseEntity.notFound().build(); }
@@ -127,6 +137,11 @@ public class TaskController {
     ) {
         try {
             Task removedTask = taskService.removeTaskById(boardid, listid, taskid);
+            messages.convertAndSend("/topic/" + boardid + "/" + listid + "/deletetask",
+                    removedTask);
+            System.out.println("/topic/" + boardid + "/" + listid + "/deletetask");
+            messages.convertAndSend("/topic/" + boardid + "/refreshboard",
+                    boardService.getBoard(boardid));
             return ResponseEntity.ok(removedTask);
         }
         catch (NoSuchElementException e) { return ResponseEntity.notFound().build(); }
@@ -149,6 +164,8 @@ public class TaskController {
                 return ResponseEntity.badRequest().build();
             }
             Task task = taskService.editDescription(boardid, listid, taskid, description);
+            messages.convertAndSend("/topic/" + boardid + "/" + listid + "/modifytask",
+                    task);
             return ResponseEntity.ok(task);
         }
         catch (NoSuchElementException e) { return ResponseEntity.notFound().build(); }

@@ -54,6 +54,78 @@ public class SubTaskService {
 
         boardRepository.save(board);
 
+        SubTask updateWithId = new SubTask(subTask.getName(), subTask.isCompleted());
+        updateWithId.id = subTask.getId();
+        System.out.println(updateWithId);
+        return updateWithId;
+    }
+
+    /**
+     *
+     * @param boardId id of board to access
+     * @param listId id of list to access
+     * @param taskId id of task to access
+     * @param subTaskId id of sub task to access
+     * @param name new name for the subtask
+     * @return renamed subtask
+     */
+    public SubTask renameSubTask(final long boardId, final long listId,
+                                 final long taskId, final long subTaskId,
+                                 final String name) {
+        SubTask subTask = getSubTask(boardId, listId, taskId, subTaskId);
+        subTask.setName(name);
+        Board board = getBoard(boardId);
+        boardRepository.save(board);
         return subTask;
+    }
+
+    /**
+     *
+     * @param boardId id of board to access
+     * @param listId id of list to access
+     * @param taskId id of task to access
+     * @param subTask sub task to be removed from task
+     * @return removed subtask
+     */
+    public SubTask removeSubTask(final long boardId, final long listId,
+                                 final long taskId, final SubTask subTask) {
+        Task task = getTask(boardId, listId, taskId);
+        Board board = getBoard(boardId);
+        task.removeSubtask(subTask);
+        boardRepository.save(board);
+        return subTask;
+    }
+
+    /**
+     *
+     * @param boardId id of board to access
+     * @param listId id of list to access
+     * @param taskId id of task to access
+     * @param subTaskId id of sub task to be removed from task
+     * @return removed subtask
+     */
+    public SubTask removeSubTaskById(final long boardId, final long listId,
+                                     final long taskId, final long subTaskId) {
+        Task task = getTask(boardId, listId, taskId);
+        SubTask subTask = task.getSubtaskById(subTaskId);
+        Board board = getBoard(boardId);
+        task.removeSubtask(subTask);
+        boardRepository.save(board);
+        return subTask;
+    }
+
+    public SubTask reorderSubTask(final long boardId, final long listId,
+                                  final long taskId, final long subTaskId,
+                                  final int newIndex) {
+        Board board = boardRepository.getById(boardId);
+        TaskList list = board.getTaskListById(listId)
+                .orElseThrow(() -> new NoSuchElementException("No such task list"));
+        Optional<Task> task = list.getTaskById(taskId);
+        if(task.isPresent()) {
+            task.get().reorderSubTasks(subTaskId, newIndex);
+            boardRepository.save(board);
+            return task.get().getSubtaskById(subTaskId);
+        }
+        throw new NoSuchElementException("No such task");
     }
 }
