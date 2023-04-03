@@ -9,6 +9,7 @@ import server.services.BoardService;
 import server.services.SubTaskService;
 import server.services.TaskService;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -49,4 +50,89 @@ public class SubTaskController {
         }
         catch (NoSuchElementException e) { return ResponseEntity.notFound().build(); }
     }
+
+    @GetMapping("/{boardid}/tasklist/{tasklistid}/tasks/{taskid}/subtasks")
+    public ResponseEntity<List<SubTask>> getSubTasks(@PathVariable("boardid") final long boardId,
+                                                     @PathVariable("tasklistid") final long listId,
+                                                     @PathVariable("taskid") final long taskId) {
+        try {
+            List<SubTask> subTasks = subTaskService.getSubTasks(boardId, listId,taskId);
+            return ResponseEntity.ok(subTasks);
+        } catch (NoSuchElementException e){
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/{boardid}/tasklist/{tasklistid}/tasks/{taskid}/subtasks/{subtaskid}")
+    public ResponseEntity<SubTask> getSubTask(@PathVariable("boardid") final long boardId,
+                                              @PathVariable("tasklistid") final long listId,
+                                              @PathVariable("taskid") final long taskId,
+                                              @PathVariable("subtaskid") final long subTaskId) {
+        try {
+            SubTask subTask = subTaskService.getSubTask(boardId, listId, taskId, subTaskId);
+            return ResponseEntity.ok(subTask);
+        } catch(Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/{boardid}/{tasklistid}/{taskid}/{subtaskid}")
+    public ResponseEntity<SubTask> renameSubTask(@PathVariable("boardid") final long boardId,
+                                                 @PathVariable("tasklistid") final long listId,
+                                                 @PathVariable("taskid") final long taskId,
+                                                 @PathVariable("subtaskid") final long subTaskid,
+                                                 @RequestParam final String name) {
+        try {
+            if(name == null || name.isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            SubTask renamedSubTask = subTaskService.
+                    renameSubTask(boardId, listId, taskId, subTaskid, name);
+            return ResponseEntity.ok(renamedSubTask);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @DeleteMapping("/{boardid}/{tasklistid}/{taskid}/{subtaskid}")
+    public ResponseEntity<SubTask> deleteSubTask(@PathVariable("boardid") final long boardId,
+                                                 @PathVariable("tasklistid") final long listId,
+                                                 @PathVariable("taskid") final long taskId,
+                                                 @PathVariable("subtaskid") final long subTaskid) {
+        try {
+            System.out.println(
+                    "boardid"
+            );
+            SubTask subTaskToDeleteCopy = null;
+            SubTask deletedSubTask = subTaskService.
+                    getSubTask(boardId, listId, taskId, subTaskid);
+            if(deletedSubTask!=null) {
+                subTaskToDeleteCopy = new SubTask(deletedSubTask);
+            }
+            subTaskService.removeSubTaskById(boardId, listId, taskId, subTaskid);
+            return ResponseEntity.ok(subTaskToDeleteCopy);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PutMapping("/{boardid}/{tasklistid}/{taskid}/reorder/{subtaskid}")
+    public ResponseEntity<SubTask> reorderSubTasks(
+            @PathVariable("boardid") final long boardid,
+            @PathVariable("tasklistid") final long tasklistid,
+            @PathVariable ("taskid") final long taskid,
+            @PathVariable("subtaskid") final long subtaskid,
+            @RequestParam final int newIndex) {
+        try {
+            SubTask subTask = subTaskService.reorderSubTask(boardid, tasklistid,
+                    taskid, subtaskid, newIndex);
+            return ResponseEntity.ok(subTask);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }

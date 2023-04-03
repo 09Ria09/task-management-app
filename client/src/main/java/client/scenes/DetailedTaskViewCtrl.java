@@ -46,6 +46,7 @@ public class DetailedTaskViewCtrl {
     private SubTaskUtils subTaskUtils;
     private final WebSocketUtils webSocketUtils;
 
+
     @Inject
     public DetailedTaskViewCtrl(final MainCtrl mainCtrl, final TaskListUtils taskListUtils,
                                 final TaskUtils taskUtils, final CustomAlert customAlert,
@@ -183,7 +184,8 @@ public class DetailedTaskViewCtrl {
                             Node card = cardLoader.load();
                             SubCardCtrl subCardCtrl = cardLoader.getController();
                             subCardCtrl.initialize(subTask, listController, taskListUtils,
-                                    customAlert, taskUtils, mainCtrl);
+                                    customAlert, subTaskUtils,
+                                    DetailedTaskViewCtrl.this);
                             setGraphic(card);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
@@ -251,14 +253,23 @@ public class DetailedTaskViewCtrl {
             if (subTasks == null) {
                 subTasks = new ListView<>();
             }
-            subTasks.getItems().add(subTask);
-            subTaskUtils.addSubTask(listController.getBoardID(),
+            SubTask updatedSubTask = subTaskUtils.addSubTask(listController.getBoardID(),
                     listController.getTaskList().id, task.id, subTask);
+            subTasks.getItems().add(updatedSubTask);
+            refreshSubTasks();
         } catch (TaskException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
             alert.initModality(Modality.APPLICATION_MODAL);
             alert.setContentText(e.getMessage());
             alert.showAndWait();
         }
+    }
+    public void refreshSubTasks() throws TaskException {
+        Task updatedTask = taskUtils.getTask(listController.getBoardID(),
+                listController.getTaskList().id, task.id);
+        setTask(updatedTask);
+    }
+    public Task getTask() {
+        return this.task;
     }
 }
