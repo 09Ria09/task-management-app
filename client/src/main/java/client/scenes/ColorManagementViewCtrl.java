@@ -78,7 +78,7 @@ public class ColorManagementViewCtrl {
     }
 
     public void back() throws BoardException {
-        System.out.println(board.getBoardColorScheme().id);
+        System.out.println(board.getBoardColorScheme().toString());
         boardUtils.setBoardColorScheme(board.id, board.getBoardColorScheme());
         mainCtrl.showBoardCatalogue();
     }
@@ -93,7 +93,8 @@ public class ColorManagementViewCtrl {
     }
 
     public void resetListColors() {
-
+        board.getBoardColorScheme().setListBackgroundColor("0xD29FE3");
+        board.getBoardColorScheme().setListTextColor("0x000000");
     }
 
 

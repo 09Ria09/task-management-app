@@ -50,6 +50,7 @@ public class CardCtrl {
     private ImageView arrowIcon;
 
     @FXML Label description;
+    @FXML AnchorPane cardOutline;
 
     private MainCtrl mainCtrl;
     private ListCtrl listController;

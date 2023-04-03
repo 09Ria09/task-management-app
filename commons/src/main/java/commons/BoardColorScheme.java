@@ -20,9 +20,9 @@ public class BoardColorScheme {
     private String listTextColor;
 
     public BoardColorScheme() {
-        this.boardBackgroundColor = "0xFFFFFF";
+        this.boardBackgroundColor = "0xcce6ff";
         this.boardTextColor = "0x000000";
-        this.listBackgroundColor = "0xFFFFFF";
+        this.listBackgroundColor = "0xD29FE3";
         this.listTextColor = "0x000000";
     }
 

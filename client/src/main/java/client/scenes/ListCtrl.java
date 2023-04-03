@@ -1,13 +1,12 @@
 package client.scenes;
 
 import client.CustomAlert;
-import client.utils.LayoutUtils;
-import client.utils.ServerUtils;
-import client.utils.TaskListUtils;
-import client.utils.TaskUtils;
+import client.customExceptions.BoardException;
+import client.utils.*;
 import client.customExceptions.TaskListException;
 import com.google.inject.Inject;
 import client.customExceptions.TaskException;
+import commons.Board;
 import commons.Task;
 import commons.TaskList;
 import javafx.fxml.FXML;
@@ -35,6 +34,8 @@ public class ListCtrl implements Initializable {
     @FXML
     Label title;
     @FXML
+    Button addTaskButton;
+    @FXML
     TextField titleField;
     @FXML
     VBox vBox;
@@ -44,8 +45,10 @@ public class ListCtrl implements Initializable {
     private int totalAmountOfTasks;
     private TaskList taskList;
     private long boardID;
+    private Board board;
     private TaskListUtils taskListUtils;
     private TaskUtils taskUtils;
+    private BoardUtils boardUtils;
     private ServerUtils server;
     @FXML
     TextField simpleTaskNameInput;
@@ -57,15 +60,17 @@ public class ListCtrl implements Initializable {
 
 
 
+
     @Inject
     public ListCtrl(final MainCtrl mainCtrl, final TaskListUtils taskListUtils,
                     final TaskUtils taskUtils, final CustomAlert customAlert,
-                    final LayoutUtils layoutUtils) {
+                    final LayoutUtils layoutUtils, final BoardUtils boardUtils) {
         this.taskListUtils = taskListUtils;
         this.taskUtils = taskUtils;
         this.mainCtrl = mainCtrl;
         this.customAlert = customAlert;
         this.layoutUtils = layoutUtils;
+        this.boardUtils = boardUtils;
     }
 
     public void initialize(){
@@ -285,6 +290,7 @@ public class ListCtrl implements Initializable {
         this.boardID = boardID;
         this.taskList = newTaskList;
         nameRefresh(newTaskList.getName(), boardID);
+        refreshColor();
 
         list.getItems().retainAll(newTaskList.getTasks()); // retain only the tasks
         // that are also in newTaskList
@@ -418,6 +424,24 @@ public class ListCtrl implements Initializable {
         } catch (TaskException e) {
             throw new TaskException("Task must have a name.");
         }
+
+    }
+
+    public void refreshColor(){
+        try {
+            board = boardUtils.getBoard(getBoardID());
+            System.out.println(board.getBoardColorScheme().
+                    getListBackgroundColor());
+            list.setStyle("-fx-background-color:#" + board.getBoardColorScheme().
+                    getListBackgroundColor().substring(2, 8) + ";");
+            title.setStyle("-fx-text-fill:#" + board.getBoardColorScheme().
+                    getListTextColor().substring(2, 8) + ";");
+            addTaskButton.setStyle("-fx-text-fill:#" + board.getBoardColorScheme().
+                    getListTextColor().substring(2, 8) + ";");
+        } catch (BoardException e) {
+            throw new RuntimeException(e);
+        }
+
 
     }
 

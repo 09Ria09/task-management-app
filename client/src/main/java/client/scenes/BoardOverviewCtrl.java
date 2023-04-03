@@ -105,7 +105,7 @@ public class BoardOverviewCtrl {
         var kids = listsContainer.getChildren();
         var listLoader = new FXMLLoader(getClass().getResource("List.fxml"));
         listLoader.setControllerFactory(type -> new ListCtrl(mainCtrl, new TaskListUtils(server),
-            new TaskUtils(server), customAlert, new LayoutUtils()));
+            new TaskUtils(server), customAlert, new LayoutUtils(), boardUtils));
         try {
             Node list = listLoader.load();
             ListCtrl listCtrl = listLoader.getController();
@@ -299,10 +299,7 @@ public class BoardOverviewCtrl {
         mainCtrl.showColorManagementView(board);
     }
 
-    public void printColors() {
-        System.out.println(board.getBoardColorScheme().id + "\n" +
-                board.getBoardColorScheme().toString());
-    }
+
     public Board getBoard() {
         return board;
     }
