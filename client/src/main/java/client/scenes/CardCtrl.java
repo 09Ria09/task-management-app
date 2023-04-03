@@ -12,7 +12,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 
@@ -41,15 +40,7 @@ public class CardCtrl {
     private StackPane progressPane;
 
     @FXML
-    private AnchorPane cardPane;
-
-    @FXML
     private ImageView descIcon;
-
-    @FXML
-    private ImageView arrowIcon;
-
-    @FXML Label description;
 
     private MainCtrl mainCtrl;
     private ListCtrl listController;
@@ -66,23 +57,21 @@ public class CardCtrl {
                            final TaskListUtils listUtils, final CustomAlert customAlert,
                            final TaskUtils taskUtils, final MainCtrl mainCtrl) {
         this.task= task;
-        this.title.setText(task.getName());
         this.listController = listCtrl;
         this.taskListUtils = listUtils;
         this.customAlert = customAlert;
         this.taskUtils = taskUtils;
         this.mainCtrl = mainCtrl;
-        if(this.taskUtils.getProgress(task) < 0)
-            this.progressPane.setVisible(false);
-        else
-            this.progressBar.setWidth(this.taskUtils.getProgress(task)*280.0D);
         this.onUnhover();
-        description.setVisible(false);
-        arrowIcon.setVisible(false);
         if(Objects.equals(this.task.getDescription(), "")) {
             this.descButton.setDisable(true);
             descIcon.setVisible(false);
         }
+        if(this.taskUtils.getProgress(task) < 0)
+            this.progressPane.setVisible(false);
+        else
+            this.progressBar.setWidth(this.taskUtils.getProgress(task)*215.0D);
+        this.title.setText(task.getName());
     }
 
     /**
@@ -243,23 +232,5 @@ public class CardCtrl {
      */
     public void onUnhoverDesc(){
         this.descButton.setStyle("-fx-background-color: transparent;");
-    }
-
-    /**
-     * Shows the extended description
-     */
-    public void showDescription() {
-        if (this.cardPane.getPrefHeight() < 200.0d) {
-            this.cardPane.setPrefHeight(225.0d);
-            descIcon.setVisible(false);
-            arrowIcon.setVisible(true);
-            description.setText(this.task.getDescription());
-            description.setVisible(true);
-        } else {
-            this.cardPane.setPrefHeight(120.0d);
-            descIcon.setVisible(true);
-            arrowIcon.setVisible(false);
-            description.setVisible(false);
-        }
     }
 }

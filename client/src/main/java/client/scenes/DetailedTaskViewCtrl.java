@@ -5,10 +5,12 @@ import client.customExceptions.TaskException;
 import client.utils.SubTaskUtils;
 import client.utils.TaskListUtils;
 import client.utils.TaskUtils;
+import client.utils.WebSocketUtils;
 import com.google.inject.Inject;
 import commons.SubTask;
 import commons.Task;
 import commons.TaskList;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -19,11 +21,10 @@ import javafx.stage.Modality;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class DetailedTaskViewCtrl {
 
-    @FXML
-    public Button editButton;
     @FXML
     private Label taskNameText;
     @FXML
@@ -41,16 +42,20 @@ public class DetailedTaskViewCtrl {
     private TaskListUtils taskListUtils;
     private ListCtrl listController;
     private SubTaskUtils subTaskUtils;
+    private final WebSocketUtils webSocketUtils;
+
 
     @Inject
     public DetailedTaskViewCtrl(final MainCtrl mainCtrl, final TaskListUtils taskListUtils,
                                 final TaskUtils taskUtils, final CustomAlert customAlert,
-                                final SubTaskUtils subTaskUtils) {
+                                final SubTaskUtils subTaskUtils,
+                                final WebSocketUtils webSocketUtils) {
         this.taskListUtils = taskListUtils;
         this.taskUtils = taskUtils;
         this.mainCtrl = mainCtrl;
         this.customAlert = customAlert;
         this.subTaskUtils = subTaskUtils;
+        this.webSocketUtils = webSocketUtils;
     }
 
     public void initialize() {
@@ -63,7 +68,6 @@ public class DetailedTaskViewCtrl {
                 }
             }
         }));
-
         this.taskDescriptionTextArea.focusedProperty().addListener(((observable,
                                                                      oldValue, newValue) -> {
             if(!newValue){
@@ -74,6 +78,34 @@ public class DetailedTaskViewCtrl {
                 }
             }
         }));
+    }
+
+    public void registerWebSockets(){
+        Consumer<Task> taskConsumer = (task) -> {
+            if(task.id == this.task.id)
+                Platform.runLater(this::goBack);
+        };
+        Consumer<TaskList> listConsumer = (list) -> {
+            for(Task t : list.getTasks()){
+                if(t.id == this.task.id) {
+                    Platform.runLater(this::goBack);
+                    return;
+                }
+            }
+        };
+        Consumer<Task> modifyTaskConsumer = (task) -> {
+            Platform.runLater(() -> {
+                if(task.id == this.task.id)
+                    this.setTask(task);
+            });
+        };
+
+        this.webSocketUtils.registerForTaskMessages("/topic/" + listController.getBoardID() +
+                "/" + listController.getTaskList().id + "/deletetask", taskConsumer);
+        this.webSocketUtils.registerForListMessages("/topic/" + listController.getBoardID() +
+                "/deletelist", listConsumer);
+        this.webSocketUtils.registerForTaskMessages("/topic/" + listController.getBoardID() +
+                "/" + listController.getTaskList().id + "/modifytask", modifyTaskConsumer);
     }
 
     public void onTaskNameClicked(final MouseEvent event){
@@ -136,8 +168,11 @@ public class DetailedTaskViewCtrl {
      */
     private void update() {
         taskNameText.setVisible(true);
+        taskNameTextField.setVisible(false);
         taskDescriptionText.setVisible(true);
+        taskDescriptionTextArea.setVisible(false);
         taskNameText.setText(this.task.getName());
+
         taskDescriptionText.setText(this.task.getDescription());
         subTasks.setCellFactory(lv -> {
             ListCell<SubTask> cell = new ListCell<>() {
@@ -152,7 +187,8 @@ public class DetailedTaskViewCtrl {
                             Node card = cardLoader.load();
                             SubCardCtrl subCardCtrl = cardLoader.getController();
                             subCardCtrl.initialize(subTask, listController, taskListUtils,
-                                    customAlert, taskUtils, mainCtrl);
+                                    customAlert, subTaskUtils,
+                                    DetailedTaskViewCtrl.this);
                             setGraphic(card);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
@@ -219,14 +255,23 @@ public class DetailedTaskViewCtrl {
             if (subTasks == null) {
                 subTasks = new ListView<>();
             }
-            subTasks.getItems().add(subTask);
-            subTaskUtils.addSubTask(listController.getBoardID(),
+            SubTask updatedSubTask = subTaskUtils.addSubTask(listController.getBoardID(),
                     listController.getTaskList().id, task.id, subTask);
+            subTasks.getItems().add(updatedSubTask);
+            refreshSubTasks();
         } catch (TaskException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
             alert.initModality(Modality.APPLICATION_MODAL);
             alert.setContentText(e.getMessage());
             alert.showAndWait();
         }
+    }
+    public void refreshSubTasks() throws TaskException {
+        Task updatedTask = taskUtils.getTask(listController.getBoardID(),
+                listController.getTaskList().id, task.id);
+        setTask(updatedTask);
+    }
+    public Task getTask() {
+        return this.task;
     }
 }

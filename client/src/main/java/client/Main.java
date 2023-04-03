@@ -20,6 +20,8 @@ import client.scenes.*;
 import client.sceneManagement.ListScenes;
 import client.sceneManagement.ServerScenes;
 import client.sceneManagement.TaskScenes;
+import client.scenes.adminScenes.AdminBoardCtrl;
+import client.scenes.adminScenes.AdminLoginCtrl;
 import client.scenes.connectScenes.SelectServerCtrl;
 import client.scenes.connectScenes.ServerTimeoutCtrl;
 import client.scenes.connectScenes.UnexpectedErrorCtrl;
@@ -57,9 +59,11 @@ public class Main extends Application {
                 "scenes", "connectScenes", "ConnectionTimeout.fxml");
         var unexpectedError = FXML.load(UnexpectedErrorCtrl.class, "client",
                 "scenes", "connectScenes", "UnexpectedError.fxml");
+        var adminBoard = FXML.load(AdminBoardCtrl.class, "client", "scenes", "AdminBoards.fxml");
+        var adminLogin = FXML.load(AdminLoginCtrl.class, "client", "scenes", "AdminLogin.fxml");
         var listScenes = new ListScenes(createList, renameList);
         var serverScenes = new ServerScenes(serverSelection, wrongServer,
-                serverTimeout, unexpectedError);
+                serverTimeout, unexpectedError, adminLogin, adminBoard);
         var createTask = FXML.load(CreateTaskCtrl.class, "client", "scenes", "CreateTask.fxml");
         var editTask = FXML.load(EditTaskCtrl.class, "client", "scenes", "EditTask.fxml");
         var boardCatalogue = FXML.load(BoardCatalogueCtrl.class,
@@ -73,5 +77,9 @@ public class Main extends Application {
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         mainCtrl.initialize(primaryStage, listScenes, serverScenes, taskScenes,
             boardCatalogue, boardScenes);
+
+        primaryStage.setOnCloseRequest(e -> {
+            adminBoard.getKey().stop();
+        });
     }
 }
