@@ -16,7 +16,7 @@
 package client.utils;
 
 
-
+import jakarta.ws.rs.core.Response;
 
 import objects.Servers;
 
@@ -30,12 +30,16 @@ import java.util.HashSet;
 import java.util.Optional;
 
 
-
 public class ServerUtils {
 
+    private final RestUtils restUtils;
     private String serverAddress;
 
-   /**
+    public ServerUtils() {
+        this.restUtils = new RestUtils();
+    }
+
+    /**
         * Check if the server is a Talio server
         *
         * @return an empty optional if the server is a Talio server,
@@ -98,5 +102,21 @@ public class ServerUtils {
 
     public String getServerAddress() {
         return serverAddress;
+    }
+
+    public String getWebsocketURL() {
+        if (serverAddress == null || serverAddress.isEmpty())
+            return "";
+        return serverAddress.replace("http://", "ws://") + "/websocket";
+    }
+
+    public String getAdminKey() throws Exception {
+        Response response = restUtils.sendRequest(serverAddress, "api/talio/admin",
+                RestUtils.Methods.GET, null);
+        return restUtils.handleResponse(response, String.class, "getAdminKey");
+    }
+
+    public RestUtils getRestUtils() {
+        return restUtils;
     }
 }

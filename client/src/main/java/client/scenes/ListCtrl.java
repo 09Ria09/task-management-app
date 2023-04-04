@@ -58,7 +58,8 @@ public class ListCtrl implements Initializable {
     TextField simpleTaskNameInput;
     String simpleTaskName;
 
-    private LayoutUtils layoutUtils;
+    private final LayoutUtils layoutUtils;
+    private final WebSocketUtils webSocketUtils;
 
     RenameListSingleton renameListSingleton = RenameListSingleton.getInstance();
 
@@ -68,13 +69,15 @@ public class ListCtrl implements Initializable {
     @Inject
     public ListCtrl(final MainCtrl mainCtrl, final TaskListUtils taskListUtils,
                     final TaskUtils taskUtils, final CustomAlert customAlert,
-                    final LayoutUtils layoutUtils, final BoardUtils boardUtils) {
+                     final BoardUtils boardUtils, final LayoutUtils layoutUtils,
+                    final WebSocketUtils webSocketUtils) {
         this.taskListUtils = taskListUtils;
         this.taskUtils = taskUtils;
         this.mainCtrl = mainCtrl;
         this.customAlert = customAlert;
         this.layoutUtils = layoutUtils;
         this.boardUtils = boardUtils;
+        this.webSocketUtils = webSocketUtils;
     }
 
     public void initialize(){
@@ -425,8 +428,10 @@ public class ListCtrl implements Initializable {
         simpleTaskName = simpleTaskNameInput.getText();
         simpleTaskNameInput.clear();
         try {
-            if(!simpleTaskName.isEmpty() || simpleTaskName != null) {
-                Task task = new Task(simpleTaskName, null);
+            if(simpleTaskName == null || simpleTaskName.isEmpty()) {
+                throw new TaskException("Task must have a name");
+            } else {
+                Task task = new Task(simpleTaskName, "");
                 taskUtils.addTask(boardID, taskList.id, task);
             }
         } catch (TaskException e) {

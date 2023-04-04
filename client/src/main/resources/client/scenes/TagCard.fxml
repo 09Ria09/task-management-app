@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="40.0" maxWidth="150.0" minHeight="40.0" minWidth="150.0" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.TagCardCtrl">
+    <children>
+      <AnchorPane fx:id="pane" layoutX="5.0" layoutY="3.0" maxHeight="34.0" maxWidth="140.0" minHeight="34.0" minWidth="140.0" prefHeight="34.0" prefWidth="132.0" style="-fx-background-radius: 20px; -fx-border-radius: 20px;">
+         <children>
+               <Label fx:id="tagName" layoutX="8.0" layoutY="7.0" prefHeight="21.0" prefWidth="91.0" text="Loading...">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+               <Button layoutX="101.0" layoutY="5.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#deleteTag" prefHeight="25.0" prefWidth="25.0" text="X" />
+         </children>
+      </AnchorPane>
+    </children>
+
+</AnchorPane>
