@@ -14,8 +14,11 @@
                </font>
             </Label>
             <TextField fx:id="tagNameField" layoutX="36.0" layoutY="19.0" onKeyPressed="#tagNameKeyPressed" visible="false" />
-            <ColorPicker fx:id="colorPicker" layoutX="36.0" layoutY="70.0" />
-            <Button layoutX="218.0" layoutY="70.0" mnemonicParsing="false" onAction="#changeColor" text="Change Color" />
+            <ColorPicker fx:id="backgroundColorPicker" layoutX="36.0" layoutY="57.0" />
+            <Button layoutX="211.0" layoutY="99.0" mnemonicParsing="false" onAction="#changeColor" text="Change Colors" />
+            <ColorPicker fx:id="fontColorPicker" layoutX="36.0" layoutY="99.0" />
+            <Text layoutX="36.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Background Color:" />
+            <Text layoutX="36.0" layoutY="95.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Font Color:" />
          </children></AnchorPane>
    </children>
 </AnchorPane>

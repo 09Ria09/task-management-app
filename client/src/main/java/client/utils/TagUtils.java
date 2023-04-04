@@ -210,19 +210,21 @@ public class TagUtils {
      * Recolor a tag that is located in the board
      * @param boardId ID of the board
      * @param tagId Id of the tag that will be recolored
-     * @param newColor the new color of the tag
+     * @param backgroundColor the new background color of the tag
+     * @param fontColor the new font color of the tag
      * @return the recolored tag
      * @throws TagException throws an exception if something goes wrong
      */
     public Tag recolorTag(final long boardId, final long tagId,
-                         final String newColor) throws TagException {
+                         final String backgroundColor, final String fontColor) throws TagException {
         String serverAddress = server.getServerAddress();
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
                 .path("api/tags/" + boardId + "/" + tagId + "/recolor")
-                .queryParam("color", newColor)
+                .queryParam("backgroundColor", backgroundColor)
+                .queryParam("fontColor", fontColor)
                 .request()
                 .accept(APPLICATION_JSON)
-                .put(Entity.entity(newColor, APPLICATION_JSON));
+                .put(null);
 
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             return response.readEntity(Tag.class);

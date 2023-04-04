@@ -4,7 +4,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.awt.*;
+import java.util.Objects;
 
 @Entity
 public class Tag implements Serializable {
@@ -49,7 +49,7 @@ public class Tag implements Serializable {
     }
 
     public void setColors(final String colorBackground) {
-        int colorBackgroundInt = Color.parseColor(colorBackground);
+        int colorBackgroundInt = Integer.parseInt(colorBackground.substring(1), 16);
         this.colorBackground = colorBackground;
         this.colorFont = String.format("#%06X", 0xFFFFFF - colorBackgroundInt);
     }
@@ -59,12 +59,18 @@ public class Tag implements Serializable {
         this.colorFont = colorFont;
     }
 
+    /**
+     * @param o an object
+     * @return true if the object provided is the same to this object
+     */
     @Override
-    public boolean equals(final Object obj) {
-        if(!(obj instanceof Tag))
-            return false;
-        Tag other = (Tag) obj;
-        return other.color.equals(color) && other.name.equals(name);
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tag tag = (Tag) o;
+        return Objects.equals(name, tag.name) &&
+            Objects.equals(colorBackground, tag.colorBackground) &&
+            Objects.equals(colorFont, tag.colorFont);
     }
 
     @Override

@@ -106,8 +106,9 @@ public class TagServiceTest {
         boardService.addBoard(b);
         tagService.addBoardTag(b.id, tag);
         assertEquals(tagService.getBoardTagByID(b.id, tag.id), tag);
-        tagService.recolorTag(b.id, tag.id, "NewColor");
-        assertEquals(tagService.getBoardTagByID(b.id, tag.id).getColor(), "NewColor");
+        tagService.recolorTag(b.id, tag.id, "NewColor", "NewColor1");
+        assertEquals(tagService.getBoardTagByID(b.id, tag.id).getColorBackground(), "NewColor");
+        assertEquals(tagService.getBoardTagByID(b.id, tag.id).getColorFont(), "NewColor1");
     }
 
     @Test

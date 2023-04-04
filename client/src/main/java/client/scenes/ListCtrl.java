@@ -330,7 +330,6 @@ public class ListCtrl implements Initializable {
             if (list == null) {
                 list = new ListView<Task>();
             }
-            list.getItems().add(task);
             taskUtils.addTask(boardID, this.getTaskList().id, task);
         } catch (TaskException e) {
             Alert alert = customAlert.showAlert(e.getMessage());

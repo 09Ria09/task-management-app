@@ -23,7 +23,9 @@ public class TagEditCtrl {
     @FXML
     private TextField tagNameField;
     @FXML
-    private ColorPicker colorPicker;
+    private ColorPicker backgroundColorPicker;
+    @FXML
+    private ColorPicker fontColorPicker;
     @FXML
     private AnchorPane pane;
     private Tag tag;
@@ -36,7 +38,9 @@ public class TagEditCtrl {
         this.tag = tag;
         labelName.setText(tag.getName());
         this.pane.setStyle("-fx-background-radius: 20px; -fx-border-radius: 20px;" +
-                " -fx-background-color: #" + tag.getColor() + ";");
+            " -fx-background-color: #" + tag.getColorBackground() + ";");
+
+        this.labelName.setStyle("-fx-text-fill: #" + tag.getColorFont() + ";");
         this.tagUtils = tagUtils;
         this.board = board;
         this.customAlert = customAlert;
@@ -81,14 +85,17 @@ public class TagEditCtrl {
 
 
     public boolean changeColor() {
-        String newColor = colorPicker.getValue().toString().substring(2, 8);
+        String backgroundColor = backgroundColorPicker.getValue().toString().substring(2, 8);
+        String fontColor = fontColorPicker.getValue().toString().substring(2, 8);
         try {
-            tagUtils.recolorTag(board.id, tag.id, newColor);
+            tagUtils.recolorTag(board.id, tag.id, backgroundColor, fontColor);
             this.pane.setStyle("-fx-background-radius: 20px; -fx-border-radius: 20px;" +
-                    " -fx-background-color: #" +
-                    tagUtils.getBoardTag(board.id, tag.id).getColor() + ";");
+                " -fx-background-color: #" +
+                tagUtils.getBoardTag(board.id, tag.id).getColorBackground() + ";");
+            this.labelName.setStyle("-fx-text-fill: #" +
+                tagUtils.getBoardTag(board.id, tag.id).getColorFont() + ";");
             return true;
-        } catch(TagException e) {
+        } catch (TagException e) {
             Alert alert = customAlert.showAlert(e.getMessage());
             alert.showAndWait();
             return false;

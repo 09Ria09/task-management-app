@@ -13,10 +13,11 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -88,10 +89,16 @@ public class CardCtrl {
 
     private void setTags(final List<Tag> tags) {
         for(Tag tag : tags) {
-            Pane tagPane = new Pane();
-            tagPane.setPrefSize(60, 10);
+            AnchorPane tagPane = new AnchorPane();
+            Text tagName = new Text(tag.getName());
             tagPane.setStyle("-fx-background-radius: 5px; -fx-border-radius: 5px;" +
-                    " -fx-background-color: #" + tag.getColor() + ";");
+                    " -fx-background-color: #" + tag.getColorBackground() + ";");
+            tagName.setStyle("-fx-fill: #" + tag.getColorFont() + ";");
+            tagPane.getChildren().add(tagName);
+            AnchorPane.setTopAnchor(tagName, 0.0);
+            AnchorPane.setRightAnchor(tagName, 0.0);
+            AnchorPane.setBottomAnchor(tagName, 0.0);
+            AnchorPane.setLeftAnchor(tagName, 0.0);
             tagList.getChildren().add(tagPane);
         }
     }

@@ -109,11 +109,14 @@ public class TagControllerTest {
 
     @Test
     public void testRecolorTagEndpoint() throws Exception {
-        Mockito.when(tagService.recolorTag(1, 3, "NewTagColor")).thenReturn(null);
+        Mockito.when(tagService.recolorTag(1, 3, "NewTagColor",
+            "NewTagColor1")).thenReturn(null);
         mockMvc.perform(MockMvcRequestBuilders.put("/api/tags/1/3/recolor")
-                        .param("color", "NewTagColor"))
+                        .param("backgroundColor", "NewTagColor")
+                .param("fontColor", "NewTagColor1"))
                 .andExpect(status().isOk());
-        Mockito.verify(tagService, Mockito.times(1)).recolorTag(1, 3, "NewTagColor");
+        Mockito.verify(tagService, Mockito.times(1))
+            .recolorTag(1, 3, "NewTagColor", "NewTagColor1");
     }
 
     @Test
@@ -229,11 +232,22 @@ public class TagControllerTest {
 
     @Test
     public void recolorTagEndpointBadRequest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/tags/1/2/recolor")
-                        .param("color", ""))
-                .andExpect(status().isBadRequest());
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/tags/1/3/recolor")
+                .param("backgroundColor", "")
+                .param("fontColor", "NewTagColor1"))
+            .andExpect(status().isOk());
         Mockito.verify(tagService, Mockito.times(0))
-                .recolorTag(1, 2, "");
+            .recolorTag(1, 3, "", "NewTagColor1");
+    }
+
+    @Test
+    public void recolorTagEndpointBadRequest1() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/tags/1/3/recolor")
+                .param("backgroundColor", "NewTagColor")
+                .param("fontColor", ""))
+            .andExpect(status().isOk());
+        Mockito.verify(tagService, Mockito.times(0))
+            .recolorTag(1, 3, "NewTagColor", "");
     }
 
     @Test
@@ -251,15 +265,16 @@ public class TagControllerTest {
 
     @Test
     public void recolorTagEndpointNotFound() throws Exception {
-        Mockito.when(tagService.recolorTag(1, 2, "Color"))
+        Mockito.when(tagService.recolorTag(1, 2, "Color", "Color"))
                 .thenThrow(NoSuchElementException.class);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/tags/1/2/recolor")
-                        .param("color", "Color"))
+                        .param("backgroundColor", "Color")
+                        .param("fontColor", "Color"))
                 .andExpect(status().isNotFound());
 
         Mockito.verify(tagService, Mockito.times(1))
-                .recolorTag(1, 2, "Color");
+                .recolorTag(1, 2, "Color", "Color");
     }
 
     @Test

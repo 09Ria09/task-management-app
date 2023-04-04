@@ -169,7 +169,6 @@ public class MainCtrl {
         primaryStage.setTitle("Talio");
         resize();
         primaryStage.setScene(boardCatalogue);
-        populateBoardCatalogue();
     }
 
     public void showEditBoard() {
