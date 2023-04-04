@@ -21,6 +21,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
+import javafx.util.Pair;
 
 import java.io.IOException;
 import java.net.URL;
@@ -69,15 +70,15 @@ public class ListCtrl implements Initializable {
     @Inject
     public ListCtrl(final MainCtrl mainCtrl, final TaskListUtils taskListUtils,
                     final TaskUtils taskUtils, final CustomAlert customAlert,
-                     final BoardUtils boardUtils, final LayoutUtils layoutUtils,
-                    final WebSocketUtils webSocketUtils) {
+                    final BoardUtils boardUtils, final Pair<LayoutUtils,
+            WebSocketUtils> layoutSocketUtils) {
         this.taskListUtils = taskListUtils;
         this.taskUtils = taskUtils;
         this.mainCtrl = mainCtrl;
         this.customAlert = customAlert;
-        this.layoutUtils = layoutUtils;
+        this.layoutUtils = layoutSocketUtils.getKey();
         this.boardUtils = boardUtils;
-        this.webSocketUtils = webSocketUtils;
+        this.webSocketUtils = layoutSocketUtils.getValue();
     }
 
     public void initialize(){

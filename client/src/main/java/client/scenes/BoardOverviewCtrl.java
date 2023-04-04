@@ -37,6 +37,7 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.HBox;
 import javafx.util.Duration;
+import javafx.util.Pair;
 
 import java.io.IOException;
 import java.util.*;
@@ -145,8 +146,10 @@ public class BoardOverviewCtrl {
     public void addList(final TaskList taskList) {
         var kids = listsContainer.getChildren();
         var listLoader = new FXMLLoader(getClass().getResource("List.fxml"));
-        listLoader.setControllerFactory(type -> new ListCtrl(mainCtrl, new TaskListUtils(server),
-            new TaskUtils(server), customAlert, boardUtils, new LayoutUtils(), webSocketUtils));
+        listLoader.setControllerFactory(type ->
+                new ListCtrl(mainCtrl, new TaskListUtils(server),
+            new TaskUtils(server), customAlert,
+                boardUtils, new Pair(new LayoutUtils(), webSocketUtils)));
         try {
             Node list = listLoader.load();
             ListCtrl listCtrl = listLoader.getController();
