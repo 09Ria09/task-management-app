@@ -1,153 +1,100 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<GridPane hgap="10" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" vgap="10" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.CreateTaskCtrl">
-   <columnConstraints>
-      <ColumnConstraints />
-      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
-      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
-      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" />
-   </columnConstraints>
-   <rowConstraints>
-      <RowConstraints minHeight="10.0" percentHeight="10.0" vgrow="SOMETIMES" />
-      <RowConstraints minHeight="10.0" percentHeight="60.0" vgrow="SOMETIMES" />
-      <RowConstraints minHeight="10.0" percentHeight="60.0" vgrow="SOMETIMES" />
-      <RowConstraints minHeight="10.0" percentHeight="60.0" prefHeight="30.0" vgrow="SOMETIMES" />
-      <RowConstraints minHeight="10.0" percentHeight="10.0" vgrow="SOMETIMES" />
-   </rowConstraints>
-   <padding>
-      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-   </padding>
+<StackPane style="-fx-background-image: url(&quot;client/images/task_pattern.jpg&quot;);" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.CreateTaskCtrl">
    <children>
-      <VBox fx:id="sidePanel" alignment="CENTER" prefHeight="400.0" prefWidth="150.0" spacing="20" style="-fx-background-color: #57A773; -fx-background-radius: 20;" GridPane.columnSpan="4" GridPane.rowSpan="5">
+      <GridPane hgap="10" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" vgap="10">
+         <columnConstraints>
+            <ColumnConstraints />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" percentHeight="10.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" percentHeight="60.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" percentHeight="60.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" percentHeight="60.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" percentHeight="60.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" percentHeight="10.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </padding>
          <children>
-            <HBox alignment="CENTER_RIGHT" spacing="10">
+            <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;" GridPane.columnIndex="2" GridPane.rowSpan="6" />
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="3">
                <children>
-                  <VBox prefHeight="40" prefWidth="40" style="-fx-background-color: white;" />
-                  <VBox prefHeight="40" prefWidth="40" style="-fx-background-color: white;" />
+                  <ChoiceBox fx:id="tagChoice" prefWidth="150.0" />
+                  <Label fx:id="tagMessage" text="There are no tags created">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Button fx:id="addTagButton" mnemonicParsing="false" onAction="#addTag" style="-fx-background-color: #4285F4; -fx-font-weight: bold; -fx-text-fill: white;" text="Add Tag" />
                </children>
-            </HBox>
-            <HBox alignment="CENTER_RIGHT" spacing="10">
-               <children>
-                  <VBox prefHeight="40" prefWidth="40" style="-fx-background-color: white;" />
-                  <VBox prefHeight="40" prefWidth="40" style="-fx-background-color: white;" />
-                  <VBox prefHeight="40" prefWidth="40" style="-fx-background-color: white;" />
-               </children>
-            </HBox>
-            <HBox alignment="CENTER_RIGHT" spacing="10">
-               <children>
-                  <VBox prefHeight="40" prefWidth="40" style="-fx-background-color: white;" />
-                  <VBox prefHeight="40" prefWidth="40" style="-fx-background-color: white;" />
-               </children>
-            </HBox>
-            <HBox alignment="CENTER" prefWidth="233.0" spacing="10">
-               <children>
-                  <VBox prefHeight="40" prefWidth="40" style="-fx-background-color: white;" />
-                  <VBox prefHeight="40" prefWidth="40" style="-fx-background-color: white;" />
-               </children>
-            </HBox>
-            <VBox prefHeight="50.0" prefWidth="560.0" spacing="15.0" style="-fx-background-color: #A7C4B5;">
-               <children>
-                  <VBox prefHeight="22.0" prefWidth="560.0" style="-fx-background-color: white;" />
-                  <VBox prefHeight="32.0" prefWidth="560.0" style="-fx-background-color: white;" />
-               </children>
-               <padding>
-                  <Insets bottom="3.0" top="3.0" />
-               </padding>
+               <GridPane.margin>
+                  <Insets bottom="20.0" />
+               </GridPane.margin>
             </VBox>
-            <HBox alignment="CENTER" spacing="10">
+            <HBox alignment="CENTER" maxHeight="134.0" maxWidth="640.0" spacing="70.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
                <children>
-                  <VBox prefHeight="40" prefWidth="40" style="-fx-background-color: white;" />
-                  <VBox prefHeight="40" prefWidth="40" style="-fx-background-color: white;" />
-                  <VBox prefHeight="40" prefWidth="40" style="-fx-background-color: white;" />
+                  <Button contentDisplay="CENTER" mnemonicParsing="false" onAction="#cancel" prefHeight="25.0" prefWidth="63.0" style="-fx-background-color: #D32F2F; -fx-text-fill: white; -fx-font-weight: bold;" text="Cancel" textAlignment="CENTER" />
+                  <Button alignment="CENTER" mnemonicParsing="false" onAction="#confirm" prefHeight="25.0" prefWidth="96.0" style="-fx-background-color: #57A773; -fx-text-fill: white; -fx-font-weight: bold;" text="Confirm" />
                </children>
             </HBox>
-            <HBox alignment="CENTER" spacing="10">
-               <children>
-                  <VBox prefHeight="40" prefWidth="40" style="-fx-background-color: white;" />
-                  <VBox prefHeight="40" prefWidth="40" style="-fx-background-color: white;" />
-               </children>
-            </HBox>
-            <Pane prefHeight="120.0" prefWidth="265.0" style="-fx-background-color: #A7C4B5;" /><HBox alignment="CENTER_RIGHT" spacing="10">
-            <VBox prefHeight="40" prefWidth="40" style="-fx-background-color: white;" />
-            <VBox prefHeight="40" prefWidth="40" style="-fx-background-color: white;" />
-         </HBox>
-            <HBox alignment="CENTER_RIGHT" spacing="10">
-               <VBox prefHeight="40" prefWidth="40" style="-fx-background-color: white;" />
-               <VBox prefHeight="40" prefWidth="40" style="-fx-background-color: white;" />
-               <VBox prefHeight="40" prefWidth="40" style="-fx-background-color: white;" />
-            </HBox>
-            <HBox alignment="CENTER_RIGHT" spacing="10">
-               <VBox prefHeight="40" prefWidth="40" style="-fx-background-color: white;" />
-               <VBox prefHeight="40" prefWidth="40" style="-fx-background-color: white;" />
-            </HBox>
-         </children>
-      </VBox>
-      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
-         <children>
-            <Label alignment="CENTER" prefHeight="88.0" prefWidth="182.0" style="-fx-font-size: 50; -fx-text-fill: #131200; -fx-font-weight: bold;" text="Tags?">
-               <VBox.margin>
+            <Label alignment="CENTER" prefHeight="53.0" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #131200;" text="Create Task" GridPane.columnSpan="4" GridPane.halignment="CENTER" GridPane.vgrow="ALWAYS">
+               <font>
+                  <Font size="40.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets top="40.0" />
+               </GridPane.margin>
+            </Label>
+            <ListView fx:id="tagsView" editable="true" prefHeight="207.0" prefWidth="278.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+               <GridPane.margin>
+                  <Insets bottom="20.0" />
+               </GridPane.margin>
+            </ListView>
+            <TextArea fx:id="taskDesc" prefHeight="247.0" prefWidth="395.0" promptText="Task Description" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="4">
+               <GridPane.margin>
                   <Insets bottom="10.0" />
-               </VBox.margin>
-               <font>
-                  <Font size="51.0" />
-               </font>
-            </Label>
-            <ChoiceBox fx:id="tagChoice" prefWidth="150.0" />
-            <Label fx:id="tagMessage" text="There are no tags created">
-               <font>
-                  <Font size="22.0" />
-               </font>
-            </Label>
-            <Button fx:id="addTagButton" mnemonicParsing="false" onAction="#addTag" text="Add Tag" />
+               </GridPane.margin>
+            </TextArea>
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
+               <children>
+                  <Label alignment="BOTTOM_CENTER" style="-fx-font-weight: bold;" text="Pick a name!" textAlignment="CENTER">
+                     <VBox.margin>
+                        <Insets top="60.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="taskName" alignment="CENTER" maxHeight="30.0" maxWidth="300.0" prefHeight="36.0" prefWidth="303.0" promptText="Task Name">
+                     <VBox.margin>
+                        <Insets top="15.0" />
+                     </VBox.margin>
+                  </TextField>
+               </children>
+            </VBox>
+      
          </children>
-         <GridPane.margin>
-            <Insets bottom="20.0" />
-         </GridPane.margin>
-      </VBox>
-      <ButtonBar prefHeight="25.0" prefWidth="202.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4">
-         <buttons>
-            <Button mnemonicParsing="false" onAction="#cancel" prefHeight="25.0" prefWidth="63.0" style="-fx-background-color: #D32F2F; -fx-text-fill: white; -fx-font-weight: bold;" text="Cancel" />
-            <Button mnemonicParsing="false" onAction="#confirm" prefHeight="25.0" prefWidth="96.0" style="-fx-background-color: #4285F4; -fx-text-fill: white; -fx-font-weight: bold;" text="Confirm" />
-         </buttons>
-      </ButtonBar>
-      <Label alignment="CENTER" prefHeight="53.0" style="-fx-font-size: 120; -fx-font-weight: bold; -fx-text-fill: #131200;" text="Create Task" GridPane.columnSpan="4" GridPane.halignment="CENTER" GridPane.vgrow="ALWAYS">
-         <font>
-            <Font size="40.0" />
-         </font>
-         <GridPane.margin>
-            <Insets top="40.0" />
-         </GridPane.margin>
-      </Label>
-      <ListView fx:id="tagsView" editable="true" prefHeight="207.0" prefWidth="278.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2">
-         <GridPane.margin>
-            <Insets bottom="20.0" />
-         </GridPane.margin></ListView>
-      <TextArea fx:id="taskDesc" prefHeight="247.0" prefWidth="395.0" promptText="Task Description" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3">
-         <GridPane.margin>
-            <Insets bottom="10.0" />
-         </GridPane.margin></TextArea>
-      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
-         <children>
-            <Label alignment="BOTTOM_CENTER" style="-fx-font-weight: bold;" text="Pick a name!" textAlignment="CENTER">
-               <VBox.margin>
-                  <Insets top="60.0" />
-               </VBox.margin>
-               <font>
-                  <Font size="24.0" />
-               </font>
-            </Label>
-            <TextField fx:id="taskName" alignment="CENTER" prefHeight="36.0" prefWidth="303.0" promptText="Task Name">
-               <VBox.margin>
-                  <Insets top="15.0" />
-               </VBox.margin>
-            </TextField>
-         </children>
-      </VBox>
-
+      </GridPane>
    </children>
-</GridPane>
+</StackPane>

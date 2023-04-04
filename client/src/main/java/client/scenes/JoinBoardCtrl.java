@@ -85,7 +85,6 @@ public class JoinBoardCtrl {
             Alert alert = customAlert.showAlert(e.getMessage());
             alert.showAndWait();
         }
-
         boardNameInput.clear();
     }
 }

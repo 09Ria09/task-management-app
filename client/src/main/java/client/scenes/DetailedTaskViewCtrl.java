@@ -14,6 +14,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
+import javafx.util.StringConverter;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -320,6 +321,18 @@ public class DetailedTaskViewCtrl {
     private void initializeChoiceBox() {
         try {
             tagChoice.getItems().setAll(tagUtils.getBoardTags(listController.getBoardID()));
+            tagChoice.setConverter(new StringConverter<Tag>() {
+                @Override
+                public String toString(final Tag object) {
+                    return object == null ? "" : object.getName();
+                }
+
+                @Override
+                public Tag fromString(final String string) {
+                    return tagChoice.getItems().stream()
+                            .filter(t -> t.getName().equals(string)).findFirst().orElse(null);
+                }
+            });
             if(!tagChoice.getItems().isEmpty()) {
                 tagChoice.setValue(tagChoice.getItems().get(0));
             }

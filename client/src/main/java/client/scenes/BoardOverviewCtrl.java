@@ -30,14 +30,15 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -66,6 +67,8 @@ public class BoardOverviewCtrl {
     @FXML
     private HBox listsContainer;
 
+    @FXML
+    private ScrollPane scrollPane;
     @FXML
 
     private Label inviteKeyLabel;
@@ -134,7 +137,8 @@ public class BoardOverviewCtrl {
         listLoader.setControllerFactory(type -> new ListCtrl(mainCtrl, new TaskListUtils(server),
             new TaskUtils(server), customAlert, new LayoutUtils(), webSocketUtils));
         try {
-            Node list = listLoader.load();
+            VBox list = listLoader.load();
+            list.prefHeightProperty().bind(scrollPane.heightProperty());
             ListCtrl listCtrl = listLoader.getController();
             listCtrl.initialize();
             listCtrl.refresh(taskList, currentBoardId);
