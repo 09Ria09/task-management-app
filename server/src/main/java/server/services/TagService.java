@@ -115,9 +115,7 @@ public class TagService {
     public Tag addBoardTag(final long boardID, final Tag tag) {
         Board board = getBoard(boardID);
         board.addTag(tag);
-
         boardRepository.save(board);
-
         return tag;
     }
 
@@ -179,17 +177,13 @@ public class TagService {
      * Removes a tag from the board given by its ID
      * @param boardID ID of the board
      * @param tagID ID of the tag that will be removed
-     * @return the removed tag
+     * @return the list of tasks from where the tag was removed
      */
     public Tag removeBoardTag(final long boardID, final long tagID) {
         Board board = getBoard(boardID);
         Tag tag = getBoardTagByID(boardID, tagID);
         List<Task> tasks = getAllTasks(boardID);
-
-        for(Task task : tasks) {
-            task.getTags().remove(tag);
-        }
-
+        tasks.forEach(t -> t.getTags().remove(tag));
         board.removeTag(tag);
 
         boardRepository.save(board);

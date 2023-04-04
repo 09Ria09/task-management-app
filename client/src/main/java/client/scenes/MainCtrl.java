@@ -269,7 +269,6 @@ public class MainCtrl {
     public void showTagOverview(final Board board) {
         primaryStage.setTitle("Talio: Tag Overview");
         tagOverviewCtrl.setBoard(board);
-        tagOverviewCtrl.refreshTimer(500);
         primaryStage.setScene(tagOverview);
     }
 

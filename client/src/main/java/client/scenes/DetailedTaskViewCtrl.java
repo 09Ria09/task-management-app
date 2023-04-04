@@ -5,10 +5,7 @@ import client.customExceptions.TagException;
 import client.customExceptions.TaskException;
 import client.utils.*;
 import com.google.inject.Inject;
-import commons.SubTask;
-import commons.Tag;
-import commons.Task;
-import commons.TaskList;
+import commons.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -39,14 +36,30 @@ public class DetailedTaskViewCtrl {
     @FXML
     private ChoiceBox<Tag> tagChoice;
     private Task task;
-    private CustomAlert customAlert;
+    private final CustomAlert customAlert;
     private MainCtrl mainCtrl;
-    private TaskUtils taskUtils;
-    private TaskListUtils taskListUtils;
+    private final TaskUtils taskUtils;
+    private final TaskListUtils taskListUtils;
     private ListCtrl listController;
-    private SubTaskUtils subTaskUtils;
+    private final SubTaskUtils subTaskUtils;
     private final WebSocketUtils webSocketUtils;
-    private TagUtils tagUtils;
+    private final TagUtils tagUtils;
+
+    private final Consumer<Task> taskConsumer = (task) -> {
+        if(task.id == this.task.id)
+            Platform.runLater(this::goBack);
+    };
+    private final Consumer<TaskList> listConsumer = (list) -> {
+        for(Task t : list.getTasks())
+            if(t.id == this.task.id)
+                Platform.runLater(this::goBack);
+    };
+    private final Consumer<Task> modifyTaskConsumer = (task) -> {
+        Platform.runLater(() -> {
+            if(task.id == this.task.id)
+                this.setTask(task);
+        });
+    };
 
 
     @Inject
@@ -85,31 +98,60 @@ public class DetailedTaskViewCtrl {
     }
 
     public void registerWebSockets(){
-        Consumer<Task> taskConsumer = (task) -> {
-            if(task.id == this.task.id)
-                Platform.runLater(this::goBack);
-        };
-        Consumer<TaskList> listConsumer = (list) -> {
-            for(Task t : list.getTasks()){
-                if(t.id == this.task.id) {
-                    Platform.runLater(this::goBack);
-                    return;
-                }
-            }
-        };
-        Consumer<Task> modifyTaskConsumer = (task) -> {
-            Platform.runLater(() -> {
-                if(task.id == this.task.id)
-                    this.setTask(task);
-            });
-        };
-
         this.webSocketUtils.registerForTaskMessages("/topic/" + listController.getBoardID() +
                 "/" + listController.getTaskList().id + "/deletetask", taskConsumer);
         this.webSocketUtils.registerForListMessages("/topic/" + listController.getBoardID() +
                 "/deletelist", listConsumer);
         this.webSocketUtils.registerForTaskMessages("/topic/" + listController.getBoardID() +
                 "/" + listController.getTaskList().id + "/modifytask", modifyTaskConsumer);
+
+        Consumer<Tag> addBoardTag = (tag) -> {
+            Platform.runLater(() -> {
+                if(tagChoice.getItems().contains(tag))
+                    return;
+                tagChoice.getItems().add(tag);
+            });
+        };
+        Consumer<Tag> deleteBoardTag = (tag) -> {
+            Platform.runLater(() -> {
+                tagChoice.getItems().remove(tag);
+            });
+        };
+        Consumer<Tag> changeTagConsumer = (tag) -> {
+            Platform.runLater(() -> {
+                changeTag(tag);
+            });
+        };
+        Consumer<Task> changeTaskTag = (task) -> {
+            Platform.runLater(() -> {
+                this.task = task;
+                tagView.getItems().setAll(task.getTags());
+            });
+        };
+        this.webSocketUtils.registerForTagMessages("/topic/" + listController.getBoardID() +
+                "/addtag", addBoardTag);
+        this.webSocketUtils.registerForTagMessages("/topic/" + listController.getBoardID() +
+                "/deletetag", deleteBoardTag);
+        this.webSocketUtils.registerForTagMessages("/topic/" + listController.getBoardID() +
+                "/changetag", changeTagConsumer);
+        this.webSocketUtils.registerForTaskMessages("/topic/" + listController.getBoardID() +
+                "/" + listController.getTaskList().id + "/" + task.id + "/changetasktag",
+                changeTaskTag);
+    }
+
+    public void changeTag(final Tag tag){
+        Tag previous = tagChoice.getItems().stream()
+                .filter( t -> t.id == tag.id)
+                .findAny().orElse(null);
+        if(previous == null)
+            return;
+        int index = tagChoice.getItems().indexOf(previous);
+        if(tagChoice.getItems().remove(previous)){
+            tagChoice.getItems().add(index, tag);
+        }
+        if(tagView.getItems().remove(previous)){
+            tagView.getItems().add(index, tag);
+        }
     }
 
     public void onTaskNameClicked(final MouseEvent event){
@@ -118,6 +160,7 @@ public class DetailedTaskViewCtrl {
         this.taskNameTextField.setText(this.taskNameText.getText());
         this.taskNameTextField.setVisible(true);
         this.taskNameText.setVisible(false);
+
     }
 
     public void onTaskDescriptionClicked(final MouseEvent event){
@@ -239,6 +282,8 @@ public class DetailedTaskViewCtrl {
             };
             cell.setOnMouseClicked(event -> {
                 try {
+                    if(cell.getItem() == null)
+                        return;
                     tagUtils.deleteTaskTag(listController.getBoardID(),
                             listController.getTaskList().id, task.id, cell.getItem().getId());
                     tagView.getItems().remove(cell.getItem());

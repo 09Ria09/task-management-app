@@ -1,6 +1,7 @@
 package server.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import commons.Board;
 import commons.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -17,6 +19,7 @@ import server.services.ListService;
 import server.services.TagService;
 import server.services.TaskService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -42,11 +45,14 @@ public class TagControllerTest {
 
     @MockBean TagService tagService;
 
+    @MockBean
+    private SimpMessagingTemplate messagingTemplate;
+
     @Test
     public void testGetAllBoardTagsEndpoint() throws Exception {
         List<Tag> tags = List.of(new Tag("Name", "Color"),
                 new Tag("NotName", "NotColor"));
-        Mockito.when(tagService.getBoardTags(1)).thenReturn(tags);
+        Mockito.when(tagService.getBoardTags(Mockito.any(Long.class))).thenReturn(tags);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/tags/1/tags"))
                 .andExpect(status().isOk())
@@ -115,6 +121,7 @@ public class TagControllerTest {
         Tag newTag = new Tag("Name", "Color");
         String requestBody = new ObjectMapper().writeValueAsString(newTag);
         Mockito.when(tagService.addBoardTag(1, newTag)).thenReturn(newTag);
+        Mockito.when(tagService.getBoardTags(1)).thenReturn(List.of(newTag));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/tags/1/tag")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -126,6 +133,7 @@ public class TagControllerTest {
 
     @Test
     public void testDeleteBoardTagEndpoint() throws Exception {
+        Mockito.when(tagService.getBoard(1)).thenReturn(new Board());
         Mockito.when(tagService.removeBoardTag(1, 2)).thenReturn(null);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/tags/1/delete/2"))
@@ -258,6 +266,7 @@ public class TagControllerTest {
     public void deleteBoardTagEndpointNotFound() throws Exception {
         Mockito.when(tagService.removeBoardTag(1, 2))
                 .thenThrow(NoSuchElementException.class);
+        Mockito.when(tagService.getBoard(1)).thenReturn(new Board());
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/tags/1/delete/2"))
                 .andExpect(status().isNotFound());

@@ -1,10 +1,11 @@
 package client.scenes;
 
 import client.CustomAlert;
-import client.customExceptions.BoardException;
 import client.customExceptions.TagException;
 import client.utils.BoardUtils;
+import client.utils.LayoutUtils;
 import client.utils.TagUtils;
+import client.utils.WebSocketUtils;
 import com.google.inject.Inject;
 import commons.Board;
 import commons.Tag;
@@ -17,7 +18,7 @@ import javafx.stage.Popup;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.Timer;
+import java.util.function.Consumer;
 
 public class TagOverviewCtrl {
 
@@ -30,24 +31,65 @@ public class TagOverviewCtrl {
     private Board board;
     private TagUtils tagUtils;
     private CustomAlert customAlert;
-    private Timer refreshTimer;
     private BoardUtils boardUtils;
+    private final WebSocketUtils webSocketUtils;
+    private final LayoutUtils layoutUtils;
     private MainCtrl mainCtrl;
 
     @Inject
     public TagOverviewCtrl(final TagUtils tagUtils, final CustomAlert customAlert,
-                           final BoardUtils boardUtils, final MainCtrl mainCtrl) {
+                           final BoardUtils boardUtils, final MainCtrl mainCtrl,
+                           final WebSocketUtils webSocketUtils,
+                           final LayoutUtils layoutUtils) {
         this.tagUtils = tagUtils;
         this.customAlert = customAlert;
         this.boardUtils = boardUtils;
-        refreshTimer = new Timer();
+        this.webSocketUtils = webSocketUtils;
+        this.layoutUtils = layoutUtils;
         this.mainCtrl = mainCtrl;
+    }
+
+    public void initialize(){
+        this.tagName.textProperty().addListener(layoutUtils.createMaxFieldLength(16, tagName));
     }
 
     public void setBoard(final Board board) {
         this.board = board;
         update();
         hardRefresh(board.getTags());
+        Consumer<Tag> addTagConsumer = (tag) -> {
+            Platform.runLater(() -> {
+                if(board.getTags().contains(tag))
+                    return;
+                board.addTag(tag);
+                tags.getItems().add(tag);
+            });
+        };
+        Consumer<Tag> deleteTagConsumer = (tag) -> {
+            Platform.runLater(() -> {
+                board.removeTag(tag);
+                tags.getItems().remove(tag);
+            });
+        };
+        Consumer<Tag> changeTagConsumer = (tag) -> {
+            Platform.runLater(() -> {
+                Tag previous = board.getTagById(tag.id).orElse(null);
+                if(previous == null)
+                    return;
+                int index = board.getTags().indexOf(previous);
+                if(board.getTags().remove(previous)){
+                    tags.getItems().remove(previous);
+                    board.getTags().add(index, tag);
+                    tags.getItems().add(index, tag);
+                }
+            });
+        };
+        this.webSocketUtils.registerForTagMessages("/topic/" + board.id +
+                "/addtag", addTagConsumer);
+        this.webSocketUtils.registerForTagMessages("/topic/" + board.id +
+                "/deletetag", deleteTagConsumer);
+        this.webSocketUtils.registerForTagMessages("/topic/" + board.id +
+                "/changetag", changeTagConsumer);
     }
 
     private void update() {
@@ -108,49 +150,21 @@ public class TagOverviewCtrl {
             return false;
         }
 
-        if(name.length() > 16) {
-            Alert alert = customAlert
-                    .showAlert("The name of the tag should be shorter than 16 characters");
+        Tag tag = new Tag(name, color);
+        if(tags.getItems().contains(tag)){
+            Alert alert = customAlert.showAlert("This tag already exists !");
             alert.showAndWait();
             return false;
         }
-
-        Tag tag = new Tag(name, color);
         try {
             tagUtils.addBoardTag(board.id, tag);
-            tags.getItems().add(tag);
+            tagName.setText("");
             return true;
         } catch (TagException e) {
             Alert alert = customAlert.showAlert(e.getMessage());
             alert.showAndWait();
             return false;
         }
-    }
-
-    public void refreshTimer(final long refreshPeriod) {
-        refreshTimer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                refresh();
-            }
-        }, 0, refreshPeriod);
-    }
-
-    public void refresh() {
-        Platform.runLater(() -> {
-            try {
-                List<Tag> oldTags = board.getTags();
-                this.board = boardUtils.getBoard(board.id);
-                List<Tag> newTags = board.getTags();
-
-                if(!oldTags.equals(newTags)) {
-                    hardRefresh(newTags);
-                }
-            } catch (BoardException e) {
-                Alert alert = customAlert.showAlert(e.getMessage());
-                alert.showAndWait();
-            }
-        });
     }
 
     private void hardRefresh(final List<Tag> newTags) {

@@ -1,6 +1,5 @@
 package commons;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.*;
@@ -44,7 +43,10 @@ public class Tag implements Serializable {
 
     @Override
     public boolean equals(final Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+        if(!(obj instanceof Tag))
+            return false;
+        Tag other = (Tag) obj;
+        return other.color.equals(color) && other.name.equals(name);
     }
 
     @Override
