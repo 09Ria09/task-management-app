@@ -27,6 +27,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -138,7 +139,7 @@ public class BoardOverviewCtrl {
             new TaskUtils(server), customAlert, new LayoutUtils(), webSocketUtils));
         try {
             VBox list = listLoader.load();
-            list.prefHeightProperty().bind(scrollPane.heightProperty());
+            list.prefHeightProperty().bind(Bindings.multiply(scrollPane.heightProperty(), 0.95));
             ListCtrl listCtrl = listLoader.getController();
             listCtrl.initialize();
             listCtrl.refresh(taskList, currentBoardId);

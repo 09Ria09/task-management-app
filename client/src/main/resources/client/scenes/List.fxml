@@ -14,13 +14,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="vBox" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="781.0" prefWidth="355.0" style="-fx-border-color: gray; -fx-border-style: solid;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ListCtrl">
+<VBox fx:id="vBox" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="781.0" prefWidth="355.0" style="-fx-border-color: gray; -fx-border-radius: 15;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ListCtrl">
    <children>
-      <HBox prefWidth="350.0" spacing="5.0" style="-fx-background-color: #4969e1; -fx-padding: 15px;">
+      <HBox cache="true" prefWidth="353.0" spacing="5.0" style="-fx-background-color: #4969e1; -fx-padding: 15px; -fx-border-radius: 15 15 0 0; -fx-background-radius: 15 15 0 0;">
          <children>
-            <StackPane prefHeight="30.0" prefWidth="300.0">
+            <StackPane prefHeight="30.0" prefWidth="300.0" style="-fx-border-radius: 15 15 0 0;">
                <children>
-                  <Label fx:id="title" onMouseClicked="#onTitleClicked" prefHeight="30.0" prefWidth="300.0" style="-fx-font-weight: bold; -fx-font-size: 20px;" text="List Name" textFill="WHITE">
+                  <Label fx:id="title" onMouseClicked="#onTitleClicked" prefHeight="30.0" prefWidth="300.0" style="-fx-font-weight: bold; -fx-font-size: 20px; -fx-border-radius: 15;" text="List Name" textFill="WHITE">
                      <font>
                         <Font size="20.0" />
                      </font>
@@ -43,7 +43,7 @@
             </Button>
          </children>
       </HBox>
-      <ListView fx:id="list" blendMode="SRC_ATOP" prefWidth="200.0" style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS" />
+      <ListView fx:id="list" blendMode="SRC_ATOP" prefWidth="200.0" style="-fx-background-color: transparent; -fx-border-radius: 15;" VBox.vgrow="ALWAYS" />
       <ButtonBar prefHeight="40.0" prefWidth="200.0" style="-fx-padding: 5px 10px;">
          <buttons>
             <Button mnemonicParsing="false" onAction="#addCard" prefHeight="25.0" prefWidth="20.0" style="-fx-background-radius: 25px; -fx-background-color: #4969e1; -fx-padding: -4px 4px; -fx-border-style: solid; -fx-border-radius: 25px; -fx-border-color: white;" text="Add task" textFill="WHITE">
