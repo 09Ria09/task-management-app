@@ -1,11 +1,9 @@
 package client.utils;
 
 import client.customExceptions.BoardException;
-import client.customExceptions.TaskException;
 import com.google.inject.Inject;
 import commons.Board;
 import commons.BoardColorScheme;
-import commons.Task;
 import commons.TaskPreset;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;

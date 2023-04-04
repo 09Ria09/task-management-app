@@ -1,7 +1,6 @@
 package client.scenes;
 
 import client.customExceptions.BoardException;
-import client.customExceptions.TaskException;
 import client.utils.BoardUtils;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;

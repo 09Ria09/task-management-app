@@ -205,7 +205,7 @@ public class Board {
 
 
 
-    public void addTaskPreset(TaskPreset taskPreset) {
+    public void addTaskPreset(final TaskPreset taskPreset) {
         taskPresets.add(taskPreset);
     }
 }
