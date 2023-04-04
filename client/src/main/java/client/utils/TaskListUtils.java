@@ -4,15 +4,11 @@ import client.customExceptions.BoardException;
 import client.customExceptions.TaskListException;
 import com.google.inject.Inject;
 import commons.TaskList;
-import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
-import org.glassfish.jersey.client.ClientConfig;
+import javafx.util.Pair;
 
 import java.util.List;
-
-import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 //TODO
 /*
@@ -37,18 +33,15 @@ public class TaskListUtils {
      */
     public List<TaskList> getTaskLists(final long boardId)
             throws TaskListException {
-        String serverAddress = server.getServerAddress();
-        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/lists/" + boardId + "/tasklists/")
-                .request()
-                .accept(APPLICATION_JSON) //I think this is where implicit deserialization happens
-                .get();
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(new GenericType<List<TaskList>>() {});
-        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            throw new TaskListException("Task lists not found");
-        } else {
-            throw new TaskListException("An error occurred while fetching the task lists");
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/lists/" + boardId + "/tasklists/",
+                RestUtils.Methods.GET, null);
+        try {
+            return server.getRestUtils().handleResponse(response,
+                    new GenericType<List<TaskList>>(){}, "getTaskLists");
+        }
+        catch(Exception e){
+            throw new TaskListException(e.getMessage());
         }
     }
 
@@ -60,40 +53,30 @@ public class TaskListUtils {
      */
     public TaskList getTaskList(final long boardId,final long taskListId)
             throws TaskListException {
-        String serverAddress = server.getServerAddress();
-        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/lists/" + boardId + "/tasklist/" + taskListId)
-                .request()
-                .accept(APPLICATION_JSON)
-                .get();
-
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(TaskList.class);
-        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            throw new TaskListException("Task list not found.");
-        } else {
-            throw new TaskListException("An error occurred while fetching the task list");
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/lists/" + boardId + "/tasklist/" + taskListId,
+                RestUtils.Methods.GET, null);
+        try {
+            return server.getRestUtils().handleResponse(response,
+                    TaskList.class, "getTaskList");
+        }
+        catch(Exception e){
+            throw new TaskListException(e.getMessage());
         }
     }
 
 
     public TaskList createTaskList(final long boardId,final TaskList taskList)
             throws BoardException, TaskListException {
-        String serverAddress = server.getServerAddress();
-        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/lists/" + boardId + "/tasklist")
-                .request()
-                .accept(APPLICATION_JSON)
-                .post(Entity.entity(taskList, APPLICATION_JSON));
-        System.out.println(response.getStatus());
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(TaskList.class);
-        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            throw new BoardException("Board not found.");
-        } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
-            throw new TaskListException("You inputted a wrong value");
-        } else {
-            throw new TaskListException("An error occurred while creating the task list");
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/lists/" + boardId + "/tasklist", RestUtils.Methods.POST,
+                taskList);
+        try {
+            return server.getRestUtils().handleResponse(response,
+                    TaskList.class, "createTaskList");
+        }
+        catch(Exception e){
+            throw new TaskListException(e.getMessage());
         }
     }
     /**
@@ -106,59 +89,44 @@ public class TaskListUtils {
      */
     public TaskList renameTaskList(final long boardId,final long taskListId,final String newName)
             throws TaskListException {
-        String serverAddress = server.getServerAddress();
-        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/lists/" + boardId + "/" + taskListId)
-                .queryParam("name", newName)
-                .request()
-                .accept(APPLICATION_JSON)
-                .put(Entity.entity(newName, APPLICATION_JSON));
-
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(TaskList.class);
-        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            throw new TaskListException("Task list not found.");
-        } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
-            throw new TaskListException("You inputted a wrong value");
-        } else {
-            throw new TaskListException("An error occurred while updating the task list");
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/lists/" + boardId + "/" + taskListId, RestUtils.Methods.PUT,
+                newName, new Pair<>("name", newName));
+        try {
+            return server.getRestUtils().handleResponse(response,
+                    TaskList.class, "renameTaskList");
+        }
+        catch(Exception e){
+            throw new TaskListException(e.getMessage());
         }
     }
 
     public TaskList deleteTaskList(final long boardId,final long taskListId)
             throws TaskListException {
-        String serverAddress = server.getServerAddress();
-        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/lists/" + boardId + "/" + taskListId)
-                .request()
-                .accept(APPLICATION_JSON)
-                .delete();
-
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(TaskList.class);
-        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            throw new TaskListException("Task list not found.");
-        } else {
-            throw new TaskListException("An error occurred while deleting the task list");
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/lists/" + boardId + "/" + taskListId, RestUtils.Methods.DELETE, null);
+        try {
+            return server.getRestUtils().handleResponse(response,
+                    TaskList.class, "deleteTaskList");
+        }
+        catch(Exception e){
+            throw new TaskListException(e.getMessage());
         }
     }
 
     public TaskList reorderTask(final long boardId,final long taskListId,
                                 final long taskID, final int newIndex) throws TaskListException {
-        String serverAddress = server.getServerAddress();
-        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/lists/" + boardId + "/" + taskListId + "/reorder/" + taskID)
-                .queryParam("newIndex", newIndex)
-                .request()
-                .accept(APPLICATION_JSON)
-                .put(Entity.entity(newIndex, APPLICATION_JSON));
-
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(TaskList.class);
-        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            throw new TaskListException("Task list not found.");
-        } else {
-            throw new TaskListException("An error occurred while reordering the task list");
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/lists/" + boardId + "/" + taskListId + "/reorder/" + taskID,
+                RestUtils.Methods.PUT,
+                newIndex,
+                new Pair<>("newIndex", newIndex));
+        try {
+            return server.getRestUtils().handleResponse(response,
+                    TaskList.class, "reorderTasks");
+        }
+        catch(Exception e){
+            throw new TaskListException(e.getMessage());
         }
     }
 }
