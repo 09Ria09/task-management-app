@@ -16,8 +16,12 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 import javafx.scene.input.*;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Alert;
+import javafx.scene.paint.Color;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
@@ -245,8 +249,11 @@ public class ListCtrl implements Initializable {
                     super.updateItem(task, empty);
                     if (task == null || empty) {
                         setGraphic(null);
+                        setBackground(Background.EMPTY);
                     } else {
                         try {
+                            setBackground(new Background(new BackgroundFill(Color.
+                                    TRANSPARENT, null, null)));
                             var cardLoader = new FXMLLoader(getClass().getResource("Card.fxml"));
                             Node card = cardLoader.load();
                             CardCtrl cardCtrl = cardLoader.getController();
@@ -267,6 +274,7 @@ public class ListCtrl implements Initializable {
                 }
                 event.consume();
             });
+
             cell.setOnMouseClicked(event -> {
                 if(cell.getIndex() < taskList.getTasks().size() && event.getClickCount() == 2) {
                     mainCtrl.showDetailedTaskView(cell.getItem(), this);
