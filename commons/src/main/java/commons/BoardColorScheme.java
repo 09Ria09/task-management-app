@@ -17,15 +17,12 @@ public class BoardColorScheme {
     private String listBackgroundColor;
 
     private String listTextColor;
-    @OneToMany
-    private List<TaskPreset> taskPresets;
 
     public BoardColorScheme() {
         this.boardBackgroundColor = "0xcce6ff";
         this.boardTextColor = "0x000000";
         this.listBackgroundColor = "0xD29FE3";
         this.listTextColor = "0x000000";
-        this.taskPresets = new ArrayList<>();
     }
 
 //    public void resetBoardColors() {
@@ -38,9 +35,6 @@ public class BoardColorScheme {
 //        this.listTextColor = "0x000000";
 //    }
 
-    public void addTaskPreset(final TaskPreset taskPreset) {
-        this.taskPresets.add(taskPreset);
-    }
 
     public String getBoardBackgroundColor() {
         return boardBackgroundColor;

@@ -1,9 +1,6 @@
 package commons;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.awt.*;
 import java.util.Objects;
 
@@ -13,15 +10,18 @@ public class TaskPreset {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long id;
+    @OneToOne
+    private Board board;
 
     private String name;
     private Color backgroundColor;
     private Color fontColor;
     private boolean isDefault;
 
-    public TaskPreset(final String name) {
+    public TaskPreset(final String name, final Board board) {
         this.isDefault = false;
         this.name = name;
+        this.board = board;
     }
 
     public String getName() {

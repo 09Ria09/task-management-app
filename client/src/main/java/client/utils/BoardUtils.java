@@ -1,9 +1,12 @@
 package client.utils;
 
 import client.customExceptions.BoardException;
+import client.customExceptions.TaskException;
 import com.google.inject.Inject;
 import commons.Board;
 import commons.BoardColorScheme;
+import commons.Task;
+import commons.TaskPreset;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
@@ -224,6 +227,43 @@ public class BoardUtils {
 //                .request()
 //                .accept(APPLICATION_JSON)
 //                .put(Entity.entity(boardColorScheme, APPLICATION_JSON));
+//    }
+
+    public TaskPreset addTaskPreset(final long boardId, final TaskPreset taskPreset)
+            throws BoardException {
+        String serverAddress = server.getServerAddress();
+        Response response =  ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
+                .path("api/boards/" + boardId + "/addtaskpreset")
+                .request()
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(taskPreset, APPLICATION_JSON));
+
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+            return response.readEntity(TaskPreset.class);
+        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
+            throw new BoardException("Board not found.");
+        } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
+            throw new BoardException("An error occurred while adding the task preset");
+        } else {
+            throw new BoardException("An error occurred while adding the task preset");
+        }
+    }
+
+//    public Board addBoard(final Board board) throws BoardException {
+//        String serverAddress = server.getServerAddress();
+//        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
+//                .path("api/boards")
+//                .request()
+//                .accept(APPLICATION_JSON)
+//                .post(Entity.entity(board, APPLICATION_JSON));
+//
+//        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+//            return response.readEntity(Board.class);
+//        } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
+//            throw new BoardException("You inputted a wrong value");
+//        } else {
+//            throw new BoardException("An error occurred while adding the board");
+//        }
 //    }
 
 }

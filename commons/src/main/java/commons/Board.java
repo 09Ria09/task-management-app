@@ -26,6 +26,9 @@ public class Board {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private BoardColorScheme boardColorScheme;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TaskPreset> taskPresets;
+
 
     public Board(final String name, final List<TaskList> listTaskList, final List<Tag> tags) {
         this.name = name;
@@ -33,6 +36,7 @@ public class Board {
         this.tags = tags;
         this.boardMembers= new ArrayList<>();
         boardColorScheme = new BoardColorScheme();
+        this.taskPresets = new ArrayList<>();
     }
 
     /**
@@ -54,6 +58,8 @@ public class Board {
         this.boardMembers = new ArrayList<>();
         this.inviteKey = inviteKey;
         boardColorScheme = new BoardColorScheme();
+        this.taskPresets = new ArrayList<>();
+
     }
 
     public Board() {
@@ -63,6 +69,12 @@ public class Board {
         this.boardMembers = new ArrayList<>();
         this.inviteKey = "";
         boardColorScheme = new BoardColorScheme();
+        this.taskPresets = new ArrayList<>();
+
+    }
+
+    public List<TaskPreset> getTaskPresets() {
+        return taskPresets;
     }
 
     public String getName() {
@@ -189,5 +201,11 @@ public class Board {
 
     public void setBoardColorScheme(final BoardColorScheme boardColorScheme) {
         this.boardColorScheme = boardColorScheme;
+    }
+
+
+
+    public void addTaskPreset(TaskPreset taskPreset) {
+        taskPresets.add(taskPreset);
     }
 }

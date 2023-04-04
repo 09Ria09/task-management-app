@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.customExceptions.BoardException;
+import client.customExceptions.TaskException;
 import client.utils.BoardUtils;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
@@ -68,14 +69,15 @@ public class ColorManagementViewCtrl {
                 setListTextColor(String.valueOf(listTextColorInput.getValue()));
     }
 
-    public void createTaskColorPreset() {
+    public void createTaskColorPreset() throws BoardException {
         System.out.println("y");
         taskColorPresetName = taskColorPresetNameInput.getText();
         if(taskColorPresetName.isEmpty()|| taskColorPresetName == null) {
             throw new IllegalArgumentException("Empty name not allowed");
         }
-        TaskPreset taskpreset = new TaskPreset(taskColorPresetName);
-        board.getBoardColorScheme().addTaskPreset(taskpreset);
+        TaskPreset taskpreset = new TaskPreset(taskColorPresetName, board);
+        board.getTaskPresets().add(taskpreset);
+        boardUtils.addTaskPreset(board.id, taskpreset);
         System.out.println(board.getBoardColorScheme().toString());
     }
 

@@ -2,6 +2,7 @@ package server.api;
 
 import commons.Board;
 import commons.BoardColorScheme;
+import commons.TaskPreset;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -179,4 +180,18 @@ public class BoardController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PostMapping(path = { "/{boardid}", "/addtaskpreset" })
+    public ResponseEntity<TaskPreset> addTaskPreset(@PathVariable("boardid") final long boardId,
+            @RequestBody final TaskPreset taskPreset) {
+        if (getBoard(boardId) == null ) {
+            return ResponseEntity.badRequest().build();
+        }
+        TaskPreset createdTaskPreset = boardService.setTaskPreset(boardId, taskPreset);
+        return ResponseEntity.ok(createdTaskPreset);
+    }
+
+
+
+
 }
