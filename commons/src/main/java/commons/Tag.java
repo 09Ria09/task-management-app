@@ -1,31 +1,28 @@
 package commons;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
-public class Tag {
+public class Tag implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long id;
 
     private String name;
-    private int color;
+    private String color;
 
-    public Tag(final String name, final int color) {
+    public Tag(final String name, final String color) {
         this.name = name;
         this.color = color;
     }
 
     public Tag() {
         this.name = "";
-        this.color = 0;
+        this.color = "FFFFFF";
     }
 
     public String getName() {
@@ -36,17 +33,20 @@ public class Tag {
         this.name = name;
     }
 
-    public int getColor() {
+    public String getColor() {
         return color;
     }
 
-    public void setColor(final int color) {
+    public void setColor(final String color) {
         this.color = color;
     }
 
     @Override
     public boolean equals(final Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+        if(!(obj instanceof Tag))
+            return false;
+        Tag other = (Tag) obj;
+        return other.color.equals(color) && other.name.equals(name);
     }
 
     @Override
@@ -56,6 +56,11 @@ public class Tag {
 
     @Override
     public String toString() {
-        return "Tag (" + id + ") : " + name + " -> color=" + color;
+        return "Tag (" + id + ") : " + name + " -> color=#" + color;
     }
+
+    public long getId() {
+        return id;
+    }
+
 }

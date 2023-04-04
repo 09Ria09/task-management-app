@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<Pane fx:id="pane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.TagOverviewCtrl">
+   <children>
+      <ListView fx:id="tags" layoutX="42.0" layoutY="87.0" orientation="HORIZONTAL" prefHeight="65.0" prefWidth="519.0" />
+      <Label layoutX="42.0" layoutY="53.0" text="Tags">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="225.0" layoutY="17.0" text="Tag Overview" textAlignment="CENTER">
+         <font>
+            <Font size="25.0" />
+         </font>
+      </Label>
+      <Label layoutX="42.0" layoutY="191.0" text="New Tag">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <ColorPicker fx:id="colorPicker" layoutX="312.0" layoutY="241.0" />
+      <TextField fx:id="tagName" layoutX="42.0" layoutY="240.0">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </TextField>
+      <Label layoutX="42.0" layoutY="218.0" text="Name" />
+      <Label layoutX="312.0" layoutY="218.0" text="Color" />
+      <Button layoutX="509.0" layoutY="241.0" mnemonicParsing="false" onAction="#addTag" text="ADD" />
+      <Button layoutX="32.0" layoutY="343.0" mnemonicParsing="false" onAction="#goBack" text="Go Back" />
+   </children>
+</Pane>

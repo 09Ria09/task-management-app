@@ -21,6 +21,7 @@ import client.customExceptions.TaskListException;
 import client.utils.*;
 import com.google.inject.Inject;
 import commons.Board;
+import commons.Task;
 import commons.TaskList;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -99,8 +100,24 @@ public class BoardOverviewCtrl {
                     refreshLists(FXCollections.observableList(taskLists));
                 });
             };
+            Consumer<Task> changeTaskTag = (task) -> {
+                Platform.runLater(() -> {
+                    for(TaskList l : this.board.getListTaskList())
+                        l.getTaskById(task.id).ifPresent((t) -> {
+                            List<Task> tasks = listsMap.get(l.id).list.getItems();
+                            int index = tasks.indexOf(t);
+                            if(tasks.remove(t)) {
+                                t.getTags().clear();
+                                t.getTags().addAll(task.getTags());
+                                tasks.add(index, t);
+                            }
+                        });
+                });
+            };
             webSocketUtils.registerForBoardMessages("/topic/" + board.id +
                     "/refreshboard", consumer);
+            webSocketUtils.registerForTaskMessages("/topic/" + board.id + "/changetasktag",
+                    changeTaskTag);
         }
         catch(BoardException e){
             System.out.println(e.getMessage());
@@ -284,6 +301,11 @@ public class BoardOverviewCtrl {
             Alert alert = customAlert.showAlert(e.getMessage());
             alert.showAndWait();
         }
+    }
+
+    public void tagOverview() throws BoardException {
+        Board board = boardUtils.getBoard(currentBoardId);
+        mainCtrl.showTagOverview(board);
     }
 
     public void setTab(final Tab tab) {

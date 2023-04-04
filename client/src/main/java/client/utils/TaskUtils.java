@@ -31,7 +31,7 @@ public class TaskUtils {
             throws TaskException {
         String serverAddress = server.getServerAddress();
         Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/boards" + boardId + "/tasklist" + taskListId + "/tasks")
+                .path("api/boards/" + boardId + "/tasklist" + taskListId + "/tasks")
                 .request()
                 .accept(APPLICATION_JSON)
                 .get();
