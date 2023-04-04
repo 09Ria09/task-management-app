@@ -1,41 +1,35 @@
 package commons;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.io.Serializable;
 import java.awt.*;
 
 @Entity
-public class Tag {
+public class Tag implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long id;
 
     private String name;
-    private int colorBackground;
-    private int colorFont;
+    private String colorBackground;
+    private String colorFont;
 
-    public Tag(final String name, final int colorBackground, final int colorFont) {
+    public Tag(final String name, final String colorBackground, final String colorFont) {
         this.name = name;
-        this.colorBackground = colorBackground;
-        this.colorFont = colorFont;
+        setColors(colorBackground, colorFont);
     }
 
-    public Tag(final String name, final int colorBackground) {
+    public Tag(final String name, final String colorBackground) {
         this.name = name;
-        this.colorBackground = colorBackground;
-        this.colorFont = 0xFFFFFF - colorBackground;
+        setColors(colorBackground);
     }
-
     public Tag() {
         this.name = "";
-        this.colorBackground = 0x000000;
-        this.colorFont = 0xFFFFFF;
+        this.colorBackground = "#000000";
+        this.colorFont = "#FFFFFF";
     }
 
     public String getName() {
@@ -46,22 +40,31 @@ public class Tag {
         this.name = name;
     }
 
-    public int getColorBackground() {
+    public String getColorBackground() {
         return colorBackground;
     }
 
-    public int getColorFont() {
+    public String getColorFont() {
         return colorFont;
     }
 
-    public void setColors(final int colorBackground, final int colorFont) {
+    public void setColors(final String colorBackground) {
+        int colorBackgroundInt = Color.parseColor(colorBackground);
+        this.colorBackground = colorBackground;
+        this.colorFont = String.format("#%06X", 0xFFFFFF - colorBackgroundInt);
+    }
+
+    public void setColors(final String colorBackground, final String colorFont) {
         this.colorBackground = colorBackground;
         this.colorFont = colorFont;
     }
 
     @Override
     public boolean equals(final Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+        if(!(obj instanceof Tag))
+            return false;
+        Tag other = (Tag) obj;
+        return other.color.equals(color) && other.name.equals(name);
     }
 
     @Override
@@ -73,4 +76,9 @@ public class Tag {
     public String toString() {
         return "Tag (" + id + ") : " + name + " -> color=" + colorBackground + " font=" + colorFont;
     }
+
+    public long getId() {
+        return id;
+    }
+
 }

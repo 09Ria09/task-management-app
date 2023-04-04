@@ -19,7 +19,7 @@ public class BoardTest {
     @BeforeEach
     public void setup() {
          board = new Board("Test board", new ArrayList<>(),
-                 new ArrayList<>(List.of(new Tag("tag1", 0))));
+                 new ArrayList<>(List.of(new Tag("tag1", "FFFFFF"))));
          taskList1 = new TaskList("TaskList");
          taskList2 = new TaskList("SomeOtherTaskList");
          emptyBoard = new Board("Empty", new ArrayList<>(), new ArrayList<>(), "11111");
@@ -105,12 +105,12 @@ public class BoardTest {
         long id = board.getTags().get(0).id;
         String boardString = "Board (" + board.getId() + ") : Test board\nLists:\n"
                 + taskList1.toString() + "\nTags:\n" +
-                "Tag (" + id + ") : tag1 -> color=0\n" + "Members:\nUser1\n";
+                "Tag (" + id + ") : tag1 -> color=#FFFFFF\n" + "Members:\nUser1\n";
         assertEquals(boardString, board.toString());
         board.removeBoardMember("User1");
         String boardString2 = "Board (" + board.getId() + ") : Test board\nLists:\n"
                 + taskList1.toString() + "\nTags:\n" +
-                "Tag (" + id + ") : tag1 -> color=0\n" + "Members:\n";
+                "Tag (" + id + ") : tag1 -> color=#FFFFFF\n" + "Members:\n";
         assertEquals(boardString2, board.toString());
     }
 
@@ -123,14 +123,14 @@ public class BoardTest {
     @Test
     public void testAddTag(){
         assertThrows(IndexOutOfBoundsException.class, () -> board.getTags().get(1));
-        board.addTag(new Tag("tag123", 0XFFFFFF));
+        board.addTag(new Tag("tag123", "FFFFFF"));
         assertEquals("tag123", board.getTags().get(1).getName());
     }
 
     @Test
     public void testDeleteTag(){
-        board.addTag(new Tag("tag123", 0XFFFFFF));
-        Tag t = new Tag("tag2", 0XFFFFFF);
+        board.addTag(new Tag("tag123", "FFFFFF"));
+        Tag t = new Tag("tag2", "FFFFFF");
         board.addTag(t);
         assertEquals(3, board.getTags().size());
         board.removeTag(t);
@@ -147,9 +147,9 @@ public class BoardTest {
 
     @Test
     public void testSetTags(){
-        List<Tag> tags = new ArrayList<>(List.of(new Tag("audio", 0),
-                new Tag("video", 0),
-                new Tag("auvio", 0)));
+        List<Tag> tags = new ArrayList<>(List.of(new Tag("audio", "FFFFFF"),
+                new Tag("video", "FFFFFF"),
+                new Tag("auvio", "FFFFFF")));
         board.setTags(tags);
         assertEquals(tags, board.getTags());
     }
