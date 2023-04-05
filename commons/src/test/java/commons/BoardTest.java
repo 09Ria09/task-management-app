@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,8 +18,8 @@ public class BoardTest {
     @BeforeEach
     public void setup() {
          board = new Board("Test board", new ArrayList<>(),
-                 new ArrayList<>(List.of(new Tag("tag1", "FFFFFF"))));
-         taskList1 = new TaskList("TaskList");
+             new ArrayList<>(List.of(new Tag("tag1", "#FFFFFF"))));
+        taskList1 = new TaskList("TaskList");
          taskList2 = new TaskList("SomeOtherTaskList");
          emptyBoard = new Board("Empty", new ArrayList<>(), new ArrayList<>(), "11111");
     }
@@ -104,13 +103,13 @@ public class BoardTest {
         board.addBoardMember("User1");
         long id = board.getTags().get(0).id;
         String boardString = "Board (" + board.getId() + ") : Test board\nLists:\n"
-                + taskList1.toString() + "\nTags:\n" +
-                "Tag (" + id + ") : tag1 -> color=#FFFFFF\n" + "Members:\nUser1\n";
+            + taskList1.toString() + "\nTags:\n" +
+            "Tag (" + id + ") : tag1 -> background=#FFFFFF font=#000000\n" + "Members:\nUser1\n";
         assertEquals(boardString, board.toString());
         board.removeBoardMember("User1");
         String boardString2 = "Board (" + board.getId() + ") : Test board\nLists:\n"
                 + taskList1.toString() + "\nTags:\n" +
-                "Tag (" + id + ") : tag1 -> color=#FFFFFF\n" + "Members:\n";
+                "Tag (" + id + ") : tag1 -> background=#FFFFFF font=#000000\n" + "Members:\n";
         assertEquals(boardString2, board.toString());
     }
 

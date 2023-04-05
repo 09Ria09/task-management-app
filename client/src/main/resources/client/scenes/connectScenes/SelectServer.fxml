@@ -45,7 +45,7 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="addressField" alignment="BOTTOM_CENTER" maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="300.0" promptText="Server address" style="-fx-alignment: center;">
+                  <TextField fx:id="addressField" alignment="BOTTOM_CENTER" maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="300.0" text="localhost" promptText="Server address" style="-fx-alignment: center;">
                      <tooltip>
                         <Tooltip text="Only the IP address is needed, not the port number.">
                            <font>

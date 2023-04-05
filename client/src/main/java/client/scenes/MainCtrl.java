@@ -52,7 +52,6 @@ public class MainCtrl {
     private DetailedTaskViewCtrl detailedTaskViewCtrl;
     private Scene detailedTaskView;
 
-    private RenameListCtrl renameListCtrl;
     private Scene renameList;
 
     private SelectServerCtrl selectServerCtrl;
@@ -74,6 +73,8 @@ public class MainCtrl {
 
     private Scene editBoard;
 
+    private ColorManagementViewCtrl colorManagementViewCtrl;
+    private Scene colorManagementView;
     private TagOverviewCtrl tagOverviewCtrl;
     private Scene tagOverview;
 
@@ -109,8 +110,7 @@ public class MainCtrl {
 
         this.createListCtrl = listScenes.getCreateList().getKey();
         this.createList = new Scene(listScenes.getCreateList().getValue());
-        this.renameListCtrl = listScenes.getRenameList().getKey();
-        this.renameList = new Scene(listScenes.getRenameList().getValue());
+
 
         this.selectServerCtrl = serverScenes.getSelectServer().getKey();
         this.selectServer = new Scene(serverScenes.getSelectServer().getValue());
@@ -126,6 +126,9 @@ public class MainCtrl {
         primaryStage.setOnCloseRequest(e-> {
             boardCatalogue.getKey().close();
         });
+
+        this.colorManagementViewCtrl = boardScenes.getColorManagementView().getKey();
+        this.colorManagementView = new Scene(boardScenes.getColorManagementView().getValue());
 
         this.editBoardCtrl = boardScenes.getEditBoard().getKey();
         this.editBoard = new Scene(boardScenes.getEditBoard().getValue());
@@ -244,6 +247,13 @@ public class MainCtrl {
         primaryStage.setTitle("Talio: unexpected error");
         resize();
         primaryStage.setScene(unexpectedError);
+    }
+
+    public void showColorManagementView(final Board board) {
+        primaryStage.setTitle("Talio: color management view");
+        colorManagementViewCtrl.setBoard(board);
+        resize();
+        primaryStage.setScene(colorManagementView);
     }
 
     /** Populate the Board Catalogue */

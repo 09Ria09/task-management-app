@@ -14,6 +14,23 @@ public class RestUtils {
 
     public Response sendRequest(final String address, final String path,
                                 final Methods method, final Object entity,
+                                final Pair<String, Object> parameter,
+                                final Pair<String, Object> parameter2) {
+
+        Client clientBuilder = ClientBuilder.newClient(new ClientConfig());
+        if (address == null || address.isEmpty()) {
+            throw new IllegalArgumentException("Server address cannot be empty");
+        }
+
+        Invocation.Builder builder = clientBuilder.target(address).path(path)
+            .queryParam(parameter.getKey(), parameter.getValue())
+            .queryParam(parameter2.getKey(), parameter2.getValue())
+            .request().accept(APPLICATION_JSON);
+        return send(builder, method, entity);
+    }
+
+    public Response sendRequest(final String address, final String path,
+                                final Methods method, final Object entity,
                                 final Pair<String, Object> parameter) {
 
         Client clientBuilder = ClientBuilder.newClient(new ClientConfig());
@@ -22,8 +39,8 @@ public class RestUtils {
         }
 
         Invocation.Builder builder = clientBuilder.target(address).path(path)
-                .queryParam(parameter.getKey(), parameter.getValue())
-                .request().accept(APPLICATION_JSON);
+            .queryParam(parameter.getKey(), parameter.getValue())
+            .request().accept(APPLICATION_JSON);
         return send(builder, method, entity);
     }
 

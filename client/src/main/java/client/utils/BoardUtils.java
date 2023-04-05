@@ -4,6 +4,8 @@ import client.customExceptions.BoardException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import commons.Board;
+import commons.BoardColorScheme;
+import commons.TaskPreset;
 import commons.BoardEvent;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.GenericType;
@@ -161,7 +163,43 @@ public class BoardUtils {
         return board.getInviteKey();
     }
 
-    private ExecutorService exec = Executors.newSingleThreadExecutor();
+    public BoardColorScheme getBoardColorScheme(final long boardId) throws BoardException {
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/boards/" + boardId, RestUtils.Methods.GET, null);
+        try {
+            return server.getRestUtils().handleResponse(response, Board.class, "getBoard")
+                    .getBoardColorScheme();
+        }
+        catch(Exception e){
+            throw new BoardException(e.getMessage());
+        }
+
+    }
+    public BoardColorScheme setBoardColorScheme(final long boardId,
+                                                final BoardColorScheme boardColorScheme)
+            throws BoardException {
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/boards/" + boardId + "/setboardcolorscheme",
+                RestUtils.Methods.PUT, boardColorScheme);
+        try {
+            return server.getRestUtils().handleResponse(response,
+                    BoardColorScheme.class, "setBoardColorScheme");
+        }
+        catch(Exception e){
+            throw new BoardException(e.getMessage());
+        }
+    }
+
+
+
+    public TaskPreset addTaskPreset(final long boardId, final TaskPreset taskPreset)
+            throws BoardException {
+        return null;
+    }
+
+
+
+    private static final ExecutorService exec = Executors.newSingleThreadExecutor();
     public void registerForUpdatesBoards(final Consumer<BoardEvent> boardConsumer) {
         System.out.println("registering for updates");
         exec = Executors.newSingleThreadExecutor();

@@ -26,7 +26,9 @@ public class TagOverviewCtrl {
     @FXML
     private ListView<Tag> tags;
     @FXML
-    private ColorPicker colorPicker;
+    private ColorPicker backgroundColorPicker;
+    @FXML
+    private ColorPicker fontColorPicker;
     @FXML
     private TextField tagName;
     private Board board;
@@ -144,14 +146,15 @@ public class TagOverviewCtrl {
 
     public boolean addTag() {
         String name = tagName.getText();
-        String color = colorPicker.getValue().toString().substring(2, 8);
+        String backgroundColor = backgroundColorPicker.getValue().toString().substring(2, 8);
+        String fontColor = fontColorPicker.getValue().toString().substring(2, 8);
         if(name.equals("")) {
             Alert alert = customAlert.showAlert("The tag should have a name");
             alert.showAndWait();
             return false;
         }
 
-        Tag tag = new Tag(name, color);
+        Tag tag = new Tag(name, backgroundColor, fontColor);
         if(tags.getItems().contains(tag)){
             Alert alert = customAlert.showAlert("This tag already exists !");
             alert.showAndWait();
