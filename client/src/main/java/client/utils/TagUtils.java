@@ -3,15 +3,11 @@ package client.utils;
 import client.customExceptions.TagException;
 import com.google.inject.Inject;
 import commons.Tag;
-import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
-import org.glassfish.jersey.client.ClientConfig;
+import javafx.util.Pair;
 
 import java.util.*;
-
-import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 public class TagUtils {
 
@@ -29,19 +25,14 @@ public class TagUtils {
      * @throws TagException throws an exception if something goes wrong
      */
     public List<Tag> getBoardTags(final long boardId) throws TagException {
-        String serverAddress = server.getServerAddress();
-        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/tags/" + boardId + "/tags")
-                .request()
-                .accept(APPLICATION_JSON)
-                .get();
-
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(new GenericType<>() {});
-        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            throw new TagException("Tag not found.");
-        } else {
-            throw new TagException("An error occurred while fetching the tags");
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/tags/" + boardId + "/tags", RestUtils.Methods.GET, null);
+        try {
+            return server.getRestUtils().handleResponse(response, new GenericType<List<Tag>>(){},
+                    "getBoardTags");
+        }
+        catch(Exception e){
+            throw new TagException(e.getMessage());
         }
     }
 
@@ -55,19 +46,15 @@ public class TagUtils {
      */
     public List<Tag> getTaskTags(final long boardId, final long listId,
                                  final long taskId) throws TagException {
-        String serverAddress = server.getServerAddress();
-        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/tags/" + boardId + "/" + listId + "/" + taskId + "/tags")
-                .request()
-                .accept(APPLICATION_JSON)
-                .get();
-
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(new GenericType<>() {});
-        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            throw new TagException("Tag not found.");
-        } else {
-            throw new TagException("An error occurred while fetching the tags");
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/tags/" + boardId + "/" + listId + "/" + taskId + "/tags",
+                RestUtils.Methods.GET, null);
+        try {
+            return server.getRestUtils().handleResponse(response, new GenericType<List<Tag>>(){},
+                    "getTaskTags");
+        }
+        catch(Exception e){
+            throw new TagException(e.getMessage());
         }
     }
 
@@ -79,19 +66,13 @@ public class TagUtils {
      * @throws TagException throws an error if something goes wrong
      */
     public Tag getBoardTag(final long boardId, final long tagId) throws TagException {
-        String serverAddress = server.getServerAddress();
-        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/tags/" + boardId + "/" + tagId)
-                .request()
-                .accept(APPLICATION_JSON)
-                .get();
-
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(Tag.class);
-        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            throw new TagException("Tag not found.");
-        } else {
-            throw new TagException("An error occurred while fetching the tag");
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/tags/" + boardId + "/" + tagId, RestUtils.Methods.GET, null);
+        try {
+            return server.getRestUtils().handleResponse(response, Tag.class, "getBoardTag");
+        }
+        catch(Exception e){
+            throw new TagException(e.getMessage());
         }
     }
 
@@ -106,19 +87,14 @@ public class TagUtils {
      */
     public Tag getTaskTag(final long boardId, final long listId,
                           final long taskId, final long tagId) throws TagException {
-        String serverAddress = server.getServerAddress();
-        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/tags/" + boardId + "/" + listId + "/" + taskId + "/" + tagId)
-                .request()
-                .accept(APPLICATION_JSON)
-                .get();
-
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(Tag.class);
-        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            throw new TagException("Tag not found.");
-        } else {
-            throw new TagException("An error occurred while fetching the tag");
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/tags/" + boardId + "/" + listId + "/" + taskId + "/" + tagId,
+                RestUtils.Methods.GET, null);
+        try {
+            return server.getRestUtils().handleResponse(response, Tag.class, "getTaskTag");
+        }
+        catch(Exception e){
+            throw new TagException(e.getMessage());
         }
     }
 
@@ -130,21 +106,14 @@ public class TagUtils {
      * @throws TagException throws an exception if something goes wrong
      */
     public Tag addBoardTag(final long boardId, final Tag tag) throws TagException {
-        String serverAddress = server.getServerAddress();
-        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/tags/" + boardId + "/tag")
-                .request()
-                .accept(APPLICATION_JSON)
-                .post(Entity.entity(tag, APPLICATION_JSON));
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/tags/" + boardId + "/tag", RestUtils.Methods.POST, tag);
 
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(Tag.class);
-        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            throw new TagException("Board not found.");
-        } else if(response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
-            throw new TagException("You inputted a wrong value");
-        } else {
-            throw new TagException("An error occurred while adding the tag");
+        try {
+            return server.getRestUtils().handleResponse(response, Tag.class, "addBoardTag");
+        }
+        catch(Exception e){
+            throw new TagException(e.getMessage());
         }
     }
 
@@ -159,21 +128,14 @@ public class TagUtils {
      */
     public Tag addTaskTag(final long boardId, final long listId,
                           final long taskId, final Tag tag) throws TagException {
-        String serverAddress = server.getServerAddress();
-        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/tags/" + boardId + "/" + listId + "/" + taskId + "/add")
-                .request()
-                .accept(APPLICATION_JSON)
-                .post(Entity.entity(tag, APPLICATION_JSON));
-
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(Tag.class);
-        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            throw new TagException("Board not found.");
-        } else if(response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
-            throw new TagException("You inputted a wrong value");
-        } else {
-            throw new TagException("An error occurred while adding the tag");
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/tags/" + boardId + "/" + listId + "/" + taskId + "/add",
+                RestUtils.Methods.POST, tag);
+        try {
+            return server.getRestUtils().handleResponse(response, Tag.class, "addTaskTag");
+        }
+        catch(Exception e){
+            throw new TagException(e.getMessage());
         }
     }
 
@@ -187,22 +149,14 @@ public class TagUtils {
      */
     public Tag renameTag(final long boardId, final long tagId,
                          final String newName) throws TagException {
-        String serverAddress = server.getServerAddress();
-        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/tags/" + boardId + "/" + tagId + "/rename")
-                .queryParam("name", newName)
-                .request()
-                .accept(APPLICATION_JSON)
-                .put(Entity.entity(newName, APPLICATION_JSON));
-
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(Tag.class);
-        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            throw new TagException("Tag not found.");
-        } else if(response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
-            throw new TagException("You inputted a wrong value");
-        }else {
-            throw new TagException("An error occurred while renaming the tag");
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/tags/" + boardId + "/" + tagId + "/rename", RestUtils.Methods.PUT,
+                newName, new Pair<>("name", newName));
+        try {
+            return server.getRestUtils().handleResponse(response, Tag.class, "renameTag");
+        }
+        catch(Exception e){
+            throw new TagException(e.getMessage());
         }
     }
 
@@ -216,22 +170,14 @@ public class TagUtils {
      */
     public Tag recolorTag(final long boardId, final long tagId,
                          final String newColor) throws TagException {
-        String serverAddress = server.getServerAddress();
-        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/tags/" + boardId + "/" + tagId + "/recolor")
-                .queryParam("color", newColor)
-                .request()
-                .accept(APPLICATION_JSON)
-                .put(Entity.entity(newColor, APPLICATION_JSON));
-
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(Tag.class);
-        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            throw new TagException("Tag not found.");
-        } else if(response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
-            throw new TagException("You inputted a wrong value");
-        }else {
-            throw new TagException("An error occurred while recoloring the tag");
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/tags/" + boardId + "/" + tagId + "/recolor", RestUtils.Methods.PUT,
+                newColor, new Pair<>("color", newColor));
+        try {
+            return server.getRestUtils().handleResponse(response, Tag.class, "recolorTag");
+        }
+        catch(Exception e){
+            throw new TagException(e.getMessage());
         }
     }
 
@@ -243,19 +189,13 @@ public class TagUtils {
      * @throws TagException throws an exception if something goes wrong
      */
     public Tag deleteBoardTag(final long boardId, final long tagId) throws TagException {
-        String serverAddress = server.getServerAddress();
-        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/tags/" + boardId + "/delete/" + tagId)
-                .request()
-                .accept(APPLICATION_JSON)
-                .delete();
-
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(Tag.class);
-        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            throw new TagException("Tag not found.");
-        } else {
-            throw new TagException("An error occurred while deleting the tag");
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/tags/" + boardId + "/delete/" + tagId, RestUtils.Methods.DELETE, null);
+        try {
+            return server.getRestUtils().handleResponse(response, Tag.class, "deleteBoardTag");
+        }
+        catch(Exception e){
+            throw new TagException(e.getMessage());
         }
     }
 
@@ -270,19 +210,14 @@ public class TagUtils {
      */
     public Tag deleteTaskTag(final long boardId, final long listId,
                              final long taskId, final long tagId) throws TagException {
-        String serverAddress = server.getServerAddress();
-        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/tags/" + boardId + "/" + listId + "/" + taskId + "/delete/" + tagId)
-                .request()
-                .accept(APPLICATION_JSON)
-                .delete();
-
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(Tag.class);
-        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            throw new TagException("Tag not found.");
-        } else {
-            throw new TagException("An error occurred while deleting the tag");
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/tags/" + boardId + "/" + listId + "/" + taskId + "/delete/" + tagId,
+                RestUtils.Methods.DELETE, null);
+        try {
+            return server.getRestUtils().handleResponse(response, Tag.class, "deleteTaskTag");
+        }
+        catch(Exception e){
+            throw new TagException(e.getMessage());
         }
     }
 }
