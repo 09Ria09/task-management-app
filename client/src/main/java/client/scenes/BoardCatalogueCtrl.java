@@ -52,7 +52,7 @@ public class BoardCatalogueCtrl implements Initializable {
     public void initialize(final URL location, final ResourceBundle resources) {
         var joinBoardLoader = new FXMLLoader(getClass().getResource("JoinBoard.fxml"));
         joinBoardLoader.setControllerFactory(type -> new JoinBoardCtrl(serverUtils, mainCtrl,
-            customAlert, boardUtils, this ));
+            customAlert, boardUtils, this, webSocketUtils ));
         try {
             Node joinBoard = joinBoardLoader.load();
             var tab=new Tab("Add Board +", joinBoard);

@@ -6,8 +6,8 @@ import com.google.inject.Inject;
 import commons.Board;
 import commons.BoardColorScheme;
 import commons.TaskPreset;
-import jakarta.ws.rs.client.ClientBuilder;
 import commons.BoardEvent;
+import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 import javafx.util.Pair;
@@ -164,21 +164,6 @@ public class BoardUtils {
     }
 
     public BoardColorScheme getBoardColorScheme(final long boardId) throws BoardException {
-//        String serverAddress = server.getServerAddress();
-//        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-//                .path("api/boards/" + boardId + "/boardcolorscheme")
-//                .request()
-//                .accept(APPLICATION_JSON)
-//                .get();
-//
-//        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-//            return response.readEntity(new GenericType<BoardColorScheme>() {});
-//        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-//            throw new BoardException("Board not found.");
-//        } else {
-//            throw new BoardException("An error occurred while fetching the board's color scheme");
-//        }
-
         Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
                 "api/boards/" + boardId, RestUtils.Methods.GET, null);
         try {
@@ -193,20 +178,6 @@ public class BoardUtils {
     public BoardColorScheme setBoardColorScheme(final long boardId,
                                                 final BoardColorScheme boardColorScheme)
             throws BoardException {
-//        String serverAddress = server.getServerAddress();
-//        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-//                .path("api/boards/" + boardId + "/setboardcolorscheme")
-//                .request()
-//                .accept(APPLICATION_JSON)
-//                .put(Entity.entity(boardColorScheme, APPLICATION_JSON));
-//
-//        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-//            return response.readEntity(new GenericType<BoardColorScheme>() {});
-//        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-//            throw new BoardException("Board not found.");
-//        } else {
-//            throw new BoardException("An error occurred while fetching the board's color scheme");
-//        }
         Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
                 "api/boards/" + boardId + "/setboardcolorscheme",
                 RestUtils.Methods.PUT, boardColorScheme);
@@ -217,41 +188,22 @@ public class BoardUtils {
         catch(Exception e){
             throw new BoardException(e.getMessage());
         }
-
-
-
-
     }
 
 
 
     public TaskPreset addTaskPreset(final long boardId, final TaskPreset taskPreset)
             throws BoardException {
-//        String serverAddress = server.getServerAddress();
-//        Response response =  ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-//                .path("api/boards/" + boardId + "/addtaskpreset")
-//                .request()
-//                .accept(APPLICATION_JSON)
-//                .post(Entity.entity(taskPreset, APPLICATION_JSON));
-//
-//        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-//            return response.readEntity(TaskPreset.class);
-//        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-//            throw new BoardException("Board not found.");
-//        } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
-//            throw new BoardException("An error occurred while adding the task preset");
-//        } else {
-//            throw new BoardException("An error occurred while adding the task preset");
-//        }
         return null;
     }
 
 
 
-    private static final ExecutorService EXEC = Executors.newSingleThreadExecutor();
+    private ExecutorService exec = Executors.newSingleThreadExecutor();
     public void registerForUpdatesBoards(final Consumer<BoardEvent> boardConsumer) {
         System.out.println("registering for updates");
-        EXEC.submit(() -> {
+        exec = Executors.newSingleThreadExecutor();
+        exec.submit(() -> {
             while (!Thread.interrupted()) {
                 String serverAddress = server.getServerAddress();
                 Response response = ClientBuilder.newClient(new ClientConfig())
@@ -277,6 +229,6 @@ public class BoardUtils {
     }
 
     public void stop() {
-        EXEC.shutdownNow();
+        exec.shutdownNow();
     }
 }

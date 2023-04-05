@@ -4,6 +4,7 @@ import client.CustomAlert;
 import client.customExceptions.BoardException;
 import client.utils.BoardUtils;
 import client.utils.ServerUtils;
+import client.utils.WebSocketUtils;
 import com.google.inject.Inject;
 import commons.Board;
 import commons.Tag;
@@ -24,6 +25,7 @@ public class JoinBoardCtrl {
     private final BoardCatalogueCtrl boardCatalogueCtrl;
     private final CustomAlert customAlert;
 
+    private final WebSocketUtils webSocketUtils;
 
     @FXML
     private TextField inviteKeyInput;
@@ -40,12 +42,14 @@ public class JoinBoardCtrl {
     @Inject
     public JoinBoardCtrl(final ServerUtils server, final MainCtrl mainCtrl,
                          final CustomAlert customAlert, final BoardUtils boardUtils,
-                         final BoardCatalogueCtrl boardCatalogueCtrl) {
+                         final BoardCatalogueCtrl boardCatalogueCtrl,
+                         final WebSocketUtils webSocketUtils) {
         this.boardCatalogueCtrl = boardCatalogueCtrl;
         this.server = server;
         this.customAlert = customAlert;
         this.boardUtils = boardUtils;
         this.mainCtrl = mainCtrl;
+        this.webSocketUtils = webSocketUtils;
     }
 
     public void adminLogin() {
@@ -85,7 +89,13 @@ public class JoinBoardCtrl {
             Alert alert = customAlert.showAlert(e.getMessage());
             alert.showAndWait();
         }
-
         boardNameInput.clear();
+    }
+
+    public void switchServer() {
+        boardCatalogueCtrl.close();
+        mainCtrl.showSelectServer();
+        server.disconnect();
+        webSocketUtils.disconnect();
     }
 }

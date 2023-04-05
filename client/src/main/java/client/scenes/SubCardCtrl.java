@@ -11,8 +11,10 @@ import commons.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.util.List;
 import java.util.Objects;
@@ -76,6 +78,8 @@ public class SubCardCtrl {
         dialog.setTitle("Talio: Rename Sub Task");
         dialog.setHeaderText("Enter new name");
         dialog.setContentText("Name:");
+        Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image("client/images/icon.png"));
         Optional<String> newName = dialog.showAndWait();
         if(newName.isPresent()) {
             setSubTaskName(newName.get());
