@@ -90,6 +90,14 @@ public class ColorManagementViewCtrl {
 
     public void setBoard(final Board board) {
         this.board = board;
+        this.boardBackgroundColorInput.setValue(Color.valueOf(
+                board.getBoardColorScheme().getBoardBackgroundColor()));
+        this.boardTextColorInput.setValue(Color.valueOf(
+                board.getBoardColorScheme().getBoardTextColor()));
+        this.listBackgroundColorInput.setValue(Color.valueOf(
+                board.getBoardColorScheme().getListBackgroundColor()));
+        this.listTextColorInput.setValue(Color.valueOf(
+                board.getBoardColorScheme().getListTextColor()));
     }
 
     public void resetBoardColors() {
