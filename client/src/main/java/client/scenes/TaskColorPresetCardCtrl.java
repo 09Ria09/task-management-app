@@ -17,7 +17,7 @@ public class TaskColorPresetCardCtrl {
     @FXML
     private Color fontColorPicker;
     @FXML
-    private Checkbox isDefualt;
+    private Checkbox isDefault;
 
     public void initialize(final TaskPreset taskPreset) {
         this.taskPreset = taskPreset;

@@ -217,7 +217,7 @@ public class BoardController {
         }
     }
 
-    @PostMapping(path = { "/{boardid}", "/addtaskpreset" })
+    @PostMapping(path = { "/{boardid}" + "/addtaskpreset" })
     public ResponseEntity<TaskPreset> addTaskPreset(@PathVariable("boardid") final long boardId,
             @RequestBody final TaskPreset taskPreset) {
         if (getBoard(boardId) == null ) {

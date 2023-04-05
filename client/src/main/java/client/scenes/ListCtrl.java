@@ -22,6 +22,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
+import javafx.scene.control.Button;
 
 import java.io.IOException;
 import java.net.URL;
@@ -444,13 +445,12 @@ public class ListCtrl implements Initializable {
     public void refreshColor(){
         try {
             board = boardUtils.getBoard(getBoardID());
-            list.setStyle("-fx-background-color:#" + board.getBoardColorScheme().
-                    getListBackgroundColor().substring(2, 8) + ";");
+            list.setBackground(new Background(
+                    new BackgroundFill(Color.valueOf(board.getBoardColorScheme().
+                    getListBackgroundColor().substring(2, 8)), null, null)));
+            title.setTextFill(Color.web(board.getBoardColorScheme().getListTextColor()));
+            addTaskButton.setTextFill(Color.web(board.getBoardColorScheme().getListTextColor()));
 
-            title.setStyle("-fx-text-fill:#" + board.getBoardColorScheme().
-                    getListTextColor().substring(2, 8) + ";");
-            addTaskButton.setStyle("-fx-text-fill:#" + board.getBoardColorScheme().
-                    getListTextColor().substring(2, 8) + ";");
         } catch (BoardException e) {
             throw new RuntimeException(e);
         }

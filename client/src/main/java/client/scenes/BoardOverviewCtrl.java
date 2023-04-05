@@ -36,6 +36,7 @@ import javafx.scene.effect.GaussianBlur;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import javafx.util.Pair;
 
@@ -84,6 +85,8 @@ public class BoardOverviewCtrl {
     @FXML
     private Button deleteBoardButton;
 
+    @FXML
+    private Button tagOverviewButton;
 
     @Inject
     public BoardOverviewCtrl(final MainCtrl mainCtrl,
@@ -309,7 +312,7 @@ public class BoardOverviewCtrl {
             inviteKeyLabel.setEffect(blur);
             inviteKeyLabel.setText("Invite key: " + inviteKey);
             inviteKeyLabel.setVisible(true);
-
+            refreshColor();
             Timeline timeline = new Timeline(
                     new KeyFrame(Duration.millis(0), new KeyValue(blur.radiusProperty(), 0)),
                     new KeyFrame(Duration.millis(1000), new KeyValue(blur.radiusProperty(), 0)),
@@ -357,17 +360,14 @@ public class BoardOverviewCtrl {
     public void refreshColor() {
         listScrollPane.setStyle("-fx-background:#" + board.getBoardColorScheme().
                 getBoardBackgroundColor().substring(2, 8) + ";");
-        disconnectButton.setStyle("-fx-text-fill:#" + board.getBoardColorScheme().
-                getBoardTextColor().substring(2, 8) + ";");
-        colorManagementViewButton.setStyle("-fx-text-fill:#" + board.getBoardColorScheme().
-                getBoardTextColor().substring(2, 8) + ";");
-        addListButton.setStyle("-fx-text-fill:#" + board.getBoardColorScheme().
-                getBoardTextColor().substring(2, 8) + ";");
-        copyInviteKeyButton.setStyle("-fx-text-fill:#" + board.getBoardColorScheme().
-                getBoardTextColor().substring(2, 8) + ";");
-        renameBoardButton.setStyle("-fx-text-fill:#" + board.getBoardColorScheme().
-                getBoardTextColor().substring(2, 8) + ";");
-        deleteBoardButton.setStyle("-fx-text-fill:#" + board.getBoardColorScheme().
-                getBoardTextColor().substring(2, 8) + ";");
+        disconnectButton.setTextFill(Color.web(board.getBoardColorScheme().getBoardTextColor()));
+        colorManagementViewButton.setTextFill(Color.web(board.getBoardColorScheme().
+                getBoardTextColor()));
+        addListButton.setTextFill(Color.web(board.getBoardColorScheme().getBoardTextColor()));
+        copyInviteKeyButton.setTextFill(Color.web(board.getBoardColorScheme()
+                .getBoardTextColor()));
+        renameBoardButton.setTextFill(Color.web(board.getBoardColorScheme().getBoardTextColor()));
+        deleteBoardButton.setTextFill(Color.web(board.getBoardColorScheme().getBoardTextColor()));
+        tagOverviewButton.setTextFill(Color.web(board.getBoardColorScheme().getBoardTextColor()));
     }
 }

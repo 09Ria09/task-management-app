@@ -35,7 +35,7 @@
       </Label>
             <HBox alignment="CENTER" prefHeight="86.0" prefWidth="240.0" spacing="10.0" GridPane.rowIndex="1">
                <children>
-                  <Button fx:id="disconnectButton" alignment="CENTER" mnemonicParsing="false" onAction="#switchServer" prefHeight="25.0" prefWidth="100.0" style="-fx-background-color: #D32F2F; -fx-text-fill: white; -fx-font-weight: bold;" text="Disconnect" textAlignment="CENTER" HBox.hgrow="ALWAYS">
+                  <Button fx:id="disconnectButton" alignment="CENTER" mnemonicParsing="false" onAction="#switchServer" prefHeight="25.0" prefWidth="100.0" style="-fx-background-color: #D32F2F; -fx-font-weight: bold;" text="Disconnect" textAlignment="CENTER" HBox.hgrow="ALWAYS">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>
@@ -44,22 +44,16 @@
             </HBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="240.0" spacing="10.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <children>
-                  <Button fx:id="copyInviteKeyButton" alignment="CENTER" mnemonicParsing="false" onAction="#copyInviteKey" prefHeight="25.0" prefWidth="115.0" style="-fx-background-color: #4969e1; -fx-text-fill: white; -fx-font-weight: bold;" text="Copy Invite Key" textAlignment="CENTER" />
-                  <Button fx:id="renameBoardButton" mnemonicParsing="false" onAction="#renameBoard" style="-fx-background-color: #4969e1; -fx-text-fill: white; -fx-font-weight: bold;" text="Rename Board" textAlignment="CENTER" HBox.hgrow="ALWAYS"/>
-            <Button mnemonicParsing="false" onAction="#tagOverview" prefHeight="25.0" prefWidth="96.0" style="-fx-text-fill: white; -fx-background-color: #4969e1; -fx-font-weight: bold;" text="Tag Overview" />
-                  <Button alignment="CENTER" mnemonicParsing="false" onAction="#copyInviteKey" prefHeight="25.0" prefWidth="115.0" style="-fx-background-color: #4969e1; -fx-text-fill: white; -fx-font-weight: bold;" text="Copy Invite Key" textAlignment="CENTER" />
-                  <Button mnemonicParsing="false" onAction="#renameBoard" style="-fx-background-color: #4969e1; -fx-text-fill: white; -fx-font-weight: bold;" text="Rename Board" textAlignment="CENTER" HBox.hgrow="ALWAYS">
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
-                  </Button>
-                  <Button fx:id="deleteBoardButton" mnemonicParsing="false" onAction="#deleteBoard" style="-fx-background-color: #D32F2F; -fx-text-fill: white; -fx-font-weight: bold;" text="Delete Board" textAlignment="CENTER" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="copyInviteKeyButton" mnemonicParsing="false" onAction="#copyInviteKey" style="-fx-background-color: #4969e1; -fx-font-weight: bold;" text="Copy Invite Key" textAlignment="CENTER" HBox.hgrow="ALWAYS" />
+            <Button fx:id="tagOverviewButton" mnemonicParsing="false" onAction="#tagOverview" prefHeight="25.0" prefWidth="96.0" style="-fx-background-color: #4969e1; -fx-font-weight: bold;" text="Tag Overview" />
+                  <Button fx:id="deleteBoardButton" mnemonicParsing="false" onAction="#deleteBoard" style="-fx-background-color: #D32F2F; -fx-font-weight: bold;" text="Delete Board" textAlignment="CENTER" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="renameBoardButton" mnemonicParsing="false" onAction="#renameBoard" style="-fx-background-color: #4969e1; -fx-font-weight: bold;" text="Rename Board" textAlignment="CENTER" />
                </children>
             </HBox>
             <HBox alignment="CENTER" prefHeight="86.0" prefWidth="240.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <children>
-                  <Button fx:id="colorManagementViewButton" mnemonicParsing="false" onAction="#colorManagementView" text="Color Management View" />
-                  <Button fx:id="addListButton" mnemonicParsing="false" onAction="#addList" style="-fx-background-color: #57A773; -fx-text-fill: white; -fx-font-weight: bold;" text="Add List" textAlignment="CENTER" />
+                  <Button fx:id="addListButton" mnemonicParsing="false" onAction="#addList" style="-fx-background-color: #57A773; -fx-font-weight: bold;" text="Add List" textAlignment="CENTER" />
+                  <Button fx:id="colorManagementViewButton" mnemonicParsing="false" onAction="#colorManagementView" style="-fx-background-color: #57A773; -fx-font-weight: bold;" text="Color Management View" textAlignment="CENTER" />
                </children>
                <padding>
                   <Insets right="10.0" />
