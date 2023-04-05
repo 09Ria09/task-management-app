@@ -127,7 +127,7 @@ public class TagController {
     ) {
         try {
             if(tag == null || isNullOrEmpty(tag.getName())
-                    || isNullOrEmpty(tag.getColor())) {
+                || isNullOrEmpty(tag.getColorBackground()) || isNullOrEmpty(tag.getColorFont())){
                 return ResponseEntity.badRequest().build();
             }
             Tag addedTag = tagService.addBoardTag(boardid, tag);
@@ -206,20 +206,22 @@ public class TagController {
      *
      * @param boardid ID of the board
      * @param tagid ID of the tag you want to recolor
-     * @param color the new color of the tag as an int
+     * @param backgroundColor the new color of the tag as an int
+     * @param fontColor the new color of the tag as an int
      * @return the tag after it's color is changed
      */
     @PutMapping("/{boardid}/{tagid}/recolor")
     public ResponseEntity<Tag> recolorTag(
             @PathVariable("boardid") final long boardid,
             @PathVariable("tagid") final long tagid,
-            @RequestParam final String color
+            @RequestParam final String backgroundColor,
+            @RequestParam final String fontColor
     ) {
         try {
-            if(isNullOrEmpty(color)) {
+            if(isNullOrEmpty(backgroundColor) || isNullOrEmpty(fontColor)) {
                 return ResponseEntity.badRequest().build();
             }
-            Tag tag = tagService.recolorTag(boardid, tagid, color);
+            Tag tag = tagService.recolorTag(boardid, tagid, backgroundColor, fontColor);
             messages.convertAndSend("/topic/" + boardid + "/changetag", tag);
             messages.convertAndSend("/topic/" + boardid + "/recolortag", tag);
             return ResponseEntity.ok(tag);
