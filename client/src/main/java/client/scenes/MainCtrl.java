@@ -52,7 +52,6 @@ public class MainCtrl {
     private DetailedTaskViewCtrl detailedTaskViewCtrl;
     private Scene detailedTaskView;
 
-    private RenameListCtrl renameListCtrl;
     private Scene renameList;
 
     private SelectServerCtrl selectServerCtrl;
@@ -111,8 +110,7 @@ public class MainCtrl {
 
         this.createListCtrl = listScenes.getCreateList().getKey();
         this.createList = new Scene(listScenes.getCreateList().getValue());
-        this.renameListCtrl = listScenes.getRenameList().getKey();
-        this.renameList = new Scene(listScenes.getRenameList().getValue());
+
 
         this.selectServerCtrl = serverScenes.getSelectServer().getKey();
         this.selectServer = new Scene(serverScenes.getSelectServer().getValue());

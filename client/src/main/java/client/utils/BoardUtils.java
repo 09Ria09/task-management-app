@@ -7,7 +7,6 @@ import commons.Board;
 import commons.BoardColorScheme;
 import commons.TaskPreset;
 import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.client.Entity;
 import commons.BoardEvent;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
@@ -165,40 +164,62 @@ public class BoardUtils {
     }
 
     public BoardColorScheme getBoardColorScheme(final long boardId) throws BoardException {
-        String serverAddress = server.getServerAddress();
-        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/boards/" + boardId + "/boardcolorscheme")
-                .request()
-                .accept(APPLICATION_JSON)
-                .get();
+//        String serverAddress = server.getServerAddress();
+//        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
+//                .path("api/boards/" + boardId + "/boardcolorscheme")
+//                .request()
+//                .accept(APPLICATION_JSON)
+//                .get();
+//
+//        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+//            return response.readEntity(new GenericType<BoardColorScheme>() {});
+//        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
+//            throw new BoardException("Board not found.");
+//        } else {
+//            throw new BoardException("An error occurred while fetching the board's color scheme");
+//        }
 
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(new GenericType<BoardColorScheme>() {});
-        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            throw new BoardException("Board not found.");
-        } else {
-            throw new BoardException("An error occurred while fetching the board's color scheme");
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/boards/" + boardId, RestUtils.Methods.GET, null);
+        try {
+            return server.getRestUtils().handleResponse(response, Board.class, "getBoard")
+                    .getBoardColorScheme();
+        }
+        catch(Exception e){
+            throw new BoardException(e.getMessage());
         }
 
     }
-///{boardid}/setboardcolorscheme
     public BoardColorScheme setBoardColorScheme(final long boardId,
                                                 final BoardColorScheme boardColorScheme)
             throws BoardException {
-        String serverAddress = server.getServerAddress();
-        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/boards/" + boardId + "/setboardcolorscheme")
-                .request()
-                .accept(APPLICATION_JSON)
-                .put(Entity.entity(boardColorScheme, APPLICATION_JSON));
-
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(new GenericType<BoardColorScheme>() {});
-        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            throw new BoardException("Board not found.");
-        } else {
-            throw new BoardException("An error occurred while fetching the board's color scheme");
+//        String serverAddress = server.getServerAddress();
+//        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
+//                .path("api/boards/" + boardId + "/setboardcolorscheme")
+//                .request()
+//                .accept(APPLICATION_JSON)
+//                .put(Entity.entity(boardColorScheme, APPLICATION_JSON));
+//
+//        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+//            return response.readEntity(new GenericType<BoardColorScheme>() {});
+//        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
+//            throw new BoardException("Board not found.");
+//        } else {
+//            throw new BoardException("An error occurred while fetching the board's color scheme");
+//        }
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/boards/" + boardId + "/setboardcolorscheme",
+                RestUtils.Methods.PUT, boardColorScheme);
+        try {
+            return server.getRestUtils().handleResponse(response,
+                    BoardColorScheme.class, "setBoardColorScheme");
         }
+        catch(Exception e){
+            throw new BoardException(e.getMessage());
+        }
+
+
+
 
     }
 
@@ -206,22 +227,23 @@ public class BoardUtils {
 
     public TaskPreset addTaskPreset(final long boardId, final TaskPreset taskPreset)
             throws BoardException {
-        String serverAddress = server.getServerAddress();
-        Response response =  ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/boards/" + boardId + "/addtaskpreset")
-                .request()
-                .accept(APPLICATION_JSON)
-                .post(Entity.entity(taskPreset, APPLICATION_JSON));
-
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(TaskPreset.class);
-        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            throw new BoardException("Board not found.");
-        } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
-            throw new BoardException("An error occurred while adding the task preset");
-        } else {
-            throw new BoardException("An error occurred while adding the task preset");
-        }
+//        String serverAddress = server.getServerAddress();
+//        Response response =  ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
+//                .path("api/boards/" + boardId + "/addtaskpreset")
+//                .request()
+//                .accept(APPLICATION_JSON)
+//                .post(Entity.entity(taskPreset, APPLICATION_JSON));
+//
+//        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+//            return response.readEntity(TaskPreset.class);
+//        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
+//            throw new BoardException("Board not found.");
+//        } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
+//            throw new BoardException("An error occurred while adding the task preset");
+//        } else {
+//            throw new BoardException("An error occurred while adding the task preset");
+//        }
+        return null;
     }
 
 

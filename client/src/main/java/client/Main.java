@@ -49,7 +49,6 @@ public class Main extends Application {
         Servers.getInstance().load();
 
         var createList = FXML.load(CreateListCtrl.class, "client", "scenes", "CreateList.fxml");
-        var renameList = FXML.load(RenameListCtrl.class, "client", "scenes", "RenameList.fxml");
         var serverSelection = FXML
                 .load(SelectServerCtrl.class, "client",
                         "scenes", "connectScenes", "SelectServer.fxml");
@@ -61,7 +60,7 @@ public class Main extends Application {
                 "scenes", "connectScenes", "UnexpectedError.fxml");
         var adminBoard = FXML.load(AdminBoardCtrl.class, "client", "scenes", "AdminBoards.fxml");
         var adminLogin = FXML.load(AdminLoginCtrl.class, "client", "scenes", "AdminLogin.fxml");
-        var listScenes = new ListScenes(createList, renameList);
+        var listScenes = new ListScenes(createList);
         var serverScenes = new ServerScenes(serverSelection, wrongServer,
                 serverTimeout, unexpectedError, adminLogin, adminBoard);
         var createTask = FXML.load(CreateTaskCtrl.class, "client", "scenes", "CreateTask.fxml");

@@ -63,7 +63,6 @@ public class ListCtrl implements Initializable {
     private final LayoutUtils layoutUtils;
     private final WebSocketUtils webSocketUtils;
 
-    RenameListSingleton renameListSingleton = RenameListSingleton.getInstance();
 
 
 
