@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
 <Pane fx:id="pane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.TagOverviewCtrl">
@@ -22,15 +23,21 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <ColorPicker fx:id="colorPicker" layoutX="312.0" layoutY="241.0" />
       <TextField fx:id="tagName" layoutX="42.0" layoutY="240.0">
          <font>
             <Font size="13.0" />
          </font>
       </TextField>
       <Label layoutX="42.0" layoutY="218.0" text="Name" />
-      <Label layoutX="312.0" layoutY="218.0" text="Color" />
-      <Button layoutX="509.0" layoutY="241.0" mnemonicParsing="false" onAction="#addTag" text="ADD" />
+
+      <ColorPicker fx:id="backgroundColorPicker" layoutX="312.0" layoutY="242.0" />
+      <ColorPicker fx:id="fontColorPicker" layoutX="312.0" layoutY="284.0">
+         <value>
+            <Color />
+         </value></ColorPicker>
+      <Label layoutX="312.0" layoutY="227.0" text="Background Color:" />
+      <Label layoutX="312.0" layoutY="267.0" text="Font Color:" />
+      <Button layoutX="520.0" layoutY="343.0" mnemonicParsing="false" onAction="#addTag" text="Add" />
       <Button layoutX="32.0" layoutY="343.0" mnemonicParsing="false" onAction="#goBack" text="Go Back" />
    </children>
 </Pane>

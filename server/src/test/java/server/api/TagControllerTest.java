@@ -50,52 +50,52 @@ public class TagControllerTest {
 
     @Test
     public void testGetAllBoardTagsEndpoint() throws Exception {
-        List<Tag> tags = List.of(new Tag("Name", "Color"),
-                new Tag("NotName", "NotColor"));
+        List<Tag> tags = List.of(new Tag("Name", "#FFFFFF"),
+                new Tag("NotName", "#FFFFFA"));
         Mockito.when(tagService.getBoardTags(Mockito.any(Long.class))).thenReturn(tags);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/tags/1/tags"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name", is("Name")))
-                .andExpect(jsonPath("$[0].color", is("Color")))
+                .andExpect(jsonPath("$[0].colorBackground", is("#FFFFFF")))
                 .andExpect(jsonPath("$[1].name", is("NotName")))
-                .andExpect(jsonPath("$[1].color", is("NotColor")));
+                .andExpect(jsonPath("$[1].colorBackground", is("#FFFFFA")));
     }
 
     @Test
     public void testGetAllTaskTagsEndpoint() throws Exception {
-        List<Tag> tags = List.of(new Tag("Name", "Color"),
-                new Tag("NotName", "NotColor"));
+        List<Tag> tags = List.of(new Tag("Name", "#FFFFFF"),
+                new Tag("NotName", "#FFFFFA"));
         Mockito.when(tagService.getTaskTags(1, 2, 3)).thenReturn(tags);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/tags/1/2/3/tags"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name", is("Name")))
-                .andExpect(jsonPath("$[0].color", is("Color")))
+                .andExpect(jsonPath("$[0].colorBackground", is("#FFFFFF")))
                 .andExpect(jsonPath("$[1].name", is("NotName")))
-                .andExpect(jsonPath("$[1].color", is("NotColor")));
+                .andExpect(jsonPath("$[1].colorBackground", is("#FFFFFA")));
     }
 
     @Test
     public void testGetBoardTagEndpoint() throws Exception {
-        Tag tag1 = new Tag("Name", "NotColor");
+        Tag tag1 = new Tag("Name", "#FFFFFF");
         Mockito.when(tagService.getBoardTagByID(1, 4)).thenReturn(tag1);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/tags/1/4"))
                 .andExpect((status().isOk()))
                 .andExpect(jsonPath("name", is("Name")))
-                .andExpect(jsonPath("color", is("NotColor")));
+                .andExpect(jsonPath("colorBackground", is("#FFFFFF")));
     }
 
     @Test
     public void testGetTaskTagEndpoint() throws Exception {
-        Tag tag = new Tag("Test Tag !", "Random Color");
+        Tag tag = new Tag("Test Tag !", "#FFFFFF");
         Mockito.when(tagService.getTaskTagByID(1, 2, 5, 8)).thenReturn(tag);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/tags/1/2/5/8"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("name", is("Test Tag !")))
-                .andExpect(jsonPath("color", is("Random Color")));
+                .andExpect(jsonPath("colorBackground", is("#FFFFFF")));
     }
 
     @Test
@@ -109,16 +109,19 @@ public class TagControllerTest {
 
     @Test
     public void testRecolorTagEndpoint() throws Exception {
-        Mockito.when(tagService.recolorTag(1, 3, "NewTagColor")).thenReturn(null);
+        Mockito.when(tagService.recolorTag(1, 3, "NewTagColor",
+            "NewTagColor1")).thenReturn(null);
         mockMvc.perform(MockMvcRequestBuilders.put("/api/tags/1/3/recolor")
-                        .param("color", "NewTagColor"))
+                        .param("backgroundColor", "NewTagColor")
+                .param("fontColor", "NewTagColor1"))
                 .andExpect(status().isOk());
-        Mockito.verify(tagService, Mockito.times(1)).recolorTag(1, 3, "NewTagColor");
+        Mockito.verify(tagService, Mockito.times(1))
+            .recolorTag(1, 3, "NewTagColor", "NewTagColor1");
     }
 
     @Test
     public void testAddBoardTagEndpoint() throws Exception {
-        Tag newTag = new Tag("Name", "Color");
+        Tag newTag = new Tag("Name", "#FFFFFF");
         String requestBody = new ObjectMapper().writeValueAsString(newTag);
         Mockito.when(tagService.addBoardTag(1, newTag)).thenReturn(newTag);
         Mockito.when(tagService.getBoardTags(1)).thenReturn(List.of(newTag));
@@ -192,7 +195,7 @@ public class TagControllerTest {
 
     @Test
     public void testAddBoardTagEndpointBadRequest() throws Exception {
-        Tag tag = new Tag("", "");
+        Tag tag = new Tag("", "#FFFFFF");
         String requestBody = new ObjectMapper().writeValueAsString(tag);
         Mockito.when(tagService.addBoardTag(1, tag)).thenReturn(tag);
 
@@ -206,7 +209,7 @@ public class TagControllerTest {
 
     @Test
     public void testAddBoardTagEndpointNotFound() throws Exception {
-        Tag tag = new Tag("Name", "Color");
+        Tag tag = new Tag("Name", "#FFFFFF");
         String requestBody = new ObjectMapper().writeValueAsString(tag);
         Mockito.when(tagService.addBoardTag(1, tag)).thenThrow(NoSuchElementException.class);
 
@@ -229,11 +232,22 @@ public class TagControllerTest {
 
     @Test
     public void recolorTagEndpointBadRequest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/tags/1/2/recolor")
-                        .param("color", ""))
-                .andExpect(status().isBadRequest());
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/tags/1/3/recolor")
+                .param("backgroundColor", "")
+                .param("fontColor", "NewTagColor"))
+            .andExpect(status().isBadRequest());
         Mockito.verify(tagService, Mockito.times(0))
-                .recolorTag(1, 2, "");
+            .recolorTag(1, 3, "", "");
+    }
+
+    @Test
+    public void recolorTagEndpointBadRequest1() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/tags/1/3/recolor")
+                .param("backgroundColor", "NewTagColor")
+                .param("fontColor", ""))
+            .andExpect(status().isBadRequest());
+        Mockito.verify(tagService, Mockito.times(0))
+            .recolorTag(1, 3, "NewTagColor", "");
     }
 
     @Test
@@ -251,15 +265,16 @@ public class TagControllerTest {
 
     @Test
     public void recolorTagEndpointNotFound() throws Exception {
-        Mockito.when(tagService.recolorTag(1, 2, "Color"))
+        Mockito.when(tagService.recolorTag(1, 2, "Color", "Color"))
                 .thenThrow(NoSuchElementException.class);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/tags/1/2/recolor")
-                        .param("color", "Color"))
+                        .param("backgroundColor", "Color")
+                        .param("fontColor", "Color"))
                 .andExpect(status().isNotFound());
 
         Mockito.verify(tagService, Mockito.times(1))
-                .recolorTag(1, 2, "Color");
+                .recolorTag(1, 2, "Color", "Color");
     }
 
     @Test

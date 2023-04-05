@@ -164,15 +164,17 @@ public class TagUtils {
      * Recolor a tag that is located in the board
      * @param boardId ID of the board
      * @param tagId Id of the tag that will be recolored
-     * @param newColor the new color of the tag
+     * @param backgroundColor the new background color of the tag
+     * @param fontColor the new font color of the tag
      * @return the recolored tag
      * @throws TagException throws an exception if something goes wrong
      */
     public Tag recolorTag(final long boardId, final long tagId,
-                         final String newColor) throws TagException {
+                         final String backgroundColor, final String fontColor) throws TagException {
         Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
                 "api/tags/" + boardId + "/" + tagId + "/recolor", RestUtils.Methods.PUT,
-                newColor, new Pair<>("color", newColor));
+            new Pair<>(backgroundColor, fontColor), new Pair<>("backgroundColor", backgroundColor),
+            new Pair<>("fontColor", fontColor));
         try {
             return server.getRestUtils().handleResponse(response, Tag.class, "recolorTag");
         }

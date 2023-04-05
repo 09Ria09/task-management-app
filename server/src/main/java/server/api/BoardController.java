@@ -1,6 +1,8 @@
 package server.api;
 
 import commons.Board;
+import commons.BoardColorScheme;
+import commons.TaskPreset;
 import commons.BoardEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -189,4 +191,43 @@ public class BoardController {
     private static boolean isNullOrEmpty(final String s) {
         return s == null || s.isEmpty();
     }
+
+    @GetMapping("/{boardid}/boardcolorscheme")
+    public ResponseEntity<BoardColorScheme> getBoardColorScheme(@PathVariable("boardid")
+                                                                    final long boardid) {
+        try {
+            BoardColorScheme boardColorScheme = boardService.
+                    getBoard(boardid).getBoardColorScheme();
+            return ResponseEntity.ok(boardColorScheme);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/{boardid}/setboardcolorscheme")
+    public ResponseEntity<BoardColorScheme> setBoardColorScheme(
+            @PathVariable("boardid") final long boardid,
+            final @RequestBody BoardColorScheme boardColorScheme) {
+        try {
+            BoardColorScheme colorScheme = boardService
+                    .setBoardColorScheme(boardid, boardColorScheme);
+            return ResponseEntity.ok(colorScheme);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping(path = { "/{boardid}" + "/addtaskpreset" })
+    public ResponseEntity<TaskPreset> addTaskPreset(@PathVariable("boardid") final long boardId,
+            @RequestBody final TaskPreset taskPreset) {
+        if (getBoard(boardId) == null ) {
+            return ResponseEntity.badRequest().build();
+        }
+        TaskPreset createdTaskPreset = boardService.setTaskPreset(boardId, taskPreset);
+        return ResponseEntity.ok(createdTaskPreset);
+    }
+
+
+
+
 }

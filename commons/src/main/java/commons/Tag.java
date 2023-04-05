@@ -4,6 +4,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 public class Tag implements Serializable {
@@ -13,16 +14,22 @@ public class Tag implements Serializable {
     public long id;
 
     private String name;
-    private String color;
+    private String colorBackground;
+    private String colorFont;
 
-    public Tag(final String name, final String color) {
+    public Tag(final String name, final String colorBackground, final String colorFont) {
         this.name = name;
-        this.color = color;
+        setColors(colorBackground, colorFont);
     }
 
+    public Tag(final String name, final String colorBackground) {
+        this.name = name;
+        setColors(colorBackground);
+    }
     public Tag() {
         this.name = "";
-        this.color = "FFFFFF";
+        this.colorBackground = "#000000";
+        this.colorFont = "#FFFFFF";
     }
 
     public String getName() {
@@ -33,20 +40,37 @@ public class Tag implements Serializable {
         this.name = name;
     }
 
-    public String getColor() {
-        return color;
+    public String getColorBackground() {
+        return colorBackground;
     }
 
-    public void setColor(final String color) {
-        this.color = color;
+    public String getColorFont() {
+        return colorFont;
     }
 
+    public void setColors(final String colorBackground) {
+        int colorBackgroundInt = Integer.parseInt(colorBackground.substring(1), 16);
+        this.colorBackground = colorBackground;
+        this.colorFont = String.format("#%06X", 0xFFFFFF - colorBackgroundInt);
+    }
+
+    public void setColors(final String colorBackground, final String colorFont) {
+        this.colorBackground = colorBackground;
+        this.colorFont = colorFont;
+    }
+
+    /**
+     * @param o an object
+     * @return true if the object provided is the same to this object
+     */
     @Override
-    public boolean equals(final Object obj) {
-        if(!(obj instanceof Tag))
-            return false;
-        Tag other = (Tag) obj;
-        return other.color.equals(color) && other.name.equals(name);
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tag tag = (Tag) o;
+        return Objects.equals(name, tag.name) &&
+            Objects.equals(colorBackground, tag.colorBackground) &&
+            Objects.equals(colorFont, tag.colorFont);
     }
 
     @Override
@@ -56,7 +80,8 @@ public class Tag implements Serializable {
 
     @Override
     public String toString() {
-        return "Tag (" + id + ") : " + name + " -> color=#" + color;
+        return "Tag (" + id + ") : " + name + " -> background=" + colorBackground +
+            " font=" + colorFont;
     }
 
     public long getId() {
