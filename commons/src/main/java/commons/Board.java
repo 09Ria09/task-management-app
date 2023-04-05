@@ -23,11 +23,20 @@ public class Board {
     @OneToMany(cascade=CascadeType.ALL)
     private List<Tag> tags;
 
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private BoardColorScheme boardColorScheme;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TaskPreset> taskPresets;
+
+
     public Board(final String name, final List<TaskList> listTaskList, final List<Tag> tags) {
         this.name = name;
         this.taskLists = listTaskList;
         this.tags = tags;
         this.boardMembers= new ArrayList<>();
+        boardColorScheme = new BoardColorScheme();
+        this.taskPresets = new ArrayList<>();
     }
 
     /**
@@ -48,6 +57,9 @@ public class Board {
         this.tags = tags;
         this.boardMembers = new ArrayList<>();
         this.inviteKey = inviteKey;
+        boardColorScheme = new BoardColorScheme();
+        this.taskPresets = new ArrayList<>();
+
     }
 
     public Board() {
@@ -56,6 +68,13 @@ public class Board {
         this.name = "";
         this.boardMembers = new ArrayList<>();
         this.inviteKey = "";
+        boardColorScheme = new BoardColorScheme();
+        this.taskPresets = new ArrayList<>();
+
+    }
+
+    public List<TaskPreset> getTaskPresets() {
+        return taskPresets;
     }
 
     //this constructor is just for copying a board
@@ -192,5 +211,17 @@ public class Board {
         return res;
     }
 
+    public BoardColorScheme getBoardColorScheme() {
+        return boardColorScheme;
+    }
 
+    public void setBoardColorScheme(final BoardColorScheme boardColorScheme) {
+        this.boardColorScheme = boardColorScheme;
+    }
+
+
+
+    public void addTaskPreset(final TaskPreset taskPreset) {
+        taskPresets.add(taskPreset);
+    }
 }

@@ -47,6 +47,9 @@ public class CardCtrl {
     private ImageView descIcon;
 
     @FXML
+    private ImageView arrowIcon;
+
+    @FXML
     private FlowPane tagList;
 
     private MainCtrl mainCtrl;
