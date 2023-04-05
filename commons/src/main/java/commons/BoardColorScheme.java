@@ -15,23 +15,16 @@ public class BoardColorScheme {
     private String listBackgroundColor;
 
     private String listTextColor;
+    private String white = "0xffffffff";
 
     public BoardColorScheme() {
-        this.boardBackgroundColor = "0xcce6ff";
-        this.boardTextColor = "0x000000";
-        this.listBackgroundColor = "0xD29FE3";
-        this.listTextColor = "0x000000";
+        this.boardBackgroundColor = white;
+        this.boardTextColor = white;
+        this.listBackgroundColor = white;
+        this.listTextColor = white;
     }
 
-//    public void resetBoardColors() {
-//        this.boardBackgroundColor = "0xFFFFFF";
-//        this.boardTextColor = "0x000000";
-//    }
-//
-//    public void resetListColors() {
-//        this.listBackgroundColor = "0xFFFFFF";
-//        this.listTextColor = "0x000000";
-//    }
+
 
 
     public String getBoardBackgroundColor() {

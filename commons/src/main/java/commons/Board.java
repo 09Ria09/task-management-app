@@ -86,6 +86,7 @@ public class Board {
         this.tags = new ArrayList<>(other.tags);
         this.boardMembers = new ArrayList<>(other.boardMembers);
         this.id = other.id;
+        boardColorScheme = new BoardColorScheme();
         this.inviteKey = other.inviteKey;
     }
 

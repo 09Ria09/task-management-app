@@ -91,13 +91,13 @@ public class ColorManagementViewCtrl {
     }
 
     public void resetBoardColors() {
-        board.getBoardColorScheme().setBoardBackgroundColor("0xcce6ff");
-        board.getBoardColorScheme().setBoardTextColor("0x000000");
+        board.getBoardColorScheme().setBoardBackgroundColor("0x000000ff");
+        board.getBoardColorScheme().setBoardTextColor("0x000000ff");
     }
 
     public void resetListColors() {
-        board.getBoardColorScheme().setListBackgroundColor("0xD29FE3");
-        board.getBoardColorScheme().setListTextColor("0x000000");
+        board.getBoardColorScheme().setListBackgroundColor("0x000000ff");
+        board.getBoardColorScheme().setListTextColor("0x000000ff");
     }
 
 
