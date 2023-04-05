@@ -247,4 +247,13 @@ public class TaskControllerTest {
             .editDescription(1, 2, 3, "New description");
     }
 
+    @Test
+    public void testEditDescriptionEndpoint() throws Exception {
+        Mockito.when(taskService.editDescription(1, 2, 4, "Test 2")).thenReturn(null);
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/tasks/1/2/desc/4")
+                        .param("description", "Test 2"))
+                .andExpect(status().isOk());
+        Mockito.verify(taskService, Mockito.times(1)).editDescription(1, 2, 4, "Test 2");
+    }
+
 }
