@@ -16,11 +16,7 @@
 package client.utils;
 
 
-
-
-import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.Response;
-import org.glassfish.jersey.client.ClientConfig;
 
 import objects.Servers;
 
@@ -33,14 +29,17 @@ import java.time.Duration;
 import java.util.HashSet;
 import java.util.Optional;
 
-import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
-
 
 public class ServerUtils {
 
+    private final RestUtils restUtils;
     private String serverAddress;
 
-   /**
+    public ServerUtils() {
+        this.restUtils = new RestUtils();
+    }
+
+    /**
         * Check if the server is a Talio server
         *
         * @return an empty optional if the server is a Talio server,
@@ -112,17 +111,12 @@ public class ServerUtils {
     }
 
     public String getAdminKey() throws Exception {
-        String serverAddress = this.serverAddress;
-        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/talio/admin")
-                .request()
-                .accept(APPLICATION_JSON)
-                .get();
+        Response response = restUtils.sendRequest(serverAddress, "api/talio/admin",
+                RestUtils.Methods.GET, null);
+        return restUtils.handleResponse(response, String.class, "getAdminKey");
+    }
 
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(String.class);
-        } else {
-            throw new Exception("An error occurred while accessing the key");
-        }
+    public RestUtils getRestUtils() {
+        return restUtils;
     }
 }

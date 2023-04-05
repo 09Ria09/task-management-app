@@ -44,7 +44,8 @@ public class ListController {
             @RequestBody final TaskList taskList
     ) {
         try{
-            if (taskList == null || isNullOrEmpty(taskList.getName().replaceAll("\\s", ""))) {
+            if (taskList == null || taskList.getName() == null ||
+                    isNullOrEmpty(taskList.getName().replaceAll("\\s", ""))) {
                 return ResponseEntity.badRequest().build();
             }
             TaskList createdTaskList = listService.addList(boardid, taskList);

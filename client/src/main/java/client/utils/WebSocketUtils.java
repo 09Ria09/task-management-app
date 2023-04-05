@@ -24,10 +24,7 @@ public class WebSocketUtils {
     private final ServerUtils serverUtils;
     public StompSession session;
 
-    private Map<String, Consumer<Board>> boardConsumers = new HashMap<>();
-    private Map<String, Consumer<TaskList>> listConsumers = new HashMap<>();
-    private Map<String, Consumer<Task>> taskConsumers = new HashMap<>();
-    private Map<String, Consumer<Tag>> tagConsumers = new HashMap<>();
+    private Map<String, Consumer<Object>> consumers = new HashMap<>();
 
     @Inject
     public WebSocketUtils(final ServerUtils utils){
@@ -60,84 +57,40 @@ public class WebSocketUtils {
         throw new IllegalStateException();
     }
 
-    public <T> void registerForBoardMessages(final String dest, final Consumer<Board> consumer){
+    public <T> void registerForMessages(final String dest, final Consumer<?> consumer,
+                                        final Class<?> type){
         session.subscribe(dest, new StompFrameHandler() {
             @Override
             public Type getPayloadType(final StompHeaders headers) {
-                return Board.class;
+                return type;
             }
 
             @Override
             public void handleFrame(final StompHeaders headers, final Object payload) {
                 try {
-                    boardConsumers.getOrDefault(dest, (o) -> {
-                    }).accept((Board) payload);
+                    consumers.getOrDefault(dest, (o) -> {}).accept(payload);
                 } catch (ClassCastException e) {
                     System.out.println("Error during websocket handling : " + e.getMessage());
                 }
             }
         });
-        boardConsumers.put(dest, consumer);
+        consumers.put(dest, (Consumer<Object>) consumer);
+    }
+
+    public <T> void registerForBoardMessages(final String dest, final Consumer<Board> consumer){
+        registerForMessages(dest, consumer, Board.class);
     }
 
     public <T> void registerForListMessages(final String dest, final Consumer<TaskList> consumer){
-        session.subscribe(dest, new StompFrameHandler() {
-            @Override
-            public Type getPayloadType(final StompHeaders headers) {
-                return TaskList.class;
-            }
-
-            @Override
-            public void handleFrame(final StompHeaders headers, final Object payload) {
-                try {
-                    listConsumers.getOrDefault(dest, (o) -> {
-                    }).accept((TaskList) payload);
-                } catch (ClassCastException e) {
-                    System.out.println("Error during websocket handling : " + e.getMessage());
-                }
-            }
-        });
-        listConsumers.put(dest, consumer);
+        registerForMessages(dest, consumer, TaskList.class);
     }
 
     public <T> void registerForTaskMessages(final String dest, final Consumer<Task> consumer){
-        session.subscribe(dest, new StompFrameHandler() {
-            @Override
-            public Type getPayloadType(final StompHeaders headers) {
-                return Task.class;
-            }
-
-            @Override
-            public void handleFrame(final StompHeaders headers, final Object payload) {
-                try {
-                    taskConsumers.getOrDefault(dest, (o) -> {
-                    }).accept((Task) payload);
-                } catch (ClassCastException e) {
-                    System.out.println("Error during websocket handling : " + e.getMessage());
-                }
-            }
-        });
-        taskConsumers.put(dest, consumer);
+        registerForMessages(dest, consumer, Task.class);
     }
 
     public <T> void registerForTagMessages(final String dest, final Consumer<Tag> consumer){
-        session.subscribe(dest, new StompFrameHandler() {
-            @Override
-            public Type getPayloadType(final StompHeaders headers) {
-                return Tag.class;
-            }
-
-            @Override
-            public void handleFrame(final StompHeaders headers, final Object payload) {
-                try {
-                    tagConsumers.getOrDefault(dest, (o) -> {
-                    }).accept((Tag) payload);
-                } catch (ClassCastException e) {
-                    System.out.println("Error during websocket handling : " + e.getMessage());
-                }
-            }
-        });
-        tagConsumers.put(dest, consumer);
+        registerForMessages(dest, consumer, Tag.class);
     }
 
     public void disconnect(){
