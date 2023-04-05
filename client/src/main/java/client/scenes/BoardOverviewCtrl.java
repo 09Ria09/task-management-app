@@ -128,18 +128,19 @@ public class BoardOverviewCtrl {
                     for(TaskList l : this.board.getListTaskList())
                         l.getTaskById(task.id).ifPresent((t) -> {
                             List<Task> tasks = listsMap.get(l.id).list.getItems();
-                            int index = tasks.indexOf(t);
-                            if(tasks.remove(t)) {
-                                t.getTags().clear();
-                                t.getTags().addAll(task.getTags());
-                                tasks.add(index, t);
+                            int index = tasks.indexOf(tasks.stream()
+                                    .filter(t2 -> t2.id == t.id)
+                                    .findAny().orElse(null));
+                            if(index >= 0) {
+                                tasks.remove(index);
+                                tasks.add(index, task);
                             }
                         });
                 });
             };
             webSocketUtils.registerForBoardMessages("/topic/" + board.id +
                     "/refreshboard", consumer);
-            webSocketUtils.registerForTaskMessages("/topic/" + board.id + "/changetasktag",
+            webSocketUtils.registerForTaskMessages("/topic/" + board.id + "/modifytask",
                     changeTaskTag);
         }
         catch(BoardException e){

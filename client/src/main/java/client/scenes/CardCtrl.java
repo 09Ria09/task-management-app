@@ -13,11 +13,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -66,20 +65,34 @@ public class CardCtrl {
     public void initialize(final Task task, final ListCtrl listCtrl,
                            final TaskListUtils listUtils, final CustomAlert customAlert,
                            final TaskUtils taskUtils, final MainCtrl mainCtrl) {
-        this.task= task;
         this.listController = listCtrl;
         this.taskListUtils = listUtils;
         this.customAlert = customAlert;
         this.taskUtils = taskUtils;
         this.mainCtrl = mainCtrl;
+        this.setTask(task);
         this.onUnhover();
+
+        tagList.setHgap(5.00);
+        tagList.setVgap(5.00);
+    }
+
+    private void setTags(final List<Tag> tags) {
+        for(Tag tag : tags) {
+            Pane tagPane = new Pane();
+            tagPane.setPrefSize(60, 10);
+            tagPane.setStyle("-fx-background-radius: 5px; -fx-border-radius: 5px;" +
+                    " -fx-background-color: #" + tag.getColorBackground() + ";");
+            tagList.getChildren().add(tagPane);
+        }
+    }
+
+    public void setTask(final Task task) {
+        this.task = task;
         if(Objects.equals(this.task.getDescription(), "")) {
             this.descButton.setDisable(true);
             descIcon.setVisible(false);
         }
-
-        tagList.setHgap(5.00);
-        tagList.setVgap(5.00);
         if(this.task.getTags() != null) {
             setTags(this.task.getTags());
         }
@@ -88,22 +101,6 @@ public class CardCtrl {
         else
             this.progressBar.setWidth(this.taskUtils.getProgress(task)*215.0D);
         this.title.setText(task.getName());
-    }
-
-    private void setTags(final List<Tag> tags) {
-        for(Tag tag : tags) {
-            AnchorPane tagPane = new AnchorPane();
-            Text tagName = new Text(tag.getName());
-            tagPane.setStyle("-fx-background-radius: 5px; -fx-border-radius: 5px;" +
-                    " -fx-background-color: #" + tag.getColorBackground() + ";");
-            tagName.setStyle("-fx-fill: #" + tag.getColorFont() + ";");
-            tagPane.getChildren().add(tagName);
-            AnchorPane.setTopAnchor(tagName, 0.0);
-            AnchorPane.setRightAnchor(tagName, 0.0);
-            AnchorPane.setBottomAnchor(tagName, 0.0);
-            AnchorPane.setLeftAnchor(tagName, 0.0);
-            tagList.getChildren().add(tagPane);
-        }
     }
 
     /**
