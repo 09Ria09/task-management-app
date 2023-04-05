@@ -166,9 +166,7 @@ public class TagController {
             }
             Tag addedTag = tagService.addTaskTag(boardid, listid, taskid, tag.id);
             Task task = tagService.getTask(boardid, listid, taskid);
-            messages.convertAndSend("/topic/" + boardid +
-                    "/" + listid + "/" + taskid + "/changetasktag", task);
-            messages.convertAndSend("/topic/" + boardid + "/changetasktag", task);
+            messages.convertAndSend("/topic/" + boardid + "/modifytask", task);
             return ResponseEntity.ok(addedTag);
         } catch(NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -249,9 +247,7 @@ public class TagController {
                 for (Task task : list.getTasks()) {
                     if (task.getTagById(tagid).isPresent()) {
                         task.removeTag(tag);
-                        messages.convertAndSend("/topic/" + boardid + "/" + list.id + "/" +
-                                task.id + "/changetasktag", task);
-                        messages.convertAndSend("/topic/" + boardid + "/changetasktag", task);
+                        messages.convertAndSend("/topic/" + boardid + "/modifytask", task);
                     }
                 }
             }
@@ -282,9 +278,7 @@ public class TagController {
         try {
             Tag tag = tagService.removeTaskTag(boardid, listid, taskid, tagid);
             Task task = tagService.getTask(boardid, listid, taskid);
-            messages.convertAndSend("/topic/" + boardid +
-                            "/" + listid + "/" + taskid + "/changetasktag", task);
-            messages.convertAndSend("/topic/" + boardid + "/changetasktag", task);
+            messages.convertAndSend("/topic/" + boardid + "/modifytask", task);
             return ResponseEntity.ok(tag);
         } catch(NoSuchElementException e) {
             return ResponseEntity.notFound().build();

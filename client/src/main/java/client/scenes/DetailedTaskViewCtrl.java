@@ -106,7 +106,7 @@ public class DetailedTaskViewCtrl {
         this.webSocketUtils.registerForListMessages("/topic/" + listController.getBoardID() +
                 "/deletelist", listConsumer);
         this.webSocketUtils.registerForTaskMessages("/topic/" + listController.getBoardID() +
-                "/" + listController.getTaskList().id + "/modifytask", modifyTaskConsumer);
+                "/modifytask", modifyTaskConsumer);
 
         Consumer<Tag> addBoardTag = (tag) -> {
             Platform.runLater(() -> {
@@ -125,21 +125,12 @@ public class DetailedTaskViewCtrl {
                 changeTag(tag);
             });
         };
-        Consumer<Task> changeTaskTag = (task) -> {
-            Platform.runLater(() -> {
-                this.task = task;
-                tagView.getItems().setAll(task.getTags());
-            });
-        };
         this.webSocketUtils.registerForTagMessages("/topic/" + listController.getBoardID() +
                 "/addtag", addBoardTag);
         this.webSocketUtils.registerForTagMessages("/topic/" + listController.getBoardID() +
                 "/deletetag", deleteBoardTag);
         this.webSocketUtils.registerForTagMessages("/topic/" + listController.getBoardID() +
                 "/changetag", changeTagConsumer);
-        this.webSocketUtils.registerForTaskMessages("/topic/" + listController.getBoardID() +
-                "/" + listController.getTaskList().id + "/" + task.id + "/changetasktag",
-                changeTaskTag);
     }
 
     public void changeTag(final Tag tag){
@@ -210,7 +201,6 @@ public class DetailedTaskViewCtrl {
      */
     public void setTask(final Task task) {
         this.task = task;
-        System.out.println(task.getSubtasks().size());
         this.update();
     }
 

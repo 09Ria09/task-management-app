@@ -44,7 +44,7 @@ public class SubTaskController {
                 return ResponseEntity.badRequest().build();
             }
             SubTask createdSubTask = subTaskService.addSubTask(boardid, listid, taskid, subTask);
-            messages.convertAndSend("/topic/" + boardid + "/" + listid + "/modifytask",
+            messages.convertAndSend("/topic/" + boardid + "/modifytask",
                     taskService.getTask(boardid, listid, taskid));
             return ResponseEntity.ok(createdSubTask);
         }
@@ -89,7 +89,7 @@ public class SubTaskController {
 
             SubTask renamedSubTask = subTaskService.
                     renameSubTask(boardId, listId, taskId, subTaskid, name);
-            messages.convertAndSend("/topic/" + boardId + "/" + listId + "/modifytask",
+            messages.convertAndSend("/topic/" + boardId + "/modifytask",
                     taskService.getTask(boardId, listId, taskId));
             return ResponseEntity.ok(renamedSubTask);
         } catch (NoSuchElementException e) {
@@ -106,7 +106,7 @@ public class SubTaskController {
         try {
             SubTask changedSubTask = subTaskService.
                     completeSubTask(boardId, listId, taskId, subTaskid, complete);
-            messages.convertAndSend("/topic/" + boardId + "/" + listId + "/modifytask",
+            messages.convertAndSend("/topic/" + boardId + "/modifytask",
                     taskService.getTask(boardId, listId, taskId));
             return ResponseEntity.ok(changedSubTask);
         } catch (NoSuchElementException e) {
@@ -127,7 +127,7 @@ public class SubTaskController {
                 subTaskToDeleteCopy = new SubTask(deletedSubTask);
             }
             subTaskService.removeSubTaskById(boardId, listId, taskId, subTaskid);
-            messages.convertAndSend("/topic/" + boardId + "/" + listId + "/modifytask",
+            messages.convertAndSend("/topic/" + boardId + "/modifytask",
                     taskService.getTask(boardId, listId, taskId));
             return ResponseEntity.ok(subTaskToDeleteCopy);
         } catch (NoSuchElementException e) {
