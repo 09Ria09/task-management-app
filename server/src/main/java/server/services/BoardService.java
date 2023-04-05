@@ -1,7 +1,9 @@
 package server.services;
 
 import commons.Board;
+import commons.BoardColorScheme;
 import commons.TaskList;
+import commons.TaskPreset;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.database.BoardRepository;
@@ -110,6 +112,21 @@ public class BoardService {
         return board;
     }
 
+    public BoardColorScheme setBoardColorScheme(final long boardID,
+                                                final BoardColorScheme boardColorScheme) {
+        Board board = getBoard(boardID);
+        board.setBoardColorScheme(boardColorScheme);
+        return boardRepository.save(board).getBoardColorScheme();
+    }
+
+    public TaskPreset setTaskPreset(final long boardId,
+                                    final TaskPreset taskPreset) {
+        Board board = getBoard(boardId);
+        board.addTaskPreset(taskPreset);
+        boardRepository.save(board);
+        return taskPreset;
+    }
+
     /**
      *  This basically generates a random string of two uppercase letters
      *  for the invite key so that it is nice and easy to remember
@@ -134,5 +151,6 @@ public class BoardService {
     private String generateInviteKey(final long boardId) {
         return String.format("%03d", boardId) + createKeyPart();
     }
+
 
 }
