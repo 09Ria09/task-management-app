@@ -93,12 +93,12 @@ public class SubTaskController {
                     taskService.getTask(boardId, listId, taskId));
             return ResponseEntity.ok(renamedSubTask);
         } catch (NoSuchElementException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
         }
     }
 
     @PutMapping("/{boardid}/{tasklistid}/{taskid}/{subtaskid}/complete")
-    public ResponseEntity<SubTask> renameSubTask(@PathVariable("boardid") final long boardId,
+    public ResponseEntity<SubTask> completeSubTask(@PathVariable("boardid") final long boardId,
                                                  @PathVariable("tasklistid") final long listId,
                                                  @PathVariable("taskid") final long taskId,
                                                  @PathVariable("subtaskid") final long subTaskid,
@@ -110,7 +110,7 @@ public class SubTaskController {
                     taskService.getTask(boardId, listId, taskId));
             return ResponseEntity.ok(changedSubTask);
         } catch (NoSuchElementException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -131,7 +131,7 @@ public class SubTaskController {
                     taskService.getTask(boardId, listId, taskId));
             return ResponseEntity.ok(subTaskToDeleteCopy);
         } catch (NoSuchElementException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
