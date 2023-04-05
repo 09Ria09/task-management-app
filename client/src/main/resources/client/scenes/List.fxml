@@ -77,8 +77,8 @@
             <Insets top="5.0" />
          </VBox.margin>
       </HBox>
-      <ListView fx:id="list" blendMode="SRC_ATOP" prefWidth="200.0" style="-fx-background-color: transparent; -fx-border-radius: 15;" VBox.vgrow="ALWAYS" />
-      <HBox alignment="CENTER" prefHeight="36.0" prefWidth="353.0">
+      <ListView fx:id="list" blendMode="SRC_ATOP" fixedCellSize="135.0" prefWidth="200.0" style="-fx-background-color: transparent; -fx-border-radius: 15;" VBox.vgrow="ALWAYS" />
+      <HBox alignment="CENTER" maxHeight="50.0" minWidth="50.0" prefHeight="46.0" prefWidth="353.0">
          <children>
             <Button alignment="CENTER" contentDisplay="CENTER" maxWidth="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#addCard" prefHeight="25.0" prefWidth="80.0" style="-fx-background-color: #57A773; -fx-text-fill: white; -fx-font-weight: bold;" text="Create task" textFill="WHITE">
                <font>

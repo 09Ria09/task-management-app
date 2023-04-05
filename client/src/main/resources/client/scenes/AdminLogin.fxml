@@ -13,7 +13,6 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
 <StackPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-image: url(&quot;client/images/task_pattern.jpg&quot;);" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.adminScenes.AdminLoginCtrl">
    <children>
       <GridPane>
@@ -38,7 +37,7 @@
             </Text>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="70.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
                <children>
-                  <Button mnemonicParsing="false" onAction="#cancel" prefHeight="25.0" prefWidth="100.0" style="-fx-background-color: #D32F2F; -fx-text-fill: white; -fx-font-weight: bold;" text="Cancel" />
+                  <Button mnemonicParsing="false" onAction="#cancel" prefHeight="25.0" prefWidth="100.0" style="-fx-background-color: #4969e1; -fx-text-fill: white; -fx-font-weight: bold;" text="Cancel" />
                   <Button mnemonicParsing="false" onAction="#confirm" prefHeight="25.0" prefWidth="100.0" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: #57A773;" text="Confirm" />
                </children>
             </HBox>

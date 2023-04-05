@@ -26,63 +26,89 @@
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" />
          </columnConstraints>
          <rowConstraints>
+            <RowConstraints minHeight="10.0" percentHeight="5.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" percentHeight="15.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="232.0" minHeight="10.0" percentHeight="40.0" prefHeight="211.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" percentHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" percentHeight="10.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" percentHeight="60.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" percentHeight="60.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" percentHeight="60.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" percentHeight="60.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" percentHeight="10.0" vgrow="SOMETIMES" />
+            <RowConstraints />
          </rowConstraints>
          <padding>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
          </padding>
          <children>
             <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;" GridPane.columnIndex="2" GridPane.rowSpan="6" />
-            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="3">
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
                <children>
-                  <ChoiceBox fx:id="tagChoice" prefWidth="150.0" />
-                  <Label fx:id="tagMessage" text="There are no tags created">
+                  <Label style="-fx-font-weight: bold;" text="Select tags">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <Button fx:id="addTagButton" mnemonicParsing="false" onAction="#addTag" style="-fx-background-color: #4285F4; -fx-font-weight: bold; -fx-text-fill: white;" text="Add Tag" />
+                  <HBox spacing="20.0">
+                     <children>
+                        <VBox alignment="CENTER_RIGHT" prefHeight="200.0" prefWidth="286.0">
+                           <children>
+                              <ListView fx:id="tagsView" fixedCellSize="40.0" maxHeight="200.0" maxWidth="170.0" minHeight="200.0" minWidth="170.0" prefHeight="200.0" prefWidth="166.0" style="-fx-background-radius: 20; -fx-border-radius: 20;">
+                                 <padding>
+                                    <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
+                                 </padding>
+                              </ListView>
+                           </children>
+                        </VBox>
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="222.0" spacing="20.0">
+                           <children>
+                              <Label fx:id="tagMessage" style="-fx-font-weight: bold;" text="There are no tags created">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                              <ChoiceBox fx:id="tagChoice" prefWidth="150.0" />
+                              <Button fx:id="addTagButton" mnemonicParsing="false" onAction="#addTag" style="-fx-background-color: #4969e1; -fx-font-weight: bold; -fx-text-fill: white;" text="Add Tag" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
                </children>
                <GridPane.margin>
-                  <Insets bottom="20.0" />
+                  <Insets />
                </GridPane.margin>
             </VBox>
-            <HBox alignment="CENTER" maxHeight="134.0" maxWidth="640.0" spacing="70.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+            <HBox alignment="CENTER" maxHeight="134.0" maxWidth="640.0" spacing="70.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
                <children>
-                  <Button contentDisplay="CENTER" mnemonicParsing="false" onAction="#cancel" prefHeight="25.0" prefWidth="100.0" style="-fx-background-color: #D32F2F; -fx-text-fill: white; -fx-font-weight: bold;" text="Cancel" textAlignment="CENTER" />
+                  <Button contentDisplay="CENTER" mnemonicParsing="false" onAction="#cancel" prefHeight="25.0" prefWidth="100.0" style="-fx-background-color: #4969e1; -fx-text-fill: white; -fx-font-weight: bold;" text="Cancel" textAlignment="CENTER" />
                   <Button alignment="CENTER" mnemonicParsing="false" onAction="#confirm" prefHeight="25.0" prefWidth="100.0" style="-fx-background-color: #57A773; -fx-text-fill: white; -fx-font-weight: bold;" text="Confirm" />
                </children>
             </HBox>
-            <Label alignment="CENTER" prefHeight="53.0" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #131200;" text="Create Task" GridPane.columnSpan="4" GridPane.halignment="CENTER" GridPane.vgrow="ALWAYS">
-               <font>
-                  <Font size="40.0" />
-               </font>
-               <GridPane.margin>
-                  <Insets top="40.0" />
-               </GridPane.margin>
-            </Label>
-            <ListView fx:id="tagsView" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-            <TextArea fx:id="taskDesc" prefHeight="247.0" prefWidth="395.0" promptText="Task Description" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="4">
+            <VBox alignment="CENTER" spacing="20.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="3">
                <GridPane.margin>
                   <Insets bottom="10.0" />
                </GridPane.margin>
-            </TextArea>
+               <children>
+                  <Label style="-fx-font-weight: bold;" text="Write a description">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <TextArea fx:id="taskDesc" maxHeight="80.0" maxWidth="370.0" minHeight="80.0" minWidth="370.0" prefHeight="247.0" prefWidth="395.0" promptText="                                      Task Description" />
+               </children>
+            </VBox>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
                <children>
+                  <Label alignment="CENTER" prefHeight="53.0" style="-fx-font-size: 34; -fx-font-weight: bold; -fx-text-fill: #131200;" text="Create Task">
+                     <font>
+                        <Font size="40.0" />
+                     </font>
+                  </Label>
                   <Label alignment="BOTTOM_CENTER" style="-fx-font-weight: bold;" text="Pick a name!" textAlignment="CENTER">
                      <VBox.margin>
-                        <Insets top="60.0" />
+                        <Insets />
                      </VBox.margin>
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="taskName" alignment="CENTER" maxHeight="30.0" maxWidth="300.0" prefHeight="30.0" prefWidth="300.0" promptText="Task Name">
+                  <TextField fx:id="taskName" alignment="CENTER" maxHeight="32.0" maxWidth="370.0" minHeight="30.0" minWidth="370.0" prefHeight="30.0" prefWidth="360.0" promptText="Task Name">
                      <VBox.margin>
                         <Insets top="15.0" />
                      </VBox.margin>

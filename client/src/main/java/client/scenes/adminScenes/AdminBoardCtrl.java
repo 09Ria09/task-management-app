@@ -59,6 +59,7 @@ public class AdminBoardCtrl {
             private final Button deleteButton = new Button("Delete");
 
             {
+                deleteButton.setId("deleteButton");
                 deleteButton.setOnAction(event -> {
                     Board board = getTableRow().getItem();
                     deleteBoard(board, true);

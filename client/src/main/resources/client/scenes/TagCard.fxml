@@ -7,11 +7,11 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="40.0" maxWidth="150.0" minHeight="40.0" minWidth="150.0" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.TagCardCtrl">
+<AnchorPane maxHeight="40.0" maxWidth="130.0" minHeight="40.0" minWidth="130.0" prefHeight="40.0" prefWidth="1.0" style="-fx-background-color: transparent; -fx-background-radius: 20; -fx-border-radius: 20px; -fx-border-width: 2;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.TagCardCtrl">
     <children>
-      <AnchorPane fx:id="pane" layoutX="5.0" layoutY="3.0" maxHeight="34.0" maxWidth="140.0" minHeight="34.0" minWidth="140.0" prefHeight="34.0" prefWidth="132.0" style="-fx-background-radius: 20px; -fx-border-radius: 20px;">
+      <AnchorPane fx:id="pane" layoutX="5.0" layoutY="3.0" maxHeight="34.0" maxWidth="120.0" minHeight="34.0" minWidth="120.0" prefHeight="34.0" prefWidth="132.0" style="-fx-background-radius: 20; -fx-border-radius: 20;">
          <children>
-            <Button layoutX="111.0" layoutY="2.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#deleteTag" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 2px; -fx-border-radius: 100px;">
+            <Button layoutX="91.0" layoutY="2.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#deleteTag" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 2px; -fx-border-radius: 100px;">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="30.0">
                      <image>

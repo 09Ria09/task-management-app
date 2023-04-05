@@ -11,9 +11,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 import java.io.IOException;
@@ -274,6 +276,18 @@ public class DetailedTaskViewCtrl {
                             Node card = cardLoader.load();
                             TaskTagCardCtrl taskTagCardCtrl = cardLoader.getController();
                             taskTagCardCtrl.initialize(tag);
+                            Button removeButton = (Button) card.lookup("#removeButton");
+                            removeButton.setOnAction(event -> {
+                                try {
+                                    tagUtils.deleteTaskTag(listController.getBoardID(),
+                                            listController.getTaskList().id, task.id, tag.getId());
+                                    tagView.getItems().remove(tag);
+                                } catch(TagException e) {
+                                    Alert alert = customAlert.showAlert(e.getMessage());
+                                    alert.showAndWait();
+                                }
+                                event.consume();
+                            });
                             setGraphic(card);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
@@ -281,19 +295,6 @@ public class DetailedTaskViewCtrl {
                     }
                 }
             };
-            cell.setOnMouseClicked(event -> {
-                try {
-                    if(cell.getItem() == null)
-                        return;
-                    tagUtils.deleteTaskTag(listController.getBoardID(),
-                            listController.getTaskList().id, task.id, cell.getItem().getId());
-                    tagView.getItems().remove(cell.getItem());
-                } catch(TagException e) {
-                    Alert alert = customAlert.showAlert(e.getMessage());
-                    alert.showAndWait();
-                }
-                event.consume();
-            });
             return cell;
         });
     }
@@ -371,7 +372,8 @@ public class DetailedTaskViewCtrl {
         dialog.setTitle("Talio:  Add A Sub Task");
         dialog.setHeaderText("Create A New Sub Task:");
         dialog.setContentText("Name:");
-
+        Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image("client/images/icon.png"));
         Optional<String> newName = dialog.showAndWait();
         SubTask subTask;
 

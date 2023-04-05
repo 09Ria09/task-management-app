@@ -1,0 +1,48 @@
+/* Style the TableView */
+.table-view {
+    -fx-background-color: #f4f4f4;
+    -fx-table-cell-border-color: transparent;
+}
+
+.table-row-cell {
+    -fx-border-color: transparent transparent #d8d8d8 transparent;
+    -fx-background-color: #f4f4f4;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #b2d0ff;
+}
+
+.table-cell {
+    -fx-background-color: white;
+    -fx-background-radius: 5px;
+    -fx-padding: 4px 8px;
+    -fx-border-radius: 5px;
+    -fx-border-width: 1px;
+    -fx-border-color: #f4f4f4;
+}
+
+.table-header-background {
+    -fx-background-color: #5a5a5a;
+}
+
+.table-column {
+    -fx-alignment: CENTER;
+    -fx-background-color: transparent;
+}
+
+.table-header-border {
+    -fx-background-color: transparent;
+}
+
+.table-header {
+    -fx-background-color: #5a5a5a;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+#deleteButton {
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-background-color:  #D32F2F;
+}

@@ -203,10 +203,11 @@ public class BoardUtils {
         return board.getInviteKey();
     }
 
-    private static final ExecutorService EXEC = Executors.newSingleThreadExecutor();
+    private ExecutorService exec = Executors.newSingleThreadExecutor();
     public void registerForUpdatesBoards(final Consumer<BoardEvent> boardConsumer) {
         System.out.println("registering for updates");
-        EXEC.submit(() -> {
+        exec = Executors.newSingleThreadExecutor();
+        exec.submit(() -> {
             while (!Thread.interrupted()) {
                 String serverAddress = server.getServerAddress();
                 Response response = ClientBuilder.newClient(new ClientConfig())
@@ -232,6 +233,6 @@ public class BoardUtils {
     }
 
     public void stop() {
-        EXEC.shutdownNow();
+        exec.shutdownNow();
     }
 }

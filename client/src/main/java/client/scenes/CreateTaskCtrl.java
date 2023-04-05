@@ -66,8 +66,15 @@ public class CreateTaskCtrl {
                             var cardLoader = new FXMLLoader(getClass()
                                     .getResource("TaskTagCard.fxml"));
                             Node card = cardLoader.load();
+
                             TaskTagCardCtrl taskTagCardCtrl = cardLoader.getController();
                             taskTagCardCtrl.initialize(tag);
+
+
+                            Button removeButton = (Button) card.lookup("#removeButton");
+                            removeButton.setOnAction(event -> {
+                                tagsView.getItems().remove(tag);
+                            });
                             setGraphic(card);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
@@ -75,9 +82,6 @@ public class CreateTaskCtrl {
                     }
                 }
             };
-            cell.setOnMouseClicked(event -> {
-                tagsView.getItems().remove(cell.getItem());
-            });
             return cell;
         });
     }
