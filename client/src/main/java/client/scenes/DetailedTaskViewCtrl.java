@@ -207,6 +207,7 @@ public class DetailedTaskViewCtrl {
      */
     public void setTask(final Task task) {
         this.task = task;
+        System.out.println(task.getSubtasks().size());
         this.update();
     }
 
