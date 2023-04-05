@@ -36,6 +36,7 @@ public class TagCardCtrl {
         this.customAlert = customAlert;
     }
 
+    @FXML
     public boolean deleteTag() {
         try {
             tagUtils.deleteBoardTag(board.id, tag.id);

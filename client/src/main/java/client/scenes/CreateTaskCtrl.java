@@ -13,6 +13,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.stage.Modality;
+import javafx.util.StringConverter;
 
 import java.io.IOException;
 import java.util.*;
@@ -65,8 +66,15 @@ public class CreateTaskCtrl {
                             var cardLoader = new FXMLLoader(getClass()
                                     .getResource("TaskTagCard.fxml"));
                             Node card = cardLoader.load();
+
                             TaskTagCardCtrl taskTagCardCtrl = cardLoader.getController();
                             taskTagCardCtrl.initialize(tag);
+
+
+                            Button removeButton = (Button) card.lookup("#removeButton");
+                            removeButton.setOnAction(event -> {
+                                tagsView.getItems().remove(tag);
+                            });
                             setGraphic(card);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
@@ -74,9 +82,6 @@ public class CreateTaskCtrl {
                     }
                 }
             };
-            cell.setOnMouseClicked(event -> {
-                tagsView.getItems().remove(cell.getItem());
-            });
             return cell;
         });
     }
@@ -151,6 +156,18 @@ public class CreateTaskCtrl {
                 addTagButton.setVisible(true);
                 tagMessage.setVisible(false);
                 tagChoice.setValue(tagChoice.getItems().get(0));
+                tagChoice.setConverter(new StringConverter<Tag>() {
+                    @Override
+                    public String toString(final Tag object) {
+                        return object == null ? "" : object.getName();
+                    }
+
+                    @Override
+                    public Tag fromString(final String string) {
+                        return tagChoice.getItems().stream()
+                                .filter(t -> t.getName().equals(string)).findFirst().orElse(null);
+                    }
+                });
             } else {
                 tagChoice.setVisible(false);
                 addTagButton.setVisible(false);

@@ -18,6 +18,7 @@ public class TagTest {
         Tag testTag = new Tag();
         assertNotNull(testTag);
         assertEquals(testTag.getName(), "");
+        assertEquals(testTag.id, testTag.getId());
     }
 
     @Test
@@ -59,5 +60,12 @@ public class TagTest {
     public void testToString() {
         Tag testTag = new Tag("Tag1", "FFFFFF");
         assertNotNull(testTag.toString());
+    }
+
+    @Test
+    public void testEqualNoTag() {
+        Tag testTag = new Tag("Name", "FFFFFF");
+        Task task = new Task("Name", "Desc");
+        assertFalse(testTag.equals(task));
     }
 }

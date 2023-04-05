@@ -135,6 +135,21 @@ public class TagControllerTest {
     }
 
     @Test
+    public void testAddTaskTagEndpoint() throws Exception {
+        Tag newTag = new Tag("Name", "#424242");
+        String requestBody = new ObjectMapper().writeValueAsString(newTag);
+        Mockito.when(tagService.addTaskTag(1, 2, 3, newTag.id)).thenReturn(newTag);
+        Mockito.when(tagService.getBoardTags(1)).thenReturn(List.of(newTag));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/tags/1/2/3/add")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("name", is("Name")));
+        Mockito.verify(tagService, Mockito.times(1)).addTaskTag(1, 2, 3, newTag.id);
+    }
+
+    @Test
     public void testDeleteBoardTagEndpoint() throws Exception {
         Mockito.when(tagService.getBoard(1)).thenReturn(new Board());
         Mockito.when(tagService.removeBoardTag(1, 2)).thenReturn(null);
@@ -208,6 +223,20 @@ public class TagControllerTest {
     }
 
     @Test
+    public void testAddTaskTagEndpointBadRequest() throws Exception {
+        Tag tag = new Tag("", "#424242");
+        String requestBody = new ObjectMapper().writeValueAsString(tag);
+        Mockito.when(tagService.addTaskTag(1, 2, 3, tag.id)).thenReturn(tag);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/tags/1/2/3/add")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isBadRequest());
+        Mockito.verify(tagService, Mockito.times(0))
+                .addTaskTag(1, 2, 3, tag.id);
+    }
+
+    @Test
     public void testAddBoardTagEndpointNotFound() throws Exception {
         Tag tag = new Tag("Name", "#FFFFFF");
         String requestBody = new ObjectMapper().writeValueAsString(tag);
@@ -219,6 +248,20 @@ public class TagControllerTest {
                 .andExpect(status().isNotFound());
         Mockito.verify(tagService, Mockito.times(1))
                 .addBoardTag(1, tag);
+    }
+
+    @Test
+    public void testAddTaskTagEndpointNotFound() throws Exception {
+        Tag tag = new Tag("Name", "#424242");
+        String requestBody = new ObjectMapper().writeValueAsString(tag);
+        Mockito.when(tagService.addTaskTag(1, 2, 3, tag.id)).thenThrow(NoSuchElementException.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/tags/1/2/3/add")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isNotFound());
+        Mockito.verify(tagService, Mockito.times(1))
+                .addTaskTag(1, 2, 3, tag.id);
     }
 
     @Test
@@ -265,16 +308,16 @@ public class TagControllerTest {
 
     @Test
     public void recolorTagEndpointNotFound() throws Exception {
-        Mockito.when(tagService.recolorTag(1, 2, "Color", "Color"))
+        Mockito.when(tagService.recolorTag(1, 2, "#424242", "#434343"))
                 .thenThrow(NoSuchElementException.class);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/tags/1/2/recolor")
-                        .param("backgroundColor", "Color")
-                        .param("fontColor", "Color"))
+                        .param("backgroundColor", "#424242")
+                        .param("fontColor", "#434343"))
                 .andExpect(status().isNotFound());
 
         Mockito.verify(tagService, Mockito.times(1))
-                .recolorTag(1, 2, "Color", "Color");
+                .recolorTag(1, 2, "#424242", "#434343");
     }
 
     @Test

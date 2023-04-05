@@ -5,44 +5,71 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Tooltip?>
-<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="root" alignment="CENTER" prefHeight="600.0" prefWidth="1000.0" spacing="30.0" style="-fx-background-color: #f0f0f0;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.connectScenes.SelectServerCtrl">
-   <padding>
-      <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
-   </padding>
-   <Label fx:id="title" alignment="CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Welcome to Talio!" textAlignment="CENTER" wrapText="true" VBox.vgrow="ALWAYS">
-      <font>
-         <Font size="24" />
-      </font>
-   </Label>
-   <FlowPane alignment="CENTER" columnHalignment="CENTER" hgap="10.0" prefWrapLength="600.0" VBox.vgrow="ALWAYS">
-      <Label fx:id="addressLabel" maxHeight="Infinity" maxWidth="Infinity" text="Please enter your server address to continue:">
-         <tooltip>
-            <Tooltip text="Only the IP address is needed, not the port number.">
+<StackPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-image: url(&quot;client/images/task_pattern.jpg&quot;);" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.connectScenes.SelectServerCtrl">
+   <children>
+      <GridPane>
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.rowSpan="3" />
+            <VBox alignment="CENTER" spacing="30.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <children>
+                  <Label fx:id="addressLabel" alignment="CENTER" maxHeight="Infinity" maxWidth="Infinity" style="-fx-font-weight: bold;" text="Please enter your server address to continue:">
+                     <tooltip>
+                        <Tooltip text="Only the IP address is needed, not the port number.">
+                           <font>
+                              <Font size="16" />
+                           </font>
+                        </Tooltip>
+                     </tooltip>
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="addressField" alignment="BOTTOM_CENTER" maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="300.0" text="localhost" promptText="Server address" style="-fx-alignment: center;">
+                     <tooltip>
+                        <Tooltip text="Only the IP address is needed, not the port number.">
+                           <font>
+                              <Font size="16" />
+                           </font>
+                        </Tooltip>
+                     </tooltip>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </TextField>
+               </children>
+            </VBox>
+            <Label fx:id="title" alignment="CENTER" contentDisplay="CENTER" maxHeight="Infinity" maxWidth="Infinity" style="-fx-font-family: verdana; -fx-font-weight: bold;" text="Welcome to Talio!" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <font>
-                  <Font size="16" />
+                  <Font size="34.0" />
                </font>
-            </Tooltip>
-         </tooltip>
-      </Label>
-      <TextField fx:id="addressField" alignment="BOTTOM_CENTER" promptText="Server Address" style="-fx-alignment: center;" text="localhost">
-         <tooltip>
-            <Tooltip text="Only the IP address is needed, not the port number.">
-               <font>
-                  <Font size="16" />
-               </font>
-            </Tooltip>
-         </tooltip>
-         <padding>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </padding>
-      </TextField>
-   </FlowPane>
-   <Button fx:id="connectButton" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#showServerBoards" style="-fx-background-color: #4969e1; -fx-font-weight: bold; -fx-alignment: center; -fx-content-display: center; -fx-background-radius: 10;" text="Connect!" textAlignment="CENTER" textFill="WHITE">
-      <padding>
-         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-      </padding></Button>
-</VBox>
+            </Label>
+            <HBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="3">
+               <children>
+                  <Button fx:id="connectButton" alignment="CENTER" maxHeight="25.0" maxWidth="100.0" minHeight="25.0" minWidth="100.0" mnemonicParsing="false" onAction="#showServerBoards" prefHeight="25.0" prefWidth="100.0" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: #4969e1;" text="Connect" />
+               </children>
+            </HBox>
+         </children>
+      </GridPane>
+   </children>
+</StackPane>

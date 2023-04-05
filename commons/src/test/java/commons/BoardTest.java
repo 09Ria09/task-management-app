@@ -158,7 +158,24 @@ public class BoardTest {
         assertEquals("11111", emptyBoard.getInviteKey());
     }
 
+    @Test
+    public void testCloneBoard() {
+        Board b = new Board();
+        Board b2 = new Board(b);
+        assertNotNull(b2);
+    }
 
+    @Test
+    public void testGetTagById(){
+        List<Tag> tags = new ArrayList<>(List.of(new Tag("audio", "FFFFFF"),
+                new Tag("video", "FFFFFF"),
+                new Tag("auvio", "FFFFFF")));
+        tags.get(0).id = 5;
+        board.setTags(tags);
+        assertEquals(tags, board.getTags());
+        assertTrue(board.getTagById(5).isPresent());
+        assertEquals(board.getTagById(5).get(), tags.get(0));
+    }
 
 
 }

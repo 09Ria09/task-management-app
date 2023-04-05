@@ -99,7 +99,7 @@ public class MainCtrl {
         primaryStage.getIcons().add(new javafx.scene
                 .image.Image("file:src/main/resources/client/images/icon.png"));
         primaryStage.setMinHeight(720);
-        primaryStage.setMinWidth(1280);
+        primaryStage.setMinWidth(1380);
 
         this.createTaskCtrl = taskScenes.getCreateTask().getKey();
         this.createTask = new Scene(taskScenes.getCreateTask().getValue());

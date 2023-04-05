@@ -79,4 +79,30 @@ public class TaskServiceTest {
         service.removeTask(b.id, l.id, t);
         assertThrows(NoSuchElementException.class, () -> service.getTask(b.id, l.id, t.id));
     }
+
+    @Test
+    public void testEditDescriptionTask(){
+        Board b = new Board();
+        TaskList l = new TaskList("list1");
+        Task t = new Task("a", "b");
+        boardService.addBoard(b);
+        listService.addList(b.id, l);
+        service.addTask(b.id, l.id, t);
+        assertEquals("b", service.getTask(b.id, l.id, t.id).getDescription());
+        service.editDescription(b.id, l.id, t.id, "task-b");
+        assertEquals("task-b", service.getTask(b.id, l.id, t.id).getDescription());
+    }
+
+    @Test
+    public void testRemoveTaskById(){
+        Board b = new Board();
+        TaskList l = new TaskList("list1");
+        Task t = new Task("a", "b");
+        boardService.addBoard(b);
+        listService.addList(b.id, l);
+        service.addTask(b.id, l.id, t);
+        assertEquals(t, service.getTask(b.id, l.id, t.id));
+        service.removeTaskById(b.id, l.id, t.id);
+        assertThrows(NoSuchElementException.class, () -> service.getTask(b.id, l.id, t.id));
+    }
 }

@@ -27,15 +27,20 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tab;
 import javafx.scene.control.*;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import javafx.util.Pair;
@@ -154,7 +159,9 @@ public class BoardOverviewCtrl {
             new TaskUtils(server), customAlert,
                 boardUtils, new Pair(new LayoutUtils(), webSocketUtils)));
         try {
-            Node list = listLoader.load();
+            VBox list = listLoader.load();
+            list.prefHeightProperty().bind(Bindings
+                    .multiply(listScrollPane.heightProperty(), 0.95));
             ListCtrl listCtrl = listLoader.getController();
             listCtrl.initialize();
             listCtrl.refresh(taskList, currentBoardId);
@@ -282,8 +289,6 @@ public class BoardOverviewCtrl {
     public long getCurrentBoardId() {
         return this.currentBoardId;
     }
-
-
 
     public Board deleteBoard() throws BoardException {
         Long idToDelete = getCurrentBoardId();
