@@ -14,8 +14,8 @@
                </font>
             </Label>
             <TextField fx:id="tagNameField" layoutX="36.0" layoutY="19.0" onKeyPressed="#tagNameKeyPressed" visible="false" />
-            <ColorPicker fx:id="backgroundColorPicker" layoutX="36.0" layoutY="81.0" />
-            <Button layoutX="286.0" layoutY="135.0" mnemonicParsing="false" onAction="#changeColor" text="Save Colors" />
+            <ColorPicker fx:id="backgroundColorPicker" layoutX="36.0" layoutY="75.0" />
+            <Button layoutX="265.0" layoutY="135.0" mnemonicParsing="false" onAction="#changeColor" text="Save Colors" />
             <ColorPicker fx:id="fontColorPicker" layoutX="36.0" layoutY="135.0" />
             <Text layoutX="36.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Background Color:" />
             <Text layoutX="36.0" layoutY="125.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Font Color:" />

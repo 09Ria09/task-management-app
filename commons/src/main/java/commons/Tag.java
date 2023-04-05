@@ -80,7 +80,8 @@ public class Tag implements Serializable {
 
     @Override
     public String toString() {
-        return "Tag (" + id + ") : " + name + " -> color=" + colorBackground + " font=" + colorFont;
+        return "Tag (" + id + ") : " + name + " -> background=" + colorBackground +
+            " font=" + colorFont;
     }
 
     public long getId() {
