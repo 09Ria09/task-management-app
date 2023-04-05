@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
 
 public class ColorManagementViewCtrl {
 
@@ -94,11 +95,15 @@ public class ColorManagementViewCtrl {
     public void resetBoardColors() {
         board.getBoardColorScheme().setBoardBackgroundColor(white);
         board.getBoardColorScheme().setBoardTextColor(white);
+        boardBackgroundColorInput.setValue(Color.valueOf(white));
+        boardTextColorInput.setValue(Color.valueOf(white));
     }
 
     public void resetListColors() {
         board.getBoardColorScheme().setListBackgroundColor(white);
         board.getBoardColorScheme().setListTextColor(white);
+        listBackgroundColorInput.setValue(Color.valueOf(white));
+        listTextColorInput.setValue(Color.valueOf(white));
     }
 
 
