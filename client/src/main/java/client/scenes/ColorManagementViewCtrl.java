@@ -36,6 +36,7 @@ public class ColorManagementViewCtrl {
 
     private BoardUtils boardUtils;
     private Board board;
+    private String white = "0xffffffff";
 
     @Inject
     public ColorManagementViewCtrl(final ServerUtils server, final MainCtrl mainCtrl,
@@ -91,13 +92,13 @@ public class ColorManagementViewCtrl {
     }
 
     public void resetBoardColors() {
-        board.getBoardColorScheme().setBoardBackgroundColor("0x000000ff");
-        board.getBoardColorScheme().setBoardTextColor("0x000000ff");
+        board.getBoardColorScheme().setBoardBackgroundColor(white);
+        board.getBoardColorScheme().setBoardTextColor(white);
     }
 
     public void resetListColors() {
-        board.getBoardColorScheme().setListBackgroundColor("0x000000ff");
-        board.getBoardColorScheme().setListTextColor("0x000000ff");
+        board.getBoardColorScheme().setListBackgroundColor(white);
+        board.getBoardColorScheme().setListTextColor(white);
     }
 
 
