@@ -193,4 +193,7 @@ public class Board {
     }
 
 
+    public void setId(final long boardId) {
+        this.id = boardId;
+    }
 }

@@ -18,17 +18,7 @@ import java.util.function.Consumer;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
-//TODO
-/*
- * !
- * !    check if passing of serverAddress is correct and ask for feedback
- * on this aspect  - can't figure out how to properly organize this
- * such that there is one serverAddress that
- * changes everywhere like in a prototype bean
- * !    add method for getting all boards
- * !    reformat duplicate code - either use response handler
- * or leave as is
- */
+
 public class BoardUtils {
 
     private final ServerUtils server;
