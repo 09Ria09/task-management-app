@@ -54,8 +54,8 @@
             </VBox>
             <HBox alignment="CENTER" maxHeight="134.0" maxWidth="640.0" spacing="70.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
                <children>
-                  <Button contentDisplay="CENTER" mnemonicParsing="false" onAction="#cancel" prefHeight="25.0" prefWidth="63.0" style="-fx-background-color: #D32F2F; -fx-text-fill: white; -fx-font-weight: bold;" text="Cancel" textAlignment="CENTER" />
-                  <Button alignment="CENTER" mnemonicParsing="false" onAction="#confirm" prefHeight="25.0" prefWidth="96.0" style="-fx-background-color: #57A773; -fx-text-fill: white; -fx-font-weight: bold;" text="Confirm" />
+                  <Button contentDisplay="CENTER" mnemonicParsing="false" onAction="#cancel" prefHeight="25.0" prefWidth="100.0" style="-fx-background-color: #D32F2F; -fx-text-fill: white; -fx-font-weight: bold;" text="Cancel" textAlignment="CENTER" />
+                  <Button alignment="CENTER" mnemonicParsing="false" onAction="#confirm" prefHeight="25.0" prefWidth="100.0" style="-fx-background-color: #57A773; -fx-text-fill: white; -fx-font-weight: bold;" text="Confirm" />
                </children>
             </HBox>
             <Label alignment="CENTER" prefHeight="53.0" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #131200;" text="Create Task" GridPane.columnSpan="4" GridPane.halignment="CENTER" GridPane.vgrow="ALWAYS">
@@ -66,11 +66,7 @@
                   <Insets top="40.0" />
                </GridPane.margin>
             </Label>
-            <ListView fx:id="tagsView" editable="true" prefHeight="207.0" prefWidth="278.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2">
-               <GridPane.margin>
-                  <Insets bottom="20.0" />
-               </GridPane.margin>
-            </ListView>
+            <ListView fx:id="tagsView" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
             <TextArea fx:id="taskDesc" prefHeight="247.0" prefWidth="395.0" promptText="Task Description" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="4">
                <GridPane.margin>
                   <Insets bottom="10.0" />
@@ -86,7 +82,7 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="taskName" alignment="CENTER" maxHeight="30.0" maxWidth="300.0" prefHeight="36.0" prefWidth="303.0" promptText="Task Name">
+                  <TextField fx:id="taskName" alignment="CENTER" maxHeight="30.0" maxWidth="300.0" prefHeight="30.0" prefWidth="300.0" promptText="Task Name">
                      <VBox.margin>
                         <Insets top="15.0" />
                      </VBox.margin>

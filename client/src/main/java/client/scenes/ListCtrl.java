@@ -388,6 +388,12 @@ public class ListCtrl implements Initializable {
         this.title.setVisible(false);
     }
 
+    public void onTitleButtonClicked(){
+        this.titleField.setText(this.title.getText());
+        this.titleField.setVisible(true);
+        this.title.setVisible(false);
+    }
+
     /**
      * Fired when the task list title fields loses the focus. It then checks if the name
      * is different. If it is, the change is sent to the server.

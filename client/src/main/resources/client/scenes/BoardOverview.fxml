@@ -56,7 +56,7 @@
             </HBox>
             <HBox alignment="CENTER" prefHeight="86.0" prefWidth="240.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <children>
-                  <Button mnemonicParsing="false" onAction="#addList" style="-fx-background-color: #57A773; -fx-text-fill: white; -fx-font-weight: bold;" text="Add List" textAlignment="CENTER" />
+                  <Button mnemonicParsing="false" onAction="#addList" prefWidth="80.0" style="-fx-background-color: #57A773; -fx-text-fill: white; -fx-font-weight: bold;" text="Create List" textAlignment="CENTER" />
                </children>
                <padding>
                   <Insets right="10.0" />
