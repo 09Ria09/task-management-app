@@ -14,7 +14,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.paint.Color;
 import javafx.stage.Popup;
 
 import java.io.IOException;
@@ -163,7 +162,6 @@ public class TagOverviewCtrl {
         try {
             tagUtils.addBoardTag(board.id, tag);
             tagName.setText("");
-            colorPicker.setValue(new Color(1, 1, 1, 1));
             return true;
         } catch (TagException e) {
             Alert alert = customAlert.showAlert(e.getMessage());

@@ -35,7 +35,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.input.Clipboard;
@@ -161,7 +160,8 @@ public class BoardOverviewCtrl {
                 boardUtils, new Pair(new LayoutUtils(), webSocketUtils)));
         try {
             VBox list = listLoader.load();
-            list.prefHeightProperty().bind(Bindings.multiply(listScrollPane.heightProperty(), 0.95));
+            list.prefHeightProperty().bind(Bindings
+                    .multiply(listScrollPane.heightProperty(), 0.95));
             ListCtrl listCtrl = listLoader.getController();
             listCtrl.initialize();
             listCtrl.refresh(taskList, currentBoardId);

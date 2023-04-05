@@ -199,7 +199,7 @@ public class BoardUtils {
 
 
 
-    private static final ExecutorService exec = Executors.newSingleThreadExecutor();
+    private ExecutorService exec = Executors.newSingleThreadExecutor();
     public void registerForUpdatesBoards(final Consumer<BoardEvent> boardConsumer) {
         System.out.println("registering for updates");
         exec = Executors.newSingleThreadExecutor();

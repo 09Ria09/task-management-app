@@ -16,9 +16,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 import javafx.scene.input.*;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
@@ -45,6 +43,12 @@ public class ListCtrl implements Initializable {
     TextField titleField;
     @FXML
     VBox vBox;
+
+    @FXML
+    HBox quickTaskBox;
+
+    @FXML
+    HBox createTaskBox;
 
     private int indexToDrop;
     private Task draggedTask;
@@ -449,9 +453,19 @@ public class ListCtrl implements Initializable {
     public void refreshColor(){
         try {
             board = boardUtils.getBoard(getBoardID());
-            list.setBackground(new Background(
+            var backgroundColor = new Background(
                     new BackgroundFill(Color.valueOf(board.getBoardColorScheme().
-                    getListBackgroundColor().substring(2, 8)), null, null)));
+                            getListBackgroundColor().substring(2, 8)), null, null));
+
+            list.setBackground(backgroundColor);
+            quickTaskBox.setBackground(backgroundColor);
+            createTaskBox.setBackground(new Background(
+                    //it shouldnt be like this but I dont know how to override
+                    //the round corners of the hbox
+                    new BackgroundFill(Color.valueOf(board.getBoardColorScheme().
+                            getListBackgroundColor()
+                            .substring(2, 8)),
+                            new CornerRadii(0.0, 0.0, 15.0, 15.0, false), null)));
             title.setTextFill(Color.web(board.getBoardColorScheme().getListTextColor()));
             addTaskButton.setTextFill(Color.web(board.getBoardColorScheme().getListTextColor()));
 
