@@ -136,7 +136,7 @@ public class TagControllerTest {
 
     @Test
     public void testAddTaskTagEndpoint() throws Exception {
-        Tag newTag = new Tag("Name", "Color");
+        Tag newTag = new Tag("Name", "#424242");
         String requestBody = new ObjectMapper().writeValueAsString(newTag);
         Mockito.when(tagService.addTaskTag(1, 2, 3, newTag.id)).thenReturn(newTag);
         Mockito.when(tagService.getBoardTags(1)).thenReturn(List.of(newTag));
@@ -224,7 +224,7 @@ public class TagControllerTest {
 
     @Test
     public void testAddTaskTagEndpointBadRequest() throws Exception {
-        Tag tag = new Tag("", "");
+        Tag tag = new Tag("", "#424242");
         String requestBody = new ObjectMapper().writeValueAsString(tag);
         Mockito.when(tagService.addTaskTag(1, 2, 3, tag.id)).thenReturn(tag);
 
@@ -252,7 +252,7 @@ public class TagControllerTest {
 
     @Test
     public void testAddTaskTagEndpointNotFound() throws Exception {
-        Tag tag = new Tag("Name", "Color");
+        Tag tag = new Tag("Name", "#424242");
         String requestBody = new ObjectMapper().writeValueAsString(tag);
         Mockito.when(tagService.addTaskTag(1, 2, 3, tag.id)).thenThrow(NoSuchElementException.class);
 
@@ -308,16 +308,16 @@ public class TagControllerTest {
 
     @Test
     public void recolorTagEndpointNotFound() throws Exception {
-        Mockito.when(tagService.recolorTag(1, 2, "Color", "Color"))
+        Mockito.when(tagService.recolorTag(1, 2, "#424242", "#434343"))
                 .thenThrow(NoSuchElementException.class);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/tags/1/2/recolor")
-                        .param("backgroundColor", "Color")
-                        .param("fontColor", "Color"))
+                        .param("backgroundColor", "#424242")
+                        .param("fontColor", "#434343"))
                 .andExpect(status().isNotFound());
 
         Mockito.verify(tagService, Mockito.times(1))
-                .recolorTag(1, 2, "Color", "Color");
+                .recolorTag(1, 2, "#424242", "#434343");
     }
 
     @Test
