@@ -7,24 +7,16 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.CardCtrl">
+<AnchorPane maxHeight="130.0" minHeight="130.0" prefHeight="120.0" prefWidth="311.0" style="-fx-background-color: transparent; -fx-border-radius: 20px; -fx-background-radius: 20px;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.CardCtrl">
    <children>
       <AnchorPane fx:id="cardPane" layoutY="0.5" maxHeight="120.0" maxWidth="300.0" minHeight="120.0" minWidth="300.0" onMouseEntered="#onHover" onMouseExited="#onUnhover" prefHeight="120.0" prefWidth="300.0" style="-fx-background-radius: 15px; -fx-border-radius: 15px; -fx-background-color: #CBD2D0;" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
-         <Label fx:id="description" text="Description" wrapText="true" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="130.0">
-            <font>
-               <Font size="14.0" />
-            </font>
-            <rotationAxis>
-               <Point3D />
-            </rotationAxis>
-         </Label>
-         <Label fx:id="title" layoutX="14.0" layoutY="10.0" maxHeight="50.0" maxWidth="200.0" minHeight="50.0" minWidth="200.0" prefHeight="50.0" prefWidth="200.0" style="-fx-font-weight: bold; -fx-font-size: 18px;" text="Title" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="60.0" AnchorPane.topAnchor="10.0">
+         <Label fx:id="title" layoutX="14.0" layoutY="-5.0" maxHeight="50.0" maxWidth="200.0" minHeight="50.0" minWidth="200.0" prefHeight="50.0" prefWidth="200.0" style="-fx-font-weight: bold; -fx-font-size: 18px;" text="Title" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="60.0" AnchorPane.topAnchor="-5.0">
             <font>
                <Font size="17.0" />
             </font>
@@ -32,8 +24,8 @@
                <Point3D />
             </rotationAxis>
          </Label>
-         <StackPane fx:id="progressPane" alignment="CENTER_LEFT" layoutX="14.0" layoutY="64.0" prefHeight="13.0" prefWidth="169.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="117.0" AnchorPane.topAnchor="64.0">
-            <Rectangle arcHeight="10.0" arcWidth="10.0" fill="#fcf7f7" height="11.0" stroke="TRANSPARENT" strokeType="INSIDE" width="172.0" />
+         <StackPane fx:id="progressPane" alignment="CENTER_LEFT" layoutX="14.0" layoutY="70.0" prefHeight="13.0" prefWidth="215.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="70.0">
+            <Rectangle arcHeight="10.0" arcWidth="10.0" fill="#fcf7f7" height="11.0" stroke="TRANSPARENT" strokeType="INSIDE" width="215.0" />
             <Rectangle fx:id="progressBar" arcHeight="10.0" arcWidth="10.0" fill="DODGERBLUE" height="10.0" stroke="TRANSPARENT" strokeType="INSIDE" width="50.0" />
          </StackPane>
          <Button fx:id="editButton" maxHeight="20.0" maxWidth="20.0" mnemonicParsing="false" onAction="#editTask" onMouseEntered="#onHoverEdit" onMouseExited="#onUnhoverEdit" pickOnBounds="false" prefHeight="20.0" prefWidth="20.0" style="-fx-background-color: transparent;" textFill="WHITE" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="85.0">
@@ -46,8 +38,22 @@
                </ImageView>
             </graphic>
          </Button>
-         <Button layoutX="269.0" layoutY="18.0" mnemonicParsing="false" onAction="#moveUp" pickOnBounds="false" style="-fx-background-color: #282E58;" text="↑" textFill="WHITE" AnchorPane.bottomAnchor="70.0" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="20.0" />
-         <Button layoutX="269.0" layoutY="73.0" mnemonicParsing="false" onAction="#moveDown" pickOnBounds="false" style="-fx-background-color: #282E58;" text="↓" textFill="WHITE" AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="70.0" />
+         <Button layoutX="253.0" layoutY="20.0" mnemonicParsing="false" onAction="#moveUp" pickOnBounds="false" prefHeight="30.0" prefWidth="41.0" style="-fx-background-color: transparent;" textFill="WHITE" AnchorPane.bottomAnchor="70.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="20.0">
+            <graphic>
+               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../images/arrow_upward.png" />
+                  </image>
+               </ImageView>
+            </graphic></Button>
+         <Button layoutX="254.0" layoutY="67.0" mnemonicParsing="false" onAction="#moveDown" pickOnBounds="false" prefHeight="36.0" prefWidth="41.0" style="-fx-background-color: transparent;" textFill="WHITE" AnchorPane.bottomAnchor="17.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="67.0">
+            <graphic>
+               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../images/arrow_downward.png" />
+                  </image>
+               </ImageView>
+            </graphic></Button>
          <Button fx:id="deleteButton" maxHeight="20.0" maxWidth="20.0" mnemonicParsing="false" onAction="#deleteTask" onMouseEntered="#onHoverDelete" onMouseExited="#onUnhoverDelete" prefHeight="20.0" prefWidth="20.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="75.0" AnchorPane.topAnchor="85.0">
             <tooltip>
                <Tooltip text="Delete Task" />
@@ -58,22 +64,18 @@
                </ImageView>
             </graphic>
          </Button>
-         <Button fx:id="descButton" maxHeight="20.0" maxWidth="20.0" mnemonicParsing="false" onMouseEntered="#onHoverDesc" onMouseExited="#onUnhoverDesc" prefHeight="20.0" prefWidth="20.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="85.0">
+         <Button fx:id="descButton" maxHeight="20.0" maxWidth="20.0" mnemonicParsing="false" onAction="#editTask" onMouseEntered="#onHoverDesc" onMouseExited="#onUnhoverDesc" prefHeight="20.0" prefWidth="20.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="85.0">
             <tooltip>
                <Tooltip text="Show Description" />
             </tooltip>
             <graphic>
-               <StackPane>
-                  <ImageView fx:id="descIcon" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@../images/description-icon.png" />
-                  </ImageView>
-                  <ImageView fx:id="arrowIcon" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@../images/arrow-icon.png" />
-                  </ImageView>
-               </StackPane>
+               <ImageView fx:id="descIcon" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                  <Image url="@../images/description-icon.png" />
+               </ImageView>
             </graphic>
          </Button>
-         <Line endX="20.0" endY="111.0" layoutX="233.0" layoutY="9.0" startX="20.0" startY="-9.0" />
+         <Line endX="20.0" endY="101.0" layoutX="233.0" layoutY="9.0" startX="20.0" startY="-9.0" />
+         <FlowPane fx:id="tagList" layoutX="11.0" layoutY="32.0" prefHeight="36.0" prefWidth="200.0" />
       </AnchorPane>
    </children>
 </AnchorPane>

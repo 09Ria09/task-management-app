@@ -51,6 +51,14 @@ public class BoardServiceTest {
     }
 
     @Test
+    public void testRemoveBoardById(){
+        Board b = new Board();
+        service.addBoard(b);
+        service.removeBoardByID(b.id);
+        assertThrows(NoSuchElementException.class, () -> service.getBoard(b.id));
+    }
+
+    @Test
     public void testRenameBoard(){
         Board b = new Board();
         b.setName("Board1");
@@ -58,5 +66,15 @@ public class BoardServiceTest {
         assertEquals("Board1", service.getBoard(b.id).getName());
         service.renameBoard(b.id, "Board2");
         assertEquals("Board2", service.getBoard(b.id).getName());
+    }
+
+    @Test
+    public void testJoinBoard() {
+        Board b = new Board();
+        b.setName("Board1");
+        service.addBoard(b);
+        service.joinBoard(b.id, "ME");
+        b = service.getBoard(b.id);
+        assertTrue(b.getBoardMembers().contains("ME"));
     }
 }

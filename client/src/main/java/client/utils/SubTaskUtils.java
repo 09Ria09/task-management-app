@@ -4,15 +4,11 @@ import client.customExceptions.TaskException;
 import client.customExceptions.SubTaskException;
 import com.google.inject.Inject;
 import commons.SubTask;
-import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
-import org.glassfish.jersey.client.ClientConfig;
+import javafx.util.Pair;
 
 import java.util.List;
-
-import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 public class SubTaskUtils {
 
@@ -26,60 +22,43 @@ public class SubTaskUtils {
     public SubTask addSubTask(final long boardId, final long taskListId,
                               final long taskId, final SubTask subTask)
             throws TaskException {
-        String serverAddress = server.getServerAddress();
-        Response response =  ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/subtasks/" + boardId + "/" + taskListId + "/" + taskId + "/subtask")
-                .request()
-                .accept(APPLICATION_JSON)
-                .post(Entity.entity(subTask, APPLICATION_JSON));
-
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(SubTask.class);
-        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            throw new TaskException("Board, task list or task not found.");
-        } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
-            throw new TaskException("You inputted a wrong value");
-        } else {
-            throw new TaskException("An error occurred while adding the task");
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/subtasks/" + boardId + "/" + taskListId + "/" + taskId + "/subtask",
+                RestUtils.Methods.POST, subTask);
+        try {
+            return server.getRestUtils().handleResponse(response, SubTask.class, "addSubTask");
+        }
+        catch(Exception e){
+            throw new TaskException(e.getMessage());
         }
     }
 
     public SubTask getSubTask(final long boardId, final long taskListId,
                               final long taskId, final long subTaskId) throws SubTaskException {
-        String serverAddress = server.getServerAddress();
-        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/subtasks/" + boardId + "/tasklist/" + taskListId +
-                        "/tasks/" + taskId + "/subtasks/" + subTaskId)
-                .request()
-                .accept(APPLICATION_JSON)
-                .get();
-
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(SubTask.class);
-        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            throw new SubTaskException("Task not found.");
-        } else {
-            throw new SubTaskException("An error occurred while fetching the task");
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/subtasks/" + boardId + "/tasklist/" + taskListId +
+                        "/tasks/" + taskId + "/subtasks/" + subTaskId,
+                RestUtils.Methods.GET, null);
+        try {
+            return server.getRestUtils().handleResponse(response, SubTask.class, "getSubTask");
+        }
+        catch(Exception e){
+            throw new SubTaskException(e.getMessage());
         }
 
     }
 
     public List<SubTask> getSubTasks(final long boardId, final long taskListId, final long taskId)
             throws SubTaskException {
-        String serverAddress = server.getServerAddress();
-        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/subtasks/" + boardId + "/tasklist/" + taskListId +
-                        "/tasks/" + taskId + "/subtasks")
-                .request()
-                .accept(APPLICATION_JSON)
-                .get();
-
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(new GenericType<List<SubTask>>() {});
-        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            throw new SubTaskException("Sub tasks not found.");
-        } else {
-            throw new SubTaskException("An error occurred while fetching the sub tasks");
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/subtasks/" + boardId + "/tasklist/" + taskListId +
+                "/tasks/" + taskId + "/subtasks", RestUtils.Methods.GET, null);
+        try {
+            return server.getRestUtils().handleResponse(response,
+                    new GenericType<List<SubTask>>(){}, "getSubTasks");
+        }
+        catch(Exception e){
+            throw new SubTaskException(e.getMessage());
         }
     }
 
@@ -87,67 +66,59 @@ public class SubTaskUtils {
                                  final long taskId, final long subTaskId,
                                  final String newName)
             throws SubTaskException {
-        String serverAddress = server.getServerAddress();
-        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/subtasks/" + boardId + "/" + taskListId + "/" + taskId + "/" + subTaskId)
-                .queryParam("name", newName)
-                .request()
-                .accept(APPLICATION_JSON)
-                .put(Entity.entity(newName, APPLICATION_JSON));
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/subtasks/" + boardId + "/" + taskListId + "/" + taskId + "/" + subTaskId,
+                RestUtils.Methods.PUT, newName, new Pair<>("name", newName));
+        try {
+            return server.getRestUtils().handleResponse(response, SubTask.class, "renameSubTask");
+        }
+        catch(Exception e){
+            throw new SubTaskException(e.getMessage());
+        }
+    }
 
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(SubTask.class);
-        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            throw new SubTaskException("Sub task not found.");
-        } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
-            throw new SubTaskException("Bad request");
-        } else {
-            throw new SubTaskException("An error occurred while renaming the sub task"
-                    +response.getStatus());
+    public SubTask completeSubTask(final long boardId, final long taskListId,
+                                 final long taskId, final long subTaskId,
+                                 final boolean isComplete)
+            throws SubTaskException {
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/subtasks/" + boardId + "/" + taskListId + "/" + taskId + "/"
+                        + subTaskId + "/complete", RestUtils.Methods.PUT, isComplete,
+                new Pair<>("complete", isComplete));
+        try {
+            return server.getRestUtils().handleResponse(response, SubTask.class, "completeSubTask");
+        }
+        catch(Exception e){
+            throw new SubTaskException(e.getMessage());
         }
     }
 
     public SubTask deleteSubTask(final long boardId, final long taskListId,
                                  final long taskId, final long subTaskId)
             throws SubTaskException {
-        String serverAddress = server.getServerAddress();
-        System.out.println("boardId = " + boardId + " taskListId = " + taskListId + " taskId = "
-                + taskId + " subTaskId = " + subTaskId);
-        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/subtasks/" + boardId + "/" + taskListId
-                        + "/" + taskId + "/" + subTaskId)
-                .request()
-                .accept(APPLICATION_JSON)
-                .delete();
-        System.out.println(response.getStatus());
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(SubTask.class);
-        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            throw new SubTaskException("Sub task not found." + response.getStatus());
-        } else {
-            throw new SubTaskException("An error occurred while deleting the sub task"
-                    + response.getStatus());
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/subtasks/" + boardId + "/" + taskListId
+                        + "/" + taskId + "/" + subTaskId, RestUtils.Methods.DELETE, null);
+        try {
+            return server.getRestUtils().handleResponse(response, SubTask.class, "deleteSubTask");
+        }
+        catch(Exception e){
+            throw new SubTaskException(e.getMessage());
         }
     }
 
     public SubTask reorderSubTask(final long boardId, final long taskListId,
                                   final long taskId, final long subTaskId,
                                   final int newIndex) throws SubTaskException {
-        String serverAddress = server.getServerAddress();
-        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/subtasks/" + boardId + "/" + taskListId + "/" +
-                        taskId + "/reorder/" + subTaskId)
-                .queryParam("newIndex", newIndex)
-                .request()
-                .accept(APPLICATION_JSON)
-                .put(Entity.entity(newIndex, APPLICATION_JSON));
-
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(SubTask.class);
-        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            throw new SubTaskException("Task not found.");
-        } else {
-            throw new SubTaskException("An error occurred while reordering the sub tasks");
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/subtasks/" + boardId + "/" + taskListId + "/" +
+                        taskId + "/reorder/" + subTaskId, RestUtils.Methods.PUT,
+                newIndex, new Pair<>("newIndex", newIndex));
+        try {
+            return server.getRestUtils().handleResponse(response, SubTask.class, "reorderSubTask");
+        }
+        catch(Exception e){
+            throw new SubTaskException(e.getMessage());
         }
     }
 }

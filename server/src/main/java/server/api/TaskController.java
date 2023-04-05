@@ -114,7 +114,7 @@ public class TaskController {
             }
             Task task = taskService.renameTask(boardid, listid, taskid, name);
             messages.convertAndSend("/topic/" + boardid + "/" + listid + "/modifytask",
-                    task);
+                    taskService.getTask(boardid, listid, taskid));
             return ResponseEntity.ok(task);
         }
         catch (NoSuchElementException e) { return ResponseEntity.notFound().build(); }
@@ -165,7 +165,7 @@ public class TaskController {
             }
             Task task = taskService.editDescription(boardid, listid, taskid, description);
             messages.convertAndSend("/topic/" + boardid + "/" + listid + "/modifytask",
-                    task);
+                    taskService.getTask(boardid, listid, taskid));
             return ResponseEntity.ok(task);
         }
         catch (NoSuchElementException e) { return ResponseEntity.notFound().build(); }

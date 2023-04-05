@@ -27,9 +27,11 @@ import client.scenes.connectScenes.SelectServerCtrl;
 import client.scenes.connectScenes.ServerTimeoutCtrl;
 import client.scenes.connectScenes.UnexpectedErrorCtrl;
 import client.scenes.connectScenes.WrongServerCtrl;
+import commons.Board;
 import commons.Task;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
@@ -50,7 +52,6 @@ public class MainCtrl {
     private DetailedTaskViewCtrl detailedTaskViewCtrl;
     private Scene detailedTaskView;
 
-    private RenameListCtrl renameListCtrl;
     private Scene renameList;
 
     private SelectServerCtrl selectServerCtrl;
@@ -71,6 +72,11 @@ public class MainCtrl {
     private EditBoardCtrl editBoardCtrl;
 
     private Scene editBoard;
+
+    private ColorManagementViewCtrl colorManagementViewCtrl;
+    private Scene colorManagementView;
+    private TagOverviewCtrl tagOverviewCtrl;
+    private Scene tagOverview;
 
     private AdminLoginCtrl adminLoginCtrl;
     private AdminBoardCtrl adminBoardCtrl;
@@ -93,7 +99,7 @@ public class MainCtrl {
         primaryStage.getIcons().add(new javafx.scene
                 .image.Image("file:src/main/resources/client/images/icon.png"));
         primaryStage.setMinHeight(720);
-        primaryStage.setMinWidth(1280);
+        primaryStage.setMinWidth(1380);
 
         this.createTaskCtrl = taskScenes.getCreateTask().getKey();
         this.createTask = new Scene(taskScenes.getCreateTask().getValue());
@@ -104,8 +110,7 @@ public class MainCtrl {
 
         this.createListCtrl = listScenes.getCreateList().getKey();
         this.createList = new Scene(listScenes.getCreateList().getValue());
-        this.renameListCtrl = listScenes.getRenameList().getKey();
-        this.renameList = new Scene(listScenes.getRenameList().getValue());
+
 
         this.selectServerCtrl = serverScenes.getSelectServer().getKey();
         this.selectServer = new Scene(serverScenes.getSelectServer().getValue());
@@ -122,9 +127,13 @@ public class MainCtrl {
             boardCatalogue.getKey().close();
         });
 
+        this.colorManagementViewCtrl = boardScenes.getColorManagementView().getKey();
+        this.colorManagementView = new Scene(boardScenes.getColorManagementView().getValue());
+
         this.editBoardCtrl = boardScenes.getEditBoard().getKey();
         this.editBoard = new Scene(boardScenes.getEditBoard().getValue());
-
+        this.tagOverviewCtrl = boardScenes.getTagOverview().getKey();
+        this.tagOverview = new Scene(boardScenes.getTagOverview().getValue());
         this.adminLoginCtrl = serverScenes.getAdminLogin().getKey();
         this.adminLogin = new Scene(serverScenes.getAdminLogin().getValue());
         this.adminBoardCtrl = serverScenes.getAdminBoard().getKey();
@@ -163,6 +172,7 @@ public class MainCtrl {
         primaryStage.setTitle("Talio");
         resize();
         primaryStage.setScene(boardCatalogue);
+        boardCatalogueCtrl.refresh();
     }
 
     public void showEditBoard() {
@@ -177,8 +187,8 @@ public class MainCtrl {
     public void showCreateTask(final ListCtrl ctrl) {
         primaryStage.setTitle("Talio: Create Task");
         resize();
-        primaryStage.setScene(createTask);
         createTaskCtrl.setListCtrl(ctrl);
+        primaryStage.setScene(createTask);
     }
 
     /**
@@ -239,6 +249,13 @@ public class MainCtrl {
         primaryStage.setScene(unexpectedError);
     }
 
+    public void showColorManagementView(final Board board) {
+        primaryStage.setTitle("Talio: color management view");
+        colorManagementViewCtrl.setBoard(board);
+        resize();
+        primaryStage.setScene(colorManagementView);
+    }
+
     /** Populate the Board Catalogue */
     public void populateBoardCatalogue() {
         boardCatalogueCtrl.populate();
@@ -249,6 +266,7 @@ public class MainCtrl {
         resize();
         primaryStage.setScene(detailedTaskView);
         detailedTaskViewCtrl.setTask(task);
+        detailedTaskViewCtrl.setMainCtrl(this);
         detailedTaskViewCtrl.setListController(listController);
         detailedTaskViewCtrl.registerWebSockets();
     }
@@ -257,4 +275,16 @@ public class MainCtrl {
         primaryStage.setHeight(primaryStage.getHeight());
         primaryStage.setWidth(primaryStage.getWidth());
     }
+
+    public void showTagOverview(final Board board) {
+        primaryStage.setTitle("Talio: Tag Overview");
+        tagOverviewCtrl.setBoard(board);
+        primaryStage.setScene(tagOverview);
+    }
+
+    public void showTagEdit(final Popup popup) {
+        popup.show(primaryStage);
+    }
+
+
 }
