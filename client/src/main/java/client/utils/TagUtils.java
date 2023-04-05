@@ -173,7 +173,8 @@ public class TagUtils {
                          final String backgroundColor, final String fontColor) throws TagException {
         Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
                 "api/tags/" + boardId + "/" + tagId + "/recolor", RestUtils.Methods.PUT,
-                new Pair<>("backgroundColor", backgroundColor), new Pair<>("fontColor", fontColor));
+            new Pair<>(backgroundColor, fontColor), new Pair<>("backgroundColor", backgroundColor),
+            new Pair<>("fontColor", fontColor));
         try {
             return server.getRestUtils().handleResponse(response, Tag.class, "recolorTag");
         }
