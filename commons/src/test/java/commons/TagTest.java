@@ -18,6 +18,7 @@ public class TagTest {
         Tag testTag = new Tag();
         assertNotNull(testTag);
         assertEquals(testTag.getName(), "");
+        assertEquals(testTag.id, testTag.getId());
     }
 
     @Test

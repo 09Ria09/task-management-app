@@ -129,4 +129,28 @@ public class TaskTest {
         assertEquals(testTask.getSubtaskById(subTask3.id), subTask3);
     }
 
+    @Test
+    public void testAddRemoveTags() {
+        Tag tag1 = new Tag("Name1", "FFFFFF");
+        Tag tag2 = new Tag("Name2", "FFFFFF");
+        Task testTask = new Task("Task", "Desc", new ArrayList<>(), new ArrayList<>());
+        testTask.addTag(tag1);
+        testTask.addTag(tag2);
+        assertEquals(testTask.getTags().size(), 2);
+        testTask.removeTag(tag1);
+        assertEquals(testTask.getTags().size(), 1);
+    }
+
+    @Test
+    public void testGetTagByID() {
+        Tag tag1 = new Tag("Name1", "FFFFFF");
+        Tag tag2 = new Tag("Name2", "FFFFFF");
+        tag1.id = 1000;
+        Task testTask = new Task("Task", "Desc", new ArrayList<>(), new ArrayList<>());
+        testTask.addTag(tag1);
+        testTask.addTag(tag2);
+        assertTrue(testTask.getTagById(1000).isPresent());
+        assertEquals(testTask.getTagById(1000).get(), tag1);
+    }
+
 }
