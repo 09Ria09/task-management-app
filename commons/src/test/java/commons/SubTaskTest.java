@@ -60,4 +60,11 @@ public class SubTaskTest {
         SubTask testSubTask = new SubTask("SubTask1", false);
         assertNotNull(testSubTask.toString());
     }
+
+    @Test
+    public void testCloneConstructor() {
+        SubTask subTask = new SubTask("SubTask1", true);
+        SubTask newSubTask = new SubTask(subTask);
+        assertEquals(subTask, newSubTask);
+    }
 }

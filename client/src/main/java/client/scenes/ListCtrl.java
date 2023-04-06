@@ -1,10 +1,12 @@
 package client.scenes;
 
 import client.CustomAlert;
+import client.customExceptions.BoardException;
 import client.utils.*;
 import client.customExceptions.TaskListException;
 import com.google.inject.Inject;
 import client.customExceptions.TaskException;
+import commons.Board;
 import commons.Task;
 import commons.TaskList;
 import javafx.fxml.FXML;
@@ -14,8 +16,12 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 import javafx.scene.input.*;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.control.Alert;
+import javafx.scene.paint.Color;
+import javafx.util.Pair;
+import javafx.scene.control.Button;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
@@ -32,9 +38,17 @@ public class ListCtrl implements Initializable {
     @FXML
     Label title;
     @FXML
+    Button addTaskButton;
+    @FXML
     TextField titleField;
     @FXML
     VBox vBox;
+
+    @FXML
+    HBox quickTaskBox;
+
+    @FXML
+    HBox createTaskBox;
 
     private int indexToDrop;
 
@@ -43,8 +57,10 @@ public class ListCtrl implements Initializable {
     private int totalAmountOfTasks;
     private TaskList taskList;
     private long boardID;
+    private Board board;
     private TaskListUtils taskListUtils;
     private TaskUtils taskUtils;
+    private BoardUtils boardUtils;
     private ServerUtils server;
     @FXML
     TextField simpleTaskNameInput;
@@ -53,13 +69,15 @@ public class ListCtrl implements Initializable {
     private final LayoutUtils layoutUtils;
     private final WebSocketUtils webSocketUtils;
 
-    RenameListSingleton renameListSingleton = RenameListSingleton.getInstance();
+
 
 
 
     @Inject
     public ListCtrl(final MainCtrl mainCtrl, final TaskListUtils taskListUtils,
                     final TaskUtils taskUtils, final CustomAlert customAlert,
+                    final BoardUtils boardUtils, final Pair<LayoutUtils,
+            WebSocketUtils> layoutSocketUtils) {
                     final LayoutUtils layoutUtils, final WebSocketUtils webSocketUtils,
                     final BoardOverviewCtrl boardOverviewCtrl) {
         this.taskListUtils = taskListUtils;
@@ -69,6 +87,9 @@ public class ListCtrl implements Initializable {
         this.layoutUtils = layoutUtils;
         this.webSocketUtils = webSocketUtils;
         this.boardOverviewCtrl = boardOverviewCtrl;
+        this.layoutUtils = layoutSocketUtils.getKey();
+        this.boardUtils = boardUtils;
+        this.webSocketUtils = layoutSocketUtils.getValue();
     }
 
     public void initialize(){
@@ -243,8 +264,11 @@ public class ListCtrl implements Initializable {
                     super.updateItem(task, empty);
                     if (task == null || empty) {
                         setGraphic(null);
+                        setBackground(Background.EMPTY);
                     } else {
                         try {
+                            setBackground(new Background(new BackgroundFill(Color.
+                                    TRANSPARENT, null, null)));
                             var cardLoader = new FXMLLoader(getClass().getResource("Card.fxml"));
                             Node card = cardLoader.load();
                             CardCtrl cardCtrl = cardLoader.getController();
@@ -265,6 +289,7 @@ public class ListCtrl implements Initializable {
                 }
                 event.consume();
             });
+
             cell.setOnMouseClicked(event -> {
                 if(cell.getIndex() < taskList.getTasks().size() && event.getClickCount() == 2) {
                     mainCtrl.showDetailedTaskView(cell.getItem(), this);
@@ -288,6 +313,7 @@ public class ListCtrl implements Initializable {
         this.boardID = boardID;
         this.taskList = newTaskList;
         nameRefresh(newTaskList.getName(), boardID);
+        refreshColor();
 
         list.getItems().retainAll(newTaskList.getTasks()); // retain only the tasks
         // that are also in newTaskList
@@ -334,7 +360,6 @@ public class ListCtrl implements Initializable {
             if (list == null) {
                 list = new ListView<Task>();
             }
-            list.getItems().add(task);
             taskUtils.addTask(boardID, this.getTaskList().id, task);
         } catch (TaskException e) {
             Alert alert = customAlert.showAlert(e.getMessage());
@@ -392,6 +417,12 @@ public class ListCtrl implements Initializable {
         this.title.setVisible(false);
     }
 
+    public void onTitleButtonClicked(){
+        this.titleField.setText(this.title.getText());
+        this.titleField.setVisible(true);
+        this.title.setVisible(false);
+    }
+
     /**
      * Fired when the task list title fields loses the focus. It then checks if the name
      * is different. If it is, the change is sent to the server.
@@ -414,13 +445,41 @@ public class ListCtrl implements Initializable {
         simpleTaskName = simpleTaskNameInput.getText();
         simpleTaskNameInput.clear();
         try {
-            if(!simpleTaskName.isEmpty() || simpleTaskName != null) {
-                Task task = new Task(simpleTaskName, null);
+            if(simpleTaskName == null || simpleTaskName.isEmpty()) {
+                throw new TaskException("Task must have a name");
+            } else {
+                Task task = new Task(simpleTaskName, "");
                 taskUtils.addTask(boardID, taskList.id, task);
             }
         } catch (TaskException e) {
             throw new TaskException("Task must have a name.");
         }
+
+    }
+
+    public void refreshColor(){
+        try {
+            board = boardUtils.getBoard(getBoardID());
+            var backgroundColor = new Background(
+                    new BackgroundFill(Color.valueOf(board.getBoardColorScheme().
+                            getListBackgroundColor().substring(2, 8)), null, null));
+
+            list.setBackground(backgroundColor);
+            quickTaskBox.setBackground(backgroundColor);
+            createTaskBox.setBackground(new Background(
+                    //it shouldnt be like this but I dont know how to override
+                    //the round corners of the hbox
+                    new BackgroundFill(Color.valueOf(board.getBoardColorScheme().
+                            getListBackgroundColor()
+                            .substring(2, 8)),
+                            new CornerRadii(0.0, 0.0, 15.0, 15.0, false), null)));
+            title.setTextFill(Color.web(board.getBoardColorScheme().getListTextColor()));
+            addTaskButton.setTextFill(Color.web(board.getBoardColorScheme().getListTextColor()));
+
+        } catch (BoardException e) {
+            throw new RuntimeException(e);
+        }
+
 
     }
 

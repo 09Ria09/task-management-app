@@ -23,6 +23,9 @@ public class Task implements Serializable {
     @OneToMany(cascade=CascadeType.ALL, orphanRemoval = true)
     private List<SubTask> subtasks;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Tag> tags;
+
     public Task(){
 
     }
@@ -31,12 +34,22 @@ public class Task implements Serializable {
         this.name = name;
         this.description = description;
         this.subtasks = new ArrayList<>();
+        this.tags = new ArrayList<>();
     }
 
     public Task(final String name, final String description, final List<SubTask> subtasks) {
         this.name = name;
         this.description = description;
         this.subtasks = subtasks;
+        this.tags = new ArrayList<>();
+    }
+
+    public Task(final String name, final String description,
+                final List<SubTask> subtasks, final List<Tag> tags) {
+        this.name = name;
+        this.description = description;
+        this.subtasks = subtasks;
+        this.tags = tags;
     }
 
     public String getName() {
@@ -94,17 +107,35 @@ public class Task implements Serializable {
         return subtasks.stream().filter(x -> x.id == id).findFirst();
     }
 
-    public void reorderSubTasks(final long subTaskId, final int newIndex) {
+
+    public List<Tag> getTags() {
+        return this.tags;
+    }
+
+    public void addTag(final Tag tag) {
+        this.tags.add(tag);
+    }
+
+    public void removeTag(final Tag tag) {
+        this.tags.remove(tag);
+    }
+
+    public Optional<Tag> getTagById(final long id) {
+        return tags.stream().filter(x -> x.id == id).findFirst();
+    }
+
+    public boolean reorderSubTasks(final long subTaskId, final int newIndex) {
         var subTask = getSubTaskById(subTaskId);
         if(subTask.isEmpty()) {
-            return;
+            return false;
         }
         int index = subtasks.indexOf(subTask.get());
 
         if(index == newIndex) {
-            return;
+            return false;
         }
         SubTask temp = subtasks.remove(index);
         subtasks.add(newIndex, temp);
+        return true;
     }
 }

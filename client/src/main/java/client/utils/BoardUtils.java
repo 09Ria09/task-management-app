@@ -4,11 +4,13 @@ import client.customExceptions.BoardException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import commons.Board;
+import commons.BoardColorScheme;
+import commons.TaskPreset;
 import commons.BoardEvent;
 import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
+import javafx.util.Pair;
 import org.glassfish.jersey.client.ClientConfig;
 
 import java.util.List;
@@ -38,21 +40,11 @@ public class BoardUtils {
     }
 
     public List<Board> getBoards() throws BoardException {
-        String serverAddress = server.getServerAddress();
-        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/boards")
-                .request()
-                .accept(APPLICATION_JSON)
-                .get();
-
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(new GenericType<List<Board>>() {
-            });
-        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            throw new BoardException("Boards not found.");
-        } else {
-            throw new BoardException("An error occurred while fetching the board");
-        }
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/boards",
+                RestUtils.Methods.GET, null);
+        return server.getRestUtils().handleResponse(response, new GenericType<List<Board>>() {},
+                "getBoards");
     }
 
     /**
@@ -61,19 +53,13 @@ public class BoardUtils {
      * @return the board
      */
     public Board getBoard(final long boardId) throws BoardException {
-        String serverAddress = server.getServerAddress();
-        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/boards/" + boardId)
-                .request()
-                .accept(APPLICATION_JSON)
-                .get();
-
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(Board.class);
-        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            throw new BoardException("Board not found.");
-        } else {
-            throw new BoardException("An error occurred while fetching the board");
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/boards/" + boardId, RestUtils.Methods.GET, null);
+        try {
+            return server.getRestUtils().handleResponse(response, Board.class, "getBoard");
+        }
+        catch(Exception e){
+            throw new BoardException(e.getMessage());
         }
     }
     /**
@@ -84,19 +70,13 @@ public class BoardUtils {
      */
 
     public Board addBoard(final Board board) throws BoardException {
-        String serverAddress = server.getServerAddress();
-        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/boards")
-                .request()
-                .accept(APPLICATION_JSON)
-                .post(Entity.entity(board, APPLICATION_JSON));
-
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(Board.class);
-        } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
-            throw new BoardException("You inputted a wrong value");
-        } else {
-            throw new BoardException("An error occurred while adding the board");
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/boards", RestUtils.Methods.POST, board);
+        try {
+            return server.getRestUtils().handleResponse(response, Board.class, "addBoard");
+        }
+        catch(Exception e){
+            throw new BoardException(e.getMessage());
         }
     }
 
@@ -109,22 +89,15 @@ public class BoardUtils {
      * @return a response indicating whether the update was successful
      */
     public Board renameBoard(final long boardId,final String newName) throws BoardException {
-        String serverAddress = server.getServerAddress();
-        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/boards/"+boardId)
-                .queryParam("name", newName)
-                .request()
-                .accept(APPLICATION_JSON)
-                .put(Entity.entity(newName, APPLICATION_JSON));
-
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(Board.class);
-        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            throw new BoardException("Board not found.");
-        } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
-            throw new BoardException("You inputted a wrong value");
-        }else {
-            throw new BoardException("An error occurred while renaming the board");
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/boards/"+boardId, RestUtils.Methods.PUT,
+                newName,
+                new Pair<>("name", newName));
+        try {
+            return server.getRestUtils().handleResponse(response, Board.class, "renameBoard");
+        }
+        catch(Exception e){
+            throw new BoardException(e.getMessage());
         }
 
     }
@@ -136,19 +109,13 @@ public class BoardUtils {
      * @return a response indicating whether the board was deleted successfully or not
      */
     public Board deleteBoard(final long boardId) throws BoardException {
-        String serverAddress = server.getServerAddress();
-        Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                .path("api/boards/" + boardId)
-                .request()
-                .accept(APPLICATION_JSON)
-                .delete();
-
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(Board.class);
-        } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-            throw new BoardException("Board not found.");
-        } else {
-            throw new BoardException("An error occurred while deleting the board");
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/boards/" + boardId, RestUtils.Methods.DELETE, null);
+        try {
+            return server.getRestUtils().handleResponse(response, Board.class, "deleteBoard");
+        }
+        catch(Exception e){
+            throw new BoardException(e.getMessage());
         }
     }
 
@@ -170,21 +137,14 @@ public class BoardUtils {
             if (!inviteKey.equals(board.getInviteKey())) {
                 throw new BoardException("Wrong invite key");
             }
-            String serverAddress = server.getServerAddress();
-            Response response = ClientBuilder.newClient(new ClientConfig()).target(serverAddress)
-                    .path("api/boards/" + boardId + "/join")
-                    .queryParam("memberName", memberName)
-                    .request()
-                    .accept(APPLICATION_JSON)
-                    .put(Entity.entity(memberName, APPLICATION_JSON));
-            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-                return response.readEntity(Board.class);
-            } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-                throw new BoardException("Board not found.");
-            } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
-                throw new BoardException("You inputted a wrong value");
-            } else {
-                throw new BoardException("An error occurred while joining the board");
+            Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                    "api/boards/" + boardId + "/join", RestUtils.Methods.PUT,
+                    memberName, new Pair<>("memberName", memberName));
+            try {
+                return server.getRestUtils().handleResponse(response, Board.class, "joinBoard");
+            }
+            catch(Exception e){
+                throw new BoardException(e.getMessage());
             }
         } catch (NumberFormatException | IndexOutOfBoundsException  e) {
             throw new BoardException("Invalid invite key format");
@@ -203,10 +163,47 @@ public class BoardUtils {
         return board.getInviteKey();
     }
 
-    private static final ExecutorService EXEC = Executors.newSingleThreadExecutor();
+    public BoardColorScheme getBoardColorScheme(final long boardId) throws BoardException {
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/boards/" + boardId, RestUtils.Methods.GET, null);
+        try {
+            return server.getRestUtils().handleResponse(response, Board.class, "getBoard")
+                    .getBoardColorScheme();
+        }
+        catch(Exception e){
+            throw new BoardException(e.getMessage());
+        }
+
+    }
+    public BoardColorScheme setBoardColorScheme(final long boardId,
+                                                final BoardColorScheme boardColorScheme)
+            throws BoardException {
+        Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/boards/" + boardId + "/setboardcolorscheme",
+                RestUtils.Methods.PUT, boardColorScheme);
+        try {
+            return server.getRestUtils().handleResponse(response,
+                    BoardColorScheme.class, "setBoardColorScheme");
+        }
+        catch(Exception e){
+            throw new BoardException(e.getMessage());
+        }
+    }
+
+
+
+    public TaskPreset addTaskPreset(final long boardId, final TaskPreset taskPreset)
+            throws BoardException {
+        return null;
+    }
+
+
+
+    private ExecutorService exec = Executors.newSingleThreadExecutor();
     public void registerForUpdatesBoards(final Consumer<BoardEvent> boardConsumer) {
         System.out.println("registering for updates");
-        EXEC.submit(() -> {
+        exec = Executors.newSingleThreadExecutor();
+        exec.submit(() -> {
             while (!Thread.interrupted()) {
                 String serverAddress = server.getServerAddress();
                 Response response = ClientBuilder.newClient(new ClientConfig())
@@ -232,6 +229,6 @@ public class BoardUtils {
     }
 
     public void stop() {
-        EXEC.shutdownNow();
+        exec.shutdownNow();
     }
 }

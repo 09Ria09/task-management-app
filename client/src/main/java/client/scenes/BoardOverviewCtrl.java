@@ -27,6 +27,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -36,7 +37,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
+import javafx.scene.control.*;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
@@ -44,7 +47,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
+import javafx.util.Pair;
 
 import java.io.IOException;
 import java.util.*;
@@ -78,6 +84,24 @@ public class BoardOverviewCtrl {
 
     private Label inviteKeyLabel;
 
+    @FXML
+    private ScrollPane listScrollPane;
+    @FXML
+    private Button disconnectButton;
+    @FXML
+    private Button colorManagementViewButton;
+    @FXML
+    private Button addListButton;
+    @FXML
+    private Button copyInviteKeyButton;
+    @FXML
+    private Button renameBoardButton;
+    @FXML
+    private Button deleteBoardButton;
+
+    @FXML
+    private Button tagOverviewButton;
+
     private Scene scene;
 
     @Inject
@@ -101,6 +125,7 @@ public class BoardOverviewCtrl {
     public void initialize(){
         this.webSocketUtils.tryToConnect();
         try{
+            refresh();
             board = boardUtils.getBoard(currentBoardId);
             Consumer<Board> consumer = (board) -> {
                 Platform.runLater(() -> {
@@ -109,8 +134,25 @@ public class BoardOverviewCtrl {
                     refreshLists(FXCollections.observableList(taskLists));
                 });
             };
+            Consumer<Task> changeTaskTag = (task) -> {
+                Platform.runLater(() -> {
+                    for(TaskList l : this.board.getListTaskList())
+                        l.getTaskById(task.id).ifPresent((t) -> {
+                            List<Task> tasks = listsMap.get(l.id).list.getItems();
+                            int index = tasks.indexOf(tasks.stream()
+                                    .filter(t2 -> t2.id == t.id)
+                                    .findAny().orElse(null));
+                            if(index >= 0) {
+                                tasks.remove(index);
+                                tasks.add(index, task);
+                            }
+                        });
+                });
+            };
             webSocketUtils.registerForBoardMessages("/topic/" + board.id +
                     "/refreshboard", consumer);
+            webSocketUtils.registerForTaskMessages("/topic/" + board.id + "/modifytask",
+                    changeTaskTag);
         }
         catch(BoardException e){
             System.out.println(e.getMessage());
@@ -124,10 +166,16 @@ public class BoardOverviewCtrl {
     public void addList(final TaskList taskList) {
         var kids = listsContainer.getChildren();
         var listLoader = new FXMLLoader(getClass().getResource("List.fxml"));
+        listLoader.setControllerFactory(type ->
+                new ListCtrl(mainCtrl, new TaskListUtils(server),
+            new TaskUtils(server), customAlert,
+                boardUtils, new Pair(new LayoutUtils(), webSocketUtils)));
         listLoader.setControllerFactory(type -> new ListCtrl(mainCtrl, new TaskListUtils(server),
             new TaskUtils(server), customAlert, new LayoutUtils(), webSocketUtils, this));
         try {
-            Node list = listLoader.load();
+            VBox list = listLoader.load();
+            list.prefHeightProperty().bind(Bindings
+                    .multiply(listScrollPane.heightProperty(), 0.95));
             ListCtrl listCtrl = listLoader.getController();
             listCtrl.initialize();
             listCtrl.refresh(taskList, currentBoardId);
@@ -200,6 +248,7 @@ public class BoardOverviewCtrl {
                 tab.setText(board.getName());
                 var data = FXCollections.observableList(taskLists);
                 refreshLists(data);
+                refreshColor();
             } catch (TaskListException e) {
                 Alert alert = customAlert.showAlert(e.getMessage());
                 alert.showAndWait();
@@ -284,7 +333,7 @@ public class BoardOverviewCtrl {
             inviteKeyLabel.setEffect(blur);
             inviteKeyLabel.setText("Invite key: " + inviteKey);
             inviteKeyLabel.setVisible(true);
-
+            refreshColor();
             Timeline timeline = new Timeline(
                     new KeyFrame(Duration.millis(0), new KeyValue(blur.radiusProperty(), 0)),
                     new KeyFrame(Duration.millis(1000), new KeyValue(blur.radiusProperty(), 0)),
@@ -296,6 +345,11 @@ public class BoardOverviewCtrl {
             Alert alert = customAlert.showAlert(e.getMessage());
             alert.showAndWait();
         }
+    }
+
+    public void tagOverview() throws BoardException {
+        Board board = boardUtils.getBoard(currentBoardId);
+        mainCtrl.showTagOverview(board);
     }
 
     public void setTab(final Tab tab) {
@@ -313,5 +367,28 @@ public class BoardOverviewCtrl {
                 refreshTimer=null;
             }
         });
+    }
+
+    public void colorManagementView() {
+        mainCtrl.showColorManagementView(board);
+    }
+
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public void refreshColor() {
+        listScrollPane.setStyle("-fx-background:#" + board.getBoardColorScheme().
+                getBoardBackgroundColor().substring(2, 8) + ";");
+        disconnectButton.setTextFill(Color.web(board.getBoardColorScheme().getBoardTextColor()));
+        colorManagementViewButton.setTextFill(Color.web(board.getBoardColorScheme().
+                getBoardTextColor()));
+        addListButton.setTextFill(Color.web(board.getBoardColorScheme().getBoardTextColor()));
+        copyInviteKeyButton.setTextFill(Color.web(board.getBoardColorScheme()
+                .getBoardTextColor()));
+        renameBoardButton.setTextFill(Color.web(board.getBoardColorScheme().getBoardTextColor()));
+        deleteBoardButton.setTextFill(Color.web(board.getBoardColorScheme().getBoardTextColor()));
+        tagOverviewButton.setTextFill(Color.web(board.getBoardColorScheme().getBoardTextColor()));
     }
 }

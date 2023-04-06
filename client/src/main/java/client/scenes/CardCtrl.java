@@ -5,6 +5,7 @@ import client.customExceptions.TaskException;
 import client.utils.TaskListUtils;
 import client.customExceptions.TaskListException;
 import client.utils.TaskUtils;
+import commons.Tag;
 import commons.Board;
 import commons.Task;
 import commons.TaskList;
@@ -13,7 +14,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 
@@ -44,15 +46,13 @@ public class CardCtrl {
     private StackPane progressPane;
 
     @FXML
-    private AnchorPane cardPane;
-
-    @FXML
     private ImageView descIcon;
 
     @FXML
     private ImageView arrowIcon;
 
-    @FXML Label description;
+    @FXML
+    private FlowPane tagList;
 
     private MainCtrl mainCtrl;
     private ListCtrl listController;
@@ -76,18 +76,11 @@ public class CardCtrl {
         this.customAlert = customAlert;
         this.taskUtils = taskUtils;
         this.mainCtrl = mainCtrl;
-        this.boardOverviewCtrl = boardOverviewCtrl;
-        if(this.taskUtils.getProgress(task) < 0)
-            this.progressPane.setVisible(false);
-        else
-            this.progressBar.setWidth(this.taskUtils.getProgress(task)*280.0D);
+        this.setTask(task);
         this.onUnhover();
-        description.setVisible(false);
-        arrowIcon.setVisible(false);
-        if(Objects.equals(this.task.getDescription(), "")) {
-            this.descButton.setDisable(true);
-            descIcon.setVisible(false);
-        }
+        this.boardOverviewCtrl = boardOverviewCtrl;
+        tagList.setHgap(5.00);
+        tagList.setVgap(5.00);
 
         cardPane.setOnMouseEntered(event -> {
             boardOverviewCtrl.setSelectedTask(task);
@@ -98,6 +91,32 @@ public class CardCtrl {
         });
     }
 
+    private void setTags(final List<Tag> tags) {
+        for(Tag tag : tags) {
+            Pane tagPane = new Pane();
+            tagPane.setPrefSize(60, 10);
+            tagPane.setStyle("-fx-background-radius: 5px; -fx-border-radius: 5px;" +
+                    " -fx-background-color: #" + tag.getColorBackground() + ";");
+            tagList.getChildren().add(tagPane);
+        }
+    }
+
+    public void setTask(final Task task) {
+        this.task = task;
+        if (Objects.equals(this.task.getDescription(), "")) {
+            this.descButton.setDisable(true);
+            descIcon.setVisible(false);
+        }
+
+        if (this.task.getTags() != null) {
+            setTags(this.task.getTags());
+        }
+        if (this.taskUtils.getProgress(task) < 0)
+            this.progressPane.setVisible(false);
+        else
+            this.progressBar.setWidth(this.taskUtils.getProgress(task) * 215.0D);
+        this.title.setText(task.getName());
+    }
     /**
      * @param o an object
      * @return true if the object provided is the same to this object
@@ -122,7 +141,7 @@ public class CardCtrl {
      * This will move the card one position up in the listview
      * So in the list of tasks of a tasklist it will go 1 index down
      *
-     * @return it will return a boolean depending if the task could be moved up
+     * @return it will return a boolean depending on if the task could be moved up
      */
     public boolean moveUp() {
         try {
@@ -149,7 +168,7 @@ public class CardCtrl {
      * This will move the card one position down in the listview
      * So in the list of tasks of a tasklist it will go 1 index up
      *
-     * @return it will return a boolean depending if the task could be moved down
+     * @return it will return a boolean depending on if the task could be moved down
      */
     public boolean moveDown() {
         try {
@@ -256,23 +275,5 @@ public class CardCtrl {
      */
     public void onUnhoverDesc(){
         this.descButton.setStyle("-fx-background-color: transparent;");
-    }
-
-    /**
-     * Shows the extended description
-     */
-    public void showDescription() {
-        if (this.cardPane.getPrefHeight() < 200.0d) {
-            this.cardPane.setPrefHeight(225.0d);
-            descIcon.setVisible(false);
-            arrowIcon.setVisible(true);
-            description.setText(this.task.getDescription());
-            description.setVisible(true);
-        } else {
-            this.cardPane.setPrefHeight(120.0d);
-            descIcon.setVisible(true);
-            arrowIcon.setVisible(false);
-            description.setVisible(false);
-        }
     }
 }
