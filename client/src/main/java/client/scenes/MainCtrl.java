@@ -15,8 +15,6 @@
  */
 package client.scenes;
 
-//import client.sceneManagement.ListScenes;
-import client.CustomAlert;
 import client.sceneManagement.BoardScenes;
 import client.sceneManagement.ListScenes;
 import client.sceneManagement.ServerScenes;
@@ -45,9 +43,6 @@ public class MainCtrl {
 
     private CreateTaskCtrl createTaskCtrl;
     private Scene createTask;
-
-    private EditTaskCtrl editTaskCtrl;
-    private Scene editTask;
 
     private DetailedTaskViewCtrl detailedTaskViewCtrl;
     private Scene detailedTaskView;
@@ -103,8 +98,6 @@ public class MainCtrl {
 
         this.createTaskCtrl = taskScenes.getCreateTask().getKey();
         this.createTask = new Scene(taskScenes.getCreateTask().getValue());
-        this.editTaskCtrl = taskScenes.getEditTask().getKey();
-        this.editTask = new Scene(taskScenes.getEditTask().getValue());
         this.detailedTaskViewCtrl = taskScenes.getDetailedTaskView().getKey();
         this.detailedTaskView = new Scene(taskScenes.getDetailedTaskView().getValue());
 
@@ -160,7 +153,7 @@ public class MainCtrl {
      */
     public void showCreateList(final long boardId) {
         primaryStage.setTitle("Talio: Create List");
-        createListCtrl.boardId=boardId;
+        createListCtrl.setBoardId(boardId);
         resize();
         primaryStage.setScene(createList);
     }
@@ -172,6 +165,7 @@ public class MainCtrl {
         primaryStage.setTitle("Talio");
         resize();
         primaryStage.setScene(boardCatalogue);
+        boardCatalogueCtrl.createWebSockets();
         boardCatalogueCtrl.refresh();
     }
 
@@ -189,20 +183,6 @@ public class MainCtrl {
         resize();
         createTaskCtrl.setListCtrl(ctrl);
         primaryStage.setScene(createTask);
-    }
-
-    /**
-     * Changed scene to a scene where a user can edit a task
-     *
-     * @param cardCtrl    the cradCtrl from that specific task
-     * @param customAlert
-     */
-    public void showEditTask(final CardCtrl cardCtrl, final CustomAlert customAlert) {
-        primaryStage.setTitle("Talio : Edit Task");
-        resize();
-        primaryStage.setScene(editTask);
-        editTaskCtrl.setCardCtrl(cardCtrl);
-        editTaskCtrl.setCustomAlert(customAlert);
     }
 
 

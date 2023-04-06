@@ -6,14 +6,20 @@ import client.utils.ServerUtils;
 import client.utils.TaskListUtils;
 import client.customExceptions.BoardException;
 import client.customExceptions.TaskListException;
+import client.utils.WebSocketUtils;
 import com.google.inject.Inject;
+import commons.Board;
 import commons.TaskList;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.util.Pair;
+
+import java.util.function.Consumer;
 
 
 public class CreateListCtrl {
@@ -25,6 +31,7 @@ public class CreateListCtrl {
     private final CustomAlert customAlert;
 
     private final LayoutUtils layoutUtils;
+    private final WebSocketUtils webSocketUtils;
 
     @FXML
     private TextField listNameInput;
@@ -39,7 +46,7 @@ public class CreateListCtrl {
     @FXML
     private VBox root;
 
-    public long boardId;
+    private long boardId;
     String listName;
 
     /**
@@ -53,29 +60,20 @@ public class CreateListCtrl {
     @Inject
     public CreateListCtrl(final ServerUtils server, final TaskListUtils listUtils,
                           final BoardOverviewCtrl boardOverviewCtrl, final MainCtrl mainCtrl,
-                          final CustomAlert customAlert, final LayoutUtils layoutUtils) {
+                          final Pair<CustomAlert, LayoutUtils> customAlertLayoutUtils,
+                          final WebSocketUtils webSocketUtils) {
         this.server = server;
         this.listUtils = listUtils;
         this.boardOverviewCtrl = boardOverviewCtrl;
         this.mainCtrl = mainCtrl;
-        this.customAlert = customAlert;
-        this.layoutUtils = layoutUtils;
+        this.customAlert = customAlertLayoutUtils.getKey();
+        this.layoutUtils = customAlertLayoutUtils.getValue();
+        this.webSocketUtils = webSocketUtils;
     }
 
     public void initialize(){
         listNameInput.textProperty().addListener(
                 this.layoutUtils.createMaxFieldLength(20, listNameInput));
-        //DORIAN PLS LMK WHat you think of this, take a look at the scene
-        //and see if you think it looks good, I found it easier to do it in scene builder
-        //but we can try doing it in java if you want to stick to this as well
-   /*     listNameInput.fontProperty().bind(layoutUtils.createFontBinding(root, 0.08D, 30.0d));
-        title.fontProperty().bind(layoutUtils.createFontBinding(root, 0.12D, 48.0d));
-        confirmButton.prefHeightProperty().bind(root.heightProperty().multiply(0.075D));
-        confirmButton.prefWidthProperty().bind(root.widthProperty().multiply(0.15D));
-        confirmButton.fontProperty().bind(layoutUtils.createFontBinding(root, 0.08D, 30.0d));
-        cancelButton.prefHeightProperty().bind(root.heightProperty().multiply(0.075D));
-        cancelButton.prefWidthProperty().bind(root.widthProperty().multiply(0.15D));
-        cancelButton.fontProperty().bind(layoutUtils.createFontBinding(root, 0.08D, 30.0d)); */
     }
 
     /**
@@ -109,4 +107,12 @@ public class CreateListCtrl {
         showServerBoards();
     }
 
+    public void setBoardId(final long boardId) {
+        this.boardId = boardId;
+        webSocketUtils.tryToConnect();
+        Consumer<Board> deleteBoard = (board) -> {
+            Platform.runLater(this::cancel);
+        };
+        webSocketUtils.registerForMessages("/topic/deleteboard", deleteBoard, Board.class);
+    }
 }

@@ -92,6 +92,10 @@ public class TagOverviewCtrl {
                 "/deletetag", deleteTagConsumer);
         this.webSocketUtils.registerForTagMessages("/topic/" + board.id +
                 "/changetag", changeTagConsumer);
+        Consumer<Board> deleteBoard = (b) -> {
+            Platform.runLater(this::goBack);
+        };
+        webSocketUtils.registerForMessages("/topic/deleteboard", deleteBoard, Board.class);
     }
 
     private void update() {

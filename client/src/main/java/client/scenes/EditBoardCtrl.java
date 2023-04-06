@@ -3,11 +3,15 @@ package client.scenes;
 import client.CustomAlert;
 import client.utils.BoardUtils;
 import client.utils.ServerUtils;
+import client.utils.WebSocketUtils;
 import com.google.inject.Inject;
 import commons.Board;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+
+import java.util.function.Consumer;
 
 public class EditBoardCtrl {
 
@@ -17,6 +21,7 @@ public class EditBoardCtrl {
     private final BoardUtils boardUtils;
 
     private final CustomAlert customAlert;
+    private final WebSocketUtils webSocketUtils;
 
 
     private Board board;
@@ -27,15 +32,22 @@ public class EditBoardCtrl {
     //this sets up the server and mainctrl variables
     @Inject
     public EditBoardCtrl(final ServerUtils server, final MainCtrl mainCtrl,
-                         final BoardUtils boardUtils, final CustomAlert customAlert) {
+                         final BoardUtils boardUtils, final CustomAlert customAlert,
+                         final WebSocketUtils webSocketUtils) {
         this.mainCtrl = mainCtrl;
         this.server = server;
         this.boardUtils = boardUtils;
         this.customAlert = customAlert;
+        this.webSocketUtils = webSocketUtils;
     }
 
     public void setBoard(final Board board) {
         this.board = board;
+        webSocketUtils.tryToConnect();
+        Consumer<Board> deleteBoard = (b) -> {
+            Platform.runLater(this::cancel);
+        };
+        webSocketUtils.registerForMessages("/topic/deleteboard", deleteBoard, Board.class);
     }
 
     //this is run when the cancel button is pressed, it sends the user back to the board list
