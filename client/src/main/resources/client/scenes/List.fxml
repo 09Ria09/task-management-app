@@ -16,11 +16,11 @@
 
 <VBox fx:id="vBox" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="781.0" prefWidth="355.0" style="-fx-border-color: gray; -fx-border-radius: 15;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ListCtrl">
    <children>
-      <HBox cache="true" prefWidth="353.0" spacing="5.0" style="-fx-background-color: #4969e1; -fx-padding: 15px; -fx-border-radius: 15 15 0 0; -fx-background-radius: 15 15 0 0;">
+      <HBox fx:id="topHeaderList" cache="true" prefWidth="353.0" spacing="5.0" style="-fx-padding: 15px; -fx-border-radius: 15 15 0 0; -fx-background-radius: 15 15 0 0; -fx-background-color: #999;">
          <children>
             <StackPane prefHeight="30.0" prefWidth="300.0" style="-fx-border-radius: 15 15 0 0;">
                <children>
-                  <Label fx:id="title" onMouseClicked="#onTitleClicked" prefHeight="30.0" prefWidth="300.0" style="-fx-font-weight: bold; -fx-font-size: 20px; -fx-border-radius: 15;" text="List Name" textFill="WHITE">
+                  <Label fx:id="title" prefHeight="30.0" prefWidth="300.0" style="-fx-font-weight: bold; -fx-font-size: 20px; -fx-border-radius: 15;" text="List Name" textFill="WHITE">
                      <font>
                         <Font size="20.0" />
                      </font>

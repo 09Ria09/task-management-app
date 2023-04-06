@@ -41,7 +41,7 @@ public class ColorManagementViewCtrl {
     private BoardUtils boardUtils;
     private final WebSocketUtils webSocketUtils;
     private Board board;
-    private String white = "0xffffffff";
+
 
     @Inject
     public ColorManagementViewCtrl(final ServerUtils server, final MainCtrl mainCtrl,
@@ -53,6 +53,7 @@ public class ColorManagementViewCtrl {
         this.boardUtils = boardUtils;
         this.webSocketUtils = webSocketUtils;
     }
+
 
     public void setBoardBackgroundColor() {
         board.getBoardColorScheme().
@@ -111,16 +112,16 @@ public class ColorManagementViewCtrl {
     }
 
     public void resetBoardColors() {
-        board.getBoardColorScheme().setBoardBackgroundColor(white);
-        board.getBoardColorScheme().setBoardTextColor(white);
-        boardBackgroundColorInput.setValue(Color.valueOf(white));
-        boardTextColorInput.setValue(Color.valueOf(white));
+        board.getBoardColorScheme().setBoardBackgroundColor("0xffffffff");
+        board.getBoardColorScheme().setBoardTextColor("0x000000");
+        boardBackgroundColorInput.setValue(Color.valueOf("0xffffffff"));
+        boardTextColorInput.setValue(Color.valueOf("0x000000"));
     }
 
     public void resetListColors() {
-        board.getBoardColorScheme().setListBackgroundColor(white);
-        board.getBoardColorScheme().setListTextColor(white);
-        listBackgroundColorInput.setValue(Color.valueOf(white));
-        listTextColorInput.setValue(Color.valueOf(white));
+        board.getBoardColorScheme().setListBackgroundColor("0xffffffff");
+        board.getBoardColorScheme().setListTextColor("0x000000");
+        listBackgroundColorInput.setValue(Color.valueOf("0xffffffff"));
+        listTextColorInput.setValue(Color.valueOf("0x000000"));
     }
 }

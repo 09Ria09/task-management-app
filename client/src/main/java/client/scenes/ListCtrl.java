@@ -260,8 +260,6 @@ public class ListCtrl implements Initializable {
                         setBackground(Background.EMPTY);
                     } else {
                         try {
-                            setBackground(new Background(new BackgroundFill(Color.
-                                    TRANSPARENT, null, null)));
                             var cardLoader = new FXMLLoader(getClass().getResource("Card.fxml"));
                             Node card = cardLoader.load();
                             CardCtrl cardCtrl = cardLoader.getController();
@@ -398,17 +396,7 @@ public class ListCtrl implements Initializable {
         }
     }
 
-    /**
-     * Fired when the list title is clicked. It hides the Label and shows a textfield instead.
-     * @param event the mouse click event
-     */
-    public void onTitleClicked(final MouseEvent event){
-        if(event.getButton() != MouseButton.PRIMARY)
-            return;
-        this.titleField.setText(this.title.getText());
-        this.titleField.setVisible(true);
-        this.title.setVisible(false);
-    }
+
 
     public void onTitleButtonClicked(){
         this.titleField.setText(this.title.getText());
@@ -460,21 +448,23 @@ public class ListCtrl implements Initializable {
     }
 
     public void refreshColor(final Board board){
+        var baseColor = Color.valueOf(board
+                .getBoardColorScheme().getListBackgroundColor().substring(2, 8));
         var backgroundColor = new Background(
-                new BackgroundFill(Color.valueOf(board.getBoardColorScheme().
-                        getListBackgroundColor().substring(2, 8)), null, null));
+                new BackgroundFill(baseColor, null, null));
 
+        var quickTaskBoxColor =Color.hsb(baseColor.getHue(), baseColor.getSaturation(),
+                Math.min(baseColor.getBrightness() * 1.2, 1.0)); ;
         list.setBackground(backgroundColor);
-        quickTaskBox.setBackground(backgroundColor);
+        quickTaskBox.setBackground(new Background(
+                new BackgroundFill(quickTaskBoxColor, null, null)));
         createTaskBox.setBackground(new Background(
-                //it shouldnt be like this but I dont know how to override
-                //the round corners of the hbox
-                new BackgroundFill(Color.valueOf(board.getBoardColorScheme().
-                        getListBackgroundColor()
-                        .substring(2, 8)),
+                new BackgroundFill(quickTaskBoxColor,
                         new CornerRadii(0.0, 0.0, 15.0, 15.0, false), null)));
         title.setTextFill(Color.web(board.getBoardColorScheme().getListTextColor()));
-        addTaskButton.setTextFill(Color.web(board.getBoardColorScheme().getListTextColor()));
     }
+
+
+
 
 }
