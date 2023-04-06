@@ -453,27 +453,28 @@ public class ListCtrl implements Initializable {
     public void refreshColor(){
         try {
             board = boardUtils.getBoard(getBoardID());
-            var backgroundColor = new Background(
-                    new BackgroundFill(Color.valueOf(board.getBoardColorScheme().
-                            getListBackgroundColor().substring(2, 8)), null, null));
-
-            list.setBackground(backgroundColor);
-            quickTaskBox.setBackground(backgroundColor);
-            createTaskBox.setBackground(new Background(
-                    //it shouldnt be like this but I dont know how to override
-                    //the round corners of the hbox
-                    new BackgroundFill(Color.valueOf(board.getBoardColorScheme().
-                            getListBackgroundColor()
-                            .substring(2, 8)),
-                            new CornerRadii(0.0, 0.0, 15.0, 15.0, false), null)));
-            title.setTextFill(Color.web(board.getBoardColorScheme().getListTextColor()));
-            addTaskButton.setTextFill(Color.web(board.getBoardColorScheme().getListTextColor()));
-
+            refreshColor(board);
         } catch (BoardException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    public void refreshColor(final Board board){
+        var backgroundColor = new Background(
+                new BackgroundFill(Color.valueOf(board.getBoardColorScheme().
+                        getListBackgroundColor().substring(2, 8)), null, null));
 
+        list.setBackground(backgroundColor);
+        quickTaskBox.setBackground(backgroundColor);
+        createTaskBox.setBackground(new Background(
+                //it shouldnt be like this but I dont know how to override
+                //the round corners of the hbox
+                new BackgroundFill(Color.valueOf(board.getBoardColorScheme().
+                        getListBackgroundColor()
+                        .substring(2, 8)),
+                        new CornerRadii(0.0, 0.0, 15.0, 15.0, false), null)));
+        title.setTextFill(Color.web(board.getBoardColorScheme().getListTextColor()));
+        addTaskButton.setTextFill(Color.web(board.getBoardColorScheme().getListTextColor()));
     }
 
 }

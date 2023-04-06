@@ -209,6 +209,8 @@ public class BoardController {
         try {
             BoardColorScheme colorScheme = boardService
                     .setBoardColorScheme(boardid, boardColorScheme);
+            messages.convertAndSend("/topic/" + boardid + "/changecolor",
+                    boardService.getBoard(boardid));
             return ResponseEntity.ok(colorScheme);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();

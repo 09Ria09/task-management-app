@@ -142,6 +142,16 @@ public class BoardOverviewCtrl {
                     "/refreshboard", consumer);
             webSocketUtils.registerForTaskMessages("/topic/" + board.id + "/modifytask",
                     changeTaskTag);
+            Consumer<Board> changeColor = (board) -> {
+                Platform.runLater(() -> {
+                    this.board.setBoardColorScheme(board.getBoardColorScheme());
+                    this.refreshColor();
+                    for(ListCtrl l : this.listsMap.values())
+                        l.refreshColor(this.board);
+                });
+            };
+            webSocketUtils.registerForBoardMessages("/topic/" + board.id + "/changecolor",
+                    changeColor);
         }
         catch(BoardException e){
             System.out.println(e.getMessage());
