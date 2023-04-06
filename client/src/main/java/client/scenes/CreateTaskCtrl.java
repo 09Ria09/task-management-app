@@ -4,10 +4,13 @@ import client.CustomAlert;
 import client.customExceptions.TagException;
 import client.utils.ServerUtils;
 import client.utils.TagUtils;
+import client.utils.WebSocketUtils;
 import com.google.inject.Inject;
+import commons.Board;
 import commons.Tag;
 import commons.Task;
 import jakarta.ws.rs.WebApplicationException;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -17,6 +20,7 @@ import javafx.util.StringConverter;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Consumer;
 
 public class CreateTaskCtrl {
 
@@ -26,6 +30,7 @@ public class CreateTaskCtrl {
     private final BoardCatalogueCtrl boardCatalogueCtrl;
     private final TagUtils tagUtils;
     private final CustomAlert customAlert;
+    private final WebSocketUtils webSocketUtils;
 
     @FXML
     private Label tagMessage;
@@ -45,12 +50,14 @@ public class CreateTaskCtrl {
     @Inject
     public CreateTaskCtrl(final ServerUtils server, final MainCtrl mainCtrl,
                           final BoardCatalogueCtrl boardCatalogueCtrl,
-                          final TagUtils tagUtils, final CustomAlert customAlert) {
+                          final TagUtils tagUtils, final CustomAlert customAlert,
+                          final WebSocketUtils webSocketUtils) {
         this.mainCtrl = mainCtrl;
         this.server = server;
         this.boardCatalogueCtrl=boardCatalogueCtrl;
         this.tagUtils = tagUtils;
         this.customAlert = customAlert;
+        this.webSocketUtils = webSocketUtils;
     }
 
     private void setTagsList() {
@@ -134,6 +141,10 @@ public class CreateTaskCtrl {
         this.listCtrl = listCtrl;
         setTagsList();
         setChoiceBox();
+        Consumer<Board> deleteBoard = (board) -> {
+            Platform.runLater(this::cancel);
+        };
+        webSocketUtils.registerForMessages("/topic/deleteboard", deleteBoard, Board.class);
     }
 
     public void addTag() {

@@ -64,12 +64,11 @@ public class Main extends Application {
         var serverScenes = new ServerScenes(serverSelection, wrongServer,
                 serverTimeout, unexpectedError, adminLogin, adminBoard);
         var createTask = FXML.load(CreateTaskCtrl.class, "client", "scenes", "CreateTask.fxml");
-        var editTask = FXML.load(EditTaskCtrl.class, "client", "scenes", "EditTask.fxml");
         var boardCatalogue = FXML.load(BoardCatalogueCtrl.class,
             "client", "scenes", "BoardCatalogue.fxml");
         var detailedTaskView = FXML.load(DetailedTaskViewCtrl.class,
                 "client", "scenes", "DetailedTaskView.fxml");
-        var taskScenes = new TaskScenes(createTask, editTask, detailedTaskView);
+        var taskScenes = new TaskScenes(createTask, detailedTaskView);
         var editBoard = FXML.load(EditBoardCtrl.class, "client", "scenes", "EditBoard.fxml");
         var colorManagementView = FXML.load(ColorManagementViewCtrl.class,
                 "client", "scenes", "ColorManagementView.fxml");

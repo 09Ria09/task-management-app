@@ -145,7 +145,18 @@ public class BoardOverviewCtrl {
                     "/refreshboard", consumer);
             webSocketUtils.registerForTaskMessages("/topic/" + board.id + "/modifytask",
                     changeTaskTag);
-        } catch (BoardException e) {
+            Consumer<Board> changeColor = (board) -> {
+                Platform.runLater(() -> {
+                    this.board.setBoardColorScheme(board.getBoardColorScheme());
+                    this.refreshColor();
+                    for(ListCtrl l : this.listsMap.values())
+                        l.refreshColor(this.board);
+                });
+            };
+            webSocketUtils.registerForBoardMessages("/topic/" + board.id + "/changecolor",
+                    changeColor);
+        }
+        catch(BoardException e){
             System.out.println(e.getMessage());
         }
     }
@@ -356,23 +367,30 @@ public class BoardOverviewCtrl {
         return board;
     }
 
-    public void refreshColor() throws BoardException {
-        board.getBoardColorScheme().
-                setBoardTextColor(boardUtils.
-                        getBoardColorScheme(board.id).getBoardTextColor());
-        System.out.println(boardUtils.
-                getBoardColorScheme(board.id).getBoardBackgroundColor());
-        String hexColor = board.getBoardColorScheme().getBoardBackgroundColor().substring(2, 8);
-        String textColor = board.getBoardColorScheme().getBoardTextColor().substring(2, 8);
-        int red = Integer.parseInt(hexColor.substring(0, 2), 16);
-        int green = Integer.parseInt(hexColor.substring(2, 4), 16);
-        int blue = Integer.parseInt(hexColor.substring(4, 6), 16);
-        tab.setStyle("-fx-text-base-color: #" + textColor + ";");
-        double alpha = 0.7;
-        listScrollPane.setStyle("-fx-background:#" + board.getBoardColorScheme()
-                .getBoardBackgroundColor().substring(2, 8) + ";");
-        buttonsGridPane.setStyle(String
-                .format("-fx-background-color: rgba(%d, %d, %d, %.1f);", red, green, blue, alpha));
+    public void refreshColor(){
+        try{
+            board.getBoardColorScheme().
+                    setBoardTextColor(boardUtils.
+                            getBoardColorScheme(board.id).getBoardTextColor());
+            System.out.println(boardUtils.
+                    getBoardColorScheme(board.id).getBoardBackgroundColor());
+            String hexColor = board.getBoardColorScheme().getBoardBackgroundColor().substring(2, 8);
+            String textColor = board.getBoardColorScheme().getBoardTextColor().substring(2, 8);
+            int red = Integer.parseInt(hexColor.substring(0, 2), 16);
+            int green = Integer.parseInt(hexColor.substring(2, 4), 16);
+            int blue = Integer.parseInt(hexColor.substring(4, 6), 16);
+            tab.setStyle("-fx-text-base-color: #" + textColor + ";");
+            double alpha = 0.7;
+            listScrollPane.setStyle("-fx-background:#" + board.getBoardColorScheme()
+                    .getBoardBackgroundColor().substring(2, 8) + ";");
+            buttonsGridPane.setStyle(String
+                    .format("-fx-background-color: rgba(%d, %d, %d, %.1f);",
+                            red, green, blue, alpha));
+        }
+        catch(BoardException e){
+            System.out.println("Error when changing colors: " + e.getMessage());
+        }
+
     }
 }
 

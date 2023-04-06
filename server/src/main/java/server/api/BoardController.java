@@ -92,8 +92,6 @@ public class BoardController {
             return ResponseEntity.badRequest().build();
         }
         Board createdBoard = boardService.addBoard(board);
-        messages.convertAndSend("/topic/addboard",
-                createdBoard);
         BoardEvent event = new BoardEvent("ADD", createdBoard);
         listeners.forEach((k, l) -> l.accept(event));
         return ResponseEntity.ok(createdBoard);
@@ -145,7 +143,7 @@ public class BoardController {
         }
         try{
             boardService.renameBoard(boardid, name);
-            messages.convertAndSend("/topic/" + boardid + "/refreshboard",
+            messages.convertAndSend("/topic/renameboard",
                     boardService.getBoard(boardid));
             return ResponseEntity.ok(boardService.getBoard(boardid));
         } catch (NoSuchElementException e) {
@@ -211,6 +209,8 @@ public class BoardController {
         try {
             BoardColorScheme colorScheme = boardService
                     .setBoardColorScheme(boardid, boardColorScheme);
+            messages.convertAndSend("/topic/" + boardid + "/changecolor",
+                    boardService.getBoard(boardid));
             return ResponseEntity.ok(colorScheme);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();

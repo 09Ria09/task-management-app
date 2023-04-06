@@ -131,6 +131,10 @@ public class DetailedTaskViewCtrl {
                 "/deletetag", deleteBoardTag);
         this.webSocketUtils.registerForTagMessages("/topic/" + listController.getBoardID() +
                 "/changetag", changeTagConsumer);
+        Consumer<Board> deleteBoard = (board) -> {
+            Platform.runLater(this::goBack);
+        };
+        webSocketUtils.registerForMessages("/topic/deleteboard", deleteBoard, Board.class);
     }
 
     public void changeTag(final Tag tag){

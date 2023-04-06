@@ -441,25 +441,27 @@ public class ListCtrl implements Initializable {
     public void refreshColor(){
         try {
             board = boardUtils.getBoard(getBoardID());
-            var baseColor = Color.valueOf(board
-                    .getBoardColorScheme().getListBackgroundColor().substring(2, 8));
-            var backgroundColor = new Background(
-                    new BackgroundFill(baseColor, null, null));
-
-            var quickTaskBoxColor =Color.hsb(baseColor.getHue(), baseColor.getSaturation(),
-                    Math.min(baseColor.getBrightness() * 1.2, 1.0)); ;
-            list.setBackground(backgroundColor);
-            quickTaskBox.setBackground(new Background(
-                    new BackgroundFill(quickTaskBoxColor, null, null)));
-            createTaskBox.setBackground(new Background(
-                    new BackgroundFill(quickTaskBoxColor,
-                            new CornerRadii(0.0, 0.0, 15.0, 15.0, false), null)));
-            title.setTextFill(Color.web(board.getBoardColorScheme().getListTextColor()));
+            refreshColor(board);
         } catch (BoardException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    public void refreshColor(final Board board){
+        var baseColor = Color.valueOf(board
+                .getBoardColorScheme().getListBackgroundColor().substring(2, 8));
+        var backgroundColor = new Background(
+                new BackgroundFill(baseColor, null, null));
 
+        var quickTaskBoxColor =Color.hsb(baseColor.getHue(), baseColor.getSaturation(),
+                Math.min(baseColor.getBrightness() * 1.2, 1.0)); ;
+        list.setBackground(backgroundColor);
+        quickTaskBox.setBackground(new Background(
+                new BackgroundFill(quickTaskBoxColor, null, null)));
+        createTaskBox.setBackground(new Background(
+                new BackgroundFill(quickTaskBoxColor,
+                        new CornerRadii(0.0, 0.0, 15.0, 15.0, false), null)));
+        title.setTextFill(Color.web(board.getBoardColorScheme().getListTextColor()));
     }
 
 

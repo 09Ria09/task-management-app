@@ -3,13 +3,17 @@ package client.scenes;
 import client.customExceptions.BoardException;
 import client.utils.BoardUtils;
 import client.utils.ServerUtils;
+import client.utils.WebSocketUtils;
 import com.google.inject.Inject;
 import commons.*;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
+
+import java.util.function.Consumer;
 
 public class ColorManagementViewCtrl {
 
@@ -30,23 +34,24 @@ public class ColorManagementViewCtrl {
     @FXML
     private ColorPicker listTextColorInput;
 
-    private BoardColorScheme boardColorScheme;
     @FXML
     private TextField taskColorPresetNameInput;
     private String taskColorPresetName;
 
     private BoardUtils boardUtils;
+    private final WebSocketUtils webSocketUtils;
     private Board board;
 
 
     @Inject
     public ColorManagementViewCtrl(final ServerUtils server, final MainCtrl mainCtrl,
                                    final BoardUtils boardUtils,
-                                   final BoardOverviewCtrl boardOverviewCtrl)
+                                   final WebSocketUtils webSocketUtils)
             throws BoardException {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.boardUtils = boardUtils;
+        this.webSocketUtils = webSocketUtils;
     }
 
 
@@ -98,6 +103,12 @@ public class ColorManagementViewCtrl {
                 board.getBoardColorScheme().getListBackgroundColor()));
         this.listTextColorInput.setValue(Color.valueOf(
                 board.getBoardColorScheme().getListTextColor()));
+
+        webSocketUtils.tryToConnect();
+        Consumer<Board> deleteBoard = (b) -> {
+            Platform.runLater(mainCtrl::showBoardCatalogue);
+        };
+        webSocketUtils.registerForMessages("/topic/deleteboard", deleteBoard, Board.class);
     }
 
     public void resetBoardColors() {
@@ -113,9 +124,4 @@ public class ColorManagementViewCtrl {
         listBackgroundColorInput.setValue(Color.valueOf("0xffffffff"));
         listTextColorInput.setValue(Color.valueOf("0x000000"));
     }
-
-
-
-
-
 }
