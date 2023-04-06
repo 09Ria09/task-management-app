@@ -1,7 +1,7 @@
 .custom-tab .tab-header-area .tab {
     -fx-background-color: #f2f2f2;
-    -fx-text-fill: 333;
     -fx-border-color: #9899E1C9;
+    -fx-font-weight: bold;
 }
 
 .custom-tab .tab-header-area .tab:selected {

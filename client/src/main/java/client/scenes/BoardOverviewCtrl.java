@@ -39,9 +39,9 @@ import javafx.scene.control.*;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import javafx.util.Pair;
 
@@ -70,6 +70,9 @@ public class BoardOverviewCtrl {
 
     @FXML
     private HBox listsContainer;
+
+    @FXML
+    private GridPane buttonsGridPane;
 
     @FXML
 
@@ -105,15 +108,15 @@ public class BoardOverviewCtrl {
         this.listsMap = new HashMap<>();
         this.taskLists = new ArrayList<>();
         this.customAlert = customAlert;
-        this.boardCatalogueCtrl=boardCatalogueCtrl;
+        this.boardCatalogueCtrl = boardCatalogueCtrl;
         this.boardUtils = boardUtils;
         this.webSocketUtils = webSocketUtils;
         this.editBoardCtrl = editBoardCtrl;
     }
 
-    public void initialize(){
+    public void initialize() {
         this.webSocketUtils.tryToConnect();
-        try{
+        try {
             refresh();
             board = boardUtils.getBoard(currentBoardId);
             Consumer<Board> consumer = (board) -> {
@@ -125,13 +128,13 @@ public class BoardOverviewCtrl {
             };
             Consumer<Task> changeTaskTag = (task) -> {
                 Platform.runLater(() -> {
-                    for(TaskList l : this.board.getListTaskList())
+                    for (TaskList l : this.board.getListTaskList())
                         l.getTaskById(task.id).ifPresent((t) -> {
                             List<Task> tasks = listsMap.get(l.id).list.getItems();
                             int index = tasks.indexOf(tasks.stream()
                                     .filter(t2 -> t2.id == t.id)
                                     .findAny().orElse(null));
-                            if(index >= 0) {
+                            if (index >= 0) {
                                 tasks.remove(index);
                                 tasks.add(index, task);
                             }
@@ -142,14 +145,14 @@ public class BoardOverviewCtrl {
                     "/refreshboard", consumer);
             webSocketUtils.registerForTaskMessages("/topic/" + board.id + "/modifytask",
                     changeTaskTag);
-        }
-        catch(BoardException e){
+        } catch (BoardException e) {
             System.out.println(e.getMessage());
         }
     }
 
     /**
      * adds a list to the board
+     *
      * @param taskList the list to be added
      */
     public void addList(final TaskList taskList) {
@@ -157,8 +160,8 @@ public class BoardOverviewCtrl {
         var listLoader = new FXMLLoader(getClass().getResource("List.fxml"));
         listLoader.setControllerFactory(type ->
                 new ListCtrl(mainCtrl, new TaskListUtils(server),
-            new TaskUtils(server), customAlert,
-                boardUtils, new Pair(new LayoutUtils(), webSocketUtils)));
+                        new TaskUtils(server), customAlert,
+                        boardUtils, new Pair(new LayoutUtils(), webSocketUtils)));
         try {
             VBox list = listLoader.load();
             list.prefHeightProperty().bind(Bindings
@@ -183,16 +186,6 @@ public class BoardOverviewCtrl {
         mainCtrl.showCreateList(currentBoardId);
     }
 
-    public void addTask() {
-        //mainCtrl.showCreateTask();
-    }
-
-
-
-    public void renameList() {
-        mainCtrl.showRenameList();
-    }
-
 
     /*
     This method is used for enabling clients to switch the server
@@ -212,7 +205,7 @@ public class BoardOverviewCtrl {
      * @param refreshPeriod the time period in miliseconds
      */
     public void refreshTimer(final long refreshPeriod) {
-        if(refreshTimer==null)
+        if (refreshTimer == null)
             refreshTimer = new Timer();
         refreshTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -237,7 +230,7 @@ public class BoardOverviewCtrl {
             } catch (TaskListException e) {
                 Alert alert = customAlert.showAlert(e.getMessage());
                 alert.showAndWait();
-            } catch (BoardException e){
+            } catch (BoardException e) {
                 tab.getOnClosed().handle(null);
             }
         });
@@ -245,14 +238,15 @@ public class BoardOverviewCtrl {
 
     /**
      * This method refreshes the lists of the board.
+     *
      * @param lists the list of lists
      */
     private void refreshLists(final List<TaskList> lists) {
         List<Long> listsId = lists.stream().map(taskList -> taskList.id).toList();
-        Iterator<Map.Entry<Long, ListCtrl>> iter=listsMap.entrySet().iterator();
-        while (iter.hasNext()){
+        Iterator<Map.Entry<Long, ListCtrl>> iter = listsMap.entrySet().iterator();
+        while (iter.hasNext()) {
             // this removes any lists in excess
-            var current=iter.next();
+            var current = iter.next();
             if (!listsId.contains(current.getKey())) {
                 listsContainer.getChildren().remove(current.getValue().getRoot());
                 iter.remove();
@@ -274,10 +268,10 @@ public class BoardOverviewCtrl {
     }
 
     public void clear() {
-        if(refreshTimer!=null) {
+        if (refreshTimer != null) {
             refreshTimer.cancel();
             refreshTimer.purge();
-            refreshTimer=null;
+            refreshTimer = null;
         }
         listsContainer.getChildren().clear();
         listsMap.clear();
@@ -325,7 +319,7 @@ public class BoardOverviewCtrl {
                     new KeyFrame(Duration.millis(1500), new KeyValue(blur.radiusProperty(), 10))
             );
             timeline.play();
-            timeline.setOnFinished( event -> inviteKeyLabel.setVisible(false));
+            timeline.setOnFinished(event -> inviteKeyLabel.setVisible(false));
         } catch (BoardException e) {
             Alert alert = customAlert.showAlert(e.getMessage());
             alert.showAndWait();
@@ -343,13 +337,12 @@ public class BoardOverviewCtrl {
             if (tab.isSelected()) {
                 refresh();
                 refreshTimer(5000000);
-            }
-            else {
-                if(refreshTimer==null)
+            } else {
+                if (refreshTimer == null)
                     return;
                 refreshTimer.cancel();
                 refreshTimer.purge();
-                refreshTimer=null;
+                refreshTimer = null;
             }
         });
     }
@@ -363,17 +356,23 @@ public class BoardOverviewCtrl {
         return board;
     }
 
-    public void refreshColor() {
-        listScrollPane.setStyle("-fx-background:#" + board.getBoardColorScheme().
-                getBoardBackgroundColor().substring(2, 8) + ";");
-        disconnectButton.setTextFill(Color.web(board.getBoardColorScheme().getBoardTextColor()));
-        colorManagementViewButton.setTextFill(Color.web(board.getBoardColorScheme().
-                getBoardTextColor()));
-        addListButton.setTextFill(Color.web(board.getBoardColorScheme().getBoardTextColor()));
-        copyInviteKeyButton.setTextFill(Color.web(board.getBoardColorScheme()
-                .getBoardTextColor()));
-        renameBoardButton.setTextFill(Color.web(board.getBoardColorScheme().getBoardTextColor()));
-        deleteBoardButton.setTextFill(Color.web(board.getBoardColorScheme().getBoardTextColor()));
-        tagOverviewButton.setTextFill(Color.web(board.getBoardColorScheme().getBoardTextColor()));
+    public void refreshColor() throws BoardException {
+        board.getBoardColorScheme().
+                setBoardTextColor(boardUtils.
+                        getBoardColorScheme(board.id).getBoardTextColor());
+        System.out.println(boardUtils.
+                getBoardColorScheme(board.id).getBoardBackgroundColor());
+        String hexColor = board.getBoardColorScheme().getBoardBackgroundColor().substring(2, 8);
+        String textColor = board.getBoardColorScheme().getBoardTextColor().substring(2, 8);
+        int red = Integer.parseInt(hexColor.substring(0, 2), 16);
+        int green = Integer.parseInt(hexColor.substring(2, 4), 16);
+        int blue = Integer.parseInt(hexColor.substring(4, 6), 16);
+        tab.setStyle("-fx-text-base-color: #" + textColor + ";");
+        double alpha = 0.7;
+        listScrollPane.setStyle("-fx-background:#" + board.getBoardColorScheme()
+                .getBoardBackgroundColor().substring(2, 8) + ";");
+        buttonsGridPane.setStyle(String
+                .format("-fx-background-color: rgba(%d, %d, %d, %.1f);", red, green, blue, alpha));
     }
 }
+
