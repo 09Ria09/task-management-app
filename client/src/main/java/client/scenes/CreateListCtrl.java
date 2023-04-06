@@ -17,7 +17,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import javafx.util.Pair;
 
 import java.util.function.Consumer;
 
@@ -51,23 +50,21 @@ public class CreateListCtrl {
 
     /**
      * Constructor
-     *
-     * @param server
      * @param listUtils
      * @param boardOverviewCtrl
      * @param mainCtrl
      */
     @Inject
-    public CreateListCtrl(final ServerUtils server, final TaskListUtils listUtils,
+    public CreateListCtrl(final TaskListUtils listUtils,
                           final BoardOverviewCtrl boardOverviewCtrl, final MainCtrl mainCtrl,
-                          final Pair<CustomAlert, LayoutUtils> customAlertLayoutUtils,
+                          final CustomAlert customAlert, final LayoutUtils layoutUtils,
                           final WebSocketUtils webSocketUtils) {
-        this.server = server;
+        this.server = listUtils.getServer();
         this.listUtils = listUtils;
         this.boardOverviewCtrl = boardOverviewCtrl;
         this.mainCtrl = mainCtrl;
-        this.customAlert = customAlertLayoutUtils.getKey();
-        this.layoutUtils = customAlertLayoutUtils.getValue();
+        this.customAlert = customAlert;
+        this.layoutUtils = layoutUtils;
         this.webSocketUtils = webSocketUtils;
     }
 
