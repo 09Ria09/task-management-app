@@ -2,7 +2,6 @@ package client.scenes;
 
 import client.CustomAlert;
 import client.customExceptions.TaskException;
-import client.utils.LayoutUtils;
 import client.utils.TaskListUtils;
 import client.customExceptions.TaskListException;
 import client.utils.TaskUtils;
@@ -135,14 +134,15 @@ public class CardCtrl {
             tagList.getChildren().add(tagPane);
         }
     }
-    private void handleEditTitle(KeyEvent event) {
+    private void handleEditTitle(final KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             String newTitle = editTitleTextField.getText().trim();
             if (!newTitle.isEmpty()) {
                 title.setText(newTitle);
                 task.setName(newTitle);
                 try {
-                    this.taskUtils.renameTask(listController.getBoardID(), listController.getTaskList().id,
+                    this.taskUtils.renameTask(listController.getBoardID(),
+                            listController.getTaskList().id,
                             task.getId(), this.editTitleTextField.getText());
                 } catch (TaskException e) {
                     Alert alert = customAlert.showAlert(e.getMessage());
