@@ -189,11 +189,6 @@ public class BoardOverviewCtrl {
 
 
 
-    public void renameList() {
-        mainCtrl.showRenameList();
-    }
-
-
     /*
     This method is used for enabling clients to switch the server
     It is attached to a button in the board overview scene
