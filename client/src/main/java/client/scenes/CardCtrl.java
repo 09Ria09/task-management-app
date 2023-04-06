@@ -6,7 +6,6 @@ import client.utils.TaskListUtils;
 import client.customExceptions.TaskListException;
 import client.utils.TaskUtils;
 import commons.Tag;
-import commons.Board;
 import commons.Task;
 import commons.TaskList;
 import javafx.fxml.FXML;
@@ -14,6 +13,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -53,6 +53,9 @@ public class CardCtrl {
 
     @FXML
     private FlowPane tagList;
+
+    @FXML
+    private AnchorPane cardPane;
 
     private MainCtrl mainCtrl;
     private ListCtrl listController;

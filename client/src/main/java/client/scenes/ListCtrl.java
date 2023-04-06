@@ -77,15 +77,11 @@ public class ListCtrl implements Initializable {
     public ListCtrl(final MainCtrl mainCtrl, final TaskListUtils taskListUtils,
                     final TaskUtils taskUtils, final CustomAlert customAlert,
                     final BoardUtils boardUtils, final Pair<LayoutUtils,
-            WebSocketUtils> layoutSocketUtils) {
-                    final LayoutUtils layoutUtils, final WebSocketUtils webSocketUtils,
-                    final BoardOverviewCtrl boardOverviewCtrl) {
+            WebSocketUtils> layoutSocketUtils, final BoardOverviewCtrl boardOverviewCtrl) {
         this.taskListUtils = taskListUtils;
         this.taskUtils = taskUtils;
         this.mainCtrl = mainCtrl;
         this.customAlert = customAlert;
-        this.layoutUtils = layoutUtils;
-        this.webSocketUtils = webSocketUtils;
         this.boardOverviewCtrl = boardOverviewCtrl;
         this.layoutUtils = layoutSocketUtils.getKey();
         this.boardUtils = boardUtils;
