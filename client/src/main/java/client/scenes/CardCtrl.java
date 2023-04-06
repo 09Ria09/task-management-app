@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.CustomAlert;
 import client.customExceptions.TaskException;
+import client.utils.LayoutUtils;
 import client.utils.TaskListUtils;
 import client.customExceptions.TaskListException;
 import client.utils.TaskUtils;
@@ -20,7 +21,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -32,7 +35,7 @@ public class CardCtrl {
     private BoardOverviewCtrl boardOverviewCtrl;
 
     @FXML
-    public Label title;
+    private Label title;
 
     @FXML
     private Button editButton;
@@ -95,11 +98,9 @@ public class CardCtrl {
         cardPane.setOnMouseEntered(event -> {
             boardOverviewCtrl.setSelectedTask(task);
             cardPane.requestFocus();
-            cardPane.setStyle("-fx-border-color: black; -fx-border-width: 2; -fx-border-insets: -2;");
         });
 
         cardPane.setOnMouseExited(event -> {
-            cardPane.setStyle("-fx-border-color: transparent;");
         });
 
         cardPane.setOnKeyReleased(event -> {
@@ -277,6 +278,8 @@ public class CardCtrl {
     public void onHover(){
         this.editButton.setOpacity(1.0d);
         this.deleteButton.setOpacity(1.0d);
+        this.title.setFont(Font.font(18));
+        this.title.setTextFill(Color.BLACK);
     }
 
     /**
@@ -285,6 +288,8 @@ public class CardCtrl {
     public void onUnhover(){
         this.editButton.setOpacity(0.0d);
         this.deleteButton.setOpacity(0.0d);
+        this.title.setFont(Font.font(18));
+        this.title.setTextFill(Color.BLACK);
     }
 
     /**

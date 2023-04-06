@@ -1,20 +1,21 @@
-.card {
+#cardPane {
     -fx-background-radius: 15px;
     -fx-border-radius: 15px;
     -fx-background-color: #CBD2D0;
+    -fx-border-color: #FFFFFF;
 }
 
-.card:hover {
+#cardPane:hover {
     -fx-background-color: #B9C7BA;
     -fx-border-color: #8C9B8C;
     -fx-border-width: 3px;
 }
 
-.card:pressed {
+#cardPane:pressed {
     -fx-background-color: #C6D5C6;
 }
 
-.card:selected {
+#cardPane:selected {
     -fx-background-color: #CBD2D0;
     -fx-border-color: dodgerblue;
     -fx-border-width: 3px;
@@ -28,7 +29,7 @@
     -fx-effect: dropshadow(gaussian, rgba(255, 0, 0, 0.5), 10, 0, 0, 0);
 }
 
-.card:selected {
+#cardPane:selected {
     -fx-background-color: #CBD2D0;
     -fx-border-color: dodgerblue;
     -fx-border-width: 3px;
