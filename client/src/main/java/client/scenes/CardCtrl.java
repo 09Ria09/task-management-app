@@ -12,7 +12,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
@@ -27,11 +30,15 @@ public class CardCtrl {
     private Task task;
 
     private BoardOverviewCtrl boardOverviewCtrl;
+
     @FXML
     public Label title;
 
     @FXML
     private Button editButton;
+
+    @FXML
+    private TextField editTitleTextField;
 
     @FXML
     private Button deleteButton;
@@ -87,11 +94,35 @@ public class CardCtrl {
 
         cardPane.setOnMouseEntered(event -> {
             boardOverviewCtrl.setSelectedTask(task);
-            // do something
+            cardPane.requestFocus();
+            cardPane.setStyle("-fx-border-color: black; -fx-border-width: 2; -fx-border-insets: -2;");
         });
+
         cardPane.setOnMouseExited(event -> {
-            // do something else
+            cardPane.setStyle("-fx-border-color: transparent;");
         });
+
+        cardPane.setOnKeyReleased(event -> {
+            if (event.isShiftDown()) {
+                if (event.getCode() == KeyCode.UP) {
+                    moveUp();
+                } else if (event.getCode() == KeyCode.DOWN) {
+                    moveDown();
+                }
+            } else if (event.getCode() == KeyCode.E) {
+                editTitleTextField.setVisible(true);
+                editTitleTextField.setManaged(true);
+                editTitleTextField.requestFocus();
+                editTitleTextField.setText(title.getText());
+                event.consume();
+            } else if (event.getCode() == KeyCode.ENTER) {
+                editTask();
+            } else if (event.getCode() == KeyCode.DELETE || event.getCode() == KeyCode.BACK_SPACE) {
+                deleteTask();
+            }
+        });
+        editTitleTextField.addEventHandler(KeyEvent.KEY_PRESSED, this::handleEditTitle);
+
     }
 
     private void setTags(final List<Tag> tags) {
@@ -103,7 +134,25 @@ public class CardCtrl {
             tagList.getChildren().add(tagPane);
         }
     }
-
+    private void handleEditTitle(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            String newTitle = editTitleTextField.getText().trim();
+            if (!newTitle.isEmpty()) {
+                title.setText(newTitle);
+                task.setName(newTitle);
+                try {
+                    this.taskUtils.renameTask(listController.getBoardID(), listController.getTaskList().id,
+                            task.getId(), this.editTitleTextField.getText());
+                } catch (TaskException e) {
+                    Alert alert = customAlert.showAlert(e.getMessage());
+                    alert.showAndWait();
+                }
+            }
+            editTitleTextField.setVisible(false);
+            editTitleTextField.setManaged(false);
+            event.consume();
+        }
+    }
     public void setTask(final Task task) {
         this.task = task;
         if (Objects.equals(this.task.getDescription(), "")) {
@@ -279,4 +328,6 @@ public class CardCtrl {
     public void onUnhoverDesc(){
         this.descButton.setStyle("-fx-background-color: transparent;");
     }
+
+
 }

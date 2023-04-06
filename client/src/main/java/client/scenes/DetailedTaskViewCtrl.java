@@ -12,8 +12,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
@@ -47,6 +50,8 @@ public class DetailedTaskViewCtrl {
     private final SubTaskUtils subTaskUtils;
     private final WebSocketUtils webSocketUtils;
     private final TagUtils tagUtils;
+    @FXML
+    private StackPane taskDetails;
 
     private final Consumer<Task> taskConsumer = (task) -> {
         if(task.id == this.task.id)
@@ -98,6 +103,12 @@ public class DetailedTaskViewCtrl {
                 }
             }
         }));
+        taskDetails.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.ESCAPE) {
+                goBack();
+                event.consume();
+            }
+        });
     }
 
     public void registerWebSockets(){
