@@ -15,13 +15,12 @@ public class BoardColorScheme {
     private String listBackgroundColor;
 
     private String listTextColor;
-    private String white = "0xffffffff";
 
     public BoardColorScheme() {
-        this.boardBackgroundColor = white;
-        this.boardTextColor = white;
-        this.listBackgroundColor = white;
-        this.listTextColor = white;
+        this.boardBackgroundColor = "0xffffff";
+        this.boardTextColor = "0x000000";
+        this.listBackgroundColor = "0xffffff";
+        this.listTextColor = "0x000000";
     }
 
 
