@@ -384,7 +384,8 @@ public class BoardOverviewCtrl {
             listScrollPane.setStyle("-fx-background:#" + board.getBoardColorScheme()
                     .getBoardBackgroundColor().substring(2, 8) + ";");
             buttonsGridPane.setStyle(String
-                    .format("-fx-background-color: rgba(%d, %d, %d, %.1f);", red, green, blue, alpha));
+                    .format("-fx-background-color: rgba(%d, %d, %d, %.1f);",
+                            red, green, blue, alpha));
         }
         catch(BoardException e){
             System.out.println("Error when changing colors: " + e.getMessage());
