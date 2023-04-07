@@ -18,13 +18,14 @@ public class TagTest {
         Tag testTag = new Tag();
         assertNotNull(testTag);
         assertEquals(testTag.getName(), "");
+        assertEquals(testTag.id, testTag.getId());
     }
 
     @Test
     public void testGetters() {
         Tag testTag = new Tag("Tag1", "111111");
         assertEquals(testTag.getName(), "Tag1");
-        assertEquals(testTag.getColor(), "111111");
+        assertEquals(testTag.getColorBackground(), "111111");
     }
 
     @Test
@@ -32,8 +33,9 @@ public class TagTest {
         Tag testTag = new Tag("Tag1", "AA4A4A");
         testTag.setName("Tag2");
         assertEquals(testTag.getName(), "Tag2");
-        testTag.setColor("FFFFFF");
-        assertNotEquals(testTag.getColor(), "AA4A4A");
+        testTag.setColors("FFFFFF", "FFFFFF");
+        assertNotEquals(testTag.getColorBackground(), "AA4A4A");
+        assertNotEquals(testTag.getColorFont(), "AA4A4A");
     }
 
     @Test
@@ -58,5 +60,12 @@ public class TagTest {
     public void testToString() {
         Tag testTag = new Tag("Tag1", "FFFFFF");
         assertNotNull(testTag.toString());
+    }
+
+    @Test
+    public void testEqualNoTag() {
+        Tag testTag = new Tag("Name", "FFFFFF");
+        Task task = new Task("Name", "Desc");
+        assertFalse(testTag.equals(task));
     }
 }

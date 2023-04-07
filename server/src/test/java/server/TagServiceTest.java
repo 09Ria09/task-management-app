@@ -39,7 +39,7 @@ public class TagServiceTest {
     @Test
     public void testGetAllBoardTags(){
         Board b = new Board();
-        Tag tag = new Tag("Name", "Color");
+        Tag tag = new Tag("Name", "#FFFFFF");
         boardService.addBoard(b);
         assertEquals(0, tagService.getBoardTags(b.id).size());
         tagService.addBoardTag(b.id, tag);
@@ -49,7 +49,7 @@ public class TagServiceTest {
     @Test
     public void testGetAllTaskTags(){
         Board b = new Board();
-        Tag tag = new Tag("Name", "Color");
+        Tag tag = new Tag("Name", "#FFFFFF");
         boardService.addBoard(b);
         assertEquals(0, tagService.getBoardTags(b.id).size());
         tagService.addBoardTag(b.id, tag);
@@ -67,7 +67,7 @@ public class TagServiceTest {
     @Test
     public void testGetBoardTag(){
         Board b = new Board();
-        Tag tag = new Tag("Name", "Color");
+        Tag tag = new Tag("Name", "#FFFFFF");
         boardService.addBoard(b);
         tagService.addBoardTag(b.id, tag);
         assertEquals(tagService.getBoardTagByID(b.id, tag.id), tag);
@@ -76,7 +76,7 @@ public class TagServiceTest {
     @Test
     public void testGetTaskTag(){
         Board b = new Board();
-        Tag tag = new Tag("Name", "Color");
+        Tag tag = new Tag("Name", "#FFFFFF");
         boardService.addBoard(b);
         tagService.addBoardTag(b.id, tag);
 
@@ -91,7 +91,7 @@ public class TagServiceTest {
     @Test
     public void testRenameTag(){
         Board b = new Board();
-        Tag tag = new Tag("Name", "Color");
+        Tag tag = new Tag("Name", "#FFFFFF");
         boardService.addBoard(b);
         tagService.addBoardTag(b.id, tag);
         assertEquals(tagService.getBoardTagByID(b.id, tag.id), tag);
@@ -102,18 +102,19 @@ public class TagServiceTest {
     @Test
     public void testRecolorTag(){
         Board b = new Board();
-        Tag tag = new Tag("Name", "Color");
+        Tag tag = new Tag("Name", "#FFFFFF");
         boardService.addBoard(b);
         tagService.addBoardTag(b.id, tag);
         assertEquals(tagService.getBoardTagByID(b.id, tag.id), tag);
-        tagService.recolorTag(b.id, tag.id, "NewColor");
-        assertEquals(tagService.getBoardTagByID(b.id, tag.id).getColor(), "NewColor");
+        tagService.recolorTag(b.id, tag.id, "NewColor", "NewColor1");
+        assertEquals(tagService.getBoardTagByID(b.id, tag.id).getColorBackground(), "NewColor");
+        assertEquals(tagService.getBoardTagByID(b.id, tag.id).getColorFont(), "NewColor1");
     }
 
     @Test
     public void testRemoveBoardTag(){
         Board b = new Board();
-        Tag tag = new Tag("Name", "Color");
+        Tag tag = new Tag("Name", "#FFFFFF");
         boardService.addBoard(b);
         tagService.addBoardTag(b.id, tag);
         assertEquals(tagService.getBoardTagByID(b.id, tag.id), tag);
@@ -124,7 +125,7 @@ public class TagServiceTest {
     @Test
     public void testRemoveTaskTag(){
         Board b = new Board();
-        Tag tag = new Tag("Name", "Color");
+        Tag tag = new Tag("Name", "#FFFFFF");
         boardService.addBoard(b);
         tagService.addBoardTag(b.id, tag);
 
@@ -141,7 +142,7 @@ public class TagServiceTest {
     @Test
     public void testRemoveBoardAndTaskTag(){
         Board b = new Board();
-        Tag tag = new Tag("Name", "Color");
+        Tag tag = new Tag("Name", "#FFFFFF");
         boardService.addBoard(b);
         tagService.addBoardTag(b.id, tag);
 
@@ -158,7 +159,7 @@ public class TagServiceTest {
     @Test
     public void testRemoveTaskNotBoardTag(){
         Board b = new Board();
-        Tag tag = new Tag("Name", "Color");
+        Tag tag = new Tag("Name", "#FFFFFF");
         boardService.addBoard(b);
         tagService.addBoardTag(b.id, tag);
 

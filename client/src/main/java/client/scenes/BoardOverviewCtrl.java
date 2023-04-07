@@ -27,18 +27,23 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
+import javafx.scene.control.*;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import javafx.util.Pair;
 
 import java.io.IOException;
 import java.util.*;
@@ -67,8 +72,29 @@ public class BoardOverviewCtrl {
     private HBox listsContainer;
 
     @FXML
+    private GridPane buttonsGridPane;
+
+    @FXML
 
     private Label inviteKeyLabel;
+
+    @FXML
+    private ScrollPane listScrollPane;
+    @FXML
+    private Button disconnectButton;
+    @FXML
+    private Button colorManagementViewButton;
+    @FXML
+    private Button addListButton;
+    @FXML
+    private Button copyInviteKeyButton;
+    @FXML
+    private Button renameBoardButton;
+    @FXML
+    private Button deleteBoardButton;
+
+    @FXML
+    private Button tagOverviewButton;
 
     @Inject
     public BoardOverviewCtrl(final MainCtrl mainCtrl,
@@ -82,15 +108,15 @@ public class BoardOverviewCtrl {
         this.listsMap = new HashMap<>();
         this.taskLists = new ArrayList<>();
         this.customAlert = customAlert;
-        this.boardCatalogueCtrl=boardCatalogueCtrl;
+        this.boardCatalogueCtrl = boardCatalogueCtrl;
         this.boardUtils = boardUtils;
         this.webSocketUtils = webSocketUtils;
         this.editBoardCtrl = editBoardCtrl;
     }
 
-    public void initialize(){
+    public void initialize() {
         this.webSocketUtils.tryToConnect();
-        try{
+        try {
             refresh();
             board = boardUtils.getBoard(currentBoardId);
             Consumer<Board> consumer = (board) -> {
@@ -102,22 +128,33 @@ public class BoardOverviewCtrl {
             };
             Consumer<Task> changeTaskTag = (task) -> {
                 Platform.runLater(() -> {
-                    for(TaskList l : this.board.getListTaskList())
+                    for (TaskList l : this.board.getListTaskList())
                         l.getTaskById(task.id).ifPresent((t) -> {
                             List<Task> tasks = listsMap.get(l.id).list.getItems();
-                            int index = tasks.indexOf(t);
-                            if(tasks.remove(t)) {
-                                t.getTags().clear();
-                                t.getTags().addAll(task.getTags());
-                                tasks.add(index, t);
+                            int index = tasks.indexOf(tasks.stream()
+                                    .filter(t2 -> t2.id == t.id)
+                                    .findAny().orElse(null));
+                            if (index >= 0) {
+                                tasks.remove(index);
+                                tasks.add(index, task);
                             }
                         });
                 });
             };
             webSocketUtils.registerForBoardMessages("/topic/" + board.id +
                     "/refreshboard", consumer);
-            webSocketUtils.registerForTaskMessages("/topic/" + board.id + "/changetasktag",
+            webSocketUtils.registerForTaskMessages("/topic/" + board.id + "/modifytask",
                     changeTaskTag);
+            Consumer<Board> changeColor = (board) -> {
+                Platform.runLater(() -> {
+                    this.board.setBoardColorScheme(board.getBoardColorScheme());
+                    this.refreshColor();
+                    for(ListCtrl l : this.listsMap.values())
+                        l.refreshColor(this.board);
+                });
+            };
+            webSocketUtils.registerForBoardMessages("/topic/" + board.id + "/changecolor",
+                    changeColor);
         }
         catch(BoardException e){
             System.out.println(e.getMessage());
@@ -126,15 +163,20 @@ public class BoardOverviewCtrl {
 
     /**
      * adds a list to the board
+     *
      * @param taskList the list to be added
      */
     public void addList(final TaskList taskList) {
         var kids = listsContainer.getChildren();
         var listLoader = new FXMLLoader(getClass().getResource("List.fxml"));
-        listLoader.setControllerFactory(type -> new ListCtrl(mainCtrl, new TaskListUtils(server),
-            new TaskUtils(server), customAlert, new LayoutUtils(), webSocketUtils));
+        listLoader.setControllerFactory(type ->
+                new ListCtrl(mainCtrl, new TaskListUtils(server),
+                        new TaskUtils(server), customAlert,
+                        boardUtils, new Pair(new LayoutUtils(), webSocketUtils)));
         try {
-            Node list = listLoader.load();
+            VBox list = listLoader.load();
+            list.prefHeightProperty().bind(Bindings
+                    .multiply(listScrollPane.heightProperty(), 0.95));
             ListCtrl listCtrl = listLoader.getController();
             listCtrl.initialize();
             listCtrl.refresh(taskList, currentBoardId);
@@ -153,16 +195,6 @@ public class BoardOverviewCtrl {
 
     public void addList() {
         mainCtrl.showCreateList(currentBoardId);
-    }
-
-    public void addTask() {
-        //mainCtrl.showCreateTask();
-    }
-
-
-
-    public void renameList() {
-        mainCtrl.showRenameList();
     }
 
 
@@ -184,7 +216,7 @@ public class BoardOverviewCtrl {
      * @param refreshPeriod the time period in miliseconds
      */
     public void refreshTimer(final long refreshPeriod) {
-        if(refreshTimer==null)
+        if (refreshTimer == null)
             refreshTimer = new Timer();
         refreshTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -205,10 +237,11 @@ public class BoardOverviewCtrl {
                 tab.setText(board.getName());
                 var data = FXCollections.observableList(taskLists);
                 refreshLists(data);
+                refreshColor();
             } catch (TaskListException e) {
                 Alert alert = customAlert.showAlert(e.getMessage());
                 alert.showAndWait();
-            } catch (BoardException e){
+            } catch (BoardException e) {
                 tab.getOnClosed().handle(null);
             }
         });
@@ -216,14 +249,15 @@ public class BoardOverviewCtrl {
 
     /**
      * This method refreshes the lists of the board.
+     *
      * @param lists the list of lists
      */
     private void refreshLists(final List<TaskList> lists) {
         List<Long> listsId = lists.stream().map(taskList -> taskList.id).toList();
-        Iterator<Map.Entry<Long, ListCtrl>> iter=listsMap.entrySet().iterator();
-        while (iter.hasNext()){
+        Iterator<Map.Entry<Long, ListCtrl>> iter = listsMap.entrySet().iterator();
+        while (iter.hasNext()) {
             // this removes any lists in excess
-            var current=iter.next();
+            var current = iter.next();
             if (!listsId.contains(current.getKey())) {
                 listsContainer.getChildren().remove(current.getValue().getRoot());
                 iter.remove();
@@ -245,10 +279,10 @@ public class BoardOverviewCtrl {
     }
 
     public void clear() {
-        if(refreshTimer!=null) {
+        if (refreshTimer != null) {
             refreshTimer.cancel();
             refreshTimer.purge();
-            refreshTimer=null;
+            refreshTimer = null;
         }
         listsContainer.getChildren().clear();
         listsMap.clear();
@@ -289,14 +323,14 @@ public class BoardOverviewCtrl {
             inviteKeyLabel.setEffect(blur);
             inviteKeyLabel.setText("Invite key: " + inviteKey);
             inviteKeyLabel.setVisible(true);
-
+            refreshColor();
             Timeline timeline = new Timeline(
                     new KeyFrame(Duration.millis(0), new KeyValue(blur.radiusProperty(), 0)),
                     new KeyFrame(Duration.millis(1000), new KeyValue(blur.radiusProperty(), 0)),
                     new KeyFrame(Duration.millis(1500), new KeyValue(blur.radiusProperty(), 10))
             );
             timeline.play();
-            timeline.setOnFinished( event -> inviteKeyLabel.setVisible(false));
+            timeline.setOnFinished(event -> inviteKeyLabel.setVisible(false));
         } catch (BoardException e) {
             Alert alert = customAlert.showAlert(e.getMessage());
             alert.showAndWait();
@@ -314,14 +348,49 @@ public class BoardOverviewCtrl {
             if (tab.isSelected()) {
                 refresh();
                 refreshTimer(5000000);
-            }
-            else {
-                if(refreshTimer==null)
+            } else {
+                if (refreshTimer == null)
                     return;
                 refreshTimer.cancel();
                 refreshTimer.purge();
-                refreshTimer=null;
+                refreshTimer = null;
             }
         });
     }
+
+    public void colorManagementView() {
+        mainCtrl.showColorManagementView(board);
+    }
+
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public void refreshColor(){
+        try{
+            board.getBoardColorScheme().
+                    setBoardTextColor(boardUtils.
+                            getBoardColorScheme(board.id).getBoardTextColor());
+            System.out.println(boardUtils.
+                    getBoardColorScheme(board.id).getBoardBackgroundColor());
+            String hexColor = board.getBoardColorScheme().getBoardBackgroundColor().substring(2, 8);
+            String textColor = board.getBoardColorScheme().getBoardTextColor().substring(2, 8);
+            int red = Integer.parseInt(hexColor.substring(0, 2), 16);
+            int green = Integer.parseInt(hexColor.substring(2, 4), 16);
+            int blue = Integer.parseInt(hexColor.substring(4, 6), 16);
+            tab.setStyle("-fx-text-base-color: #" + textColor + ";");
+            double alpha = 0.7;
+            listScrollPane.setStyle("-fx-background:#" + board.getBoardColorScheme()
+                    .getBoardBackgroundColor().substring(2, 8) + ";");
+            buttonsGridPane.setStyle(String
+                    .format("-fx-background-color: rgba(%d, %d, %d, %.1f);",
+                            red, green, blue, alpha));
+        }
+        catch(BoardException e){
+            System.out.println("Error when changing colors: " + e.getMessage());
+        }
+
+    }
 }
+

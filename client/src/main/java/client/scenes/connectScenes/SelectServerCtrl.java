@@ -10,7 +10,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.FontWeight;
 
 import java.util.Optional;
 
@@ -47,17 +46,7 @@ public class SelectServerCtrl {
         this.layoutUtils = layoutUtils;
     }
 
-    public void initialize(){
-        title.fontProperty().bind(layoutUtils.createFontBinding(root, 0.12D, 48.0d, "verdana",
-                FontWeight.BOLD));
-        connectButton.fontProperty().bind(layoutUtils.createFontBinding(root, 0.075D, 36.0D));
-        connectButton.maxWidthProperty().bind(root.widthProperty().multiply(0.35D));
-        connectButton.maxHeightProperty().bind(root.heightProperty().multiply(0.2D));
-
-        addressLabel.fontProperty().bind(layoutUtils.createFontBinding(root, 0.05D, 36.0D,
-                "verdana", FontWeight.BOLD));
-        addressField.fontProperty().bind(layoutUtils.createFontBinding(root, 0.05D, 36.0D));
-    }
+    public void initialize(){}
 
     /**
      * takes input from user and checks if it is a valid server after setting the serveraddress

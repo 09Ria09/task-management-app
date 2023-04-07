@@ -15,8 +15,6 @@
  */
 package client.scenes;
 
-//import client.sceneManagement.ListScenes;
-import client.CustomAlert;
 import client.sceneManagement.BoardScenes;
 import client.sceneManagement.ListScenes;
 import client.sceneManagement.ServerScenes;
@@ -46,13 +44,9 @@ public class MainCtrl {
     private CreateTaskCtrl createTaskCtrl;
     private Scene createTask;
 
-    private EditTaskCtrl editTaskCtrl;
-    private Scene editTask;
-
     private DetailedTaskViewCtrl detailedTaskViewCtrl;
     private Scene detailedTaskView;
 
-    private RenameListCtrl renameListCtrl;
     private Scene renameList;
 
     private SelectServerCtrl selectServerCtrl;
@@ -74,6 +68,8 @@ public class MainCtrl {
 
     private Scene editBoard;
 
+    private ColorManagementViewCtrl colorManagementViewCtrl;
+    private Scene colorManagementView;
     private TagOverviewCtrl tagOverviewCtrl;
     private Scene tagOverview;
 
@@ -98,19 +94,16 @@ public class MainCtrl {
         primaryStage.getIcons().add(new javafx.scene
                 .image.Image("file:src/main/resources/client/images/icon.png"));
         primaryStage.setMinHeight(720);
-        primaryStage.setMinWidth(1280);
+        primaryStage.setMinWidth(1380);
 
         this.createTaskCtrl = taskScenes.getCreateTask().getKey();
         this.createTask = new Scene(taskScenes.getCreateTask().getValue());
-        this.editTaskCtrl = taskScenes.getEditTask().getKey();
-        this.editTask = new Scene(taskScenes.getEditTask().getValue());
         this.detailedTaskViewCtrl = taskScenes.getDetailedTaskView().getKey();
         this.detailedTaskView = new Scene(taskScenes.getDetailedTaskView().getValue());
 
         this.createListCtrl = listScenes.getCreateList().getKey();
         this.createList = new Scene(listScenes.getCreateList().getValue());
-        this.renameListCtrl = listScenes.getRenameList().getKey();
-        this.renameList = new Scene(listScenes.getRenameList().getValue());
+
 
         this.selectServerCtrl = serverScenes.getSelectServer().getKey();
         this.selectServer = new Scene(serverScenes.getSelectServer().getValue());
@@ -126,6 +119,9 @@ public class MainCtrl {
         primaryStage.setOnCloseRequest(e-> {
             boardCatalogue.getKey().close();
         });
+
+        this.colorManagementViewCtrl = boardScenes.getColorManagementView().getKey();
+        this.colorManagementView = new Scene(boardScenes.getColorManagementView().getValue());
 
         this.editBoardCtrl = boardScenes.getEditBoard().getKey();
         this.editBoard = new Scene(boardScenes.getEditBoard().getValue());
@@ -157,7 +153,7 @@ public class MainCtrl {
      */
     public void showCreateList(final long boardId) {
         primaryStage.setTitle("Talio: Create List");
-        createListCtrl.boardId=boardId;
+        createListCtrl.setBoardId(boardId);
         resize();
         primaryStage.setScene(createList);
     }
@@ -169,7 +165,8 @@ public class MainCtrl {
         primaryStage.setTitle("Talio");
         resize();
         primaryStage.setScene(boardCatalogue);
-        populateBoardCatalogue();
+        boardCatalogueCtrl.createWebSockets();
+        boardCatalogueCtrl.refresh();
     }
 
     public void showEditBoard() {
@@ -186,20 +183,6 @@ public class MainCtrl {
         resize();
         createTaskCtrl.setListCtrl(ctrl);
         primaryStage.setScene(createTask);
-    }
-
-    /**
-     * Changed scene to a scene where a user can edit a task
-     *
-     * @param cardCtrl    the cradCtrl from that specific task
-     * @param customAlert
-     */
-    public void showEditTask(final CardCtrl cardCtrl, final CustomAlert customAlert) {
-        primaryStage.setTitle("Talio : Edit Task");
-        resize();
-        primaryStage.setScene(editTask);
-        editTaskCtrl.setCardCtrl(cardCtrl);
-        editTaskCtrl.setCustomAlert(customAlert);
     }
 
 
@@ -244,6 +227,13 @@ public class MainCtrl {
         primaryStage.setTitle("Talio: unexpected error");
         resize();
         primaryStage.setScene(unexpectedError);
+    }
+
+    public void showColorManagementView(final Board board) {
+        primaryStage.setTitle("Talio: color management view");
+        colorManagementViewCtrl.setBoard(board);
+        resize();
+        primaryStage.setScene(colorManagementView);
     }
 
     /** Populate the Board Catalogue */

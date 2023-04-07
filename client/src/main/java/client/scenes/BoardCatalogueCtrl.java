@@ -7,6 +7,7 @@ import client.utils.ServerUtils;
 import client.utils.WebSocketUtils;
 import com.google.inject.Inject;
 import commons.Board;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -21,6 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 public class BoardCatalogueCtrl implements Initializable {
     ServerUtils serverUtils;
@@ -52,7 +54,7 @@ public class BoardCatalogueCtrl implements Initializable {
     public void initialize(final URL location, final ResourceBundle resources) {
         var joinBoardLoader = new FXMLLoader(getClass().getResource("JoinBoard.fxml"));
         joinBoardLoader.setControllerFactory(type -> new JoinBoardCtrl(serverUtils, mainCtrl,
-            customAlert, boardUtils, this ));
+            customAlert, boardUtils, this, webSocketUtils ));
         try {
             Node joinBoard = joinBoardLoader.load();
             var tab=new Tab("Add Board +", joinBoard);
@@ -63,36 +65,56 @@ public class BoardCatalogueCtrl implements Initializable {
         }
     }
 
+    public void createWebSockets(){
+        Consumer<Board> renameBoard = (board) -> {
+            Platform.runLater(() -> {
+                Tab tab = boardsMap.get(board.id);
+                tab.setText(board.getName());
+            });
+        };
+        Consumer<Board> deleteBoard = (board) -> {
+            Platform.runLater(() -> {
+                this.catalogue.getTabs().remove(boardsMap.get(board.id));
+            });
+        };
+        webSocketUtils.tryToConnect();
+        webSocketUtils.registerForMessages("/topic/renameboard", renameBoard, Board.class);
+        webSocketUtils.registerForMessages("/topic/deleteboard", deleteBoard, Board.class);
+    }
+
     /**
      * Adds a new board to the catalogue
      * @param boardId the id of the board to add
-     * @return the index of the tab
      */
     public void addBoard(final long boardId) throws BoardException{
         try {
             Board board = boardUtils.getBoard(boardId);
             var tab = new Tab(board.getName());
-            var boardLoader = new FXMLLoader(getClass().getResource("BoardOverview.fxml"));
-            BoardOverviewCtrl boardOverviewCtrl = new BoardOverviewCtrl(mainCtrl,
-                customAlert, boardUtils, this, editBoardCtrl, webSocketUtils);
-            boardOverviewCtrl.setCurrentBoardId(boardId);
-            boardOverviewCtrl.setTab(tab);
-            boardLoader.setControllerFactory(type -> boardOverviewCtrl);
-            Node boardOverview = boardLoader.load();
-            tab.setContent(boardOverview);
-            tab.setOnClosed(event -> {
-                boardOverviewCtrl.clear();
-                Servers.getInstance().getServers()
-                    .get(serverUtils.getServerAddress()).remove(boardId);
-                boardsMap.remove(tab);
-                catalogue.getTabs().remove(tab);
-            });
+            tab.setContent(createBoardOverview(board, tab));
             catalogue.getTabs().add(catalogue.getTabs().size() - 1, tab);
             //TODO: sort them alphabetically
             boardsMap.put(boardId, tab);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Node createBoardOverview(final Board board, final Tab tab)
+            throws IOException {
+        var boardLoader = new FXMLLoader(getClass().getResource("BoardOverview.fxml"));
+        BoardOverviewCtrl boardOverviewCtrl = new BoardOverviewCtrl(mainCtrl,
+                customAlert, boardUtils, this, editBoardCtrl, webSocketUtils);
+        boardOverviewCtrl.setCurrentBoardId(board.id);
+        boardOverviewCtrl.setTab(tab);
+        boardLoader.setControllerFactory(type -> boardOverviewCtrl);
+        tab.setOnClosed(event -> {
+            boardOverviewCtrl.clear();
+            Servers.getInstance().getServers()
+                    .get(serverUtils.getServerAddress()).remove(board.id);
+            boardsMap.remove(board.id);
+            catalogue.getTabs().remove(tab);
+        });
+        return boardLoader.load();
     }
 
     /**
@@ -144,5 +166,21 @@ public class BoardCatalogueCtrl implements Initializable {
         Servers.getInstance().save();
         if(catalogue.getTabs().size() > 1)
             catalogue.getTabs().remove(0, catalogue.getTabs().size() - 1);
+    }
+
+    public void refresh() {
+
+        for(Map.Entry<Long, Tab> e : boardsMap.entrySet()){
+            try {
+                Board board = boardUtils.getBoard(e.getKey());
+                e.getValue().setContent(createBoardOverview(board, e.getValue()));
+            } catch (IOException ex) {
+                System.out.println("Error while refreshing boards: " + ex.getMessage());
+            }
+            catch (BoardException ex2){
+                boardsMap.remove(e.getKey());
+                catalogue.getTabs().remove(e.getValue());
+            }
+        }
     }
 }

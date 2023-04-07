@@ -1,10 +1,12 @@
 package client.scenes;
 
 import client.CustomAlert;
+import client.customExceptions.BoardException;
 import client.utils.*;
 import client.customExceptions.TaskListException;
 import com.google.inject.Inject;
 import client.customExceptions.TaskException;
+import commons.Board;
 import commons.Task;
 import commons.TaskList;
 import javafx.fxml.FXML;
@@ -14,8 +16,12 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 import javafx.scene.input.*;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.control.Alert;
+import javafx.scene.paint.Color;
+import javafx.util.Pair;
+import javafx.scene.control.Button;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
@@ -32,17 +38,27 @@ public class ListCtrl implements Initializable {
     @FXML
     Label title;
     @FXML
+    Button addTaskButton;
+    @FXML
     TextField titleField;
     @FXML
     VBox vBox;
+
+    @FXML
+    HBox quickTaskBox;
+
+    @FXML
+    HBox createTaskBox;
 
     private int indexToDrop;
     private Task draggedTask;
     private int totalAmountOfTasks;
     private TaskList taskList;
     private long boardID;
+    private Board board;
     private TaskListUtils taskListUtils;
     private TaskUtils taskUtils;
+    private BoardUtils boardUtils;
     private ServerUtils server;
     @FXML
     TextField simpleTaskNameInput;
@@ -51,20 +67,22 @@ public class ListCtrl implements Initializable {
     private final LayoutUtils layoutUtils;
     private final WebSocketUtils webSocketUtils;
 
-    RenameListSingleton renameListSingleton = RenameListSingleton.getInstance();
+
 
 
 
     @Inject
     public ListCtrl(final MainCtrl mainCtrl, final TaskListUtils taskListUtils,
                     final TaskUtils taskUtils, final CustomAlert customAlert,
-                    final LayoutUtils layoutUtils, final WebSocketUtils webSocketUtils) {
+                    final BoardUtils boardUtils, final Pair<LayoutUtils,
+            WebSocketUtils> layoutSocketUtils) {
         this.taskListUtils = taskListUtils;
         this.taskUtils = taskUtils;
         this.mainCtrl = mainCtrl;
         this.customAlert = customAlert;
-        this.layoutUtils = layoutUtils;
-        this.webSocketUtils = webSocketUtils;
+        this.layoutUtils = layoutSocketUtils.getKey();
+        this.boardUtils = boardUtils;
+        this.webSocketUtils = layoutSocketUtils.getValue();
     }
 
     public void initialize(){
@@ -239,6 +257,7 @@ public class ListCtrl implements Initializable {
                     super.updateItem(task, empty);
                     if (task == null || empty) {
                         setGraphic(null);
+                        setBackground(Background.EMPTY);
                     } else {
                         try {
                             var cardLoader = new FXMLLoader(getClass().getResource("Card.fxml"));
@@ -261,6 +280,7 @@ public class ListCtrl implements Initializable {
                 }
                 event.consume();
             });
+
             cell.setOnMouseClicked(event -> {
                 if(cell.getIndex() < taskList.getTasks().size() && event.getClickCount() == 2) {
                     mainCtrl.showDetailedTaskView(cell.getItem(), this);
@@ -284,6 +304,7 @@ public class ListCtrl implements Initializable {
         this.boardID = boardID;
         this.taskList = newTaskList;
         nameRefresh(newTaskList.getName(), boardID);
+        refreshColor();
 
         list.getItems().retainAll(newTaskList.getTasks()); // retain only the tasks
         // that are also in newTaskList
@@ -330,7 +351,6 @@ public class ListCtrl implements Initializable {
             if (list == null) {
                 list = new ListView<Task>();
             }
-            list.getItems().add(task);
             taskUtils.addTask(boardID, this.getTaskList().id, task);
         } catch (TaskException e) {
             Alert alert = customAlert.showAlert(e.getMessage());
@@ -376,13 +396,9 @@ public class ListCtrl implements Initializable {
         }
     }
 
-    /**
-     * Fired when the list title is clicked. It hides the Label and shows a textfield instead.
-     * @param event the mouse click event
-     */
-    public void onTitleClicked(final MouseEvent event){
-        if(event.getButton() != MouseButton.PRIMARY)
-            return;
+
+
+    public void onTitleButtonClicked(){
         this.titleField.setText(this.title.getText());
         this.titleField.setVisible(true);
         this.title.setVisible(false);
@@ -421,5 +437,34 @@ public class ListCtrl implements Initializable {
         }
 
     }
+
+    public void refreshColor(){
+        try {
+            board = boardUtils.getBoard(getBoardID());
+            refreshColor(board);
+        } catch (BoardException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void refreshColor(final Board board){
+        var baseColor = Color.valueOf(board
+                .getBoardColorScheme().getListBackgroundColor().substring(2, 8));
+        var backgroundColor = new Background(
+                new BackgroundFill(baseColor, null, null));
+
+        var quickTaskBoxColor =Color.hsb(baseColor.getHue(), baseColor.getSaturation(),
+                Math.min(baseColor.getBrightness() * 1.2, 1.0)); ;
+        list.setBackground(backgroundColor);
+        quickTaskBox.setBackground(new Background(
+                new BackgroundFill(quickTaskBoxColor, null, null)));
+        createTaskBox.setBackground(new Background(
+                new BackgroundFill(quickTaskBoxColor,
+                        new CornerRadii(0.0, 0.0, 15.0, 15.0, false), null)));
+        title.setTextFill(Color.web(board.getBoardColorScheme().getListTextColor()));
+    }
+
+
+
 
 }
