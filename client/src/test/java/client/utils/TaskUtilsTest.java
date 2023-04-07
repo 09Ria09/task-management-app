@@ -85,6 +85,7 @@ public class TaskUtilsTest {
         }
         try {
             taskUtils.addTask(b.getId(), tl.getId(), t);
+            //taskUtils.addTask ends up being null causing the test to fail
             assertEquals(taskUtils.getTask(b.getId(), tl.getId(), t.getId()), t);
         } catch (TaskException e) {
             throw new RuntimeException(e);
