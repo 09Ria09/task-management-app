@@ -11,9 +11,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -103,7 +106,7 @@ public class DetailedTaskViewCtrl {
         this.webSocketUtils.registerForListMessages("/topic/" + listController.getBoardID() +
                 "/deletelist", listConsumer);
         this.webSocketUtils.registerForTaskMessages("/topic/" + listController.getBoardID() +
-                "/" + listController.getTaskList().id + "/modifytask", modifyTaskConsumer);
+                "/modifytask", modifyTaskConsumer);
 
         Consumer<Tag> addBoardTag = (tag) -> {
             Platform.runLater(() -> {
@@ -122,21 +125,16 @@ public class DetailedTaskViewCtrl {
                 changeTag(tag);
             });
         };
-        Consumer<Task> changeTaskTag = (task) -> {
-            Platform.runLater(() -> {
-                this.task = task;
-                tagView.getItems().setAll(task.getTags());
-            });
-        };
         this.webSocketUtils.registerForTagMessages("/topic/" + listController.getBoardID() +
                 "/addtag", addBoardTag);
         this.webSocketUtils.registerForTagMessages("/topic/" + listController.getBoardID() +
                 "/deletetag", deleteBoardTag);
         this.webSocketUtils.registerForTagMessages("/topic/" + listController.getBoardID() +
                 "/changetag", changeTagConsumer);
-        this.webSocketUtils.registerForTaskMessages("/topic/" + listController.getBoardID() +
-                "/" + listController.getTaskList().id + "/" + task.id + "/changetasktag",
-                changeTaskTag);
+        Consumer<Board> deleteBoard = (board) -> {
+            Platform.runLater(this::goBack);
+        };
+        webSocketUtils.registerForMessages("/topic/deleteboard", deleteBoard, Board.class);
     }
 
     public void changeTag(final Tag tag){
@@ -273,6 +271,18 @@ public class DetailedTaskViewCtrl {
                             Node card = cardLoader.load();
                             TaskTagCardCtrl taskTagCardCtrl = cardLoader.getController();
                             taskTagCardCtrl.initialize(tag);
+                            Button removeButton = (Button) card.lookup("#removeButton");
+                            removeButton.setOnAction(event -> {
+                                try {
+                                    tagUtils.deleteTaskTag(listController.getBoardID(),
+                                            listController.getTaskList().id, task.id, tag.getId());
+                                    tagView.getItems().remove(tag);
+                                } catch(TagException e) {
+                                    Alert alert = customAlert.showAlert(e.getMessage());
+                                    alert.showAndWait();
+                                }
+                                event.consume();
+                            });
                             setGraphic(card);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
@@ -280,19 +290,6 @@ public class DetailedTaskViewCtrl {
                     }
                 }
             };
-            cell.setOnMouseClicked(event -> {
-                try {
-                    if(cell.getItem() == null)
-                        return;
-                    tagUtils.deleteTaskTag(listController.getBoardID(),
-                            listController.getTaskList().id, task.id, cell.getItem().getId());
-                    tagView.getItems().remove(cell.getItem());
-                } catch(TagException e) {
-                    Alert alert = customAlert.showAlert(e.getMessage());
-                    alert.showAndWait();
-                }
-                event.consume();
-            });
             return cell;
         });
     }
@@ -320,6 +317,18 @@ public class DetailedTaskViewCtrl {
     private void initializeChoiceBox() {
         try {
             tagChoice.getItems().setAll(tagUtils.getBoardTags(listController.getBoardID()));
+            tagChoice.setConverter(new StringConverter<Tag>() {
+                @Override
+                public String toString(final Tag object) {
+                    return object == null ? "" : object.getName();
+                }
+
+                @Override
+                public Tag fromString(final String string) {
+                    return tagChoice.getItems().stream()
+                            .filter(t -> t.getName().equals(string)).findFirst().orElse(null);
+                }
+            });
             if(!tagChoice.getItems().isEmpty()) {
                 tagChoice.setValue(tagChoice.getItems().get(0));
             }
@@ -358,7 +367,8 @@ public class DetailedTaskViewCtrl {
         dialog.setTitle("Talio:  Add A Sub Task");
         dialog.setHeaderText("Create A New Sub Task:");
         dialog.setContentText("Name:");
-
+        Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image("client/images/icon.png"));
         Optional<String> newName = dialog.showAndWait();
         SubTask subTask;
 

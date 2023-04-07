@@ -160,14 +160,16 @@ public class TagService {
      * Function to change the color of a tag
      * @param boardID ID of the board
      * @param tagID ID of the tag that will get a new color
-     * @param newColor the new color of the tag
+     * @param backgroundColor the new background color of the tag
+     * @param fontColor the new font color of the tag
      * @return the tag with a different color
      */
-    public Tag recolorTag(final long boardID, final long tagID, final String newColor) {
+    public Tag recolorTag(final long boardID, final long tagID, final String backgroundColor,
+                          final String fontColor) {
         Board board = getBoard(boardID);
         Tag tag = getBoardTagByID(boardID, tagID);
 
-        tag.setColor(newColor);
+        tag.setColors(backgroundColor, fontColor);
 
         boardRepository.save(board);
         return tag;

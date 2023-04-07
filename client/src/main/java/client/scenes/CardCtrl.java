@@ -46,6 +46,9 @@ public class CardCtrl {
     private ImageView descIcon;
 
     @FXML
+    private ImageView arrowIcon;
+
+    @FXML
     private FlowPane tagList;
 
     private MainCtrl mainCtrl;
@@ -62,20 +65,34 @@ public class CardCtrl {
     public void initialize(final Task task, final ListCtrl listCtrl,
                            final TaskListUtils listUtils, final CustomAlert customAlert,
                            final TaskUtils taskUtils, final MainCtrl mainCtrl) {
-        this.task= task;
         this.listController = listCtrl;
         this.taskListUtils = listUtils;
         this.customAlert = customAlert;
         this.taskUtils = taskUtils;
         this.mainCtrl = mainCtrl;
+        this.setTask(task);
         this.onUnhover();
+
+        tagList.setHgap(5.00);
+        tagList.setVgap(5.00);
+    }
+
+    private void setTags(final List<Tag> tags) {
+        for(Tag tag : tags) {
+            Pane tagPane = new Pane();
+            tagPane.setPrefSize(60, 10);
+            tagPane.setStyle("-fx-background-radius: 5px; -fx-border-radius: 5px;" +
+                    " -fx-background-color: #" + tag.getColorBackground() + ";");
+            tagList.getChildren().add(tagPane);
+        }
+    }
+
+    public void setTask(final Task task) {
+        this.task = task;
         if(Objects.equals(this.task.getDescription(), "")) {
             this.descButton.setDisable(true);
             descIcon.setVisible(false);
         }
-
-        tagList.setHgap(5.00);
-        tagList.setVgap(5.00);
         if(this.task.getTags() != null) {
             setTags(this.task.getTags());
         }
@@ -84,16 +101,6 @@ public class CardCtrl {
         else
             this.progressBar.setWidth(this.taskUtils.getProgress(task)*215.0D);
         this.title.setText(task.getName());
-    }
-
-    private void setTags(final List<Tag> tags) {
-        for(Tag tag : tags) {
-            Pane tagPane = new Pane();
-            tagPane.setPrefSize(60, 10);
-            tagPane.setStyle("-fx-background-radius: 5px; -fx-border-radius: 5px;" +
-                    " -fx-background-color: #" + tag.getColor() + ";");
-            tagList.getChildren().add(tagPane);
-        }
     }
 
     /**

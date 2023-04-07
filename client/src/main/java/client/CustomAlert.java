@@ -6,6 +6,8 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.util.Objects;
+
 public class CustomAlert {
 
     /**
@@ -31,6 +33,10 @@ public class CustomAlert {
         // custom icon
         Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
         stage.getIcons().add(new Image("client/images/errorIcon.png"));
+
+        alert.getDialogPane().getStylesheets().add(
+                Objects.requireNonNull(getClass()
+                        .getResource("/client/styles/alert.css")).toExternalForm());
 
         return alert;
     }

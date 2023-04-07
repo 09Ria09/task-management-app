@@ -66,4 +66,8 @@ public class SubTask implements Serializable {
     public String toString() {
         return "Subtask (" + id + ") : " + name + " -> " + (completed ? "" : "not") + " completed";
     }
+
+    public void setId(final long id) {
+        this.id = id;
+    }
 }
