@@ -1,14 +1,18 @@
 package client.utils;
 
+import client.customExceptions.BoardException;
 import client.customExceptions.TaskException;
+import client.customExceptions.TaskListException;
 import client.mocks.MockRestUtils;
 import client.mocks.MockServerUtils;
 import client.scenes.CardCtrl;
 import client.utils.ServerUtils;
 import client.utils.TaskUtils;
 import com.google.inject.Inject;
+import commons.Board;
 import commons.SubTask;
 import commons.Task;
+import commons.TaskList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,6 +23,8 @@ public class TaskUtilsTest {
     private TaskUtils taskUtils;
     private MockRestUtils mockRestUtils;
     private MockServerUtils mockServerUtils;
+    private BoardUtils boardUtils;
+    private TaskListUtils taskListUtils;
 
     @BeforeEach
     public void setUp() {
@@ -27,6 +33,8 @@ public class TaskUtilsTest {
         mockServerUtils.setMockRestUtils(mockRestUtils);
         mockServerUtils.setServerAddress("http://example.com");
         taskUtils = new TaskUtils(mockServerUtils);
+        boardUtils = new BoardUtils(mockServerUtils);
+        taskListUtils = new TaskListUtils(mockServerUtils);
     }
 
     @Test
@@ -54,9 +62,24 @@ public class TaskUtilsTest {
     @Test
     public void addTaskTest() {
         Task t = new Task("name", "desc");
+        Board b = new Board();
+        b.setName("name");
+        TaskList tl = new TaskList("name");
         try {
-            taskUtils.addTask(1, 1, t);
-            assertEquals(taskUtils.getTask(1, 1, t.getId()), t);
+            boardUtils.addBoard(b);
+        } catch (BoardException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            taskListUtils.createTaskList(b.getId(), tl);
+        } catch (BoardException e) {
+            throw new RuntimeException(e);
+        } catch (TaskListException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            taskUtils.addTask(b.getId(), tl.getId(), t);
+            assertEquals(taskUtils.getTask(b.getId(), tl.getId(), t.getId()), t);
         } catch (TaskException e) {
             throw new RuntimeException(e);
         }
