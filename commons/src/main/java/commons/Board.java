@@ -114,6 +114,8 @@ public class Board {
         return id;
     }
 
+    public void setId(long id) {this.id = id;};
+
     public void setTags(final List<Tag> tags) {
         this.tags = tags;
     }
