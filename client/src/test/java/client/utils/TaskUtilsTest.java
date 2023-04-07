@@ -5,6 +5,7 @@ import client.customExceptions.TaskException;
 import client.customExceptions.TaskListException;
 import client.mocks.MockRestUtils;
 import client.mocks.MockServerUtils;
+import client.mocks.ResponseClone;
 import client.scenes.CardCtrl;
 import client.utils.ServerUtils;
 import client.utils.TaskUtils;
@@ -13,6 +14,7 @@ import commons.Board;
 import commons.SubTask;
 import commons.Task;
 import commons.TaskList;
+import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -65,6 +67,10 @@ public class TaskUtilsTest {
         Board b = new Board();
         b.setName("name");
         TaskList tl = new TaskList("name");
+
+        ResponseClone mockResponse = new ResponseClone(Response.Status.OK.getStatusCode(), b);
+        mockRestUtils.setMockResponse(mockResponse);
+
         try {
             boardUtils.addBoard(b);
         } catch (BoardException e) {
