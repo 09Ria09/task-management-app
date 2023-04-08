@@ -15,7 +15,7 @@ public class Board {
     public long id;
 
     private String name;
-    private String inviteKey;
+    public String inviteKey;
     @ElementCollection
     private List<String> boardMembers;
     @OneToMany(cascade=CascadeType.ALL, orphanRemoval = true)

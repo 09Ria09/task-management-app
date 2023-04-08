@@ -1,4 +1,4 @@
-package utils;
+package client.utils;
 
 import client.scenes.CardCtrl;
 import client.utils.ServerUtils;

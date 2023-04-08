@@ -5,6 +5,7 @@ import client.mocks.MockRestUtils;
 import client.mocks.MockServerUtils;
 import client.mocks.ResponseClone;
 import commons.Board;
+import commons.BoardColorScheme;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.BeforeEach;
@@ -225,4 +226,74 @@ class BoardUtilsTest {
             boardUtils.joinBoard(wrongInviteKey, "test user");
         });
     }
+
+    @Test
+    public void testGetBoardColorScheme_success() throws BoardException {
+        long boardId = 1L;
+        BoardColorScheme expectedResult = new BoardColorScheme();
+        Board board = new Board();
+        board.setBoardColorScheme(expectedResult);
+
+        ResponseClone mockResponse = new ResponseClone(Response.Status.OK.getStatusCode(), board);
+        mockRestUtils.setMockResponse(mockResponse);
+
+        BoardColorScheme result = boardUtils.getBoardColorScheme(boardId);
+        assertEquals(expectedResult, result);
+    }
+
+    @Test
+    public void testJoinBoard_success() throws BoardException {
+        String inviteKey = "001-valid-key";
+        String memberName = "test user";
+        long boardId = 1L;
+        Board expectedResult = new Board();
+        expectedResult.setId(boardId);
+        expectedResult.setName("Have you tried stroopwaffels yet?");
+        expectedResult.inviteKey = inviteKey;
+
+        ResponseClone mockResponse = new ResponseClone(Response.Status.OK.getStatusCode(), expectedResult);
+        mockRestUtils.setMockResponse(mockResponse);
+
+        Board result = boardUtils.joinBoard(inviteKey, memberName);
+        assertEquals(expectedResult.getId(), result.getId());
+        assertEquals(expectedResult.getName(), result.getName());
+    }
+    @Test
+    public void testGetBoardColorScheme_throwsException() {
+        long boardId = 1L;
+
+        ResponseClone mockResponse = new ResponseClone(Response.Status.NOT_FOUND.getStatusCode(), null);
+        mockRestUtils.setMockResponse(mockResponse);
+
+        assertThrows(BoardException.class, () -> {
+            boardUtils.getBoardColorScheme(boardId);
+        });
+    }
+
+    @Test
+    public void testSetBoardColorScheme_success() throws BoardException {
+        long boardId = 1L;
+        BoardColorScheme inputBoardColorScheme = new BoardColorScheme();
+        BoardColorScheme expectedResult = new BoardColorScheme();
+
+        ResponseClone mockResponse = new ResponseClone(Response.Status.OK.getStatusCode(), expectedResult);
+        mockRestUtils.setMockResponse(mockResponse);
+
+        BoardColorScheme result = boardUtils.setBoardColorScheme(boardId, inputBoardColorScheme);
+        assertEquals(expectedResult, result);
+    }
+
+    @Test
+    public void testSetBoardColorScheme_throwsException() {
+        long boardId = 1L;
+        BoardColorScheme inputBoardColorScheme = new BoardColorScheme();
+
+        ResponseClone mockResponse = new ResponseClone(Response.Status.BAD_REQUEST.getStatusCode(), null);
+        mockRestUtils.setMockResponse(mockResponse);
+
+        assertThrows(BoardException.class, () -> {
+            boardUtils.setBoardColorScheme(boardId, inputBoardColorScheme);
+        });
+    }
+
 }
