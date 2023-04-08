@@ -1,12 +1,16 @@
-package server;
+package server.services;
 
 import commons.Board;
+import commons.BoardColorScheme;
+import commons.TaskPreset;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 import server.api.TestBoardRepository;
 import server.services.BoardService;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -76,5 +80,28 @@ public class BoardServiceTest {
         service.joinBoard(b.id, "ME");
         b = service.getBoard(b.id);
         assertTrue(b.getBoardMembers().contains("ME"));
+    }
+
+    @Test
+    public void testSetColorScheme(){
+        BoardColorScheme colorScheme = new BoardColorScheme();
+        Board b = new Board();
+        service.addBoard(b);
+        b.id = 2;
+        service.setBoardColorScheme(2, colorScheme);
+        assertEquals(colorScheme, service.getBoard(2).getBoardColorScheme());
+    }
+
+    @Test
+    public void addTaskPreset(){
+        Board board = new Board("test", List.of(), List.of());
+        TaskPreset preset1 = new TaskPreset("task1", board);
+        TaskPreset preset2 = new TaskPreset("task2", board);
+        service.addBoard(board);
+        board.id = 3;
+        service.setTaskPreset(3, preset1);
+        board.id = 3;
+        assertFalse(service.getBoard(3).getTaskPresets().contains(preset2));
+        assertTrue(service.getBoard(3).getTaskPresets().contains(preset1));
     }
 }

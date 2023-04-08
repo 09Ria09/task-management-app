@@ -191,6 +191,8 @@ public class SubTaskControllerTest {
 
     @Test
     public void testDeleteSubTaskEndpoint() throws Exception {
+        Mockito.when(subTaskService.getSubTask(1, 2, 5, 9))
+                .thenReturn(new SubTask("test", false));
         Mockito.when(subTaskService.removeSubTaskById(1, 2, 5, 9)).thenReturn(null);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/subtasks/1/2/5/9"))

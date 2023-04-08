@@ -215,7 +215,7 @@ public class TaskControllerTest {
     public void testEditDescriptionEndpointBadRequest() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/tasks/1/2/desc/3")
-                .param("description", (String) null))
+                .param("description", ""))
             .andExpect(status().isBadRequest());
         Mockito.verify(taskService, Mockito.times(0))
             .editDescription(1, 2, 3, null);

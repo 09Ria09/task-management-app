@@ -207,10 +207,13 @@ public class BoardController {
             @PathVariable("boardid") final long boardid,
             final @RequestBody BoardColorScheme boardColorScheme) {
         try {
+            boardService.getBoard(boardid);
             BoardColorScheme colorScheme = boardService
                     .setBoardColorScheme(boardid, boardColorScheme);
+            boardService.getBoard(boardid);
             messages.convertAndSend("/topic/" + boardid + "/changecolor",
                     boardService.getBoard(boardid));
+            boardService.getBoard(boardid);
             return ResponseEntity.ok(colorScheme);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -220,7 +223,7 @@ public class BoardController {
     @PostMapping(path = { "/{boardid}" + "/addtaskpreset" })
     public ResponseEntity<TaskPreset> addTaskPreset(@PathVariable("boardid") final long boardId,
             @RequestBody final TaskPreset taskPreset) {
-        if (getBoard(boardId) == null ) {
+        if (getBoard(boardId) == null) {
             return ResponseEntity.badRequest().build();
         }
         TaskPreset createdTaskPreset = boardService.setTaskPreset(boardId, taskPreset);
