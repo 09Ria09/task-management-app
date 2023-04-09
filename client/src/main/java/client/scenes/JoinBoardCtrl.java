@@ -76,6 +76,7 @@ public class JoinBoardCtrl {
         try {
             Board board = new Board(boardNameInput.getText(), new ArrayList<TaskList>(),
                     new ArrayList<Tag>());
+            board.initBoard();
             Board createdBoard = boardUtils.addBoard(board);
             boardCatalogueCtrl.addNew(createdBoard.getId());
         } catch (WebApplicationException e) {

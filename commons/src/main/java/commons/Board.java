@@ -59,12 +59,6 @@ public class Board {
         this.inviteKey = inviteKey;
         boardColorScheme = new BoardColorScheme();
         this.taskPresets = new ArrayList<>();
-        addTaskList(new TaskList("To Do"));
-        addTaskList(new TaskList("Doing"));
-        addTaskList(new TaskList("Done"));
-        TaskPreset taskPreset=new TaskPreset("Default", "0xccccccff", "0x000000ff");
-        taskPreset.setDefault(true);
-        addTaskPreset(taskPreset);
     }
 
     public Board() {
@@ -93,6 +87,15 @@ public class Board {
         this.id = other.id;
         boardColorScheme = new BoardColorScheme();
         this.inviteKey = other.inviteKey;
+    }
+
+    public void initBoard(){
+        addTaskList(new TaskList("To Do"));
+        addTaskList(new TaskList("Doing"));
+        addTaskList(new TaskList("Done"));
+        TaskPreset taskPreset=new TaskPreset("Default", "0xccccccff", "0x000000ff");
+        taskPreset.setDefault(true);
+        addTaskPreset(taskPreset);
     }
 
     public String getName() {
