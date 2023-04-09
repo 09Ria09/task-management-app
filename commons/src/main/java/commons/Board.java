@@ -59,7 +59,6 @@ public class Board {
         this.inviteKey = inviteKey;
         boardColorScheme = new BoardColorScheme();
         this.taskPresets = new ArrayList<>();
-
     }
 
     public Board() {
@@ -88,6 +87,15 @@ public class Board {
         this.id = other.id;
         boardColorScheme = new BoardColorScheme();
         this.inviteKey = other.inviteKey;
+    }
+
+    public void initBoard(){
+        addTaskList(new TaskList("To Do"));
+        addTaskList(new TaskList("Doing"));
+        addTaskList(new TaskList("Done"));
+        TaskPreset taskPreset=new TaskPreset("Default", "0xccccccff", "0x000000ff");
+        taskPreset.setDefault(true);
+        addTaskPreset(taskPreset);
     }
 
     public String getName() {
@@ -224,5 +232,67 @@ public class Board {
 
     public void addTaskPreset(final TaskPreset taskPreset) {
         taskPresets.add(taskPreset);
+    }
+
+    /**
+     * This method removes a task preset from the list of
+     * existing task presets.
+     * @param taskPresetId the id of the task preset that will be removed.
+     */
+    public void removeTaskPreset(final long taskPresetId) {
+        TaskPreset taskPreset = null;
+        TaskPreset defaultPreset = null;
+        for (TaskPreset preset : taskPresets) {
+            if(preset.isDefault())
+                defaultPreset = preset;
+            if(preset.getId() == taskPresetId)
+                taskPreset = preset;
+        }
+        for (TaskList taskList : taskLists) {
+            for (Task task : taskList.getTasks()) {
+                if (task.getTaskPreset() != null && task.getTaskPreset().equals(taskPreset)) {
+                    task.setTaskPreset(defaultPreset);
+                }
+            }
+        }
+        taskPresets.remove(taskPreset);
+    }
+
+    /**
+     * This method updates a task preset from the list of
+     * existing task presets.
+     * @param taskPreset the task preset that will be updated.
+     */
+    public void updateTaskPreset(final TaskPreset taskPreset) {
+        if (taskPreset.isDefault()) {
+            for (TaskPreset preset : taskPresets) {
+                if (preset.isDefault() && !preset.equals(taskPreset)) {
+                    preset.setDefault(false);
+                }
+            }
+        }
+        int index = -1;
+        for (int i = 0; i < taskPresets.size(); i++) {
+            if (taskPresets.get(i).getId() == taskPreset.getId()) {
+                index = i;
+                break;
+            }
+        }
+        if (index >= 0) {
+            taskPresets.set(index, taskPreset);
+        }
+    }
+
+    /**
+     * This method returns the default task preset.
+     * @return the default task preset.
+     */
+    public TaskPreset findDefaultTaskPreset() {
+        for (TaskPreset taskPreset : taskPresets) {
+            if (taskPreset.isDefault()) {
+                return taskPreset;
+            }
+        }
+        return null;
     }
 }

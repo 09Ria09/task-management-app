@@ -2,7 +2,6 @@ package server.services;
 
 import commons.Board;
 import commons.BoardColorScheme;
-import commons.TaskList;
 import commons.TaskPreset;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,6 +56,12 @@ public class BoardService {
         return boardRepository.save(updateWithInviteKey);
     }
 
+    public Board addBoardAndInit(final Board board){
+        var board1=addBoard(board);
+        board1.initBoard();
+        return boardRepository.save(board1);
+    }
+
     /**
      * Removes a board from the repository.
      *
@@ -92,11 +97,8 @@ public class BoardService {
      * Creates a default board that contains 3 lists : To Do, In Progress, Done
      */
     public void createDefaultBoard(){
-        TaskList todo = new TaskList("To Do");
-        TaskList inprogress = new TaskList("In Progress");
-        TaskList done = new TaskList("Done");
-        Board b = new Board("Main", List.of(todo, inprogress, done), new ArrayList<>());
-        this.addBoard(b);
+        Board b = new Board("Main", new ArrayList<>(), new ArrayList<>());
+        this.addBoardAndInit(b);
     }
 
     /**
@@ -123,6 +125,32 @@ public class BoardService {
                                     final TaskPreset taskPreset) {
         Board board = getBoard(boardId);
         board.addTaskPreset(taskPreset);
+        boardRepository.save(board);
+        return taskPreset;
+    }
+
+    /**
+     * Removes a task preset from a board
+     * @param boardId the id of the board
+     * @param taskPresetId the id of the task preset
+     */
+    public void removeTaskPreset(final long boardId,
+                                    final long taskPresetId) {
+        Board board = getBoard(boardId);
+        board.removeTaskPreset(taskPresetId);
+        boardRepository.save(board);
+    }
+
+    /**
+     * Updates a task preset
+     * @param boardId the id of the board
+     * @param taskPreset the task preset to update
+     * @return the updated task preset
+     */
+    public TaskPreset updateTaskPreset(final long boardId,
+                                       final TaskPreset taskPreset) {
+        Board board = getBoard(boardId);
+        board.updateTaskPreset(taskPreset);
         boardRepository.save(board);
         return taskPreset;
     }
