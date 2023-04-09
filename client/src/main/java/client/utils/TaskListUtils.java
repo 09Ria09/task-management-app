@@ -23,8 +23,9 @@ public class TaskListUtils {
         this.server = server;
     }
 
-
-
+    public ServerUtils getServer() {
+        return server;
+    }
 
     /**
      *   Get all lists of a board

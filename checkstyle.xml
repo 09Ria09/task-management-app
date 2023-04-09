@@ -19,11 +19,11 @@
         <module name="OuterTypeFilename">
             <property name="severity" value="warning"/>
         </module>
-     <!--   <module name="ParameterNumber">
+        <module name="ParameterNumber">
             <property name="severity" value="warning"/>
             <property name="tokens" value="METHOD_DEF, CTOR_DEF"/>
-            <property name="max" value="6"/>
-        </module> -->
+            <property name="max" value="7"/>
+        </module>
         <module name="Indentation">
             <property name="severity" value="warning"/>
         </module>

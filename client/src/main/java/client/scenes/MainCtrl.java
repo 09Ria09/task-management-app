@@ -51,9 +51,6 @@ public class MainCtrl {
     private CreateTaskCtrl createTaskCtrl;
     private Scene createTask;
 
-    private EditTaskCtrl editTaskCtrl;
-    private Scene editTask;
-
     private DetailedTaskViewCtrl detailedTaskViewCtrl;
     private Scene detailedTaskView;
 
@@ -108,8 +105,6 @@ public class MainCtrl {
         primaryStage.setMinWidth(1380);
         this.createTaskCtrl = taskScenes.getCreateTask().getKey();
         this.createTask = new Scene(taskScenes.getCreateTask().getValue());
-        this.editTaskCtrl = taskScenes.getEditTask().getKey();
-        this.editTask = new Scene(taskScenes.getEditTask().getValue());
         this.detailedTaskViewCtrl = taskScenes.getDetailedTaskView().getKey();
         this.detailedTaskView = new Scene(taskScenes.getDetailedTaskView().getValue());
         this.createListCtrl = listScenes.getCreateList().getKey();
@@ -170,7 +165,7 @@ public class MainCtrl {
      */
     public void showCreateList(final long boardId) {
         primaryStage.setTitle("Talio: Create List");
-        createListCtrl.boardId=boardId;
+        createListCtrl.setBoardId(boardId);
         resize();
         setShortcutsPopup(createList);
         primaryStage.setScene(createList);
@@ -184,6 +179,7 @@ public class MainCtrl {
         resize();
         setShortcutsPopup(boardCatalogue);
         primaryStage.setScene(boardCatalogue);
+        boardCatalogueCtrl.createWebSockets();
         boardCatalogueCtrl.refresh();
     }
 
@@ -203,6 +199,16 @@ public class MainCtrl {
         setShortcutsPopup(createTask);
         createTaskCtrl.setListCtrl(ctrl);
         primaryStage.setScene(createTask);
+    }
+
+
+    /**
+     * Changes scene to a scene where a user can rename a task list.
+     */
+    public void showRenameList() {
+        primaryStage.setTitle("Talio: Rename List");
+        resize();
+        primaryStage.setScene(renameList);
     }
 
     /**
@@ -245,6 +251,7 @@ public class MainCtrl {
     public void showColorManagementView(final Board board) {
         primaryStage.setTitle("Talio: color management view");
         colorManagementViewCtrl.setBoard(board);
+        colorManagementViewCtrl.populateTaskColorPresetList();
         resize();
         setShortcutsPopup(colorManagementView);
         primaryStage.setScene(colorManagementView);
@@ -260,15 +267,15 @@ public class MainCtrl {
         resize();
         setShortcutsPopup(detailedTaskView);
         primaryStage.setScene(detailedTaskView);
-        detailedTaskViewCtrl.setTask(task);
         detailedTaskViewCtrl.setMainCtrl(this);
         detailedTaskViewCtrl.setListController(listController);
+        detailedTaskViewCtrl.setTask(task);
         detailedTaskViewCtrl.registerWebSockets();
     }
 
     private void resize(){
-        primaryStage.setHeight(primaryStage.getHeight());
-        primaryStage.setWidth(primaryStage.getWidth());
+        // primaryStage.setHeight(primaryStage.getHeight());
+        // primaryStage.setWidth(primaryStage.getWidth());
     }
 
     public void showTagOverview(final Board board) {

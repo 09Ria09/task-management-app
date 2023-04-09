@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.CustomAlert;
+import client.customExceptions.BoardException;
 import client.customExceptions.TagException;
 import client.customExceptions.TaskException;
 import client.utils.*;
@@ -41,6 +42,8 @@ public class DetailedTaskViewCtrl {
     private ListView<Tag> tagView;
     @FXML
     private ChoiceBox<Tag> tagChoice;
+    @FXML
+    private ChoiceBox<TaskPreset> presetChoice;
     private Task task;
     private final CustomAlert customAlert;
     private MainCtrl mainCtrl;
@@ -52,6 +55,7 @@ public class DetailedTaskViewCtrl {
     private final TagUtils tagUtils;
     @FXML
     private StackPane taskDetails;
+    private final BoardUtils boardUtils;
 
     private final Consumer<Task> taskConsumer = (task) -> {
         if(task.id == this.task.id)
@@ -74,13 +78,14 @@ public class DetailedTaskViewCtrl {
     public DetailedTaskViewCtrl(final TaskListUtils taskListUtils,
                                 final TaskUtils taskUtils, final CustomAlert customAlert,
                                 final SubTaskUtils subTaskUtils, final TagUtils tagUtils,
-                                final WebSocketUtils webSocketUtils) {
+                                final WebSocketUtils webSocketUtils, final BoardUtils boardUtils) {
         this.taskListUtils = taskListUtils;
         this.taskUtils = taskUtils;
         this.customAlert = customAlert;
         this.subTaskUtils = subTaskUtils;
         this.webSocketUtils = webSocketUtils;
         this.tagUtils = tagUtils;
+        this.boardUtils = boardUtils;
     }
 
     public void initialize() {
@@ -109,6 +114,14 @@ public class DetailedTaskViewCtrl {
                 event.consume();
             }
         });
+    }
+
+    public void changePreset(final TaskPreset preset){
+        if(preset == null)
+            return;
+        task.setTaskPreset(preset);
+        taskUtils.setPreset(listController.getBoardID(), listController.getTaskList().id,
+            task.getId(),preset);
     }
 
     public void registerWebSockets(){
@@ -142,6 +155,10 @@ public class DetailedTaskViewCtrl {
                 "/deletetag", deleteBoardTag);
         this.webSocketUtils.registerForTagMessages("/topic/" + listController.getBoardID() +
                 "/changetag", changeTagConsumer);
+        Consumer<Board> deleteBoard = (board) -> {
+            Platform.runLater(this::goBack);
+        };
+        webSocketUtils.registerForMessages("/topic/deleteboard", deleteBoard, Board.class);
     }
 
     public void changeTag(final Tag tag){
@@ -225,6 +242,8 @@ public class DetailedTaskViewCtrl {
         taskDescriptionTextArea.setVisible(false);
         taskNameText.setText(this.task.getName());
 
+        presetUpdate();
+
         taskDescriptionText.setText(this.task.getDescription());
         subTasks.setCellFactory(lv -> {
             ListCell<SubTask> cell = new ListCell<>() {
@@ -261,6 +280,25 @@ public class DetailedTaskViewCtrl {
         tagView.getItems().setAll(task.getTags());
 
         subTasks.getItems().setAll(task.getSubtasks());
+    }
+
+    /**
+     * It will update the preset choice box with the presets from the board
+     */
+    public void presetUpdate(){
+        try {
+            presetChoice.getItems()
+                .setAll(boardUtils.getBoard(listController.getBoardID()).getTaskPresets());
+            for (TaskPreset preset : presetChoice.getItems()) {
+                if(preset.equals(task.getTaskPreset()))
+                    presetChoice.setValue(preset);
+            }
+            presetChoice.valueProperty().addListener((observable, oldValue, newValue) -> {
+                changePreset(presetChoice.getValue());
+            });
+        } catch (BoardException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void initializeTagView() {

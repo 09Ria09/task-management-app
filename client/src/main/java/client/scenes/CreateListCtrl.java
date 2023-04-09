@@ -1,19 +1,21 @@
 package client.scenes;
 
 import client.CustomAlert;
-import client.utils.LayoutUtils;
-import client.utils.ServerUtils;
-import client.utils.TaskListUtils;
+import client.utils.*;
 import client.customExceptions.BoardException;
 import client.customExceptions.TaskListException;
 import com.google.inject.Inject;
+import commons.Board;
 import commons.TaskList;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+
+import java.util.function.Consumer;
 
 
 public class CreateListCtrl {
@@ -25,6 +27,7 @@ public class CreateListCtrl {
     private final CustomAlert customAlert;
 
     private final LayoutUtils layoutUtils;
+    private final WebSocketUtils webSocketUtils;
 
     @FXML
     private TextField listNameInput;
@@ -39,27 +42,26 @@ public class CreateListCtrl {
     @FXML
     private VBox root;
 
-    public long boardId;
+    private long boardId;
     String listName;
+    private BoardUtils boardUtils;
 
     /**
      * Constructor
-     *
-     * @param server
-     * @param listUtils
-     * @param boardOverviewCtrl
-     * @param mainCtrl
      */
     @Inject
-    public CreateListCtrl(final ServerUtils server, final TaskListUtils listUtils,
+    public CreateListCtrl(final TaskListUtils listUtils,
                           final BoardOverviewCtrl boardOverviewCtrl, final MainCtrl mainCtrl,
-                          final CustomAlert customAlert, final LayoutUtils layoutUtils) {
-        this.server = server;
+                          final CustomAlert customAlert, final LayoutUtils layoutUtils,
+                          final WebSocketUtils webSocketUtils, final BoardUtils boardUtils) {
+        this.server = listUtils.getServer();
         this.listUtils = listUtils;
         this.boardOverviewCtrl = boardOverviewCtrl;
         this.mainCtrl = mainCtrl;
         this.customAlert = customAlert;
         this.layoutUtils = layoutUtils;
+        this.webSocketUtils = webSocketUtils;
+        this.boardUtils=boardUtils;
     }
 
     public void initialize(){
@@ -98,4 +100,12 @@ public class CreateListCtrl {
         showServerBoards();
     }
 
+    public void setBoardId(final long boardId) {
+        this.boardId = boardId;
+        webSocketUtils.tryToConnect();
+        Consumer<Board> deleteBoard = (board) -> {
+            Platform.runLater(this::cancel);
+        };
+        webSocketUtils.registerForMessages("/topic/deleteboard", deleteBoard, Board.class);
+    }
 }

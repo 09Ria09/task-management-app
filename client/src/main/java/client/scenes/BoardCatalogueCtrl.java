@@ -7,6 +7,7 @@ import client.utils.ServerUtils;
 import client.utils.WebSocketUtils;
 import com.google.inject.Inject;
 import commons.Board;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -21,6 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 public class BoardCatalogueCtrl implements Initializable {
     ServerUtils serverUtils;
@@ -63,10 +65,26 @@ public class BoardCatalogueCtrl implements Initializable {
         }
     }
 
+    public void createWebSockets(){
+        Consumer<Board> renameBoard = (board) -> {
+            Platform.runLater(() -> {
+                Tab tab = boardsMap.get(board.id);
+                tab.setText(board.getName());
+            });
+        };
+        Consumer<Board> deleteBoard = (board) -> {
+            Platform.runLater(() -> {
+                this.catalogue.getTabs().remove(boardsMap.get(board.id));
+            });
+        };
+        webSocketUtils.tryToConnect();
+        webSocketUtils.registerForMessages("/topic/renameboard", renameBoard, Board.class);
+        webSocketUtils.registerForMessages("/topic/deleteboard", deleteBoard, Board.class);
+    }
+
     /**
      * Adds a new board to the catalogue
      * @param boardId the id of the board to add
-     * @return the index of the tab
      */
     public void addBoard(final long boardId) throws BoardException{
         try {
@@ -151,12 +169,17 @@ public class BoardCatalogueCtrl implements Initializable {
     }
 
     public void refresh() {
+
         for(Map.Entry<Long, Tab> e : boardsMap.entrySet()){
             try {
                 Board board = boardUtils.getBoard(e.getKey());
                 e.getValue().setContent(createBoardOverview(board, e.getValue()));
-            } catch (IOException | BoardException ex) {
+            } catch (IOException ex) {
                 System.out.println("Error while refreshing boards: " + ex.getMessage());
+            }
+            catch (BoardException ex2){
+                boardsMap.remove(e.getKey());
+                catalogue.getTabs().remove(e.getValue());
             }
         }
     }
