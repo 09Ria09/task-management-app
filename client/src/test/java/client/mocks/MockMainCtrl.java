@@ -28,6 +28,11 @@ public class MockMainCtrl extends MainCtrl {
         called.add("showUnexpectedError");
     }
 
+    @Override
+    public void showSelectServer() {
+        called.add("showSelectServer");
+    }
+
     public List<String> getCalledMethods() {
         return called;
     }
