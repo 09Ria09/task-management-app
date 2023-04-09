@@ -13,7 +13,7 @@ public class HttpResponseClone implements HttpResponse<String> {
     private final int statusCode;
     private final String body;
 
-    public HttpResponseClone(int statusCode, String body) {
+    public HttpResponseClone(final int statusCode, final String body) {
         this.statusCode = statusCode;
         this.body = body;
     }

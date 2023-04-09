@@ -187,15 +187,6 @@ public class MainCtrl {
 
 
     /**
-     * Changes scene to a scene where a user can rename a task list.
-     */
-    public void showRenameList() {
-        primaryStage.setTitle("Talio: Rename List");
-        resize();
-        primaryStage.setScene(renameList);
-    }
-
-    /**
      * Shows the select server scene.
      */
     public void showSelectServer() {

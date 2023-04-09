@@ -2,7 +2,7 @@ package client.scenes.adminScenes;
 
 import client.customExceptions.BoardException;
 import client.scenes.MainCtrl;
-import client.utils.BoardUtils;
+import client.services.BoardService;
 import commons.Board;
 import com.google.inject.Inject;
 import commons.BoardEvent;
@@ -35,13 +35,13 @@ public class AdminBoardCtrl {
     @FXML
     private TableColumn<Board, Void> deleteColumn;
 
-    private BoardUtils boardUtils;
+    private BoardService boardService;
 
     private MainCtrl mainCtrl;
 
     @Inject
-    public AdminBoardCtrl(final BoardUtils boardUtils, final MainCtrl mainCtrl) {
-        this.boardUtils = boardUtils;
+    public AdminBoardCtrl(final BoardService boardService, final MainCtrl mainCtrl) {
+        this.boardService = boardService;
         this.mainCtrl = mainCtrl;
     }
 
@@ -79,25 +79,16 @@ public class AdminBoardCtrl {
     }
 
     public void addAllBoards() throws BoardException {
-        List<Board> boards = boardUtils.getBoards();
+        List<Board> boards = boardService.getAllBoards();
         boardTableView.setItems(FXCollections.observableArrayList(boards));
-        System.out.println("Added all boards");
     }
 
     private void deleteBoard(final Board board, final boolean adminAction) {
         try {
-            System.out.println("Deleting board " + board.getName());
             Platform.runLater(() -> {
                 boardTableView.getItems().remove(board);
             });
-            System.out.println(board);
-            //here I check if the deletion is done from the dashboard
-            //or by an user in the overview, so that I dont call
-            //the deleteBoard method twice
-            if (adminAction) {
-                boardUtils.deleteBoard(board.getId());
-            }
-
+            boardService.deleteBoard(board, adminAction);
         } catch (BoardException e) {
             e.printStackTrace();
         }
@@ -109,13 +100,12 @@ public class AdminBoardCtrl {
         });
     }
     public void stop() {
-        boardUtils.stop();
+        boardService.stop();
     }
 
     public void solveEvent(final BoardEvent event) {
         String eventType = event.getEventType();
         Board board = event.getBoard();
-        System.out.println("Solving event " + eventType + " for board " + board.getName());
         switch (eventType) {
             case "ADD":
                 addBoard(board);
@@ -130,8 +120,7 @@ public class AdminBoardCtrl {
 
     @FXML
     private void goBack() {
-        System.out.println("Going back to board catalogue");
-        boardUtils.stop();
+        boardService.stop();
         mainCtrl.showBoardCatalogue();
     }
 }

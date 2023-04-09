@@ -1,7 +1,5 @@
 package client.mocks;
 
-import jakarta.ws.rs.core.Response;
-
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLParameters;
 import java.io.IOException;
@@ -21,14 +19,14 @@ public class MockHttpClient extends HttpClient {
     private HttpResponse<String> response;
     private boolean ioException;
     private boolean interruptedException;
-    public void setResponse(HttpResponse<String> response) {
+    public void setResponse(final HttpResponse<String> response) {
         this.response = response;
     }
-    public void setIoException(boolean ioException) {
+    public void setIoException(final boolean ioException) {
         this.ioException = ioException;
     }
 
-    public void setInterruptedException(boolean interruptedException) {
+    public void setInterruptedException(final boolean interruptedException) {
         this.interruptedException = interruptedException;
     }
 
@@ -78,7 +76,9 @@ public class MockHttpClient extends HttpClient {
     }
 
     @Override
-    public <T> HttpResponse<T> send(HttpRequest request, HttpResponse.BodyHandler<T> responseBodyHandler) throws IOException, InterruptedException {
+    public <T> HttpResponse<T> send(final HttpRequest request,
+                                    final HttpResponse.BodyHandler<T> responseBodyHandler)
+            throws IOException, InterruptedException {
         if (ioException) {
             throw new IOException();
         }
@@ -90,12 +90,17 @@ public class MockHttpClient extends HttpClient {
     }
 
     @Override
-    public <T> CompletableFuture<HttpResponse<T>> sendAsync(HttpRequest request, HttpResponse.BodyHandler<T> responseBodyHandler) {
+    public <T> CompletableFuture<HttpResponse<T>>
+        sendAsync(final HttpRequest request,
+              final HttpResponse.BodyHandler<T> responseBodyHandler) {
         return null;
     }
 
     @Override
-    public <T> CompletableFuture<HttpResponse<T>> sendAsync(HttpRequest request, HttpResponse.BodyHandler<T> responseBodyHandler, HttpResponse.PushPromiseHandler<T> pushPromiseHandler) {
+    public <T> CompletableFuture<HttpResponse<T>>
+        sendAsync(final HttpRequest request,
+              final HttpResponse.BodyHandler<T> responseBodyHandler,
+              final HttpResponse.PushPromiseHandler<T> pushPromiseHandler) {
         return null;
     }
 
