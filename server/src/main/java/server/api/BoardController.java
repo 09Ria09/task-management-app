@@ -91,7 +91,7 @@ public class BoardController {
         if (board == null || isNullOrEmpty(board.getName().replaceAll("\\s", ""))) {
             return ResponseEntity.badRequest().build();
         }
-        Board createdBoard = boardService.addBoard(board);
+        Board createdBoard = boardService.addBoardAndInit(board);
         BoardEvent event = new BoardEvent("ADD", createdBoard);
         listeners.forEach((k, l) -> l.accept(event));
         return ResponseEntity.ok(createdBoard);

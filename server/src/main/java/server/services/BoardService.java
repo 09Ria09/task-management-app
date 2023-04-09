@@ -52,9 +52,14 @@ public class BoardService {
         String inviteKey = generateInviteKey(saved.getId());
         Board updateWithInviteKey = new Board(saved.getName(), saved.getListTaskList(),
                 saved.getTags(), inviteKey);
-        updateWithInviteKey.initBoard();
         updateWithInviteKey.id = saved.getId();
         return boardRepository.save(updateWithInviteKey);
+    }
+
+    public Board addBoardAndInit(final Board board){
+        var board1=addBoard(board);
+        board1.initBoard();
+        return boardRepository.save(board1);
     }
 
     /**
@@ -93,7 +98,7 @@ public class BoardService {
      */
     public void createDefaultBoard(){
         Board b = new Board("Main", new ArrayList<>(), new ArrayList<>());
-        this.addBoard(b);
+        this.addBoardAndInit(b);
     }
 
     /**
