@@ -32,11 +32,16 @@ import java.util.Optional;
 
 public class ServerUtils {
 
-    private final RestUtils restUtils;
+    private RestUtils restUtils;
     private String serverAddress;
 
+    private HttpClient httpClient;
     public ServerUtils() {
         this.restUtils = new RestUtils();
+        this.httpClient = HttpClient.newBuilder()
+                .version(HttpClient.Version.HTTP_1_1)
+                .connectTimeout(Duration.ofSeconds(5))
+                .build();
     }
 
     /**
@@ -47,34 +52,8 @@ public class ServerUtils {
         */
     public Optional<String> isTalioServer() {
         try {
-            HttpClient httpClient = HttpClient.newBuilder()
-                    .version(HttpClient.Version.HTTP_1_1)
-                    .connectTimeout(Duration.ofSeconds(5))
-                    .build();
-
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(serverAddress + "/api/talio"))
-                    .timeout(Duration.ofSeconds(5))
-                    .GET()
-                    .build();
-
-            HttpResponse<String> response = httpClient
-                    .send(request, HttpResponse.BodyHandlers.ofString());
-
-            if (response.statusCode() == 200) {
-                if(Boolean.parseBoolean(response.body())){
-                    if(!Servers.getInstance().getServers().containsKey(serverAddress))
-                        Servers.getInstance().getServers().put(serverAddress, new HashSet<>());
-                    return Optional.empty();
-                }
-                else return Optional.of("Not a Talio server");
-            }
-            else if (response.statusCode() == 404) {
-                return Optional.of("Not a Talio server");
-            }
-            else {
-                return Optional.of("Unexpected response status");
-            }
+            HttpResponse<String> response = sendTalioServerRequest();
+            return handleTalioServerResponse(response);
         } catch (IOException e) {
             //timeout
             return Optional.of("IOException");
@@ -87,6 +66,33 @@ public class ServerUtils {
         }
     }
 
+    private HttpResponse<String> sendTalioServerRequest() throws IOException, InterruptedException {
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(serverAddress + "/api/talio"))
+                .timeout(Duration.ofSeconds(5))
+                .GET()
+                .build();
+
+        return httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
+    private Optional<String> handleTalioServerResponse(final HttpResponse<String> response) {
+        if (response.statusCode() == 200) {
+            if (Boolean.parseBoolean(response.body())) {
+                if (!Servers.getInstance().getServers().containsKey(serverAddress)) {
+                    Servers.getInstance().getServers().put(serverAddress, new HashSet<>());
+                }
+                return Optional.empty();
+            } else {
+                return Optional.of("Not a Talio server");
+            }
+        } else if (response.statusCode() == 404) {
+            return Optional.of("Not a Talio server");
+        } else {
+            return Optional.of("Unexpected response status");
+        }
+    }
     /**
      * Set the server address
      * @param serverAddress the server address
@@ -115,8 +121,17 @@ public class ServerUtils {
                 RestUtils.Methods.GET, null);
         return restUtils.handleResponse(response, String.class, "getAdminKey");
     }
-
+    //made this in order to be able to test isTalioServer
+    public void setHttpClient(final HttpClient httpClient) {
+        this.httpClient = httpClient;
+    }
     public RestUtils getRestUtils() {
         return restUtils;
     }
+
+    //for testing getAdminKey
+    public void setRestUtils(final RestUtils restUtils) {
+        this.restUtils = restUtils;
+    }
+
 }

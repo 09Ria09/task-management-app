@@ -7,30 +7,17 @@ import commons.Board;
 import commons.BoardColorScheme;
 import commons.TaskPreset;
 import commons.BoardEvent;
-import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 import javafx.util.Pair;
-import org.glassfish.jersey.client.ClientConfig;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
-import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
-//TODO
-/*
- * !
- * !    check if passing of serverAddress is correct and ask for feedback
- * on this aspect  - can't figure out how to properly organize this
- * such that there is one serverAddress that
- * changes everywhere like in a prototype bean
- * !    add method for getting all boards
- * !    reformat duplicate code - either use response handler
- * or leave as is
- */
+
 public class BoardUtils {
 
     private final ServerUtils server;
@@ -239,13 +226,8 @@ public class BoardUtils {
         exec = Executors.newSingleThreadExecutor();
         exec.submit(() -> {
             while (!Thread.interrupted()) {
-                String serverAddress = server.getServerAddress();
-                Response response = ClientBuilder.newClient(new ClientConfig())
-                        .target(serverAddress)
-                        .path("api/boards/updates")
-                        .request()
-                        .accept(APPLICATION_JSON)
-                        .get();
+                Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                        "api/boards/updates", RestUtils.Methods.GET, null);
                 if(response.getStatus() == 204 ) {
                     continue;
                 }

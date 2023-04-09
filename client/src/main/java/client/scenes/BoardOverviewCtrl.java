@@ -80,21 +80,6 @@ public class BoardOverviewCtrl {
 
     @FXML
     private ScrollPane listScrollPane;
-    @FXML
-    private Button disconnectButton;
-    @FXML
-    private Button colorManagementViewButton;
-    @FXML
-    private Button addListButton;
-    @FXML
-    private Button copyInviteKeyButton;
-    @FXML
-    private Button renameBoardButton;
-    @FXML
-    private Button deleteBoardButton;
-
-    @FXML
-    private Button tagOverviewButton;
 
     @Inject
     public BoardOverviewCtrl(final MainCtrl mainCtrl,
