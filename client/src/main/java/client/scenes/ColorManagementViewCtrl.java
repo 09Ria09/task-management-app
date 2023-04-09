@@ -20,8 +20,6 @@ import javafx.scene.paint.Color;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.function.Consumer;
 
 public class ColorManagementViewCtrl implements Initializable {
@@ -125,7 +123,7 @@ public class ColorManagementViewCtrl implements Initializable {
                 setListTextColor(String.valueOf(listTextColorInput.getValue()));
     }
 
-    public void createTaskColorPreset() throws BoardException {
+    public void createTaskColorPreset() {
         taskColorPresetName = taskColorPresetNameInput.getText();
         if (taskColorPresetName.isEmpty() || taskColorPresetName == null) {
             Alert alert = customAlert.showAlert("Empty name not allowed.");
@@ -136,7 +134,7 @@ public class ColorManagementViewCtrl implements Initializable {
             taskBackgroundColorInput.getValue().toString(),
             taskTextColorInput.getValue().toString());
         boardUtils.addTaskPreset(board.id, taskPreset);
-        System.out.println(board.getBoardColorScheme().toString());
+        populateTaskColorPresetList();
     }
 
     public void back() throws BoardException {
@@ -181,15 +179,21 @@ public class ColorManagementViewCtrl implements Initializable {
      * Populate the task color preset list
      */
     public void populateTaskColorPresetList() {
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                taskColorPresetList.getItems().clear();
-                taskColorPresetList.getItems().addAll(board.getTaskPresets());
-                timer.cancel();
-                timer.purge();
-            }
-        }, 250);
+        try {
+            taskColorPresetList.getItems().clear();
+            board = boardUtils.getBoard(board.id);
+            taskColorPresetList.getItems().addAll(board.getTaskPresets());
+        } catch (BoardException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Remove a task color preset
+     * @param taskPreset the task color preset to remove
+     */
+    public void removeTaskPreset(final TaskPreset taskPreset) {
+        boardUtils.removeTaskPreset(board.id, taskPreset.getId());
+        taskColorPresetList.getItems().remove(taskPreset);
     }
 }

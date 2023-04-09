@@ -61,8 +61,7 @@ public class TaskColorPresetCardCtrl {
             alert.showAndWait();
         }
         else {
-            boardUtils.removeTaskPreset(board.getId(), taskPreset.getId());
-            colorManagementViewCtrl.populateTaskColorPresetList();
+            colorManagementViewCtrl.removeTaskPreset(taskPreset);
         }
     }
     /**

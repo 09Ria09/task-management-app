@@ -253,8 +253,8 @@ public class MainCtrl {
     }
 
     private void resize(){
-        primaryStage.setHeight(primaryStage.getHeight());
-        primaryStage.setWidth(primaryStage.getWidth());
+        // primaryStage.setHeight(primaryStage.getHeight());
+        // primaryStage.setWidth(primaryStage.getWidth());
     }
 
     public void showTagOverview(final Board board) {
