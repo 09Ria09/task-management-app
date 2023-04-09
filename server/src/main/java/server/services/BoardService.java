@@ -52,6 +52,7 @@ public class BoardService {
         String inviteKey = generateInviteKey(saved.getId());
         Board updateWithInviteKey = new Board(saved.getName(), saved.getListTaskList(),
                 saved.getTags(), inviteKey);
+        updateWithInviteKey.initBoard();
         updateWithInviteKey.id = saved.getId();
         return boardRepository.save(updateWithInviteKey);
     }
