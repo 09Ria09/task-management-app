@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
 <AnchorPane prefHeight="454.0" prefWidth="808.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ColorManagementViewCtrl">
@@ -46,7 +47,10 @@
       </Button>
       <Text layoutX="597.0" layoutY="360.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Background" wrappingWidth="63.7724609375" />
       <Text layoutX="596.0" layoutY="390.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-      <ColorPicker fx:id="taskBackgroundColorInput" layoutX="689.0" layoutY="343.0" prefHeight="25.0" prefWidth="94.0" />
+      <ColorPicker fx:id="taskBackgroundColorInput" layoutX="689.0" layoutY="343.0" prefHeight="25.0" prefWidth="94.0">
+         <value>
+            <Color />
+         </value></ColorPicker>
       <ColorPicker fx:id="taskTextColorInput" layoutX="689.0" layoutY="373.0" prefHeight="25.0" prefWidth="94.0" />
    </children>
 </AnchorPane>
