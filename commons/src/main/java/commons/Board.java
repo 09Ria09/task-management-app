@@ -15,7 +15,7 @@ public class Board {
     public long id;
 
     private String name;
-    private String inviteKey;
+    public String inviteKey;
     @ElementCollection
     private List<String> boardMembers;
     @OneToMany(cascade=CascadeType.ALL, orphanRemoval = true)
@@ -113,8 +113,6 @@ public class Board {
     public long getId() {
         return id;
     }
-
-    public void setId(long id) {this.id = id;};
 
     public void setTags(final List<Tag> tags) {
         this.tags = tags;
@@ -222,6 +220,9 @@ public class Board {
         this.boardColorScheme = boardColorScheme;
     }
 
+    public void setId(final long boardId) {
+        this.id = boardId;
+    }
 
 
     public void addTaskPreset(final TaskPreset taskPreset) {

@@ -3,8 +3,6 @@ package client.mocks;
 import jakarta.ws.rs.core.*;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.*;
 
@@ -42,22 +40,7 @@ public class ResponseClone extends Response {
 
     @Override
     public <T> T readEntity(final GenericType<T> entityType) {
-        Type type = entityType.getType();
-        if (type instanceof ParameterizedType) {
-            ParameterizedType parameterizedType = (ParameterizedType) type;
-            Type rawType = parameterizedType.getRawType();
-            if (rawType == List.class && entity instanceof List) {
-                Type[] typeArguments = parameterizedType.getActualTypeArguments();
-                if (typeArguments.length == 1 && typeArguments[0] instanceof Class) {
-                    Class<?> elementType = (Class<?>) typeArguments[0];
-                    List<?> list = (List<?>) entity;
-                    if (list.isEmpty() || elementType.isInstance(list.get(0))) {
-                        return (T) entityType.getRawType().cast(entity);
-                    }
-                }
-            }
-        }
-        return null;
+        return (T) readEntity(entityType.getRawType());
     }
 
     @Override
