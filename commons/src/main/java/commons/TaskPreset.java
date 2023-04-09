@@ -2,26 +2,36 @@ package commons;
 
 import javax.persistence.*;
 import java.awt.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-public class TaskPreset {
+public class TaskPreset implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long id;
-    @OneToOne
-    private Board board;
 
     private String name;
-    private Color backgroundColor;
-    private Color fontColor;
+    private String backgroundColor;
+    private String fontColor;
     private boolean isDefault;
 
-    public TaskPreset(final String name, final Board board) {
+    public TaskPreset(final String name) {
         this.isDefault = false;
         this.name = name;
-        this.board = board;
+    }
+
+    public TaskPreset(final String name, final String backgroundColor,
+                      final String fontColor) {
+        this.isDefault = false;
+        this.name = name;
+        this.backgroundColor = backgroundColor;
+        this.fontColor = fontColor;
+    }
+
+    public TaskPreset() {
+
     }
 
     public String getName() {
@@ -32,19 +42,19 @@ public class TaskPreset {
         this.name = name;
     }
 
-    public Color getBackgroundColor() {
+    public String getBackgroundColor() {
         return backgroundColor;
     }
 
-    public void setBackgroundColor(final Color backgroundColor) {
+    public void setBackgroundColor(final String backgroundColor) {
         this.backgroundColor = backgroundColor;
     }
 
-    public Color getFontColor() {
+    public String getFontColor() {
         return fontColor;
     }
 
-    public void setFontColor(final Color fontColor) {
+    public void setFontColor(final String fontColor) {
         this.fontColor = fontColor;
     }
 
@@ -58,9 +68,7 @@ public class TaskPreset {
 
     @Override
     public String toString() {
-        return "TaskPreset{" +
-                "name='" + name + '\'' +
-                '}';
+        return name;
     }
 
     @Override
@@ -86,5 +94,9 @@ public class TaskPreset {
         result = 31 * result + (fontColor != null ? fontColor.hashCode() : 0);
         result = 31 * result + (isDefault ? 1 : 0);
         return result;
+    }
+
+    public long getId() {
+        return id;
     }
 }

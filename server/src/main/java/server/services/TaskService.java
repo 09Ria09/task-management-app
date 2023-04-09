@@ -3,6 +3,7 @@ package server.services;
 import commons.Board;
 import commons.Task;
 import commons.TaskList;
+import commons.TaskPreset;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.database.BoardRepository;
@@ -136,6 +137,26 @@ public class TaskService {
         task.setDescription(description);
 
         //I am not sure whether this actually updates the list in the board.
+        boardRepository.save(board);
+
+        return task;
+    }
+
+    /**
+     * Sets the preset of a task.
+     * @param boardid the id of the board where the task is.
+     * @param listid the id of the list where the task is.
+     * @param taskid the id of the task.
+     * @param preset the preset to set.
+     * @return the task with the new preset.
+     */
+    public Task setPreset(final long boardid, final long listid,
+                          final long taskid, final TaskPreset preset) {
+        Board board = getBoard(boardid);
+        Task task = getTask(boardid, listid, taskid);
+
+        task.setPreset(preset);
+
         boardRepository.save(board);
 
         return task;

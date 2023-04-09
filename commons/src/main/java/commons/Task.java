@@ -16,7 +16,6 @@ public class Task implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long id;
-
     private String name;
     private String description;
 
@@ -25,9 +24,38 @@ public class Task implements Serializable {
 
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Tag> tags;
+    @ManyToOne
+    private TaskPreset taskPreset;
 
     public Task(){
 
+    }
+
+    public Task(final String name,
+                final String description, final TaskPreset taskPreset) {
+        this.name = name;
+        this.description = description;
+        this.subtasks = new ArrayList<>();
+        this.tags = new ArrayList<>();
+        this.taskPreset = taskPreset;
+    }
+
+    public Task(final String name, final String description,
+                final List<SubTask> subtasks, final TaskPreset taskPreset) {
+        this.name = name;
+        this.description = description;
+        this.subtasks = subtasks;
+        this.tags = new ArrayList<>();
+        this.taskPreset = taskPreset;
+    }
+
+    public Task(final String name, final String description,
+                final List<SubTask> subtasks, final List<Tag> tags, final TaskPreset taskPreset) {
+        this.name = name;
+        this.description = description;
+        this.subtasks = subtasks;
+        this.tags = tags;
+        this.taskPreset = taskPreset;
     }
 
     public Task(final String name, final String description) {
@@ -137,5 +165,17 @@ public class Task implements Serializable {
         SubTask temp = subtasks.remove(index);
         subtasks.add(newIndex, temp);
         return true;
+    }
+
+    public TaskPreset getTaskPreset() {
+        return taskPreset;
+    }
+
+    public void setTaskPreset(final TaskPreset taskPreset) {
+        this.taskPreset = taskPreset;
+    }
+
+    public void setPreset(final TaskPreset preset) {
+        this.taskPreset=preset;
     }
 }
