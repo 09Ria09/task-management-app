@@ -1,6 +1,7 @@
 package server.api;
 
 import commons.Task;
+import commons.TaskPreset;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -164,6 +165,27 @@ public class TaskController {
                 return ResponseEntity.badRequest().build();
             }
             Task task = taskService.editDescription(boardid, listid, taskid, description);
+            messages.convertAndSend("/topic/" + boardid + "/" + listid + "/modifytask",
+                    taskService.getTask(boardid, listid, taskid));
+            return ResponseEntity.ok(task);
+        }
+        catch (NoSuchElementException e) { return ResponseEntity.notFound().build(); }
+        catch (Exception e) { return ResponseEntity.internalServerError().build(); }
+    }
+
+
+    @PutMapping("/{boardid}/{listid}/{taskid}/preset")
+    public ResponseEntity<Task> setPreset(
+            @PathVariable("boardid") final long boardid,
+            @PathVariable("listid") final long listid,
+            @PathVariable("taskid") final long taskid,
+            @RequestBody final TaskPreset preset
+    ) {
+        try {
+            if (preset == null) {
+                return ResponseEntity.badRequest().build();
+            }
+            Task task = taskService.setPreset(boardid, listid, taskid, preset);
             messages.convertAndSend("/topic/" + boardid + "/" + listid + "/modifytask",
                     taskService.getTask(boardid, listid, taskid));
             return ResponseEntity.ok(task);

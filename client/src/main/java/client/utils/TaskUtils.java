@@ -4,6 +4,7 @@ import client.customExceptions.TaskException;
 import com.google.inject.Inject;
 import commons.SubTask;
 import commons.Task;
+import commons.TaskPreset;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 import javafx.util.Pair;
@@ -152,5 +153,19 @@ public class TaskUtils {
             return ((double)task.getSubtasks().stream()
                     .filter(SubTask::isCompleted)
                     .count())/((double)task.getSubtasks().size());
+    }
+
+    /**
+     * Set the preset of a task.
+     * @param boardID The id of the board.
+     * @param listId The id of the list.
+     * @param taskId The id of the task.
+     * @param preset The preset to set.
+     */
+    public void setPreset(final long boardID, final long listId,
+                          final long taskId, final TaskPreset preset) {
+        server.getRestUtils().sendRequest(server.getServerAddress(),
+                "api/tasks/" + boardID + "/" + listId + "/" + taskId + "/preset",
+                RestUtils.Methods.PUT, preset);
     }
 }

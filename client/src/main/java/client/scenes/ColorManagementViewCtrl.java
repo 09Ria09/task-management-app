@@ -1,26 +1,33 @@
 package client.scenes;
 
+import client.CustomAlert;
 import client.customExceptions.BoardException;
 import client.utils.BoardUtils;
 import client.utils.ServerUtils;
 import client.utils.WebSocketUtils;
 import com.google.inject.Inject;
-import commons.*;
+import commons.Board;
+import commons.TaskPreset;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.function.Consumer;
 
-public class ColorManagementViewCtrl {
+public class ColorManagementViewCtrl implements Initializable {
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
-
-
 
 
     @FXML
@@ -36,33 +43,76 @@ public class ColorManagementViewCtrl {
 
     @FXML
     private TextField taskColorPresetNameInput;
+    @FXML
+    ColorPicker taskBackgroundColorInput;
+    @FXML
+    ColorPicker taskTextColorInput;
+
     private String taskColorPresetName;
 
     private BoardUtils boardUtils;
     private final WebSocketUtils webSocketUtils;
     private Board board;
+    private CustomAlert customAlert;
 
 
     @Inject
     public ColorManagementViewCtrl(final ServerUtils server, final MainCtrl mainCtrl,
                                    final BoardUtils boardUtils,
-                                   final WebSocketUtils webSocketUtils)
-            throws BoardException {
+                                   final WebSocketUtils webSocketUtils,
+                                   final CustomAlert customAlert) {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.boardUtils = boardUtils;
         this.webSocketUtils = webSocketUtils;
+        this.customAlert = customAlert;
+    }
+
+    /**
+     * Initialize the color management view
+     * @param location the location
+     * @param resources the resources
+     */
+    public void initialize(final URL location, final ResourceBundle resources) {
+        var ctrl = this;
+        taskColorPresetList.setCellFactory(lv ->
+            new ListCell<>() {
+                @Override
+                protected void updateItem(final TaskPreset taskPreset, final boolean empty) {
+                    super.updateItem(taskPreset, empty);
+                    if (taskPreset == null || empty) {
+                        setGraphic(null);
+                        setBackground(Background.EMPTY);
+                    } else {
+                        try {
+                            var presetLoader = new FXMLLoader(getClass()
+                                .getResource("TaskColorPresetCard.fxml"));
+                            presetLoader.setControllerFactory(type ->
+                                new TaskColorPresetCardCtrl(boardUtils, board,
+                                    customAlert, ctrl));
+                            Node preset = presetLoader.load();
+                            TaskColorPresetCardCtrl presetCtrl =
+                                presetLoader.getController();
+                            presetCtrl.initialize(taskPreset);
+                            setGraphic(preset);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            });
+        taskColorPresetList.setPlaceholder(new Label("No task color presets"));
     }
 
 
     public void setBoardBackgroundColor() {
         board.getBoardColorScheme().
-                setBoardBackgroundColor(String.valueOf(boardBackgroundColorInput.getValue()));
+            setBoardBackgroundColor(String.valueOf(boardBackgroundColorInput.getValue()));
     }
 
     public void setBoardTextColor() {
         board.getBoardColorScheme().
-                setBoardTextColor(String.valueOf(boardTextColorInput.getValue()));
+            setBoardTextColor(String.valueOf(boardTextColorInput.getValue()));
     }
 
     public void setListBackgroundColor() {
@@ -76,14 +126,16 @@ public class ColorManagementViewCtrl {
     }
 
     public void createTaskColorPreset() throws BoardException {
-        System.out.println("y");
         taskColorPresetName = taskColorPresetNameInput.getText();
-        if(taskColorPresetName.isEmpty()|| taskColorPresetName == null) {
-            throw new IllegalArgumentException("Empty name not allowed");
+        if (taskColorPresetName.isEmpty() || taskColorPresetName == null) {
+            Alert alert = customAlert.showAlert("Empty name not allowed.");
+            alert.showAndWait();
+            return;
         }
-        TaskPreset taskpreset = new TaskPreset(taskColorPresetName, board);
-        board.getTaskPresets().add(taskpreset);
-        boardUtils.addTaskPreset(board.id, taskpreset);
+        TaskPreset taskPreset = new TaskPreset(taskColorPresetName,
+            taskBackgroundColorInput.getValue().toString(),
+            taskTextColorInput.getValue().toString());
+        boardUtils.addTaskPreset(board.id, taskPreset);
         System.out.println(board.getBoardColorScheme().toString());
     }
 
@@ -123,5 +175,21 @@ public class ColorManagementViewCtrl {
         board.getBoardColorScheme().setListTextColor("0x000000");
         listBackgroundColorInput.setValue(Color.valueOf("0xffffffff"));
         listTextColorInput.setValue(Color.valueOf("0x000000"));
+    }
+
+    /**
+     * Populate the task color preset list
+     */
+    public void populateTaskColorPresetList() {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                taskColorPresetList.getItems().clear();
+                taskColorPresetList.getItems().addAll(board.getTaskPresets());
+                timer.cancel();
+                timer.purge();
+            }
+        }, 250);
     }
 }

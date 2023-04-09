@@ -1,12 +1,9 @@
 package client.scenes;
 
 import client.CustomAlert;
-import client.utils.LayoutUtils;
-import client.utils.ServerUtils;
-import client.utils.TaskListUtils;
+import client.utils.*;
 import client.customExceptions.BoardException;
 import client.customExceptions.TaskListException;
-import client.utils.WebSocketUtils;
 import com.google.inject.Inject;
 import commons.Board;
 import commons.TaskList;
@@ -47,18 +44,16 @@ public class CreateListCtrl {
 
     private long boardId;
     String listName;
+    private BoardUtils boardUtils;
 
     /**
      * Constructor
-     * @param listUtils
-     * @param boardOverviewCtrl
-     * @param mainCtrl
      */
     @Inject
     public CreateListCtrl(final TaskListUtils listUtils,
                           final BoardOverviewCtrl boardOverviewCtrl, final MainCtrl mainCtrl,
                           final CustomAlert customAlert, final LayoutUtils layoutUtils,
-                          final WebSocketUtils webSocketUtils) {
+                          final WebSocketUtils webSocketUtils, final BoardUtils boardUtils) {
         this.server = listUtils.getServer();
         this.listUtils = listUtils;
         this.boardOverviewCtrl = boardOverviewCtrl;
@@ -66,6 +61,7 @@ public class CreateListCtrl {
         this.customAlert = customAlert;
         this.layoutUtils = layoutUtils;
         this.webSocketUtils = webSocketUtils;
+        this.boardUtils=boardUtils;
     }
 
     public void initialize(){

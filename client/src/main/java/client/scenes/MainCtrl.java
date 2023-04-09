@@ -232,6 +232,7 @@ public class MainCtrl {
     public void showColorManagementView(final Board board) {
         primaryStage.setTitle("Talio: color management view");
         colorManagementViewCtrl.setBoard(board);
+        colorManagementViewCtrl.populateTaskColorPresetList();
         resize();
         primaryStage.setScene(colorManagementView);
     }
@@ -245,9 +246,9 @@ public class MainCtrl {
         primaryStage.setTitle("Talio: Detailed Task View");
         resize();
         primaryStage.setScene(detailedTaskView);
-        detailedTaskViewCtrl.setTask(task);
         detailedTaskViewCtrl.setMainCtrl(this);
         detailedTaskViewCtrl.setListController(listController);
+        detailedTaskViewCtrl.setTask(task);
         detailedTaskViewCtrl.registerWebSockets();
     }
 

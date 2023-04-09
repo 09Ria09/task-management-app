@@ -76,6 +76,7 @@ public class BoardUtils {
             return server.getRestUtils().handleResponse(response, Board.class, "addBoard");
         }
         catch(Exception e){
+            e.printStackTrace();
             throw new BoardException(e.getMessage());
         }
     }
@@ -192,11 +193,44 @@ public class BoardUtils {
 
 
 
-    public TaskPreset addTaskPreset(final long boardId, final TaskPreset taskPreset)
-            throws BoardException {
-        return null;
+    public TaskPreset addTaskPreset(final long boardId, final TaskPreset taskPreset){
+        RestUtils restUtils = server.getRestUtils();
+        Response response = restUtils.sendRequest(server.getServerAddress(),
+                "api/boards/" + boardId + "/addtaskpreset",
+                RestUtils.Methods.POST, taskPreset);
+        try {
+            return restUtils.handleResponse(response, TaskPreset.class, "addTaskPreset");
+        }
+        catch(Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
+    public TaskPreset removeTaskPreset(final long boardId, final long taskPresetId){
+        RestUtils restUtils = server.getRestUtils();
+        Response response = restUtils.sendRequest(server.getServerAddress(),
+                "api/boards/" + boardId + "/removetaskpreset/"+taskPresetId,
+                RestUtils.Methods.DELETE, null);
+        try {
+            return restUtils.handleResponse(response, TaskPreset.class, "removeTaskPreset");
+        }
+        catch(Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    public TaskPreset updateTaskPreset(final long boardId, final TaskPreset taskPreset){
+        RestUtils restUtils = server.getRestUtils();
+        Response response = restUtils.sendRequest(server.getServerAddress(),
+                "api/boards/" + boardId + "/updatetaskpreset",
+                RestUtils.Methods.PUT, taskPreset);
+        try {
+            return restUtils.handleResponse(response, TaskPreset.class, "updateTaskPreset");
+        }
+        catch(Exception e){
+            throw new RuntimeException(e);
+        }
+    }
 
 
     private ExecutorService exec = Executors.newSingleThreadExecutor();
