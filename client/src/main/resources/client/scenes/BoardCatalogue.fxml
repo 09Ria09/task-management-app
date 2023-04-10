@@ -3,4 +3,4 @@
 <?import javafx.scene.control.TabPane?>
 
 
-<TabPane fx:id="catalogue" prefHeight="720.0" prefWidth="1280.0" style="-fx-tab-min-width: 80px; -fx-tab-max-width: 80px;" styleClass="custom-tab" stylesheets="@/client/styles/tab.css" tabClosingPolicy="ALL_TABS" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BoardCatalogueCtrl" />
+<TabPane fx:id="catalogue" prefHeight="720.0" prefWidth="1380.0" style="-fx-tab-min-width: 80px; -fx-tab-max-width: 80px;" styleClass="custom-tab" stylesheets="@/client/styles/tab.css" tabClosingPolicy="ALL_TABS" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BoardCatalogueCtrl" />

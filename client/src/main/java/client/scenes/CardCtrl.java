@@ -86,7 +86,7 @@ public class CardCtrl {
      */
     @Inject
     public void initialize(final Task task, final ListCtrl listCtrl,
-                            final CustomAlert customAlert,
+                            final CustomAlert customAlert, final BoardOverviewCtrl boardOverviewCtrl,
                            final NetworkUtils networkUtils, final MainCtrl mainCtrl) {
         this.listController = listCtrl;
         this.customAlert = customAlert;
@@ -94,9 +94,10 @@ public class CardCtrl {
         this.networkUtils = networkUtils;
         this.taskListUtils = networkUtils.getTaskListUtils();
         this.taskUtils = networkUtils.getTaskUtils();
+        this.tagUtils = networkUtils.getTagUtils();
+        this.boardOverviewCtrl = boardOverviewCtrl;
         this.setTask(task);
         this.onUnhover();
-        this.boardOverviewCtrl = boardOverviewCtrl;
         tagList.setHgap(5.00);
         tagList.setVgap(5.00);
         cardPane.setOnMouseEntered(event -> onHover());
@@ -118,6 +119,26 @@ public class CardCtrl {
 
             event.consume();
         });
+        startShortcuts();
+        editTitleTextField.addEventHandler(KeyEvent.KEY_PRESSED, this::handleEditTitle);
+        TaskPreset preset = task.getTaskPreset();
+        cardPane.setStyle(cardPane.getStyle() + "-fx-background-color: #" +
+                preset.getBackgroundColor().substring(2) + ";");
+        title.setStyle(title.getStyle() + "-fx-text-fill: #" +
+                preset.getFontColor().substring(2) + ";");
+    }
+
+    private void setTags(final List<Tag> tags) {
+        for (Tag tag : tags) {
+            Pane tagPane = new Pane();
+            tagPane.setPrefSize(60, 10);
+            tagPane.setStyle("-fx-background-radius: 5px; -fx-border-radius: 5px;" +
+                    " -fx-background-color: #" + tag.getColorBackground() + ";");
+            tagList.getChildren().add(tagPane);
+        }
+    }
+
+    private void startShortcuts(){
         cardPane.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
             if (event.isShiftDown()) {
                 if (event.getCode() == KeyCode.UP) {
@@ -143,22 +164,7 @@ public class CardCtrl {
                 event.consume();
             }
         });
-        editTitleTextField.addEventHandler(KeyEvent.KEY_PRESSED, this::handleEditTitle);
-        TaskPreset preset = task.getTaskPreset();
-        cardPane.setStyle(cardPane.getStyle() + "-fx-background-color: #" +
-                preset.getBackgroundColor().substring(2) + ";");
-        title.setStyle(title.getStyle() + "-fx-text-fill: #" +
-                preset.getFontColor().substring(2) + ";");
-    }
 
-    private void setTags(final List<Tag> tags) {
-        for (Tag tag : tags) {
-            Pane tagPane = new Pane();
-            tagPane.setPrefSize(60, 10);
-            tagPane.setStyle("-fx-background-radius: 5px; -fx-border-radius: 5px;" +
-                    " -fx-background-color: #" + tag.getColorBackground() + ";");
-            tagList.getChildren().add(tagPane);
-        }
     }
 
     private void handleEditTitle(final KeyEvent event) {
@@ -410,7 +416,8 @@ public class CardCtrl {
                 System.out.println(presetChange.getFontColor());
                 cardPane.setStyle("-fx-background-color: #"
                         + presetChange.getBackgroundColor().substring(2, 8) + ";");
-                title.setStyle("-fx-text-fill: #" + presetChange.getFontColor().substring(2, 8) + ";");
+                title.setStyle("-fx-text-fill: #" +
+                        presetChange.getFontColor().substring(2, 8) + ";");
             }
         });
     }

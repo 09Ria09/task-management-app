@@ -78,17 +78,19 @@ public class ListCtrl implements Initializable {
                     final CustomAlert customAlert,
                     final NetworkUtils networkUtils,
                     final LayoutUtils layoutUtils,
-                    final WebSocketUtils webSocketUtils) {
+                    final WebSocketUtils webSocketUtils,
+                    final BoardOverviewCtrl boardOverviewCtrl) {
         this.networkUtils = networkUtils;
         this.server = networkUtils.getServerUtils();
         this.taskListUtils = networkUtils.getTaskListUtils();
         this.taskUtils = networkUtils.getTaskUtils();
         this.boardUtils = networkUtils.getBoardUtils();
         this.mainCtrl = mainCtrl;
-        this.boardOverviewCtrl = boardOverviewCtrl;
+        this.tagUtils = networkUtils.getTagUtils();
         this.customAlert = customAlert;
         this.layoutUtils = layoutUtils;
         this.webSocketUtils = webSocketUtils;
+        this.boardOverviewCtrl = boardOverviewCtrl;
     }
 
     public void initialize(){
@@ -270,7 +272,7 @@ public class ListCtrl implements Initializable {
                             Node card = cardLoader.load();
                             CardCtrl cardCtrl = cardLoader.getController();
                             cardCtrl.initialize(task, controller,
-                                    customAlert, networkUtils, mainCtrl);
+                                    customAlert, boardOverviewCtrl, networkUtils, mainCtrl);
                             setGraphic(card);
                         } catch (IOException e) {
                             throw new RuntimeException(e);

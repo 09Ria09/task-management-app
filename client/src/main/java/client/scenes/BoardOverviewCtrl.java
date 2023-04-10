@@ -159,7 +159,7 @@ public class BoardOverviewCtrl {
         var listLoader = new FXMLLoader(getClass().getResource("List.fxml"));
         listLoader.setControllerFactory(type ->
                 new ListCtrl(mainCtrl, customAlert,
-                       networkUtils, new LayoutUtils(), webSocketUtils));
+                       networkUtils, new LayoutUtils(), webSocketUtils, this));
         try {
             VBox list = listLoader.load();
             list.prefHeightProperty().bind(Bindings

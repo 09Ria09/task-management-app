@@ -104,12 +104,12 @@ public class BoardTest {
         long id = board.getTags().get(0).id;
         String boardString = "Board (" + board.getId() + ") : Test board\nLists:\n"
             + taskList1.toString() + "\nTags:\n" +
-            "Tag (" + id + ") : tag1 -> background=#FFFFFF font=#000000\n" + "Members:\nUser1\n";
+            "tag1\n";
         assertEquals(boardString, board.toString());
         board.removeBoardMember("User1");
         String boardString2 = "Board (" + board.getId() + ") : Test board\nLists:\n"
                 + taskList1.toString() + "\nTags:\n" +
-                "Tag (" + id + ") : tag1 -> background=#FFFFFF font=#000000\n" + "Members:\n";
+                "tag1\n";
         assertEquals(boardString2, board.toString());
     }
 

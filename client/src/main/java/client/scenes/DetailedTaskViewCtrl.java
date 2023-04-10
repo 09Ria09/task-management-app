@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.CustomAlert;
+import client.Main;
 import client.customExceptions.BoardException;
 import client.customExceptions.TagException;
 import client.customExceptions.TaskException;
@@ -56,7 +57,6 @@ public class DetailedTaskViewCtrl {
     @FXML
     private StackPane taskDetails;
     private final BoardUtils boardUtils;
-
     private final NetworkUtils networkUtils;
 
     private final Consumer<Task> taskConsumer = (task) -> {
@@ -79,7 +79,8 @@ public class DetailedTaskViewCtrl {
     @Inject
     public DetailedTaskViewCtrl(final NetworkUtils networkUtils,
                                 final CustomAlert customAlert,
-                                final WebSocketUtils webSocketUtils) {
+                                final WebSocketUtils webSocketUtils,
+                                final MainCtrl mainCtrl) {
         this.networkUtils = networkUtils;
         this.taskListUtils = networkUtils.getTaskListUtils();
         this.taskUtils = networkUtils.getTaskUtils();
@@ -88,6 +89,7 @@ public class DetailedTaskViewCtrl {
         this.tagUtils = networkUtils.getTagUtils();
         this.customAlert = customAlert;
         this.webSocketUtils = webSocketUtils;
+        this.mainCtrl = mainCtrl;
     }
 
     public void initialize() {
@@ -457,7 +459,5 @@ public class DetailedTaskViewCtrl {
         return this.task;
     }
 
-    public void setMainCtrl(final MainCtrl mainCtrl) {
-        this.mainCtrl = mainCtrl;
-    }
+
 }
