@@ -147,7 +147,7 @@ public class SubTaskController {
         try {
             SubTask subTask = subTaskService.reorderSubTask(boardid, tasklistid,
                     taskid, subtaskid, newIndex);
-            messages.convertAndSend("/topic/" + boardid + "/" + tasklistid + "/modifytask",
+            messages.convertAndSend("/topic/" + boardid + "/modifytask",
                     taskService.getTask(boardid, tasklistid, taskid));
             return ResponseEntity.ok(subTask);
         } catch (NoSuchElementException e) {
