@@ -114,7 +114,7 @@ public class SceneManagementTest {
 
     @Test
     public void testGetAdminLogin() {
-        AdminLoginCtrl controller = new AdminLoginCtrl(null, null, null);
+        AdminLoginCtrl controller = new AdminLoginCtrl(null, new NetworkUtils(null, null, null, null, null, null), null);
         Pair<AdminLoginCtrl, Parent> controllerPair = new Pair<AdminLoginCtrl,
                 Parent>(controller, new Parent() {});
         ServerScenes serverScenes = new ServerScenes(null, null, null,
@@ -134,7 +134,7 @@ public class SceneManagementTest {
 
     @Test
     public void testGetCreateTask() {
-        CreateTaskCtrl controller = new CreateTaskCtrl(null, null, null, null, null);
+        CreateTaskCtrl controller = new CreateTaskCtrl(null, null, null, null, new NetworkUtils(null, null, null, null, null, null));
         Pair<CreateTaskCtrl, Parent> controllerPair = new Pair<CreateTaskCtrl,
                 Parent>(controller, new Parent() {});
         TaskScenes taskScenes = new TaskScenes(controllerPair, null);
@@ -143,7 +143,7 @@ public class SceneManagementTest {
 
     @Test
     public void testGetDetailedTaskView() {
-        DetailedTaskViewCtrl controller = new DetailedTaskViewCtrl(null, null, null,
+        DetailedTaskViewCtrl controller = new DetailedTaskViewCtrl(new NetworkUtils(null, null, null, null, null, null), null, null,
                 null);
         Pair<DetailedTaskViewCtrl, Parent> controllerPair = new Pair<DetailedTaskViewCtrl,
                 Parent>(controller, new Parent() {});
