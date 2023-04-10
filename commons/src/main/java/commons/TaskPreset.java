@@ -72,31 +72,19 @@ public class TaskPreset implements Serializable {
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
-        TaskPreset that = (TaskPreset) o;
-
-        if (id != that.id) return false;
-        if (isDefault != that.isDefault) return false;
-        if (!Objects.equals(name, that.name)) return false;
-        if (!Objects.equals(backgroundColor, that.backgroundColor))
-            return false;
-        return Objects.equals(fontColor, that.fontColor);
+        TaskPreset preset = (TaskPreset) o;
+        return id == preset.id
+                && isDefault == preset.isDefault
+                && Objects.equals(name, preset.name)
+                && Objects.equals(backgroundColor, preset.backgroundColor)
+                && Objects.equals(fontColor, preset.fontColor);
     }
 
     @Override
     public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (backgroundColor != null ? backgroundColor.hashCode() : 0);
-        result = 31 * result + (fontColor != null ? fontColor.hashCode() : 0);
-        result = 31 * result + (isDefault ? 1 : 0);
-        return result;
-    }
-
-    public long getId() {
-        return id;
+        return Objects.hash(id, name, backgroundColor, fontColor, isDefault);
     }
 }

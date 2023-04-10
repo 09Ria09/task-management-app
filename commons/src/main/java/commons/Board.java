@@ -228,10 +228,6 @@ public class Board {
         this.boardColorScheme = boardColorScheme;
     }
 
-    public void setId(final long boardId) {
-        this.id = boardId;
-    }
-
 
     public void addTaskPreset(final TaskPreset taskPreset) {
         taskPresets.add(taskPreset);
@@ -248,7 +244,7 @@ public class Board {
         for (TaskPreset preset : taskPresets) {
             if(preset.isDefault())
                 defaultPreset = preset;
-            if(preset.getId() == taskPresetId)
+            if(preset.id == taskPresetId)
                 taskPreset = preset;
         }
         for (TaskList taskList : taskLists) {
@@ -276,7 +272,7 @@ public class Board {
         }
         int index = -1;
         for (int i = 0; i < taskPresets.size(); i++) {
-            if (taskPresets.get(i).getId() == taskPreset.getId()) {
+            if (taskPresets.get(i).id == taskPreset.id) {
                 index = i;
                 break;
             }

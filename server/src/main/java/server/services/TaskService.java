@@ -155,7 +155,7 @@ public class TaskService {
         Board board = getBoard(boardid);
         Task task = getTask(boardid, listid, taskid);
 
-        task.setPreset(preset);
+        task.setTaskPreset(preset);
 
         boardRepository.save(board);
 
