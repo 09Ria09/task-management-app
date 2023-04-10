@@ -25,8 +25,6 @@ public class TaskList {
         this.tasks = new ArrayList<Task>();
     }
 
-
-
     public TaskList(final String name, final List<Task> tasks) {
         this.name = name;
         this.tasks = tasks;

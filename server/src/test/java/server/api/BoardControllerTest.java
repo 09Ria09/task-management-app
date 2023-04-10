@@ -74,7 +74,7 @@ public class BoardControllerTest {
     //Dorian I will need your help on betteer understanding this one
     @Test
     public void testDefaultBoardAfterSetup() {
-        assertEquals(2, service.getBoards().size());
+        assertEquals(3, service.getBoards().size());
     }
 
     @Test
@@ -126,13 +126,16 @@ public class BoardControllerTest {
         Board newBoard = new Board("New Board", List.of(), List.of());
         String requestBody = new ObjectMapper().writeValueAsString(newBoard);
         Mockito.when(boardService.addBoard(Mockito.any(Board.class))).thenReturn(newBoard);
+        Mockito.when(boardService.addBoardAndInit(Mockito.any(Board.class))).thenReturn(newBoard);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/boards/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("name", is("New Board")));
-        Mockito.verify(boardService, Mockito.times(1)).addBoard(Mockito.any(Board.class));
+        Mockito.verify(boardService, Mockito.times(1))
+            .addBoardAndInit(Mockito.any(Board.class));
+        Mockito.verify(boardService, Mockito.times(0)).addBoard(Mockito.any(Board.class));
     }
 
     @Test

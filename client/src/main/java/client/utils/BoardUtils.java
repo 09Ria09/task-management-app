@@ -7,30 +7,17 @@ import commons.Board;
 import commons.BoardColorScheme;
 import commons.TaskPreset;
 import commons.BoardEvent;
-import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 import javafx.util.Pair;
-import org.glassfish.jersey.client.ClientConfig;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
-import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
-//TODO
-/*
- * !
- * !    check if passing of serverAddress is correct and ask for feedback
- * on this aspect  - can't figure out how to properly organize this
- * such that there is one serverAddress that
- * changes everywhere like in a prototype bean
- * !    add method for getting all boards
- * !    reformat duplicate code - either use response handler
- * or leave as is
- */
+
 public class BoardUtils {
 
     private final ServerUtils server;
@@ -76,6 +63,7 @@ public class BoardUtils {
             return server.getRestUtils().handleResponse(response, Board.class, "addBoard");
         }
         catch(Exception e){
+            e.printStackTrace();
             throw new BoardException(e.getMessage());
         }
     }
@@ -192,11 +180,44 @@ public class BoardUtils {
 
 
 
-    public TaskPreset addTaskPreset(final long boardId, final TaskPreset taskPreset)
-            throws BoardException {
-        return null;
+    public TaskPreset addTaskPreset(final long boardId, final TaskPreset taskPreset){
+        RestUtils restUtils = server.getRestUtils();
+        Response response = restUtils.sendRequest(server.getServerAddress(),
+                "api/boards/" + boardId + "/addtaskpreset",
+                RestUtils.Methods.POST, taskPreset);
+        try {
+            return restUtils.handleResponse(response, TaskPreset.class, "addTaskPreset");
+        }
+        catch(Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
+    public TaskPreset removeTaskPreset(final long boardId, final long taskPresetId){
+        RestUtils restUtils = server.getRestUtils();
+        Response response = restUtils.sendRequest(server.getServerAddress(),
+                "api/boards/" + boardId + "/removetaskpreset/"+taskPresetId,
+                RestUtils.Methods.DELETE, null);
+        try {
+            return restUtils.handleResponse(response, TaskPreset.class, "removeTaskPreset");
+        }
+        catch(Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    public TaskPreset updateTaskPreset(final long boardId, final TaskPreset taskPreset){
+        RestUtils restUtils = server.getRestUtils();
+        Response response = restUtils.sendRequest(server.getServerAddress(),
+                "api/boards/" + boardId + "/updatetaskpreset",
+                RestUtils.Methods.PUT, taskPreset);
+        try {
+            return restUtils.handleResponse(response, TaskPreset.class, "updateTaskPreset");
+        }
+        catch(Exception e){
+            throw new RuntimeException(e);
+        }
+    }
 
 
     private ExecutorService exec = Executors.newSingleThreadExecutor();
@@ -205,13 +226,8 @@ public class BoardUtils {
         exec = Executors.newSingleThreadExecutor();
         exec.submit(() -> {
             while (!Thread.interrupted()) {
-                String serverAddress = server.getServerAddress();
-                Response response = ClientBuilder.newClient(new ClientConfig())
-                        .target(serverAddress)
-                        .path("api/boards/updates")
-                        .request()
-                        .accept(APPLICATION_JSON)
-                        .get();
+                Response response = server.getRestUtils().sendRequest(server.getServerAddress(),
+                        "api/boards/updates", RestUtils.Methods.GET, null);
                 if(response.getStatus() == 204 ) {
                     continue;
                 }

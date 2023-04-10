@@ -187,15 +187,6 @@ public class MainCtrl {
 
 
     /**
-     * Changes scene to a scene where a user can rename a task list.
-     */
-    public void showRenameList() {
-        primaryStage.setTitle("Talio: Rename List");
-        resize();
-        primaryStage.setScene(renameList);
-    }
-
-    /**
      * Shows the select server scene.
      */
     public void showSelectServer() {
@@ -232,6 +223,7 @@ public class MainCtrl {
     public void showColorManagementView(final Board board) {
         primaryStage.setTitle("Talio: color management view");
         colorManagementViewCtrl.setBoard(board);
+        colorManagementViewCtrl.populateTaskColorPresetList();
         resize();
         primaryStage.setScene(colorManagementView);
     }
@@ -245,15 +237,15 @@ public class MainCtrl {
         primaryStage.setTitle("Talio: Detailed Task View");
         resize();
         primaryStage.setScene(detailedTaskView);
-        detailedTaskViewCtrl.setTask(task);
         detailedTaskViewCtrl.setMainCtrl(this);
         detailedTaskViewCtrl.setListController(listController);
+        detailedTaskViewCtrl.setTask(task);
         detailedTaskViewCtrl.registerWebSockets();
     }
 
     private void resize(){
-        primaryStage.setHeight(primaryStage.getHeight());
-        primaryStage.setWidth(primaryStage.getWidth());
+        // primaryStage.setHeight(primaryStage.getHeight());
+        // primaryStage.setWidth(primaryStage.getWidth());
     }
 
     public void showTagOverview(final Board board) {

@@ -429,10 +429,11 @@ public class ListCtrl implements Initializable {
             if(simpleTaskName == null || simpleTaskName.isEmpty()) {
                 throw new TaskException("Task must have a name");
             } else {
-                Task task = new Task(simpleTaskName, "");
+                Task task = new Task(simpleTaskName, "",
+                    boardUtils.getBoard(boardID).findDefaultTaskPreset());
                 taskUtils.addTask(boardID, taskList.id, task);
             }
-        } catch (TaskException e) {
+        } catch (TaskException | BoardException e) {
             throw new TaskException("Task must have a name.");
         }
 
