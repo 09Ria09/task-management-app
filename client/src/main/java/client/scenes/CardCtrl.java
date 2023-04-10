@@ -12,7 +12,6 @@ import commons.Tag;
 import commons.Task;
 import commons.TaskList;
 import commons.TaskPreset;
-import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -24,8 +23,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.util.Duration;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -38,7 +35,7 @@ public class CardCtrl {
     private BoardOverviewCtrl boardOverviewCtrl;
 
     @FXML
-    private Label title;
+    public Label title;
 
     @FXML
     private Button editButton;
@@ -55,15 +52,11 @@ public class CardCtrl {
 
     @FXML
     private Rectangle progressBar;
-    private boolean selected;
     @FXML
     private StackPane progressPane;
 
     @FXML
     private ImageView descIcon;
-
-    @FXML
-    private ImageView arrowIcon;
 
     @FXML
     private FlowPane tagList;
@@ -103,30 +96,18 @@ public class CardCtrl {
         tagList.setVgap(5.00);
         cardPane.setOnMouseEntered(event -> onHover());
         cardPane.setOnMouseExited(event -> onUnhover());
-        cardPane.setOnMouseClicked(event -> {
-            PauseTransition pause = new PauseTransition(Duration.millis(250));
-            pause.setOnFinished(e -> {
-                if (event.getClickCount() == 1) {
-                    selectTask();
-                    cardPane.requestFocus();
-                }
-            });
-            pause.play();
-
-            if (event.getClickCount() == 2) {
-                pause.stop();
-                editTask();
-            }
-
-            event.consume();
-        });
         startShortcuts();
         editTitleTextField.addEventHandler(KeyEvent.KEY_PRESSED, this::handleEditTitle);
         TaskPreset preset = task.getTaskPreset();
         cardPane.setStyle(cardPane.getStyle() + "-fx-background-color: #" +
                 preset.getBackgroundColor().substring(2) + ";");
-        title.setStyle(title.getStyle() + "-fx-text-fill: #" +
-                preset.getFontColor().substring(2) + ";");
+    }
+
+    public void setSelected(final boolean selected){
+        Color color = Color.valueOf(task.getTaskPreset().getFontColor());
+        if(selected)
+            color = color.invert();
+        title.setTextFill(color);
     }
 
     private void setTags(final List<Tag> tags) {
@@ -285,24 +266,16 @@ public class CardCtrl {
      * When the card is hovered, the edit and delete buttons are shown
      */
     public void onHover() {
-        if (!selected) { // Apply hover styles only if the card is not selected
-            this.editButton.setOpacity(1.0d);
-            this.deleteButton.setOpacity(1.0d);
-            this.title.setFont(Font.font(18));
-            this.title.setTextFill(Color.BLACK);
-        }
+        this.editButton.setOpacity(1.0d);
+        this.deleteButton.setOpacity(1.0d);
     }
 
     /**
      * When the card is not hovered, the edit and delete buttons are hidden
      */
     public void onUnhover() {
-        if (!selected) { // Revert hover styles only if the card is not selected
-            this.editButton.setOpacity(0.0d);
-            this.deleteButton.setOpacity(0.0d);
-            this.title.setFont(Font.font(18));
-            this.title.setTextFill(Color.BLACK);
-        }
+        this.editButton.setOpacity(0.0d);
+        this.deleteButton.setOpacity(0.0d);
     }
 
     /**
@@ -345,19 +318,6 @@ public class CardCtrl {
      */
     public void onUnhoverDesc() {
         this.descButton.setStyle("-fx-background-color: transparent;");
-    }
-
-    public void selectTask() {
-        selected = true;
-        cardPane.setStyle(cardPane.getStyle()
-                + "-fx-border-color: #FFA500; -fx-border-width: 2px;");
-    }
-    //i have to fix the difference between hovering and selecting
-    public void deselectTask() {
-        selected = false;
-        cardPane.setStyle(cardPane.getStyle()
-                .replace("-fx-border-color: #FFA500; -fx-border-width: 2px;", ""));
-        onUnhover();
     }
 
     public void addTag() {
@@ -417,8 +377,6 @@ public class CardCtrl {
                 System.out.println(presetChange.getFontColor());
                 cardPane.setStyle("-fx-background-color: #"
                         + presetChange.getBackgroundColor().substring(2, 8) + ";");
-                title.setStyle("-fx-text-fill: #" +
-                        presetChange.getFontColor().substring(2, 8) + ";");
             }
         });
     }

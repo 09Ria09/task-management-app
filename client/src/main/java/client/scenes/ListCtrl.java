@@ -260,6 +260,8 @@ public class ListCtrl implements Initializable {
         setDragHandlers(controller);
         list.setCellFactory(lv -> {
             ListCell<Task> cell = new ListCell<>() {
+                public CardCtrl cardCtrl;
+                private boolean selected;
                 @Override
                 protected void updateItem(final Task task, final boolean empty) {
                     super.updateItem(task, empty);
@@ -270,22 +272,26 @@ public class ListCtrl implements Initializable {
                         try {
                             var cardLoader = new FXMLLoader(getClass().getResource("Card.fxml"));
                             Node card = cardLoader.load();
-                            CardCtrl cardCtrl = cardLoader.getController();
+                            cardCtrl = cardLoader.getController();
                             cardCtrl.initialize(task, controller,
                                     customAlert, boardOverviewCtrl, networkUtils, mainCtrl);
+                            cardCtrl.setSelected(selected);
                             setGraphic(card);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
                     }
                 }
+
+                @Override
+                public void updateSelected(final boolean selected) {
+                    super.updateSelected(selected);
+                    this.selected = selected;
+                    cardCtrl.setSelected(selected);
+                }
             };
             cell.setOnDragEntered(event -> {
-                if(cell.getIndex() >= taskList.getTasks().size()) {
-                    indexToDrop = taskList.getTasks().size();
-                } else {
-                    indexToDrop = cell.getIndex();
-                }
+                indexToDrop = Math.min(cell.getIndex(), taskList.getTasks().size());
                 event.consume();
             });
 
