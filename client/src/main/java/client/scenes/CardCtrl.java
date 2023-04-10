@@ -96,19 +96,15 @@ public class CardCtrl {
         tagList.setVgap(5.00);
         cardPane.setOnMouseEntered(event -> onHover());
         cardPane.setOnMouseExited(event -> onUnhover());
-        startShortcuts();
         editTitleTextField.addEventHandler(KeyEvent.KEY_PRESSED, this::handleEditTitle);
         TaskPreset preset = task.getTaskPreset();
         cardPane.setStyle(cardPane.getStyle() + "-fx-background-color: #" +
                 preset.getBackgroundColor().substring(2) + ";");
+        cardPane.setFocusTraversable(true);
+        startShortcuts();
     }
 
-    public void setSelected(final boolean selected){
-        Color color = Color.valueOf(task.getTaskPreset().getFontColor());
-        if(selected)
-            color = color.invert();
-        title.setTextFill(color);
-    }
+
 
     private void setTags(final List<Tag> tags) {
         for (Tag tag : tags) {
@@ -120,31 +116,32 @@ public class CardCtrl {
         }
     }
 
-    private void startShortcuts(){
-        cardPane.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
-            if (event.isShiftDown()) {
-                if (event.getCode() == KeyCode.UP) {
-                    moveUp();
-                } else if (event.getCode() == KeyCode.DOWN) {
-                    moveDown();
+    public void startShortcuts(){
+        cardPane.setOnKeyPressed( event -> {
+            System.out.println(event.getCode());
+                if (event.isShiftDown()) {
+                    if (event.getCode() == KeyCode.UP) {
+                        moveUp();
+                    } else if (event.getCode() == KeyCode.DOWN) {
+                        moveDown();
+                    }
+                } else if (event.getCode() == KeyCode.E) {
+                    editTitleTextField.setVisible(true);
+                    editTitleTextField.setManaged(true);
+                    editTitleTextField.requestFocus();
+                    editTitleTextField.setText(title.getText());
+                    event.consume();
+                } else if (event.getCode() == KeyCode.ENTER) {
+                    editTask();
+                } else if (event.getCode() == KeyCode.DELETE || event.getCode() == KeyCode.BACK_SPACE) {
+                    deleteTask();
+                } else if (event.getCode() == KeyCode.T) {
+                    addTag();
+                    event.consume();
+                } else if (event.getCode() == KeyCode.C) {
+                    setPreset();
+                    event.consume();
                 }
-            } else if (event.getCode() == KeyCode.E) {
-                editTitleTextField.setVisible(true);
-                editTitleTextField.setManaged(true);
-                editTitleTextField.requestFocus();
-                editTitleTextField.setText(title.getText());
-                event.consume();
-            } else if (event.getCode() == KeyCode.ENTER) {
-                editTask();
-            } else if (event.getCode() == KeyCode.DELETE || event.getCode() == KeyCode.BACK_SPACE) {
-                deleteTask();
-            } else if (event.getCode() == KeyCode.T) {
-                addTag();
-                event.consume();
-            } else if (event.getCode() == KeyCode.C) {
-                setPreset();
-                event.consume();
-            }
         });
 
     }

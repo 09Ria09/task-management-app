@@ -261,7 +261,6 @@ public class ListCtrl implements Initializable {
         list.setCellFactory(lv -> {
             ListCell<Task> cell = new ListCell<>() {
                 public CardCtrl cardCtrl;
-                private boolean selected;
                 @Override
                 protected void updateItem(final Task task, final boolean empty) {
                     super.updateItem(task, empty);
@@ -275,19 +274,11 @@ public class ListCtrl implements Initializable {
                             cardCtrl = cardLoader.getController();
                             cardCtrl.initialize(task, controller,
                                     customAlert, boardOverviewCtrl, networkUtils, mainCtrl);
-                            cardCtrl.setSelected(selected);
                             setGraphic(card);
-                        } catch (IOException e) {
+                            } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
                     }
-                }
-
-                @Override
-                public void updateSelected(final boolean selected) {
-                    super.updateSelected(selected);
-                    this.selected = selected;
-                    cardCtrl.setSelected(selected);
                 }
             };
             cell.setOnDragEntered(event -> {
