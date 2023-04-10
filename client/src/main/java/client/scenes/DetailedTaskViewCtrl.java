@@ -75,7 +75,7 @@ public class DetailedTaskViewCtrl {
 
 
     @Inject
-    public DetailedTaskViewCtrl(final TaskListUtils taskListUtils,
+    public DetailedTaskViewCtrl(final TaskListUtils taskListUtils, final MainCtrl mainCtrl,
                                 final TaskUtils taskUtils, final CustomAlert customAlert,
                                 final SubTaskUtils subTaskUtils, final TagUtils tagUtils,
                                 final WebSocketUtils webSocketUtils, final BoardUtils boardUtils) {
@@ -86,6 +86,7 @@ public class DetailedTaskViewCtrl {
         this.webSocketUtils = webSocketUtils;
         this.tagUtils = tagUtils;
         this.boardUtils = boardUtils;
+        this.mainCtrl = mainCtrl;
     }
 
     public void initialize() {
@@ -452,7 +453,4 @@ public class DetailedTaskViewCtrl {
         return this.task;
     }
 
-    public void setMainCtrl(final MainCtrl mainCtrl) {
-        this.mainCtrl = mainCtrl;
-    }
 }

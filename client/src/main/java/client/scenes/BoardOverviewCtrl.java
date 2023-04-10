@@ -160,8 +160,8 @@ public class BoardOverviewCtrl {
         var kids = listsContainer.getChildren();
         var listLoader = new FXMLLoader(getClass().getResource("List.fxml"));
         listLoader.setControllerFactory(type ->
-                new ListCtrl(mainCtrl, new TaskListUtils(server),
-            new TaskUtils(server), customAlert,
+                new ListCtrl(mainCtrl, new TaskListUtils(server), new TagUtils(server),
+                new TaskUtils(server), customAlert,
                 boardUtils, new Pair(new LayoutUtils(), webSocketUtils), this));
         try {
             VBox list = listLoader.load();

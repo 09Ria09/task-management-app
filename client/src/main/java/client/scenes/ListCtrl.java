@@ -69,18 +69,20 @@ public class ListCtrl implements Initializable {
     private final LayoutUtils layoutUtils;
     private final WebSocketUtils webSocketUtils;
 
-
+    private final TagUtils tagUtils;
 
 
 
     @Inject
     public ListCtrl(final MainCtrl mainCtrl, final TaskListUtils taskListUtils,
+                    final TagUtils tagUtils,
                     final TaskUtils taskUtils, final CustomAlert customAlert,
                     final BoardUtils boardUtils, final Pair<LayoutUtils,
             WebSocketUtils> layoutSocketUtils, final BoardOverviewCtrl boardOverviewCtrl) {
         this.taskListUtils = taskListUtils;
         this.taskUtils = taskUtils;
         this.mainCtrl = mainCtrl;
+        this.tagUtils = tagUtils;
         this.customAlert = customAlert;
         this.boardOverviewCtrl = boardOverviewCtrl;
         this.layoutUtils = layoutSocketUtils.getKey();
@@ -266,7 +268,7 @@ public class ListCtrl implements Initializable {
                             var cardLoader = new FXMLLoader(getClass().getResource("Card.fxml"));
                             Node card = cardLoader.load();
                             CardCtrl cardCtrl = cardLoader.getController();
-                            cardCtrl.initialize(task, controller, taskListUtils,
+                            cardCtrl.initialize(task, controller, tagUtils, taskListUtils,
                                     customAlert, taskUtils, mainCtrl, boardOverviewCtrl);
                             setGraphic(card);
                         } catch (IOException e) {

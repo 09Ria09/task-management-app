@@ -258,7 +258,6 @@ public class MainCtrl {
         resize();
         setShortcutsPopup(detailedTaskView);
         primaryStage.setScene(detailedTaskView);
-        detailedTaskViewCtrl.setMainCtrl(this);
         detailedTaskViewCtrl.setListController(listController);
         detailedTaskViewCtrl.setTask(task);
         detailedTaskViewCtrl.registerWebSockets();

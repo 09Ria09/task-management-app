@@ -2,6 +2,7 @@ package client.services;
 
 import client.scenes.MainCtrl;
 import client.utils.ServerUtils;
+import com.google.inject.Inject;
 
 import java.util.Optional;
 
@@ -9,7 +10,7 @@ public class ServerService {
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
-
+    @Inject
     public ServerService(final ServerUtils server, final MainCtrl mainCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
