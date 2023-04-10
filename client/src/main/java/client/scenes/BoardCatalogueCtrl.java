@@ -49,6 +49,10 @@ public class BoardCatalogueCtrl implements Initializable {
         boardsMap=new HashMap<>();
     }
 
+    public WebSocketUtils getWebSocketUtils() {
+        return webSocketUtils;
+    }
+
     /** Initializes the catalogue */
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
