@@ -18,30 +18,30 @@ public class TestMessageBrokerRegistry extends MessageBrokerRegistry {
     public TestMessageBrokerRegistry() {
         super(new SubscribableChannel() {
             @Override
-            public boolean subscribe(MessageHandler handler) {
+            public boolean subscribe(final MessageHandler handler) {
                 return false;
             }
 
             @Override
-            public boolean unsubscribe(MessageHandler handler) {
+            public boolean unsubscribe(final MessageHandler handler) {
                 return false;
             }
 
             @Override
-            public boolean send(Message<?> message, long timeout) {
+            public boolean send(final Message<?> message, long timeout) {
                 return false;
             }
         }, (message, timeout) -> false);
     }
 
     @Override
-    public SimpleBrokerRegistration enableSimpleBroker(String... destinationPrefixes) {
+    public SimpleBrokerRegistration enableSimpleBroker(final String... destinationPrefixes) {
         this.destinationPrefixes.addAll(List.of(destinationPrefixes));
         return null;
     }
 
     @Override
-    public MessageBrokerRegistry setApplicationDestinationPrefixes(String... prefixes) {
+    public MessageBrokerRegistry setApplicationDestinationPrefixes(final String... prefixes) {
         appPrefixes.addAll(List.of(prefixes));
         return null;
     }

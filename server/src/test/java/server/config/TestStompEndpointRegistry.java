@@ -13,23 +13,24 @@ public class TestStompEndpointRegistry implements StompEndpointRegistry {
 
     private List<String> endpoints = new ArrayList<>();
     @Override
-    public StompWebSocketEndpointRegistration addEndpoint(String... paths) {
+    public StompWebSocketEndpointRegistration addEndpoint(final String... paths) {
         endpoints.addAll(List.of(paths));
         return null;
     }
 
     @Override
-    public void setOrder(int order) {
+    public void setOrder(final int order) {
 
     }
 
     @Override
-    public void setUrlPathHelper(UrlPathHelper urlPathHelper) {
+    public void setUrlPathHelper(final UrlPathHelper urlPathHelper) {
 
     }
 
     @Override
-    public WebMvcStompEndpointRegistry setErrorHandler(StompSubProtocolErrorHandler errorHandler) {
+    public WebMvcStompEndpointRegistry setErrorHandler(
+            final StompSubProtocolErrorHandler errorHandler) {
         return null;
     }
 
