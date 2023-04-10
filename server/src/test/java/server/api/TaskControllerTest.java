@@ -274,6 +274,22 @@ public class TaskControllerTest {
     }
 
     @Test
+    public void testSetPresetEndpointInternalError() throws Exception {
+        TaskPreset preset = new TaskPreset("A-HA");
+        String requestBody = new ObjectMapper().writeValueAsString(preset);
+        Mockito.when(taskService.setPreset(1, 2, 3, preset))
+                .thenThrow(RuntimeException.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/tasks/1/2/3/preset")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isInternalServerError());
+
+        Mockito.verify(taskService, Mockito.times(1))
+                .setPreset(1, 2, 3, preset);
+    }
+
+    @Test
     public void testSetPresetEndpointBadRequest() throws Exception {
         TaskPreset preset = new TaskPreset("A-HA");
         String requestBody = new ObjectMapper().writeValueAsString(null);

@@ -1,8 +1,7 @@
 package server.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import commons.Board;
-import commons.BoardColorScheme;
+import commons.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -303,10 +302,111 @@ public class BoardControllerTest {
     @Test
     public void testSetColorSchemeEndpointNotFound() throws Exception {
         Mockito.when(boardService.getBoard(111)).thenThrow(NoSuchElementException.class);
+        String request = new ObjectMapper().writeValueAsString(new BoardColorScheme());
+        mockMvc.perform(put("/api/boards/111/setboardcolorscheme")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(request))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testSetColorSchemeEndpoint() throws Exception {
+        Board b = new Board();
+        BoardColorScheme colorScheme = new BoardColorScheme();
+        b.setBoardColorScheme(colorScheme);
+        String request = new ObjectMapper().writeValueAsString(colorScheme);
+        Mockito.when(boardService.getBoard(111)).thenReturn(b);
+        Mockito.when(boardService.setBoardColorScheme(111, colorScheme)).thenReturn(colorScheme);
 
         mockMvc.perform(put("/api/boards/111/setboardcolorscheme")
-                        .param("boardColorScheme", new ObjectMapper()
-                                .writeValueAsString(new BoardColorScheme())))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(request))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testDeleteTaskPresetEndpoint() throws Exception {
+        TaskPreset t = new TaskPreset("a");
+        t.id = 2;
+        Board b = new Board("Board", List.of(), List.of());
+        b.addTaskPreset(t);
+        b.id = 1;
+        Mockito.when(boardService.getBoard(1)).thenReturn(b);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/1/removetaskpreset/2"))
+                .andExpect(status().isOk());
+        Mockito.verify(boardService, Mockito.times(1)).removeTaskPreset(1, 2);
+    }
+
+    @Test
+    public void testDeleteTaskPresetEndpointNotFound() throws Exception {
+        TaskPreset t = new TaskPreset("a");
+        t.id = 3;
+        Board b = new Board("Board", List.of(), List.of());
+        b.addTaskPreset(t);
+        b.id = 1;
+        Mockito.when(boardService.getBoard(1)).thenReturn(b);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/1/removetaskpreset/2"))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testupdateTaskPresetEndpoint() throws Exception {
+        Board b = new Board();
+        TaskPreset preset = new TaskPreset("YOUPIEEE");
+        preset.id = 4;
+        String request = new ObjectMapper().writeValueAsString(preset);
+        Mockito.when(boardService.getBoard(11)).thenReturn(b);
+        Mockito.when(boardService.updateTaskPreset(11, preset)).thenReturn(preset);
+
+        mockMvc.perform(put("/api/boards/11/updatetaskpreset")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(request))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testUpdateTaskPresetEndpointBadRequest() throws Exception {
+        Board b = new Board();
+        TaskPreset preset = new TaskPreset("YOUPIEEE");
+        preset.id = 4;
+        String request = new ObjectMapper().writeValueAsString(preset);
+        Mockito.when(boardService.getBoard(11)).thenReturn(b);
+        Mockito.when(boardService.updateTaskPreset(11, preset)).thenReturn(preset);
+
+        mockMvc.perform(put("/api/boards/111/updatetaskpreset")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(request))
+                .andExpect(status().isBadRequest());
+    }
+    @Test
+    public void testAddTaskPresetEndpointBadRequest() throws Exception {
+        Board b = new Board();
+        TaskPreset preset = new TaskPreset("YOUPIEEE");
+        preset.id = 4;
+        String request = new ObjectMapper().writeValueAsString(preset);
+        Mockito.when(boardService.getBoard(11)).thenReturn(b);
+        Mockito.when(boardService.setTaskPreset(11, preset)).thenReturn(preset);
+
+        mockMvc.perform(post("/api/boards/111/addtaskpreset")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(request))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testAddTaskPresetEndpoint() throws Exception {
+        Board b = new Board();
+        TaskPreset preset = new TaskPreset("YOUPIEEE");
+        preset.id = 4;
+        String request = new ObjectMapper().writeValueAsString(preset);
+        Mockito.when(boardService.getBoard(11)).thenReturn(b);
+        Mockito.when(boardService.setTaskPreset(11, preset)).thenReturn(preset);
+
+        mockMvc.perform(post("/api/boards/11/addtaskpreset")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(request))
+                .andExpect(status().isOk());
     }
 }
