@@ -86,7 +86,8 @@ public class CardCtrl {
      */
     @Inject
     public void initialize(final Task task, final ListCtrl listCtrl,
-                            final CustomAlert customAlert, final BoardOverviewCtrl boardOverviewCtrl,
+                            final CustomAlert customAlert,
+                           final BoardOverviewCtrl boardOverviewCtrl,
                            final NetworkUtils networkUtils, final MainCtrl mainCtrl) {
         this.listController = listCtrl;
         this.customAlert = customAlert;

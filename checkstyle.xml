@@ -22,7 +22,7 @@
         <module name="ParameterNumber">
             <property name="severity" value="warning"/>
             <property name="tokens" value="METHOD_DEF, CTOR_DEF"/>
-            <property name="max" value="7"/>
+            <property name="max" value="6"/>
         </module>
         <module name="Indentation">
             <property name="severity" value="warning"/>

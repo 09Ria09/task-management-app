@@ -1,7 +1,6 @@
 package client.scenes;
 
 import client.CustomAlert;
-import client.Main;
 import client.customExceptions.BoardException;
 import client.customExceptions.TagException;
 import client.customExceptions.TaskException;
