@@ -2,6 +2,7 @@ package server.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import commons.Task;
+import commons.TaskPreset;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -254,6 +255,50 @@ public class TaskControllerTest {
                         .param("description", "Test 2"))
                 .andExpect(status().isOk());
         Mockito.verify(taskService, Mockito.times(1)).editDescription(1, 2, 4, "Test 2");
+    }
+
+    @Test
+    public void testSetPresetEndpointNotFound() throws Exception {
+        TaskPreset preset = new TaskPreset("A-HA");
+        String requestBody = new ObjectMapper().writeValueAsString(preset);
+        Mockito.when(taskService.setPreset(1, 2, 3, preset))
+                .thenThrow(NoSuchElementException.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/tasks/1/2/3/preset")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isNotFound());
+
+        Mockito.verify(taskService, Mockito.times(1))
+                .setPreset(1, 2, 3, preset);
+    }
+
+    @Test
+    public void testSetPresetEndpointBadRequest() throws Exception {
+        TaskPreset preset = new TaskPreset("A-HA");
+        String requestBody = new ObjectMapper().writeValueAsString(null);
+        Mockito.when(taskService.setPreset(1, 2, 3, preset))
+                .thenThrow(NoSuchElementException.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/tasks/1/2/3/preset")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testSetPresetEndpoint() throws Exception {
+        TaskPreset preset = new TaskPreset("A-HA");
+        String requestBody = new ObjectMapper().writeValueAsString(preset);
+        Task t = new Task("a", "b");
+        t.setPreset(preset);
+        Mockito.when(taskService.setPreset(1, 2, 3, preset))
+                .thenReturn(t);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/tasks/1/2/3/preset")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isOk());
     }
 
 }

@@ -3,6 +3,7 @@ package server.services;
 import commons.Board;
 import commons.Task;
 import commons.TaskList;
+import commons.TaskPreset;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -104,5 +105,18 @@ public class TaskServiceTest {
         assertEquals(t, service.getTask(b.id, l.id, t.id));
         service.removeTaskById(b.id, l.id, t.id);
         assertThrows(NoSuchElementException.class, () -> service.getTask(b.id, l.id, t.id));
+    }
+
+    @Test
+    public void testSetPresetTask(){
+        Board b = new Board();
+        TaskList l = new TaskList("list1");
+        Task t = new Task("a", "b");
+        boardService.addBoard(b);
+        listService.addList(b.id, l);
+        service.addTask(b.id, l.id, t);
+        TaskPreset preset = new TaskPreset("WAW");
+        service.setPreset(b.id, l.id, t.id, preset);
+        assertEquals(preset, service.getTask(b.id, l.id, t.id).getTaskPreset());
     }
 }

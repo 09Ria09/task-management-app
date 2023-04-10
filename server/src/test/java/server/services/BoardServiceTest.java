@@ -95,13 +95,42 @@ public class BoardServiceTest {
     @Test
     public void addTaskPreset(){
         Board board = new Board("test", List.of(), List.of());
-        TaskPreset preset1 = new TaskPreset("task1", board);
-        TaskPreset preset2 = new TaskPreset("task2", board);
+        TaskPreset preset1 = new TaskPreset("task1");
+        TaskPreset preset2 = new TaskPreset("task2");
         service.addBoard(board);
         board.id = 3;
         service.setTaskPreset(3, preset1);
         board.id = 3;
         assertFalse(service.getBoard(3).getTaskPresets().contains(preset2));
         assertTrue(service.getBoard(3).getTaskPresets().contains(preset1));
+    }
+
+    @Test
+    public void removeTaskPreset(){
+        Board board = new Board("test", List.of(), List.of());
+        TaskPreset preset1 = new TaskPreset("Dire");
+        TaskPreset preset2 = new TaskPreset("Straits");
+        service.addBoard(board);
+        board.id = 3;
+        service.setTaskPreset(3, preset1);
+        board.id = 3;
+        assertFalse(service.getBoard(3).getTaskPresets().contains(preset2));
+        assertTrue(service.getBoard(3).getTaskPresets().contains(preset1));
+        service.removeTaskPreset(3, preset1.id);
+        assertFalse(service.getBoard(3).getTaskPresets().contains(preset1));
+    }
+
+    @Test
+    public void updateTaskPreset(){
+        Board board = new Board("test", List.of(), List.of());
+        TaskPreset preset1 = new TaskPreset("Oasis");
+        service.addBoard(board);
+        board.id = 3;
+        service.setTaskPreset(3, preset1);
+        board.id = 3;
+        assertEquals("Oasis", service.getBoard(3).getTaskPresets().get(0).getName());
+        preset1.setName("sisaO");
+        service.updateTaskPreset(3, preset1);
+        assertEquals("sisaO", service.getBoard(3).getTaskPresets().get(0).getName());
     }
 }
