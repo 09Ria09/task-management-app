@@ -307,7 +307,7 @@ public class TaskControllerTest {
         TaskPreset preset = new TaskPreset("A-HA");
         String requestBody = new ObjectMapper().writeValueAsString(preset);
         Task t = new Task("a", "b");
-        t.setPreset(preset);
+        t.setTaskPreset(preset);
         Mockito.when(taskService.setPreset(1, 2, 3, preset))
                 .thenReturn(t);
 
