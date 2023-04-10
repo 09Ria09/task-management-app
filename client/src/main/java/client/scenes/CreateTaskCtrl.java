@@ -1,7 +1,9 @@
 package client.scenes;
 
 import client.CustomAlert;
+import client.customExceptions.BoardException;
 import client.customExceptions.TagException;
+import client.utils.BoardUtils;
 import client.utils.ServerUtils;
 import client.utils.TagUtils;
 import client.utils.WebSocketUtils;
@@ -46,18 +48,21 @@ public class CreateTaskCtrl {
     @FXML
     private TextArea taskDesc;
 
+    BoardUtils boardUtils;
+
     //this sets up the server, mainctrl and listctrl variables
     @Inject
     public CreateTaskCtrl(final ServerUtils server, final MainCtrl mainCtrl,
                           final BoardCatalogueCtrl boardCatalogueCtrl,
                           final TagUtils tagUtils, final CustomAlert customAlert,
-                          final WebSocketUtils webSocketUtils) {
+                          final WebSocketUtils webSocketUtils, final BoardUtils boardUtils) {
         this.mainCtrl = mainCtrl;
         this.server = server;
         this.boardCatalogueCtrl=boardCatalogueCtrl;
         this.tagUtils = tagUtils;
         this.customAlert = customAlert;
         this.webSocketUtils = webSocketUtils;
+        this.boardUtils = boardUtils;
     }
 
     private void setTagsList() {
@@ -122,12 +127,17 @@ public class CreateTaskCtrl {
     //this is run to get the description and name of
     //the task out of the text boxes and to create a new Task object
     private Task getTask() {
-        Task task = new Task(taskName.getText(), taskDesc.getText());
-        List<Tag> taskTags = new ArrayList<>(tagsView.getItems());
-        for(Tag tag : taskTags) {
-            task.addTag(tag);
+        try {
+            Task task = new Task(taskName.getText(), taskDesc.getText(),
+                boardUtils.getBoard(listCtrl.getBoardID()).findDefaultTaskPreset());
+            List<Tag> taskTags = new ArrayList<>(tagsView.getItems());
+            for(Tag tag : taskTags) {
+                task.addTag(tag);
+            }
+            return task;
+        } catch (BoardException e) {
+            throw new RuntimeException(e);
         }
-        return task;
     }
 
     //this clears the text fields of the UI to allow them to be reusable

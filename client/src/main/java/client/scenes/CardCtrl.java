@@ -8,6 +8,7 @@ import client.utils.TaskUtils;
 import commons.Tag;
 import commons.Task;
 import commons.TaskList;
+import commons.TaskPreset;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -51,6 +52,9 @@ public class CardCtrl {
     @FXML
     private FlowPane tagList;
 
+    @FXML
+    private Pane cardPane;
+
     private MainCtrl mainCtrl;
     private ListCtrl listController;
     private TaskListUtils taskListUtils;
@@ -75,6 +79,12 @@ public class CardCtrl {
 
         tagList.setHgap(5.00);
         tagList.setVgap(5.00);
+
+        TaskPreset preset = task.getTaskPreset();
+        cardPane.setStyle(cardPane.getStyle() +"-fx-background-color: #" +
+            preset.getBackgroundColor().substring(2) + ";");
+        title.setStyle(title.getStyle()+ "-fx-text-fill: #" +
+            preset.getFontColor().substring(2) + ";");
     }
 
     private void setTags(final List<Tag> tags) {

@@ -24,7 +24,7 @@ public class CustomAlert {
         var alert = new Alert(Alert.AlertType.ERROR);
         alert.initModality(Modality.APPLICATION_MODAL);
         alert.setHeaderText("Oops, something went wrong!");
-        alert.setContentText("We're sorry :( one of us made a mistake : \n"+ message);
+        alert.setContentText(message);
         //custom error image
         ImageView imageView = new ImageView(new Image("client/images/error.png"));
         imageView.setFitWidth(50);
