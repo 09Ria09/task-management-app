@@ -8,6 +8,7 @@ import client.utils.*;
 import com.google.inject.Inject;
 import commons.*;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -72,6 +73,10 @@ public class DetailedTaskViewCtrl {
             if (task.id == this.task.id)
                 this.setTask(task);
         });
+    };
+
+    private final ChangeListener<TaskPreset> presetListener = (observable, oldValue, newValue) -> {
+        changePreset(presetChoice.getValue());
     };
 
 
@@ -291,15 +296,14 @@ public class DetailedTaskViewCtrl {
      */
     public void presetUpdate() {
         try {
+            presetChoice.valueProperty().removeListener(presetListener);
             presetChoice.getItems()
                     .setAll(boardUtils.getBoard(listController.getBoardID()).getTaskPresets());
             for (TaskPreset preset : presetChoice.getItems()) {
                 if (preset.equals(task.getTaskPreset()))
                     presetChoice.setValue(preset);
             }
-            presetChoice.valueProperty().addListener((observable, oldValue, newValue) -> {
-                changePreset(presetChoice.getValue());
-            });
+            presetChoice.valueProperty().addListener(presetListener);
         } catch (BoardException e) {
             throw new RuntimeException(e);
         }
@@ -439,19 +443,12 @@ public class DetailedTaskViewCtrl {
             SubTask updatedSubTask = subTaskUtils.addSubTask(listController.getBoardID(),
                     listController.getTaskList().id, task.id, subTask);
             subTasks.getItems().add(updatedSubTask);
-            refreshSubTasks();
         } catch (TaskException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
             alert.initModality(Modality.APPLICATION_MODAL);
             alert.setContentText(e.getMessage());
             alert.showAndWait();
         }
-    }
-
-    public void refreshSubTasks() throws TaskException {
-        Task updatedTask = taskUtils.getTask(listController.getBoardID(),
-                listController.getTaskList().id, task.id);
-        setTask(updatedTask);
     }
 
     public Task getTask() {
