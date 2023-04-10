@@ -2,7 +2,6 @@ package client.scenes;
 
 import client.CustomAlert;
 import client.customExceptions.SubTaskException;
-import client.customExceptions.TaskException;
 import client.utils.NetworkUtils;
 import client.utils.SubTaskUtils;
 import client.utils.TaskListUtils;
