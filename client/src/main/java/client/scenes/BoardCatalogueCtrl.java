@@ -3,6 +3,7 @@ package client.scenes;
 import client.CustomAlert;
 import client.customExceptions.BoardException;
 import client.utils.BoardUtils;
+import client.utils.NetworkUtils;
 import client.utils.ServerUtils;
 import client.utils.WebSocketUtils;
 import com.google.inject.Inject;
@@ -25,8 +26,11 @@ import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
 public class BoardCatalogueCtrl implements Initializable {
-    ServerUtils serverUtils;
+
     WebSocketUtils webSocketUtils;
+
+    NetworkUtils networkUtils;
+    ServerUtils serverUtils;
     BoardUtils boardUtils;
     MainCtrl mainCtrl;
     EditBoardCtrl editBoardCtrl;
@@ -37,12 +41,13 @@ public class BoardCatalogueCtrl implements Initializable {
     TabPane catalogue;
 
     @Inject
-    public BoardCatalogueCtrl(final ServerUtils serverUtils, final WebSocketUtils webSocketUtils,
-                              final BoardUtils boardUtils, final MainCtrl mainCtrl,
+    public BoardCatalogueCtrl(final WebSocketUtils webSocketUtils,
+                              final MainCtrl mainCtrl, final NetworkUtils networkUtils,
                               final CustomAlert customAlert, final EditBoardCtrl editBoardCtrl){
-        this.serverUtils=serverUtils;
+        this.networkUtils = networkUtils;
         this.webSocketUtils = webSocketUtils;
-        this.boardUtils=boardUtils;
+        this.serverUtils=networkUtils.getServerUtils();
+        this.boardUtils=networkUtils.getBoardUtils();
         this.mainCtrl=mainCtrl;
         this.customAlert=customAlert;
         this.editBoardCtrl=editBoardCtrl;
@@ -57,8 +62,8 @@ public class BoardCatalogueCtrl implements Initializable {
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
         var joinBoardLoader = new FXMLLoader(getClass().getResource("JoinBoard.fxml"));
-        joinBoardLoader.setControllerFactory(type -> new JoinBoardCtrl(serverUtils, mainCtrl,
-            customAlert, boardUtils, this, webSocketUtils ));
+        joinBoardLoader.setControllerFactory(type -> new JoinBoardCtrl(networkUtils, mainCtrl,
+            customAlert, this, webSocketUtils ));
         try {
             Node joinBoard = joinBoardLoader.load();
             var tab=new Tab("Add Board +", joinBoard);
@@ -107,7 +112,7 @@ public class BoardCatalogueCtrl implements Initializable {
             throws IOException {
         var boardLoader = new FXMLLoader(getClass().getResource("BoardOverview.fxml"));
         BoardOverviewCtrl boardOverviewCtrl = new BoardOverviewCtrl(mainCtrl,
-                customAlert, boardUtils, this, editBoardCtrl, webSocketUtils);
+                customAlert, networkUtils, this, editBoardCtrl, webSocketUtils);
         boardOverviewCtrl.setCurrentBoardId(board.id);
         boardOverviewCtrl.setTab(tab);
         boardLoader.setControllerFactory(type -> boardOverviewCtrl);

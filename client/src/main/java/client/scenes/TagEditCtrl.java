@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.CustomAlert;
 import client.customExceptions.TagException;
+import client.utils.NetworkUtils;
 import client.utils.TagUtils;
 import commons.Board;
 import commons.Tag;
@@ -33,7 +34,9 @@ public class TagEditCtrl {
     private Board board;
     private CustomAlert customAlert;
 
-    public void initialize(final Tag tag, final TagUtils tagUtils,
+    private NetworkUtils networkUtils;
+
+    public void initialize(final Tag tag, final NetworkUtils networkUtils,
                            final Board board, final CustomAlert customAlert) {
         this.tag = tag;
         labelName.setText(tag.getName());
@@ -41,7 +44,8 @@ public class TagEditCtrl {
             " -fx-background-color: #" + tag.getColorBackground() + ";");
 
         this.labelName.setStyle("-fx-text-fill: #" + tag.getColorFont() + ";");
-        this.tagUtils = tagUtils;
+        this.networkUtils = networkUtils;
+        this.tagUtils = networkUtils.getTagUtils();
         this.board = board;
         this.customAlert = customAlert;
     }

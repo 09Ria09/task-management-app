@@ -3,6 +3,7 @@ package client.scenes;
 import client.CustomAlert;
 import client.customExceptions.BoardException;
 import client.utils.BoardUtils;
+import client.utils.NetworkUtils;
 import client.utils.ServerUtils;
 import client.utils.WebSocketUtils;
 import com.google.inject.Inject;
@@ -48,6 +49,7 @@ public class ColorManagementViewCtrl implements Initializable {
 
     private String taskColorPresetName;
 
+    private NetworkUtils networkUtils;
     private BoardUtils boardUtils;
     private final WebSocketUtils webSocketUtils;
     private Board board;
@@ -55,13 +57,14 @@ public class ColorManagementViewCtrl implements Initializable {
 
 
     @Inject
-    public ColorManagementViewCtrl(final ServerUtils server, final MainCtrl mainCtrl,
-                                   final BoardUtils boardUtils,
+    public ColorManagementViewCtrl(final MainCtrl mainCtrl,
+                                   final NetworkUtils networkUtils,
                                    final WebSocketUtils webSocketUtils,
                                    final CustomAlert customAlert) {
-        this.server = server;
         this.mainCtrl = mainCtrl;
-        this.boardUtils = boardUtils;
+        this.networkUtils = networkUtils;
+        this.server = networkUtils.getServerUtils();
+        this.boardUtils = networkUtils.getBoardUtils();
         this.webSocketUtils = webSocketUtils;
         this.customAlert = customAlert;
     }
@@ -86,7 +89,7 @@ public class ColorManagementViewCtrl implements Initializable {
                             var presetLoader = new FXMLLoader(getClass()
                                 .getResource("TaskColorPresetCard.fxml"));
                             presetLoader.setControllerFactory(type ->
-                                new TaskColorPresetCardCtrl(boardUtils, board,
+                                new TaskColorPresetCardCtrl(networkUtils, board,
                                     customAlert, ctrl));
                             Node preset = presetLoader.load();
                             TaskColorPresetCardCtrl presetCtrl =

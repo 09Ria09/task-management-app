@@ -4,6 +4,7 @@ import client.scenes.MainCtrl;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 
+import javax.inject.Inject;
 import java.util.Optional;
 
 public class ServerService {

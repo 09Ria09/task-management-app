@@ -148,14 +148,12 @@ public class MainCtrl {
 
     public void showAdminLogin() {
         primaryStage.setTitle("Talio: Admin Portal");
-        resize();
         setShortcutsPopup(adminLogin);
         primaryStage.setScene(adminLogin);
     }
 
     public void showAdminBoard() {
         primaryStage.setTitle("Talio: Admin Boards");
-        resize();
         setShortcutsPopup(adminBoards);
         primaryStage.setScene(adminBoards);
     }
@@ -166,7 +164,6 @@ public class MainCtrl {
     public void showCreateList(final long boardId) {
         primaryStage.setTitle("Talio: Create List");
         createListCtrl.setBoardId(boardId);
-        resize();
         setShortcutsPopup(createList);
         primaryStage.setScene(createList);
     }
@@ -176,7 +173,6 @@ public class MainCtrl {
      */
     public void showBoardCatalogue() {
         primaryStage.setTitle("Talio");
-        resize();
         setShortcutsPopup(boardCatalogue);
         primaryStage.setScene(boardCatalogue);
         boardCatalogueCtrl.createWebSockets();
@@ -185,7 +181,6 @@ public class MainCtrl {
 
     public void showEditBoard() {
         primaryStage.setTitle("Talio: Edit Board");
-        resize();
         setShortcutsPopup(editBoard);
         primaryStage.setScene(editBoard);
     }
@@ -195,7 +190,6 @@ public class MainCtrl {
      */
     public void showCreateTask(final ListCtrl ctrl) {
         primaryStage.setTitle("Talio: Create Task");
-        resize();
         setShortcutsPopup(createTask);
         createTaskCtrl.setListCtrl(ctrl);
         primaryStage.setScene(createTask);
@@ -207,7 +201,6 @@ public class MainCtrl {
      */
     public void showSelectServer() {
         primaryStage.setTitle("Talio: Select Your Server");
-        resize();
         setShortcutsPopup(selectServer);
         primaryStage.setScene(selectServer);
     }
@@ -216,7 +209,6 @@ public class MainCtrl {
      */
     public void showWrongServer() {
         primaryStage.setTitle("Talio: server not found");
-        resize();
         setShortcutsPopup(wrongServer);
         primaryStage.setScene(wrongServer);
     }
@@ -225,7 +217,6 @@ public class MainCtrl {
      */
     public void showTimeout() {
         primaryStage.setTitle("Talio: server timed out");
-        resize();
         setShortcutsPopup(serverTimeout);
         primaryStage.setScene(serverTimeout);
     }
@@ -234,7 +225,6 @@ public class MainCtrl {
      */
     public void showUnexpectedError() {
         primaryStage.setTitle("Talio: unexpected error");
-        resize();
         setShortcutsPopup(unexpectedError);
         primaryStage.setScene(unexpectedError);
     }
@@ -243,7 +233,6 @@ public class MainCtrl {
         primaryStage.setTitle("Talio: color management view");
         colorManagementViewCtrl.setBoard(board);
         colorManagementViewCtrl.populateTaskColorPresetList();
-        resize();
         setShortcutsPopup(colorManagementView);
         primaryStage.setScene(colorManagementView);
     }
@@ -255,7 +244,6 @@ public class MainCtrl {
 
     public void showDetailedTaskView(final Task task, final ListCtrl listController) {
         primaryStage.setTitle("Talio: Detailed Task View");
-        resize();
         setShortcutsPopup(detailedTaskView);
         primaryStage.setScene(detailedTaskView);
         detailedTaskViewCtrl.setListController(listController);
@@ -263,10 +251,7 @@ public class MainCtrl {
         detailedTaskViewCtrl.registerWebSockets();
     }
 
-    private void resize(){
-        // primaryStage.setHeight(primaryStage.getHeight());
-        // primaryStage.setWidth(primaryStage.getWidth());
-    }
+
 
     public void showTagOverview(final Board board) {
         primaryStage.setTitle("Talio: Tag Overview");

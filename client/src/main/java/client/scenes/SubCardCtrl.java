@@ -3,6 +3,7 @@ package client.scenes;
 import client.CustomAlert;
 import client.customExceptions.SubTaskException;
 import client.customExceptions.TaskException;
+import client.utils.NetworkUtils;
 import client.utils.SubTaskUtils;
 import client.utils.TaskListUtils;
 import com.google.inject.Inject;
@@ -37,21 +38,23 @@ public class SubCardCtrl {
     private TaskListUtils taskListUtils;
     private CustomAlert customAlert;
     private SubTaskUtils subTaskUtils;
+    private NetworkUtils networkUtils;
     private DetailedTaskViewCtrl detailedTaskViewCtrl;
 
 
     @Inject
     void initialize(final SubTask subTask, final ListCtrl listCtrl,
-                    final TaskListUtils listUtils, final CustomAlert customAlert,
-                     final SubTaskUtils subTaskUtils,
+                    final CustomAlert customAlert,
+                     final NetworkUtils networkUtils,
                     final DetailedTaskViewCtrl detailedTaskViewCtrl
     ) {
         this.subTask= subTask;
         this.text.setText(subTask.getName());
         this.listController = listCtrl;
-        this.taskListUtils = listUtils;
+        this.networkUtils = networkUtils;
         this.customAlert = customAlert;
-        this.subTaskUtils = subTaskUtils;
+        this.subTaskUtils = networkUtils.getSubTaskUtils();
+        this.taskListUtils = networkUtils.getTaskListUtils();
         this.detailedTaskViewCtrl = detailedTaskViewCtrl;
         this.checkbox.setSelected(subTask.isCompleted());
         this.root.setOpacity(subTask.isCompleted() ? 0.5D : 1.0D);

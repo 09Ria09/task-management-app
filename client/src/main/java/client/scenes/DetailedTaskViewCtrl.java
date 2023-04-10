@@ -57,41 +57,42 @@ public class DetailedTaskViewCtrl {
     private StackPane taskDetails;
     private final BoardUtils boardUtils;
 
+    private final NetworkUtils networkUtils;
+
     private final Consumer<Task> taskConsumer = (task) -> {
-        if(task.id == this.task.id)
+        if (task.id == this.task.id)
             Platform.runLater(this::goBack);
     };
     private final Consumer<TaskList> listConsumer = (list) -> {
-        for(Task t : list.getTasks())
-            if(t.id == this.task.id)
+        for (Task t : list.getTasks())
+            if (t.id == this.task.id)
                 Platform.runLater(this::goBack);
     };
     private final Consumer<Task> modifyTaskConsumer = (task) -> {
         Platform.runLater(() -> {
-            if(task.id == this.task.id)
+            if (task.id == this.task.id)
                 this.setTask(task);
         });
     };
 
 
     @Inject
-    public DetailedTaskViewCtrl(final TaskListUtils taskListUtils, final MainCtrl mainCtrl,
-                                final TaskUtils taskUtils, final CustomAlert customAlert,
-                                final SubTaskUtils subTaskUtils, final TagUtils tagUtils,
-                                final WebSocketUtils webSocketUtils, final BoardUtils boardUtils) {
-        this.taskListUtils = taskListUtils;
-        this.taskUtils = taskUtils;
+    public DetailedTaskViewCtrl(final NetworkUtils networkUtils,
+                                final CustomAlert customAlert,
+                                final WebSocketUtils webSocketUtils) {
+        this.networkUtils = networkUtils;
+        this.taskListUtils = networkUtils.getTaskListUtils();
+        this.taskUtils = networkUtils.getTaskUtils();
+        this.subTaskUtils = networkUtils.getSubTaskUtils();
+        this.boardUtils = networkUtils.getBoardUtils();
+        this.tagUtils = networkUtils.getTagUtils();
         this.customAlert = customAlert;
-        this.subTaskUtils = subTaskUtils;
         this.webSocketUtils = webSocketUtils;
-        this.tagUtils = tagUtils;
-        this.boardUtils = boardUtils;
-        this.mainCtrl = mainCtrl;
     }
 
     public void initialize() {
         this.taskNameTextField.focusedProperty().addListener(((observable, oldValue, newValue) -> {
-            if(!newValue){
+            if (!newValue) {
                 try {
                     this.onFocusLostTaskName();
                 } catch (TaskException e) {
@@ -101,7 +102,7 @@ public class DetailedTaskViewCtrl {
         }));
         this.taskDescriptionTextArea.focusedProperty().addListener(((observable,
                                                                      oldValue, newValue) -> {
-            if(!newValue){
+            if (!newValue) {
                 try {
                     this.onFocusLostTaskDescription();
                 } catch (TaskException e) {
@@ -117,15 +118,15 @@ public class DetailedTaskViewCtrl {
         });
     }
 
-    public void changePreset(final TaskPreset preset){
-        if(preset == null)
+    public void changePreset(final TaskPreset preset) {
+        if (preset == null)
             return;
         task.setTaskPreset(preset);
         taskUtils.setPreset(listController.getBoardID(), listController.getTaskList().id,
-            task.getId(),preset);
+                task.getId(), preset);
     }
 
-    public void registerWebSockets(){
+    public void registerWebSockets() {
         this.webSocketUtils.registerForTaskMessages("/topic/" + listController.getBoardID() +
                 "/" + listController.getTaskList().id + "/deletetask", taskConsumer);
         this.webSocketUtils.registerForListMessages("/topic/" + listController.getBoardID() +
@@ -135,7 +136,7 @@ public class DetailedTaskViewCtrl {
 
         Consumer<Tag> addBoardTag = (tag) -> {
             Platform.runLater(() -> {
-                if(tagChoice.getItems().contains(tag))
+                if (tagChoice.getItems().contains(tag))
                     return;
                 tagChoice.getItems().add(tag);
             });
@@ -162,23 +163,23 @@ public class DetailedTaskViewCtrl {
         webSocketUtils.registerForMessages("/topic/deleteboard", deleteBoard, Board.class);
     }
 
-    public void changeTag(final Tag tag){
+    public void changeTag(final Tag tag) {
         Tag previous = tagChoice.getItems().stream()
-                .filter( t -> t.id == tag.id)
+                .filter(t -> t.id == tag.id)
                 .findAny().orElse(null);
-        if(previous == null)
+        if (previous == null)
             return;
         int index = tagChoice.getItems().indexOf(previous);
-        if(tagChoice.getItems().remove(previous)){
+        if (tagChoice.getItems().remove(previous)) {
             tagChoice.getItems().add(index, tag);
         }
-        if(tagView.getItems().remove(previous)){
+        if (tagView.getItems().remove(previous)) {
             tagView.getItems().add(index, tag);
         }
     }
 
-    public void onTaskNameClicked(final MouseEvent event){
-        if(event.getButton() != MouseButton.PRIMARY)
+    public void onTaskNameClicked(final MouseEvent event) {
+        if (event.getButton() != MouseButton.PRIMARY)
             return;
         this.taskNameTextField.setText(this.taskNameText.getText());
         this.taskNameTextField.setVisible(true);
@@ -186,8 +187,8 @@ public class DetailedTaskViewCtrl {
 
     }
 
-    public void onTaskDescriptionClicked(final MouseEvent event){
-        if(event.getButton() != MouseButton.PRIMARY)
+    public void onTaskDescriptionClicked(final MouseEvent event) {
+        if (event.getButton() != MouseButton.PRIMARY)
             return;
         this.taskDescriptionTextArea.setText(this.taskDescriptionText.getText());
         this.taskDescriptionTextArea.setVisible(true);
@@ -198,7 +199,7 @@ public class DetailedTaskViewCtrl {
         this.taskNameText.setText(this.taskNameTextField.getText());
         this.taskNameTextField.setVisible(false);
         this.taskNameText.setVisible(true);
-        if(this.taskNameTextField.getText().equals(task.getName()))
+        if (this.taskNameTextField.getText().equals(task.getName()))
             return;
         try {
             this.taskUtils.renameTask(listController.getBoardID(), listController.getTaskList().id,
@@ -212,7 +213,7 @@ public class DetailedTaskViewCtrl {
         this.taskDescriptionText.setText(this.taskDescriptionTextArea.getText());
         this.taskDescriptionTextArea.setVisible(false);
         this.taskDescriptionText.setVisible(true);
-        if(this.taskDescriptionTextArea.getText().equals(task.getDescription()))
+        if (this.taskDescriptionTextArea.getText().equals(task.getDescription()))
             return;
         try {
             this.taskUtils.editDescription(listController.getBoardID(),
@@ -226,6 +227,7 @@ public class DetailedTaskViewCtrl {
     /**
      * Setter for the task, after it sets the task it will update
      * the fields to the details of the task
+     *
      * @param task
      */
     public void setTask(final Task task) {
@@ -258,8 +260,8 @@ public class DetailedTaskViewCtrl {
                             var cardLoader = new FXMLLoader(getClass().getResource("SubCard.fxml"));
                             Node card = cardLoader.load();
                             SubCardCtrl subCardCtrl = cardLoader.getController();
-                            subCardCtrl.initialize(subTask, listController, taskListUtils,
-                                    customAlert, subTaskUtils,
+                            subCardCtrl.initialize(subTask, listController,
+                                    customAlert, networkUtils,
                                     DetailedTaskViewCtrl.this);
                             setGraphic(card);
                         } catch (IOException e) {
@@ -286,12 +288,12 @@ public class DetailedTaskViewCtrl {
     /**
      * It will update the preset choice box with the presets from the board
      */
-    public void presetUpdate(){
+    public void presetUpdate() {
         try {
             presetChoice.getItems()
-                .setAll(boardUtils.getBoard(listController.getBoardID()).getTaskPresets());
+                    .setAll(boardUtils.getBoard(listController.getBoardID()).getTaskPresets());
             for (TaskPreset preset : presetChoice.getItems()) {
-                if(preset.equals(task.getTaskPreset()))
+                if (preset.equals(task.getTaskPreset()))
                     presetChoice.setValue(preset);
             }
             presetChoice.valueProperty().addListener((observable, oldValue, newValue) -> {
@@ -323,7 +325,7 @@ public class DetailedTaskViewCtrl {
                                     tagUtils.deleteTaskTag(listController.getBoardID(),
                                             listController.getTaskList().id, task.id, tag.getId());
                                     tagView.getItems().remove(tag);
-                                } catch(TagException e) {
+                                } catch (TagException e) {
                                     Alert alert = customAlert.showAlert(e.getMessage());
                                     alert.showAndWait();
                                 }
@@ -342,9 +344,9 @@ public class DetailedTaskViewCtrl {
 
     public void addTag() {
         try {
-            if(tagChoice.getValue() != null) {
+            if (tagChoice.getValue() != null) {
                 Tag tag = tagChoice.getValue();
-                if(!tagView.getItems().contains(tag)) {
+                if (!tagView.getItems().contains(tag)) {
                     tagView.getItems().add(tag);
                     tagUtils.addTaskTag(listController.getBoardID(),
                             listController.getTaskList().getId(), task.id, tag);
@@ -353,7 +355,7 @@ public class DetailedTaskViewCtrl {
                     alert.showAndWait();
                 }
             }
-        } catch(TagException e) {
+        } catch (TagException e) {
             Alert alert = customAlert.showAlert(e.getMessage());
             alert.showAndWait();
         }
@@ -375,7 +377,7 @@ public class DetailedTaskViewCtrl {
                             .filter(t -> t.getName().equals(string)).findFirst().orElse(null);
                 }
             });
-            if(!tagChoice.getItems().isEmpty()) {
+            if (!tagChoice.getItems().isEmpty()) {
                 tagChoice.setValue(tagChoice.getItems().get(0));
             }
         } catch (TagException e) {
@@ -399,7 +401,7 @@ public class DetailedTaskViewCtrl {
             taskUtils.deleteTask(listController.getBoardID(), taskList.id, task.id);
             mainCtrl.showBoardCatalogue();
             return true;
-        } catch (TaskException e){
+        } catch (TaskException e) {
             Alert alert = customAlert.showAlert(e.getMessage());
             alert.showAndWait();
             return false;
@@ -444,13 +446,18 @@ public class DetailedTaskViewCtrl {
             alert.showAndWait();
         }
     }
+
     public void refreshSubTasks() throws TaskException {
         Task updatedTask = taskUtils.getTask(listController.getBoardID(),
                 listController.getTaskList().id, task.id);
         setTask(updatedTask);
     }
+
     public Task getTask() {
         return this.task;
     }
 
+    public void setMainCtrl(final MainCtrl mainCtrl) {
+        this.mainCtrl = mainCtrl;
+    }
 }

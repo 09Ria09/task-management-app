@@ -19,7 +19,6 @@ import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
-import javafx.util.Pair;
 import javafx.scene.control.Button;
 
 import java.io.IOException;
@@ -62,6 +61,7 @@ public class ListCtrl implements Initializable {
     private TaskUtils taskUtils;
     private BoardUtils boardUtils;
     private ServerUtils server;
+    private NetworkUtils networkUtils;
     @FXML
     TextField simpleTaskNameInput;
     String simpleTaskName;
@@ -74,20 +74,21 @@ public class ListCtrl implements Initializable {
 
 
     @Inject
-    public ListCtrl(final MainCtrl mainCtrl, final TaskListUtils taskListUtils,
-                    final TagUtils tagUtils,
-                    final TaskUtils taskUtils, final CustomAlert customAlert,
-                    final BoardUtils boardUtils, final Pair<LayoutUtils,
-            WebSocketUtils> layoutSocketUtils, final BoardOverviewCtrl boardOverviewCtrl) {
-        this.taskListUtils = taskListUtils;
-        this.taskUtils = taskUtils;
+    public ListCtrl(final MainCtrl mainCtrl,
+                    final CustomAlert customAlert,
+                    final NetworkUtils networkUtils,
+                    final LayoutUtils layoutUtils,
+                    final WebSocketUtils webSocketUtils) {
+        this.networkUtils = networkUtils;
+        this.server = networkUtils.getServerUtils();
+        this.taskListUtils = networkUtils.getTaskListUtils();
+        this.taskUtils = networkUtils.getTaskUtils();
+        this.boardUtils = networkUtils.getBoardUtils();
         this.mainCtrl = mainCtrl;
-        this.tagUtils = tagUtils;
-        this.customAlert = customAlert;
         this.boardOverviewCtrl = boardOverviewCtrl;
-        this.layoutUtils = layoutSocketUtils.getKey();
-        this.boardUtils = boardUtils;
-        this.webSocketUtils = layoutSocketUtils.getValue();
+        this.customAlert = customAlert;
+        this.layoutUtils = layoutUtils;
+        this.webSocketUtils = webSocketUtils;
     }
 
     public void initialize(){
@@ -268,8 +269,8 @@ public class ListCtrl implements Initializable {
                             var cardLoader = new FXMLLoader(getClass().getResource("Card.fxml"));
                             Node card = cardLoader.load();
                             CardCtrl cardCtrl = cardLoader.getController();
-                            cardCtrl.initialize(task, controller, tagUtils, taskListUtils,
-                                    customAlert, taskUtils, mainCtrl, boardOverviewCtrl);
+                            cardCtrl.initialize(task, controller,
+                                    customAlert, networkUtils, mainCtrl);
                             setGraphic(card);
                         } catch (IOException e) {
                             throw new RuntimeException(e);

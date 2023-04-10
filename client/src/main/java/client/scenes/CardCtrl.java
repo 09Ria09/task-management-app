@@ -3,6 +3,7 @@ package client.scenes;
 import client.CustomAlert;
 import client.customExceptions.TagException;
 import client.customExceptions.TaskException;
+import client.utils.NetworkUtils;
 import client.utils.TagUtils;
 import client.utils.TaskListUtils;
 import client.customExceptions.TaskListException;
@@ -72,6 +73,8 @@ public class CardCtrl {
 
     private MainCtrl mainCtrl;
     private ListCtrl listController;
+
+    private NetworkUtils networkUtils;
     private TaskListUtils taskListUtils;
     private TaskUtils taskUtils;
     private CustomAlert customAlert;
@@ -82,18 +85,15 @@ public class CardCtrl {
      * @param task the task used for initialization
      */
     @Inject
-    public void initialize(final Task task, final ListCtrl listCtrl, final TagUtils tagUtils,
-                           final TaskListUtils listUtils, final CustomAlert customAlert,
-                           final TaskUtils taskUtils, final MainCtrl mainCtrl,
-                           final BoardOverviewCtrl boardOverviewCtrl) {
-        this.task = task;
-        this.title.setText(task.getName());
-        this.tagUtils = tagUtils;
+    public void initialize(final Task task, final ListCtrl listCtrl,
+                            final CustomAlert customAlert,
+                           final NetworkUtils networkUtils, final MainCtrl mainCtrl) {
         this.listController = listCtrl;
-        this.taskListUtils = listUtils;
         this.customAlert = customAlert;
-        this.taskUtils = taskUtils;
         this.mainCtrl = mainCtrl;
+        this.networkUtils = networkUtils;
+        this.taskListUtils = networkUtils.getTaskListUtils();
+        this.taskUtils = networkUtils.getTaskUtils();
         this.setTask(task);
         this.onUnhover();
         this.boardOverviewCtrl = boardOverviewCtrl;

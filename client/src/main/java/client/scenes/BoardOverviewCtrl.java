@@ -31,7 +31,6 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -44,7 +43,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
-import javafx.util.Pair;
 
 import java.io.IOException;
 import java.util.*;
@@ -52,6 +50,7 @@ import java.util.function.Consumer;
 
 public class BoardOverviewCtrl {
 
+    private final NetworkUtils networkUtils;
     private final ServerUtils server;
     private final WebSocketUtils webSocketUtils;
     private final TaskListUtils taskListUtils;
@@ -82,22 +81,23 @@ public class BoardOverviewCtrl {
     @FXML
     private ScrollPane listScrollPane;
 
-    private Scene scene;
 
     @Inject
     public BoardOverviewCtrl(final MainCtrl mainCtrl,
-                             final CustomAlert customAlert, final BoardUtils boardUtils,
+                             final CustomAlert customAlert, final NetworkUtils networkUtils,
                              final BoardCatalogueCtrl boardCatalogueCtrl,
                              final EditBoardCtrl editBoardCtrl,
                              final WebSocketUtils webSocketUtils) {
         this.mainCtrl = mainCtrl;
+        this.networkUtils = networkUtils;
         this.server = webSocketUtils.getServerUtils();
+        this.boardUtils = networkUtils.getBoardUtils();
         this.taskListUtils = new TaskListUtils(server);
         this.listsMap = new HashMap<>();
         this.taskLists = new ArrayList<>();
         this.customAlert = customAlert;
         this.boardCatalogueCtrl = boardCatalogueCtrl;
-        this.boardUtils = boardUtils;
+
         this.webSocketUtils = webSocketUtils;
         this.editBoardCtrl = editBoardCtrl;
     }
@@ -158,9 +158,8 @@ public class BoardOverviewCtrl {
         var kids = listsContainer.getChildren();
         var listLoader = new FXMLLoader(getClass().getResource("List.fxml"));
         listLoader.setControllerFactory(type ->
-                new ListCtrl(mainCtrl, new TaskListUtils(server), new TagUtils(server),
-                new TaskUtils(server), customAlert,
-                boardUtils, new Pair(new LayoutUtils(), webSocketUtils), this));
+                new ListCtrl(mainCtrl, customAlert,
+                       networkUtils, new LayoutUtils(), webSocketUtils));
         try {
             VBox list = listLoader.load();
             list.prefHeightProperty().bind(Bindings
@@ -183,10 +182,6 @@ public class BoardOverviewCtrl {
 
     public void addList() {
         mainCtrl.showCreateList(currentBoardId);
-    }
-
-    public void setSelectedTask(final Task task) {
-        selectedTask = task;
     }
 
 

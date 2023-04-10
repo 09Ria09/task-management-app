@@ -2,10 +2,7 @@ package client.scenes;
 
 import client.CustomAlert;
 import client.customExceptions.TagException;
-import client.utils.BoardUtils;
-import client.utils.LayoutUtils;
-import client.utils.TagUtils;
-import client.utils.WebSocketUtils;
+import client.utils.*;
 import com.google.inject.Inject;
 import commons.Board;
 import commons.Tag;
@@ -35,17 +32,20 @@ public class TagOverviewCtrl {
     private CustomAlert customAlert;
     private BoardUtils boardUtils;
     private final WebSocketUtils webSocketUtils;
+    private final NetworkUtils networkUtils;
     private final LayoutUtils layoutUtils;
     private MainCtrl mainCtrl;
 
     @Inject
-    public TagOverviewCtrl(final TagUtils tagUtils, final CustomAlert customAlert,
-                           final BoardUtils boardUtils, final MainCtrl mainCtrl,
+    public TagOverviewCtrl(final CustomAlert customAlert,
+                           final MainCtrl mainCtrl,
                            final WebSocketUtils webSocketUtils,
-                           final LayoutUtils layoutUtils) {
-        this.tagUtils = tagUtils;
+                           final LayoutUtils layoutUtils,
+                           final NetworkUtils networkUtils) {
+        this.networkUtils = networkUtils;
+        this.tagUtils = networkUtils.getTagUtils();
+        this.boardUtils = networkUtils.getBoardUtils();
         this.customAlert = customAlert;
-        this.boardUtils = boardUtils;
         this.webSocketUtils = webSocketUtils;
         this.layoutUtils = layoutUtils;
         this.mainCtrl = mainCtrl;
@@ -111,7 +111,7 @@ public class TagOverviewCtrl {
                             var cardLoader = new FXMLLoader(getClass().getResource("TagCard.fxml"));
                             Node card = cardLoader.load();
                             TagCardCtrl tagCardCtrl = cardLoader.getController();
-                            tagCardCtrl.initialize(tag, tagUtils, board, customAlert);
+                            tagCardCtrl.initialize(tag, networkUtils, board, customAlert);
                             setGraphic(card);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
@@ -131,7 +131,7 @@ public class TagOverviewCtrl {
                         var tagEditLoader = new FXMLLoader(getClass().getResource("TagEdit.fxml"));
                         Node tagEdit = tagEditLoader.load();
                         TagEditCtrl tagEditCtrl = tagEditLoader.getController();
-                        tagEditCtrl.initialize(cell.getItem(), tagUtils, board, customAlert);
+                        tagEditCtrl.initialize(cell.getItem(), networkUtils, board, customAlert);
 
                         Popup popup = new Popup();
                         popup.getContent().add(tagEdit);

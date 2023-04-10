@@ -18,13 +18,11 @@ package client;
 import client.scenes.*;
 import client.scenes.adminScenes.AdminBoardCtrl;
 import client.scenes.adminScenes.AdminLoginCtrl;
-import client.utils.BoardUtils;
-import client.utils.ServerUtils;
-import client.utils.TaskListUtils;
-import client.utils.WebSocketUtils;
+import client.utils.*;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
+
 
 public class MyModule implements Module {
 
@@ -40,5 +38,6 @@ public class MyModule implements Module {
         binder.bind(AdminBoardCtrl.class).in(Scopes.SINGLETON);
         binder.bind(AdminLoginCtrl.class).in(Scopes.SINGLETON);
         binder.bind(BoardUtils.class).in(Scopes.SINGLETON);
+        binder.bind(NetworkUtils.class).in(Scopes.SINGLETON);
     }
 }
