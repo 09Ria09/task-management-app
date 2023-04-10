@@ -55,6 +55,11 @@ public class BoardTest {
     }
 
     @Test
+    void getPresets() {
+        assertEquals(board.getTaskPresets().size(), 0);
+    }
+
+    @Test
     void setListTaskList() {
         List<TaskList> taskLists = new ArrayList<>();
         taskLists.add(taskList1);
@@ -177,5 +182,64 @@ public class BoardTest {
         assertEquals(board.getTagById(5).get(), tags.get(0));
     }
 
+    @Test
+    public void initTest(){
+        emptyBoard.initBoard();
+        assertEquals(3, emptyBoard.getListTaskList().size());
+        assertEquals(1, emptyBoard.getTaskPresets().size());
+    }
 
+    @Test
+    public void testColorScheme(){
+        BoardColorScheme s = new BoardColorScheme();
+        assertNotEquals(s, board.getBoardColorScheme());
+        board.setBoardColorScheme(s);
+        assertEquals(s, board.getBoardColorScheme());
+    }
+
+    @Test
+    public void testAddRemovePresets(){
+        TaskPreset preset = new TaskPreset("ONE");
+        preset.setDefault(true);
+        TaskPreset preset2 = new TaskPreset("TWO");
+        board.addTaskPreset(preset);
+        board.addTaskPreset(preset2);
+        board.addTaskList(taskList1);
+        Task task = new Task("W,", "Q,");
+        task.setTaskPreset(preset);
+        taskList1.addTask(task);
+        for(Task t : board.getListTaskList().stream().flatMap(l -> l.getTasks().stream()).toList())
+            t.setTaskPreset(preset2);
+        assertEquals(2, board.getTaskPresets().size());
+        board.removeTaskPreset(preset2.id);
+        board.removeTaskPreset(-314159);
+        assertEquals(1, board.getTaskPresets().size());
+    }
+
+    @Test
+    public void testFindPresets(){
+        TaskPreset preset = new TaskPreset("ONE");
+        preset.setDefault(true);
+        TaskPreset preset2 = new TaskPreset("TWO");
+        board.addTaskPreset(preset);
+        board.addTaskPreset(preset2);
+        assertEquals(preset, board.findDefaultTaskPreset());
+        preset.setDefault(false);
+        assertNull(board.findDefaultTaskPreset());
+    }
+
+    @Test
+    public void testUpdatePresets(){
+        TaskPreset preset = new TaskPreset("ONE");
+        preset.setDefault(true);
+        TaskPreset preset2 = new TaskPreset("TWO");
+        board.addTaskPreset(preset);
+        board.addTaskPreset(preset2);
+        preset2.id = 4;
+        for(Task t : board.getListTaskList().stream().flatMap(l -> l.getTasks().stream()).toList())
+            t.setTaskPreset(preset2);
+        preset2.setDefault(true);
+        board.updateTaskPreset(preset2);
+        assertEquals(preset2, board.findDefaultTaskPreset());
+    }
 }

@@ -207,10 +207,13 @@ public class BoardController {
             @PathVariable("boardid") final long boardid,
             final @RequestBody BoardColorScheme boardColorScheme) {
         try {
+            boardService.getBoard(boardid);
             BoardColorScheme colorScheme = boardService
                     .setBoardColorScheme(boardid, boardColorScheme);
+            boardService.getBoard(boardid);
             messages.convertAndSend("/topic/" + boardid + "/changecolor",
                     boardService.getBoard(boardid));
+            boardService.getBoard(boardid);
             return ResponseEntity.ok(colorScheme);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -220,7 +223,7 @@ public class BoardController {
     @PostMapping(path = { "/{boardid}" + "/addtaskpreset" })
     public ResponseEntity<TaskPreset> addTaskPreset(@PathVariable("boardid") final long boardId,
                                                     @RequestBody final TaskPreset taskPreset) {
-        if (getBoard(boardId) == null) {
+        if (boardService.getBoard(boardId) == null) {
             return ResponseEntity.badRequest().build();
         }
         TaskPreset createdTaskPreset = boardService.setTaskPreset(boardId, taskPreset);
@@ -230,9 +233,9 @@ public class BoardController {
     @DeleteMapping(path = { "/{boardid}" + "/removetaskpreset" + "/{taskpresetid}" })
     public ResponseEntity removeTaskPreset(@PathVariable("boardid") final long boardId,
                                            @PathVariable("taskpresetid") final long taskPresetId) {
-        var board=getBoard(boardId);
-        if (board == null || board.getBody().getTaskPresets().stream()
-            .noneMatch(taskPreset -> taskPreset.getId() == taskPresetId)) {
+        var board = boardService.getBoard(boardId);
+        if (board == null || board.getTaskPresets().stream()
+            .noneMatch(taskPreset -> taskPreset.id == taskPresetId)) {
             return ResponseEntity.badRequest().build();
         }
         boardService.removeTaskPreset(boardId, taskPresetId);
@@ -242,7 +245,7 @@ public class BoardController {
     @PutMapping(path = { "/{boardid}" + "/updatetaskpreset" })
     public ResponseEntity<TaskPreset> updateTaskPreset(@PathVariable("boardid") final long boardId,
                                                        @RequestBody final TaskPreset taskPreset) {
-        if (getBoard(boardId) == null) {
+        if (boardService.getBoard(boardId) == null) {
             return ResponseEntity.badRequest().build();
         }
         TaskPreset updatedTaskPreset = boardService.updateTaskPreset(boardId, taskPreset);

@@ -174,8 +174,4 @@ public class Task implements Serializable {
     public void setTaskPreset(final TaskPreset taskPreset) {
         this.taskPreset = taskPreset;
     }
-
-    public void setPreset(final TaskPreset preset) {
-        this.taskPreset=preset;
-    }
 }

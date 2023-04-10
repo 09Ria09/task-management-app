@@ -9,8 +9,11 @@ public class TagTest {
     @Test
     public void checkConstructor() {
         Tag testTag = new Tag("Tag1", "FFFFFF");
+        Tag test2 = new Tag("Tag", "000000", "AABBAA");
         assertNotNull(testTag);
+        assertNotNull(test2);
         assertEquals(testTag.getName(), "Tag1");
+        assertEquals(test2.getName(), "Tag");
     }
 
     @Test

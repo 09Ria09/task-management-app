@@ -1,4 +1,4 @@
-package server;
+package server.services;
 
 import commons.Board;
 import commons.Tag;

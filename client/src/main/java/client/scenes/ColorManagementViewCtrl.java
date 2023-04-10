@@ -193,7 +193,7 @@ public class ColorManagementViewCtrl implements Initializable {
      * @param taskPreset the task color preset to remove
      */
     public void removeTaskPreset(final TaskPreset taskPreset) {
-        boardUtils.removeTaskPreset(board.id, taskPreset.getId());
+        boardUtils.removeTaskPreset(board.id, taskPreset.id);
         taskColorPresetList.getItems().remove(taskPreset);
     }
 }

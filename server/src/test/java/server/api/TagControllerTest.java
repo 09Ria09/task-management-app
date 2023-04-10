@@ -3,6 +3,8 @@ package server.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import commons.Board;
 import commons.Tag;
+import commons.Task;
+import commons.TaskList;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -151,8 +153,15 @@ public class TagControllerTest {
 
     @Test
     public void testDeleteBoardTagEndpoint() throws Exception {
-        Mockito.when(tagService.getBoard(1)).thenReturn(new Board());
-        Mockito.when(tagService.removeBoardTag(1, 2)).thenReturn(null);
+        Task task = new Task("name", "desc");
+        TaskList list = new TaskList("list", List.of(new Task("n", "d"), task));
+        Tag t = new Tag("a", "FFFFFF");
+        task.addTag(t);
+        t.id = 2;
+        Board b = new Board("Board", List.of(list), List.of(t));
+        b.id = 1;
+        Mockito.when(tagService.getBoard(1)).thenReturn(b);
+        Mockito.when(tagService.removeBoardTag(1, 2)).thenReturn(t);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/tags/1/delete/2"))
                 .andExpect(status().isOk());
