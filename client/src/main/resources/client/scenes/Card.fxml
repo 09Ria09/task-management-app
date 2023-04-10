@@ -13,7 +13,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="130.0" minHeight="130.0" prefHeight="120.0" prefWidth="311.0" style="-fx-background-color: transparent; -fx-border-radius: 20px; -fx-background-radius: 20px;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.CardCtrl">
+<AnchorPane fx:id="root" maxHeight="130.0" minHeight="130.0" prefHeight="120.0" prefWidth="311.0" style="-fx-background-color: transparent; -fx-border-radius: 20px; -fx-background-radius: 20px;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.CardCtrl">
    <children>
       <AnchorPane id="cardPane" fx:id="cardPane" layoutY="0.5" maxHeight="120.0" maxWidth="300.0" minHeight="120.0" minWidth="300.0" onMouseEntered="#onHover" onMouseExited="#onUnhover" prefHeight="120.0" prefWidth="300.0" style="-fx-background-radius: 15px; -fx-border-radius: 15px; -fx-background-color: #CBD2D0;" stylesheets="@../styles/card.css" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
          <Label fx:id="title" layoutX="11.0" layoutY="5.0" maxHeight="50.0" maxWidth="200.0" minHeight="50.0" minWidth="200.0" prefHeight="43.0" prefWidth="173.0" style="-fx-font-weight: bold; -fx-background-color: transparent; -fx-font-size: 18px;" text="Title" AnchorPane.bottomAnchor="65.0">

@@ -20,12 +20,11 @@ import javafx.scene.layout.*;
 import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
 import javafx.scene.control.Button;
+import objects.CardCell;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class ListCtrl implements Initializable {
     private static final DataFormat taskCustom = new DataFormat("task.custom");
@@ -33,7 +32,7 @@ public class ListCtrl implements Initializable {
 
     private final CustomAlert customAlert;
     @FXML
-    ListView<Task> list;
+    public ListView<Task> list;
     @FXML
     Label title;
     @FXML
@@ -70,6 +69,8 @@ public class ListCtrl implements Initializable {
     private final WebSocketUtils webSocketUtils;
 
     private final TagUtils tagUtils;
+
+    public Map<Long, CardCell> cardCellMap = new HashMap<>();
 
 
 
@@ -257,10 +258,10 @@ public class ListCtrl implements Initializable {
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
         ListCtrl controller = this;
+        List<CardCell> cards = new ArrayList<>();
         setDragHandlers(controller);
         list.setCellFactory(lv -> {
-            ListCell<Task> cell = new ListCell<>() {
-                public CardCtrl cardCtrl;
+            CardCell cell = new CardCell(){
                 @Override
                 protected void updateItem(final Task task, final boolean empty) {
                     super.updateItem(task, empty);
@@ -275,23 +276,29 @@ public class ListCtrl implements Initializable {
                             cardCtrl.initialize(task, controller,
                                     customAlert, boardOverviewCtrl, networkUtils, mainCtrl);
                             setGraphic(card);
-                            } catch (IOException e) {
+                            cardCellMap.put(task.id, this);
+                        } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
                     }
                 }
             };
+            cards.add(cell);
             cell.setOnDragEntered(event -> {
                 indexToDrop = Math.min(cell.getIndex(), taskList.getTasks().size());
                 event.consume();
             });
-
             cell.setOnMouseClicked(event -> {
                 if(cell.getIndex() < taskList.getTasks().size() && event.getClickCount() == 2) {
                     mainCtrl.showDetailedTaskView(cell.getItem(), this);
                 }
             });
             return cell;
+        });
+        vBox.setOnKeyPressed((event) -> {
+            for(CardCell c : cards)
+                if(c.isSelected())
+                    c.getController().handleKeyboardInput(event);
         });
     }
 

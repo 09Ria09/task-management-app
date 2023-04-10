@@ -62,6 +62,8 @@ public class CardCtrl {
 
     @FXML
     private AnchorPane cardPane;
+    @FXML
+    private AnchorPane root;
 
     private MainCtrl mainCtrl;
     private ListCtrl listController;
@@ -78,7 +80,7 @@ public class CardCtrl {
      */
     @Inject
     public void initialize(final Task task, final ListCtrl listCtrl,
-                           final CustomAlert customAlert,
+                            final CustomAlert customAlert,
                            final BoardOverviewCtrl boardOverviewCtrl,
                            final NetworkUtils networkUtils, final MainCtrl mainCtrl) {
         this.listController = listCtrl;
@@ -100,8 +102,40 @@ public class CardCtrl {
         cardPane.setStyle(cardPane.getStyle() + "-fx-background-color: #" +
                 preset.getBackgroundColor().substring(2) + ";");
         cardPane.setFocusTraversable(true);
-        startShortcuts();
+        root.setOnKeyPressed(this::handleKeyboardInput);
     }
+
+    public void handleKeyboardInput(final KeyEvent event){
+        System.out.println("Event handled: " + event.getCode());
+        if (event.isShiftDown()) {
+            System.out.println("shift down");
+            if (event.getCode() == KeyCode.UP) {
+                moveUp();
+            } else if (event.getCode() == KeyCode.DOWN) {
+                moveDown();
+            }
+        }
+        else if (event.getCode() == KeyCode.E) {
+            System.out.println("edit");
+            edit();
+            event.consume();
+        }
+        else if (event.getCode() == KeyCode.ENTER) {
+            editTask();
+        }
+        else if (event.getCode() == KeyCode.DELETE || event.getCode() == KeyCode.BACK_SPACE) {
+            deleteTask();
+        }
+        else if (event.getCode() == KeyCode.T) {
+            addTag();
+            event.consume();
+        }
+        else if (event.getCode() == KeyCode.C) {
+            setPreset();
+            event.consume();
+        }
+    }
+
 
 
     private void setTags(final List<Tag> tags) {
@@ -114,34 +148,11 @@ public class CardCtrl {
         }
     }
 
-    public void startShortcuts() {
-        cardPane.setOnKeyPressed(event -> {
-            System.out.println(event.getCode());
-            if (event.isShiftDown()) {
-                if (event.getCode() == KeyCode.UP) {
-                    moveUp();
-                } else if (event.getCode() == KeyCode.DOWN) {
-                    moveDown();
-                }
-            } else if (event.getCode() == KeyCode.E) {
-                editTitleTextField.setVisible(true);
-                editTitleTextField.setManaged(true);
-                editTitleTextField.requestFocus();
-                editTitleTextField.setText(title.getText());
-                event.consume();
-            } else if (event.getCode() == KeyCode.ENTER) {
-                editTask();
-            } else if (event.getCode() == KeyCode.DELETE || event.getCode() == KeyCode.BACK_SPACE) {
-                deleteTask();
-            } else if (event.getCode() == KeyCode.T) {
-                addTag();
-                event.consume();
-            } else if (event.getCode() == KeyCode.C) {
-                setPreset();
-                event.consume();
-            }
-        });
-
+    public void edit(){
+        editTitleTextField.setVisible(true);
+        editTitleTextField.setManaged(true);
+        editTitleTextField.requestFocus();
+        editTitleTextField.setText(title.getText());
     }
 
     private void handleEditTitle(final KeyEvent event) {
