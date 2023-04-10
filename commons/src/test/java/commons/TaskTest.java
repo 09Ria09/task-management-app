@@ -16,18 +16,28 @@ public class TaskTest {
         Task testTask2 = new Task();
         Task testTask3 = new Task("MOUAHAHA", "Random", new ArrayList<>());
         Task testTask4 = new Task("Task4", "Desc", new ArrayList<>(), new ArrayList<>());
+        Task testTask5 = new Task("There once", "was a ship", new ArrayList<>(), new ArrayList<>(),
+                new TaskPreset("that was put to sea"));
+        Task testTask6 = new Task("There once", "was a ship",
+                new TaskPreset("that was put to sea"));
+        Task testTask7 = new Task("There once", "was a ship", new ArrayList<>(),
+                new TaskPreset("that was put to sea"));
         assertNotNull(testTask);
         assertNotNull(testTask2);
         assertNotNull(testTask3);
         assertNotNull(testTask4);
+        assertNotNull(testTask5);
+        assertNotNull(testTask6);
+        assertNotNull(testTask7);
         assertEquals(testTask.getName(), "Task1");
     }
 
     @Test
     public void testGetters() {
-        Task testTask = new Task("Task1", "This is task 1");
+        Task testTask = new Task("Task1", "This is task 1", new TaskPreset("Austerlitz"));
         assertEquals(testTask.getName(), "Task1");
         assertEquals(testTask.getDescription(), "This is task 1");
+        assertEquals(testTask.getTaskPreset().getName(), "Austerlitz");
     }
 
     @Test
@@ -37,6 +47,8 @@ public class TaskTest {
         assertEquals(testTask.getName(), "Task2");
         testTask.setDescription("This is not task 1");
         assertEquals(testTask.getDescription(), "This is not task 1");
+        testTask.setTaskPreset(new TaskPreset("Stroopwafels"));
+        assertEquals(testTask.getTaskPreset().getName(), "Stroopwafels");
     }
 
     @Test

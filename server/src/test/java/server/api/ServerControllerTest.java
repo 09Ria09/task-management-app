@@ -10,7 +10,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -32,5 +32,12 @@ public class ServerControllerTest {
     public void testCheckIsNotTalioServer() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/talioqqqqqqqqq"))
                 .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    public void testGetAdminKey() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/talio/admin"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", lessThanOrEqualTo(999999)));
     }
 }

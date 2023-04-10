@@ -90,7 +90,7 @@ class BoardUtilsTest {
         String newName = "Updated board name";
 
         Board expectedResult = new Board();
-        expectedResult.setId(boardId);
+        expectedResult.id = boardId;
         expectedResult.setName(newName);
 
         ResponseClone mockResponse = new ResponseClone(Response.Status.OK.getStatusCode(), expectedResult);
@@ -152,7 +152,7 @@ class BoardUtilsTest {
     void testJoinBoard_wrongKey() {
         String inviteKey = "002CD";
         Board expectedResult = new Board();
-        expectedResult.setId(1L);
+        expectedResult.id = 1L;
         expectedResult.setName("Example board");
         ResponseClone mockResponse = new ResponseClone(Response.Status.BAD_REQUEST.getStatusCode(), null);
         mockRestUtils.setMockResponse(mockResponse);
@@ -165,10 +165,10 @@ class BoardUtilsTest {
     @Test
     void testGetBoards_success() throws Exception {
         Board board1 = new Board();
-        board1.setId(1L);
+        board1.id = 1L;
         board1.setName("Board 1");
         Board board2 = new Board();
-        board2.setId(2L);
+        board2.id = 2L;
         board2.setName("Board 2");
         List<Board> expectedResult = new ArrayList<>();
         expectedResult.add(board1);
@@ -200,7 +200,7 @@ class BoardUtilsTest {
     void testGetBoardInviteKey_success() throws Exception {
         long boardId = 1L;
         Board board = new Board();
-        board.setId(boardId);
+        board.id = boardId;
         board.setName("Example board");
 
         ResponseClone mockResponse = new ResponseClone(Response.Status.OK.getStatusCode(), board);
@@ -214,7 +214,7 @@ class BoardUtilsTest {
     void testJoinBoard_wrongInviteKey() throws Exception {
         long boardId = 1L;
         Board board = new Board();
-        board.setId(boardId);
+        board.id = boardId;
         board.setName("Example board");
 
         ResponseClone mockResponse = new ResponseClone(Response.Status.OK.getStatusCode(), board);
@@ -247,7 +247,7 @@ class BoardUtilsTest {
         String memberName = "test user";
         long boardId = 1L;
         Board expectedResult = new Board();
-        expectedResult.setId(boardId);
+        expectedResult.id = boardId;
         expectedResult.setName("Have you tried stroopwaffels yet?");
         expectedResult.inviteKey = inviteKey;
 

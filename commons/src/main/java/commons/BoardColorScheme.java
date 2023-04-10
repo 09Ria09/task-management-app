@@ -69,11 +69,4 @@ public class BoardColorScheme {
                 ", taskPresets=" +
                 '}';
     }
-
-    public long getId() {
-        return this.id;
-    }
-
-
-
 }

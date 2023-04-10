@@ -10,6 +10,7 @@ public class ServerService {
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+
     @Inject
     public ServerService(final ServerUtils server, final MainCtrl mainCtrl) {
         this.server = server;
