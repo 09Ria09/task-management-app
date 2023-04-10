@@ -63,11 +63,6 @@ public class SubCardCtrl {
     public void deleteSubTask() throws SubTaskException {
         subTaskUtils.deleteSubTask(listController.getBoardID(),
                 listController.getTaskList().id, detailedTaskViewCtrl.getTask().id, subTask.id);
-        try {
-            detailedTaskViewCtrl.refreshSubTasks();
-        } catch (TaskException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 //    public void renameSubTask() throws SubTaskException {
@@ -103,7 +98,6 @@ public class SubCardCtrl {
                 subTaskUtils.renameSubTask(listController.getBoardID(),
                         listController.getTaskList().id,
                         detailedTaskViewCtrl.getTask().id, subTask.id, name);
-                detailedTaskViewCtrl.refreshSubTasks();
                 return true;
             }
         } catch (SubTaskException e) {
@@ -127,7 +121,6 @@ public class SubCardCtrl {
                 subTaskUtils.reorderSubTask(boardId,
                         listId, task.id, subTask.id, index - 1);
                 task.reorderSubTasks(subTask.id, index - 1);
-                detailedTaskViewCtrl.refreshSubTasks();
                 if(!Objects.equals(task.getName(), text.getText())){
                     text.setText(text.getText());
                     return true;
@@ -158,7 +151,6 @@ public class SubCardCtrl {
                 subTaskUtils.reorderSubTask(boardId,
                         listId, task.id, subTask.id, index + 1);
                 task.reorderSubTasks(subTask.id, index + 1);
-                detailedTaskViewCtrl.refreshSubTasks();
                 if(!Objects.equals(task.getName(), text.getText())){
                     text.setText(text.getText());
                     return true;
