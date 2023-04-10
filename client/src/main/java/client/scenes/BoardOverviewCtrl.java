@@ -67,8 +67,6 @@ public class BoardOverviewCtrl {
 
     private Task selectedTask;
 
-    private Timer refreshTimer;
-
     private final EditBoardCtrl editBoardCtrl;
 
     @FXML
@@ -205,22 +203,6 @@ public class BoardOverviewCtrl {
     }
 
     /**
-     * This creates and runs a refresh timer at a specified period
-     *
-     * @param refreshPeriod the time period in miliseconds
-     */
-    public void refreshTimer(final long refreshPeriod) {
-        if (refreshTimer == null)
-            refreshTimer = new Timer();
-        refreshTimer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                refresh();
-            }
-        }, 0, refreshPeriod);
-    }
-
-    /**
      * This method refreshes the board overview.
      */
     public void refresh() {
@@ -273,11 +255,6 @@ public class BoardOverviewCtrl {
     }
 
     public void clear() {
-        if (refreshTimer != null) {
-            refreshTimer.cancel();
-            refreshTimer.purge();
-            refreshTimer = null;
-        }
         listsContainer.getChildren().clear();
         listsMap.clear();
     }
@@ -341,13 +318,6 @@ public class BoardOverviewCtrl {
         tab.setOnSelectionChanged(event -> {
             if (tab.isSelected()) {
                 refresh();
-                refreshTimer(5000000);
-            } else {
-                if (refreshTimer == null)
-                    return;
-                refreshTimer.cancel();
-                refreshTimer.purge();
-                refreshTimer = null;
             }
         });
     }
@@ -384,7 +354,6 @@ public class BoardOverviewCtrl {
         catch(BoardException e){
             System.out.println("Error when changing colors: " + e.getMessage());
         }
-
     }
 }
 

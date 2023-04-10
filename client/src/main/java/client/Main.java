@@ -81,6 +81,7 @@ public class Main extends Application {
 
         primaryStage.setOnCloseRequest(e -> {
             adminBoard.getKey().stop();
+            boardCatalogue.getKey().getWebSocketUtils().disconnect();
         });
     }
 }
