@@ -28,7 +28,7 @@ public class TestMessageBrokerRegistry extends MessageBrokerRegistry {
             }
 
             @Override
-            public boolean send(final Message<?> message, long timeout) {
+            public boolean send(final Message<?> message, final long timeout) {
                 return false;
             }
         }, (message, timeout) -> false);
