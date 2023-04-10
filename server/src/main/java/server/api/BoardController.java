@@ -235,7 +235,7 @@ public class BoardController {
                                            @PathVariable("taskpresetid") final long taskPresetId) {
         var board = boardService.getBoard(boardId);
         if (board == null || board.getTaskPresets().stream()
-            .noneMatch(taskPreset -> taskPreset.getId() == taskPresetId)) {
+            .noneMatch(taskPreset -> taskPreset.id == taskPresetId)) {
             return ResponseEntity.badRequest().build();
         }
         boardService.removeTaskPreset(boardId, taskPresetId);
