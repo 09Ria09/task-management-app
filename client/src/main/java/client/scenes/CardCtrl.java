@@ -21,7 +21,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import javax.inject.Inject;
@@ -79,7 +78,7 @@ public class CardCtrl {
      */
     @Inject
     public void initialize(final Task task, final ListCtrl listCtrl,
-                            final CustomAlert customAlert,
+                           final CustomAlert customAlert,
                            final BoardOverviewCtrl boardOverviewCtrl,
                            final NetworkUtils networkUtils, final MainCtrl mainCtrl) {
         this.listController = listCtrl;
@@ -105,7 +104,6 @@ public class CardCtrl {
     }
 
 
-
     private void setTags(final List<Tag> tags) {
         for (Tag tag : tags) {
             Pane tagPane = new Pane();
@@ -116,32 +114,32 @@ public class CardCtrl {
         }
     }
 
-    public void startShortcuts(){
-        cardPane.setOnKeyPressed( event -> {
+    public void startShortcuts() {
+        cardPane.setOnKeyPressed(event -> {
             System.out.println(event.getCode());
-                if (event.isShiftDown()) {
-                    if (event.getCode() == KeyCode.UP) {
-                        moveUp();
-                    } else if (event.getCode() == KeyCode.DOWN) {
-                        moveDown();
-                    }
-                } else if (event.getCode() == KeyCode.E) {
-                    editTitleTextField.setVisible(true);
-                    editTitleTextField.setManaged(true);
-                    editTitleTextField.requestFocus();
-                    editTitleTextField.setText(title.getText());
-                    event.consume();
-                } else if (event.getCode() == KeyCode.ENTER) {
-                    editTask();
-                } else if (event.getCode() == KeyCode.DELETE || event.getCode() == KeyCode.BACK_SPACE) {
-                    deleteTask();
-                } else if (event.getCode() == KeyCode.T) {
-                    addTag();
-                    event.consume();
-                } else if (event.getCode() == KeyCode.C) {
-                    setPreset();
-                    event.consume();
+            if (event.isShiftDown()) {
+                if (event.getCode() == KeyCode.UP) {
+                    moveUp();
+                } else if (event.getCode() == KeyCode.DOWN) {
+                    moveDown();
                 }
+            } else if (event.getCode() == KeyCode.E) {
+                editTitleTextField.setVisible(true);
+                editTitleTextField.setManaged(true);
+                editTitleTextField.requestFocus();
+                editTitleTextField.setText(title.getText());
+                event.consume();
+            } else if (event.getCode() == KeyCode.ENTER) {
+                editTask();
+            } else if (event.getCode() == KeyCode.DELETE || event.getCode() == KeyCode.BACK_SPACE) {
+                deleteTask();
+            } else if (event.getCode() == KeyCode.T) {
+                addTag();
+                event.consume();
+            } else if (event.getCode() == KeyCode.C) {
+                setPreset();
+                event.consume();
+            }
         });
 
     }

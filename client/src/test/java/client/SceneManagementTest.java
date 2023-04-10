@@ -60,7 +60,7 @@ public class SceneManagementTest {
         EditBoardCtrl editBoardCtrl = new EditBoardCtrl(new NetworkUtils(null, null, null, null, null, null),
                 null, null, null);
         BoardCatalogueCtrl boardCatalogueCtrl = new BoardCatalogueCtrl(null, null,
-                new NetworkUtils(null, null, null, null, null, null), null, editBoardCtrl);
+                new NetworkUtils(null, null, null, null, null, null), null, null, null);
         BoardOverviewCtrl boardOverviewCtrl = new BoardOverviewCtrl(null, null,
                 new NetworkUtils(null, null, null, null, null, null), null, null,
                 new WebSocketUtils(new ServerUtils()));

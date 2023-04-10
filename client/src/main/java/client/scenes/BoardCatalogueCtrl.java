@@ -2,7 +2,7 @@ package client.scenes;
 
 import client.CustomAlert;
 import client.customExceptions.BoardException;
-import client.utils.BoardUtils;
+import client.services.BoardService;
 import client.utils.NetworkUtils;
 import client.utils.ServerUtils;
 import client.utils.WebSocketUtils;
@@ -28,10 +28,9 @@ import java.util.function.Consumer;
 public class BoardCatalogueCtrl implements Initializable {
 
     WebSocketUtils webSocketUtils;
-
+    BoardService boardService;
     NetworkUtils networkUtils;
     ServerUtils serverUtils;
-    BoardUtils boardUtils;
     MainCtrl mainCtrl;
     EditBoardCtrl editBoardCtrl;
     CustomAlert customAlert;
@@ -43,11 +42,12 @@ public class BoardCatalogueCtrl implements Initializable {
     @Inject
     public BoardCatalogueCtrl(final WebSocketUtils webSocketUtils,
                               final MainCtrl mainCtrl, final NetworkUtils networkUtils,
-                              final CustomAlert customAlert, final EditBoardCtrl editBoardCtrl){
+                              final CustomAlert customAlert, final EditBoardCtrl editBoardCtrl,
+                              final BoardService boardService){
         this.networkUtils = networkUtils;
         this.webSocketUtils = webSocketUtils;
         this.serverUtils=networkUtils.getServerUtils();
-        this.boardUtils=networkUtils.getBoardUtils();
+        this.boardService = boardService;
         this.mainCtrl=mainCtrl;
         this.customAlert=customAlert;
         this.editBoardCtrl=editBoardCtrl;
@@ -97,11 +97,10 @@ public class BoardCatalogueCtrl implements Initializable {
      */
     public void addBoard(final long boardId) throws BoardException{
         try {
-            Board board = boardUtils.getBoard(boardId);
+            Board board = boardService.getBoard(boardId);
             var tab = new Tab(board.getName());
             tab.setContent(createBoardOverview(board, tab));
             catalogue.getTabs().add(catalogue.getTabs().size() - 1, tab);
-            //TODO: sort them alphabetically
             boardsMap.put(boardId, tab);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -181,7 +180,7 @@ public class BoardCatalogueCtrl implements Initializable {
 
         for(Map.Entry<Long, Tab> e : boardsMap.entrySet()){
             try {
-                Board board = boardUtils.getBoard(e.getKey());
+                Board board = boardService.getBoard(e.getKey());
                 e.getValue().setContent(createBoardOverview(board, e.getValue()));
             } catch (IOException ex) {
                 System.out.println("Error while refreshing boards: " + ex.getMessage());

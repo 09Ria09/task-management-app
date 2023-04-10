@@ -35,10 +35,14 @@ public class SelectServerCtrl {
         connectButton.setText("Connecting...");
         String serverAddress = addressField.getText().toLowerCase();
 
-        String result = serverService.connect(serverAddress);
+        String result = connectShowBoards(serverAddress);
 
         connectButton.setText("Connect!");
         addressField.clear();
+    }
+
+    public String connectShowBoards(final String serverAddress) {
+        String result = serverService.connect(serverAddress);
 
         switch (result) {
             case "connected":
@@ -55,6 +59,8 @@ public class SelectServerCtrl {
                 serverService.showUnexpectedError();
                 break;
         }
+
+        return result;
     }
 }
 
