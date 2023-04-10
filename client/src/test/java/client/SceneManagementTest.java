@@ -28,7 +28,7 @@ public class SceneManagementTest {
     @Test
     public void testGetColorManagementView() throws BoardException {
         ColorManagementViewCtrl colorManagementViewCtrl = new ColorManagementViewCtrl(new ServerUtils(), new MainCtrl(),
-                new BoardUtils(new ServerUtils()), new WebSocketUtils(new ServerUtils()));
+                new BoardUtils(new ServerUtils()), new WebSocketUtils(new ServerUtils()), new CustomAlert());
         Pair<ColorManagementViewCtrl, Parent> colorManagementViewCtrlParentPair = new Pair<ColorManagementViewCtrl,
                 Parent>(colorManagementViewCtrl, new Parent() {});
         BoardScenes boardScenes = new BoardScenes(null, colorManagementViewCtrlParentPair, null);
