@@ -20,7 +20,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
@@ -233,7 +232,8 @@ public class DetailedTaskViewCtrl {
      */
     private void update() {
         this.detailedTaskViewService = new DetailedTaskViewService(this.networkUtils, this.task,
-                this.listController.getTaskList(), this.listController.getBoardID(), this.customAlert);
+                this.listController.getTaskList(), this.listController.getBoardID(),
+                this.customAlert);
 
         taskNameText.setVisible(true);
         taskNameTextField.setVisible(false);
