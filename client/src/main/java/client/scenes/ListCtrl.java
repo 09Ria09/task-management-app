@@ -321,7 +321,7 @@ public class ListCtrl implements Initializable {
                                 isEditing = false;
                             }
                         } else if (event.isShiftDown()) {
-                            System.out.println("Shift is down");
+
                             if (event.getCode() == KeyCode.UP) {
                                 c.getController().moveUp();
                                 event.consume();

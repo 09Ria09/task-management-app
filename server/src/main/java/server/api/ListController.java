@@ -139,7 +139,7 @@ public class ListController {
                     boardService.getBoard(boardid));
             messages.convertAndSend("/topic/" + boardid + "/deletelist",
                     list);
-            System.out.println("/topic/" + boardid + "/deletelist");
+
             return ResponseEntity.ok(list);
         } catch(NoSuchElementException e) {
             return ResponseEntity.notFound().build();

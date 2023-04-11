@@ -35,7 +35,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
-import javafx.scene.control.*;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
@@ -63,9 +62,7 @@ public class BoardOverviewCtrl {
     private Tab tab;
     private List<TaskList> taskLists;
     private Board board;
-
     private Task selectedTask;
-
     private final EditBoardCtrl editBoardCtrl;
 
     @FXML
@@ -97,7 +94,6 @@ public class BoardOverviewCtrl {
         this.taskLists = new ArrayList<>();
         this.customAlert = customAlert;
         this.boardCatalogueCtrl = boardCatalogueCtrl;
-
         this.webSocketUtils = webSocketUtils;
         this.editBoardCtrl = editBoardCtrl;
     }
@@ -145,7 +141,7 @@ public class BoardOverviewCtrl {
                     changeColor);
         }
         catch(BoardException e){
-            System.out.println(e.getMessage());
+            System.out.println("Error during websocket registration : " + e.getMessage());
         }
     }
 
@@ -254,27 +250,13 @@ public class BoardOverviewCtrl {
         listsMap.clear();
     }
 
-    public List<TaskList> getTaskLists() {
-        return taskLists;
-    }
-
-    public long getCurrentBoardId() {
-        return this.currentBoardId;
-    }
-
     public Board deleteBoard() throws BoardException {
-        Long idToDelete = getCurrentBoardId();
-        System.out.println(idToDelete);
-        Board board = boardUtils.deleteBoard(idToDelete);
-        refresh();
-        return board;
+        return boardUtils.deleteBoard(board.id);
     }
 
-    public Board renameBoard() throws BoardException {
-        Board board = boardUtils.getBoard(currentBoardId);
+    public Board renameBoard() {
         editBoardCtrl.setBoard(board);
         mainCtrl.showEditBoard();
-        refresh();
         return board;
     }
 
@@ -303,9 +285,8 @@ public class BoardOverviewCtrl {
         }
     }
 
-    public void tagOverview() throws BoardException {
-        Board board = boardUtils.getBoard(currentBoardId);
-        mainCtrl.showTagOverview(board);
+    public void tagOverview() {
+        mainCtrl.showTagOverview(this.board);
     }
 
     public void setTab(final Tab tab) {
@@ -331,8 +312,6 @@ public class BoardOverviewCtrl {
             board.getBoardColorScheme().
                     setBoardTextColor(boardUtils.
                             getBoardColorScheme(board.id).getBoardTextColor());
-            System.out.println(boardUtils.
-                    getBoardColorScheme(board.id).getBoardBackgroundColor());
             String hexColor = board.getBoardColorScheme().getBoardBackgroundColor().substring(2, 8);
             String textColor = board.getBoardColorScheme().getBoardTextColor().substring(2, 8);
             int red = Integer.parseInt(hexColor.substring(0, 2), 16);
@@ -347,7 +326,8 @@ public class BoardOverviewCtrl {
                             red, green, blue, alpha));
         }
         catch(BoardException e){
-            System.out.println("Error when changing colors: " + e.getMessage());
+            Alert alert = customAlert.showAlert(e.getMessage());
+            alert.showAndWait();
         }
     }
 }

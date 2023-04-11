@@ -2,21 +2,19 @@ package client.scenes;
 
 import client.CustomAlert;
 import client.customExceptions.SubTaskException;
+import client.services.SubCardService;
 import client.utils.NetworkUtils;
 import client.utils.SubTaskUtils;
 import client.utils.TaskListUtils;
 import com.google.inject.Inject;
 import commons.SubTask;
-import commons.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -39,6 +37,7 @@ public class SubCardCtrl {
     private SubTaskUtils subTaskUtils;
     private NetworkUtils networkUtils;
     private DetailedTaskViewCtrl detailedTaskViewCtrl;
+    private SubCardService subCardService;
 
 
     @Inject
@@ -54,23 +53,19 @@ public class SubCardCtrl {
         this.customAlert = customAlert;
         this.subTaskUtils = networkUtils.getSubTaskUtils();
         this.taskListUtils = networkUtils.getTaskListUtils();
+        this.subCardService = new SubCardService(networkUtils, subTask, customAlert,
+                listController.getBoardID(), listController.getTaskList().id,
+                detailedTaskViewCtrl.getTask());
         this.detailedTaskViewCtrl = detailedTaskViewCtrl;
         this.checkbox.setSelected(subTask.isCompleted());
         this.root.setOpacity(subTask.isCompleted() ? 0.5D : 1.0D);
     }
 
-    public void deleteSubTask() throws SubTaskException {
-        subTaskUtils.deleteSubTask(listController.getBoardID(),
-                listController.getTaskList().id, detailedTaskViewCtrl.getTask().id, subTask.id);
+    public void deleteSubTask() {
+        subCardService.deleteSubTask();
     }
 
-//    public void renameSubTask() throws SubTaskException {
-//        String name = "renamed";
-//        subTaskUtils.renameSubTask(listController.getBoardID(),
-//        listController.getTaskList().id, detailedTaskViewCtrl.getTask().id, subTask.id, name);
-//    }
-
-    public void renameSubTask() throws Exception {
+    public void renameSubTask() {
         TextInputDialog dialog = new TextInputDialog(subTask.getName());
         dialog.setTitle("Talio: Rename Sub Task");
         dialog.setHeaderText("Enter new name");
@@ -78,9 +73,7 @@ public class SubCardCtrl {
         Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
         stage.getIcons().add(new Image("client/images/icon.png"));
         Optional<String> newName = dialog.showAndWait();
-        if(newName.isPresent()) {
-            setSubTaskName(newName.get());
-        }
+        newName.ifPresent(s -> subCardService.setSubTaskName(s));
         try {
             subTask = subTaskUtils.getSubTask(listController.getBoardID(),
                     listController.getTaskList().id, detailedTaskViewCtrl.getTask().id,
@@ -91,79 +84,20 @@ public class SubCardCtrl {
         }
     }
 
-    public boolean setSubTaskName(final String name) throws SubTaskException, Exception {
-        try {
-            if(!name.equals(subTask.getName()) || !name.equals("")) {
-                subTaskUtils.renameSubTask(listController.getBoardID(),
-                        listController.getTaskList().id,
-                        detailedTaskViewCtrl.getTask().id, subTask.id, name);
-                return true;
-            }
-        } catch (SubTaskException e) {
-            Alert alert = customAlert.showAlert(e.getMessage());
-            alert.showAndWait();
-            return false;
-        } catch (Exception e){
-            return false;
-        }
-        return false;
-    }
-
     public boolean moveSubTaskUp() {
-        try {
-            long boardId = listController.getBoardID();
-            long listId = listController.getTaskList().id;
-            Task task = detailedTaskViewCtrl.getTask();
-            List<SubTask> subTasks = task.getSubtasks();
-            int index = subTasks.indexOf(subTask);
-            if (index > 0) {
-                subTaskUtils.reorderSubTask(boardId,
-                        listId, task.id, subTask.id, index - 1);
-                task.reorderSubTasks(subTask.id, index - 1);
-                if(!Objects.equals(task.getName(), text.getText())){
-                    text.setText(text.getText());
-                    return true;
-                }
-            } else {
-                return false;
-            }
-        }catch (Exception e){
-            var alert = new Alert(Alert.AlertType.ERROR);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setHeaderText("Oops, something went wrong!");
-            alert.setContentText("We're sorry :( something went wrong : "+ e.getMessage());
-            alert.showAndWait();
-            return false;
+        subCardService.moveUp();
+        if(!Objects.equals(detailedTaskViewCtrl.getTask().getName(), text.getText())) {
+            text.setText(text.getText());
+            return true;
         }
         return false;
     }
 
     public boolean moveSubTaskDown() {
-        try {
-            long boardId = listController.getBoardID();
-            long listId = listController.getTaskList().id;
-            Task task = detailedTaskViewCtrl.getTask();
-            List<SubTask> subTasks = task.getSubtasks();
-            int index = subTasks.indexOf(subTask);
-            System.out.println(task.getSubtasks().size());
-            if (index < task.getSubtasks().size() - 1) {
-                subTaskUtils.reorderSubTask(boardId,
-                        listId, task.id, subTask.id, index + 1);
-                task.reorderSubTasks(subTask.id, index + 1);
-                if(!Objects.equals(task.getName(), text.getText())){
-                    text.setText(text.getText());
-                    return true;
-                }
-            } else {
-                return false;
-            }
-        }catch (Exception e){
-            var alert = new Alert(Alert.AlertType.ERROR);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setHeaderText("Oops, something went wrong!");
-            alert.setContentText("We're sorry :( something went wrong : "+ e.getMessage());
-            alert.showAndWait();
-            return false;
+        subCardService.moveDown();
+        if(!Objects.equals(detailedTaskViewCtrl.getTask().getName(), text.getText())) {
+            text.setText(text.getText());
+            return true;
         }
         return false;
     }
@@ -214,17 +148,7 @@ public class SubCardCtrl {
     }
 
     public void onCheckboxChanged(final ActionEvent event){
-        boolean checked = checkbox.isSelected();
-        this.root.setOpacity(checked ? 0.5D : 1.0D);
-        try {
-            subTaskUtils.completeSubTask(listController.getBoardID(),
-                        listController.getTaskList().id,
-                        detailedTaskViewCtrl.getTask().id, subTask.id, checked);
-        } catch (SubTaskException e) {
-            Alert alert = customAlert.showAlert(e.getMessage());
-            alert.showAndWait();
-        } catch (Exception e){
-            System.out.println(e.getMessage());
-        }
+        this.root.setOpacity(checkbox.isSelected() ? 0.5D : 1.0D);
+        subCardService.completeSubTask(checkbox.isSelected());
     }
 }

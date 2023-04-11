@@ -183,7 +183,7 @@ public class BoardCatalogueCtrl implements Initializable {
                 Board board = boardService.getBoard(e.getKey());
                 e.getValue().setContent(createBoardOverview(board, e.getValue()));
             } catch (IOException ex) {
-                System.out.println("Error while refreshing boards: " + ex.getMessage());
+                System.out.println("Error while refreshing the boards");
             }
             catch (BoardException ex2){
                 boardsMap.remove(e.getKey());
