@@ -295,10 +295,40 @@ public class ListCtrl implements Initializable {
             });
             return cell;
         });
+        setShortcuts(cards);
+
+    }
+
+    private void setShortcuts(final List<CardCell> cards) {
+        vBox.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.ENTER
+                    || (event.isShiftDown()
+                    && (event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN))) {
+                for (CardCell c : cards) {
+                    if (c.isSelected()) {
+                        if (event.getCode() == KeyCode.ENTER) {
+                            c.getController().editTask();
+                        } else if (event.isShiftDown()) {
+                            System.out.println("Shift is down");
+                            if (event.getCode() == KeyCode.UP) {
+                                c.getController().moveUp();
+                                event.consume();
+                            } else if (event.getCode() == KeyCode.DOWN) {
+                                c.getController().moveDown();
+                                event.consume();
+                            }
+                        }
+                        event.consume();
+                    }
+                }
+            }
+        });
+
         vBox.setOnKeyPressed((event) -> {
             for(CardCell c : cards)
-                if(c.isSelected())
+                if(c.isSelected()) {
                     c.getController().handleKeyboardInput(event);
+                }
         });
     }
 

@@ -21,6 +21,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import javax.inject.Inject;
@@ -73,6 +74,8 @@ public class CardCtrl {
     private TaskUtils taskUtils;
     private CustomAlert customAlert;
 
+    private boolean isEditing = false;
+
     /**
      * This initializes the card using a task
      *
@@ -103,25 +106,13 @@ public class CardCtrl {
                 preset.getBackgroundColor().substring(2) + ";");
         cardPane.setFocusTraversable(true);
         root.setOnKeyPressed(this::handleKeyboardInput);
+        title.setTextFill(Color.valueOf(preset.getFontColor()));
     }
 
     public void handleKeyboardInput(final KeyEvent event){
-        System.out.println("Event handled: " + event.getCode());
-        if (event.isShiftDown()) {
-            System.out.println("shift down");
-            if (event.getCode() == KeyCode.UP) {
-                moveUp();
-            } else if (event.getCode() == KeyCode.DOWN) {
-                moveDown();
-            }
-        }
-        else if (event.getCode() == KeyCode.E) {
-            System.out.println("edit");
+        if (event.getCode() == KeyCode.E) {
             edit();
             event.consume();
-        }
-        else if (event.getCode() == KeyCode.ENTER) {
-            editTask();
         }
         else if (event.getCode() == KeyCode.DELETE || event.getCode() == KeyCode.BACK_SPACE) {
             deleteTask();
@@ -136,7 +127,9 @@ public class CardCtrl {
         }
     }
 
-
+    public Label getTitle() {
+        return title;
+    }
 
     private void setTags(final List<Tag> tags) {
         for (Tag tag : tags) {
@@ -149,6 +142,7 @@ public class CardCtrl {
     }
 
     public void edit(){
+        isEditing = true;
         editTitleTextField.setVisible(true);
         editTitleTextField.setManaged(true);
         editTitleTextField.requestFocus();
@@ -172,10 +166,14 @@ public class CardCtrl {
             }
             editTitleTextField.setVisible(false);
             editTitleTextField.setManaged(false);
+            isEditing = false;
             event.consume();
         }
     }
 
+    public boolean getEditing() {
+        return isEditing;
+    }
     public void setTask(final Task task) {
         this.task = task;
         if (Objects.equals(this.task.getDescription(), "")) {
