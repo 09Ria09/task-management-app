@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.CustomAlert;
 import client.customExceptions.SubTaskException;
+import client.services.SubCardService;
 import client.utils.NetworkUtils;
 import client.utils.SubTaskUtils;
 import client.utils.TaskListUtils;
@@ -39,6 +40,7 @@ public class SubCardCtrl {
     private SubTaskUtils subTaskUtils;
     private NetworkUtils networkUtils;
     private DetailedTaskViewCtrl detailedTaskViewCtrl;
+    private SubCardService subCardService;
 
 
     @Inject
@@ -54,6 +56,9 @@ public class SubCardCtrl {
         this.customAlert = customAlert;
         this.subTaskUtils = networkUtils.getSubTaskUtils();
         this.taskListUtils = networkUtils.getTaskListUtils();
+        this.subCardService = new SubCardService(networkUtils, subTask, customAlert,
+                listController.getBoardID(), listController.getTaskList().id,
+                detailedTaskViewCtrl.getTask());
         this.detailedTaskViewCtrl = detailedTaskViewCtrl;
         this.checkbox.setSelected(subTask.isCompleted());
         this.root.setOpacity(subTask.isCompleted() ? 0.5D : 1.0D);
@@ -78,9 +83,16 @@ public class SubCardCtrl {
         Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
         stage.getIcons().add(new Image("client/images/icon.png"));
         Optional<String> newName = dialog.showAndWait();
-        if(newName.isPresent()) {
-            setSubTaskName(newName.get());
-        }
+        newName.ifPresent(s -> {
+            try {
+                subCardService.setSubTaskName(s);
+            } catch (SubTaskException e) {
+                Alert alert = customAlert.showAlert(e.getMessage());
+                alert.showAndWait();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
         try {
             subTask = subTaskUtils.getSubTask(listController.getBoardID(),
                     listController.getTaskList().id, detailedTaskViewCtrl.getTask().id,
@@ -216,15 +228,6 @@ public class SubCardCtrl {
     public void onCheckboxChanged(final ActionEvent event){
         boolean checked = checkbox.isSelected();
         this.root.setOpacity(checked ? 0.5D : 1.0D);
-        try {
-            subTaskUtils.completeSubTask(listController.getBoardID(),
-                        listController.getTaskList().id,
-                        detailedTaskViewCtrl.getTask().id, subTask.id, checked);
-        } catch (SubTaskException e) {
-            Alert alert = customAlert.showAlert(e.getMessage());
-            alert.showAndWait();
-        } catch (Exception e){
-            System.out.println(e.getMessage());
-        }
+        subCardService.completeSubTask(checked);
     }
 }
