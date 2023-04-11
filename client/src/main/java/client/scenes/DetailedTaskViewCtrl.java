@@ -4,6 +4,7 @@ import client.CustomAlert;
 import client.customExceptions.BoardException;
 import client.customExceptions.TagException;
 import client.customExceptions.TaskException;
+import client.services.DetailedTaskViewService;
 import client.utils.*;
 import com.google.inject.Inject;
 import commons.*;
@@ -58,6 +59,7 @@ public class DetailedTaskViewCtrl {
     private StackPane taskDetails;
     private final BoardUtils boardUtils;
     private final NetworkUtils networkUtils;
+    private DetailedTaskViewService detailedTaskViewService;
 
     private final Consumer<Task> taskConsumer = (task) -> {
         if (task.id == this.task.id)
@@ -125,11 +127,7 @@ public class DetailedTaskViewCtrl {
     }
 
     public void changePreset(final TaskPreset preset) {
-        if (preset == null)
-            return;
-        task.setTaskPreset(preset);
-        taskUtils.setPreset(listController.getBoardID(), listController.getTaskList().id,
-                task.getId(), preset);
+        detailedTaskViewService.changePreset(preset);
     }
 
     public void registerWebSockets() {
@@ -207,12 +205,7 @@ public class DetailedTaskViewCtrl {
         this.taskNameText.setVisible(true);
         if (this.taskNameTextField.getText().equals(task.getName()))
             return;
-        try {
-            this.taskUtils.renameTask(listController.getBoardID(), listController.getTaskList().id,
-                    task.getId(), this.taskNameTextField.getText());
-        } catch (TaskException e) {
-            throw new TaskException("Renaming task unsuccessful");
-        }
+        detailedTaskViewService.editName(taskNameTextField.getText());
     }
 
     private void onFocusLostTaskDescription() throws TaskException {
@@ -221,13 +214,7 @@ public class DetailedTaskViewCtrl {
         this.taskDescriptionText.setVisible(true);
         if (this.taskDescriptionTextArea.getText().equals(task.getDescription()))
             return;
-        try {
-            this.taskUtils.editDescription(listController.getBoardID(),
-                    listController.getTaskList().id,
-                    task.getId(), this.taskDescriptionTextArea.getText());
-        } catch (TaskException e) {
-            throw new TaskException("Editing the description of the task unsuccessful");
-        }
+        detailedTaskViewService.editDescription(this.taskDescriptionTextArea.getText());
     }
 
     /**
@@ -245,6 +232,9 @@ public class DetailedTaskViewCtrl {
      * It will update all the fields with the new values from the task
      */
     private void update() {
+        this.detailedTaskViewService = new DetailedTaskViewService(this.networkUtils, this.task,
+                this.listController.getTaskList(), this.listController.getBoardID(), this.customAlert);
+
         taskNameText.setVisible(true);
         taskNameTextField.setVisible(false);
         taskDescriptionText.setVisible(true);
@@ -400,17 +390,8 @@ public class DetailedTaskViewCtrl {
         mainCtrl.showBoardCatalogue();
     }
 
-    public boolean deleteTask() {
-        try {
-            TaskList taskList = listController.getTaskList();
-            taskUtils.deleteTask(listController.getBoardID(), taskList.id, task.id);
-            mainCtrl.showBoardCatalogue();
-            return true;
-        } catch (TaskException e) {
-            Alert alert = customAlert.showAlert(e.getMessage());
-            alert.showAndWait();
-            return false;
-        }
+    public void deleteTask() {
+        if(detailedTaskViewService.deleteTask()) {mainCtrl.showBoardCatalogue();}
     }
 
 
@@ -426,29 +407,17 @@ public class DetailedTaskViewCtrl {
         SubTask subTask;
 
         if (newName.isPresent()) {
-            subTask = makeSubTask(newName.get());
+            subTask = detailedTaskViewService.makeSubTask(newName.get());
             addCard(subTask);
         }
     }
 
-    public SubTask makeSubTask(final String name) {
-        return new SubTask(name, false);
-    }
-
     public void addCard(final SubTask subTask) {
-        try {
-            if (subTasks == null) {
-                subTasks = new ListView<>();
-            }
-            SubTask updatedSubTask = subTaskUtils.addSubTask(listController.getBoardID(),
-                    listController.getTaskList().id, task.id, subTask);
-            subTasks.getItems().add(updatedSubTask);
-        } catch (TaskException e) {
-            var alert = new Alert(Alert.AlertType.ERROR);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
+        if (subTasks == null) {
+            subTasks = new ListView<>();
         }
+        SubTask updatedSubTask = detailedTaskViewService.addSubTask(subTask);
+        if(updatedSubTask != null) {subTasks.getItems().add(updatedSubTask);}
     }
 
     public Task getTask() {

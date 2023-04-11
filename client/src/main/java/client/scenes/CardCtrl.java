@@ -3,6 +3,8 @@ package client.scenes;
 import client.CustomAlert;
 import client.customExceptions.TagException;
 import client.customExceptions.TaskException;
+import client.services.CardService;
+import client.services.DetailedTaskViewService;
 import client.utils.NetworkUtils;
 import client.utils.TagUtils;
 import client.utils.TaskListUtils;
@@ -70,6 +72,7 @@ public class CardCtrl {
     private TaskListUtils taskListUtils;
     private TaskUtils taskUtils;
     private CustomAlert customAlert;
+    private CardService cardService;
 
     /**
      * This initializes the card using a task
@@ -92,6 +95,8 @@ public class CardCtrl {
         this.boardOverviewCtrl = controllers.getKey();
         this.setTask(task);
         this.onUnhover();
+        cardService = new CardService(networkUtils, task, listController.getBoardID(),
+                listController.getTaskList(), customAlert);
         tagList.setHgap(5.00);
         tagList.setVgap(5.00);
         cardPane.setOnMouseEntered(event -> onHover());
@@ -214,24 +219,11 @@ public class CardCtrl {
      * @return it will return a boolean depending on if the task could be moved up
      */
     public boolean moveUp() {
-        try {
-            TaskList taskList = listController.getTaskList();
-            List<Task> tasks = taskList.getTasks();
-            int index = tasks.indexOf(task);
-            if (index > 0) {
-                taskListUtils.reorderTask(listController.getBoardID(),
-                        taskList.id, task.id, index - 1);
-                taskList.reorder(task.id, index - 1);
-                listController.hardRefresh(taskList, listController.getBoardID());
-                return true;
-            } else {
-                return false;
-            }
-        } catch (TaskListException e) {
-            Alert alert = customAlert.showAlert(e.getMessage());
-            alert.showAndWait();
-            return false;
+        if(cardService.moveUp()) {
+            listController.hardRefresh(listController.getTaskList(), listController.getBoardID());
+            return true;
         }
+        return false;
     }
 
     /**
@@ -241,36 +233,15 @@ public class CardCtrl {
      * @return it will return a boolean depending on if the task could be moved down
      */
     public boolean moveDown() {
-        try {
-            TaskList taskList = listController.getTaskList();
-            List<Task> tasks = taskList.getTasks();
-            int index = tasks.indexOf(task);
-            if (index < tasks.size() - 1) {
-                taskListUtils.reorderTask(listController.getBoardID(),
-                        taskList.id, task.id, index + 1);
-                taskList.reorder(task.id, index + 1);
-                listController.hardRefresh(taskList, listController.getBoardID());
-                return true;
-            } else {
-                return false;
-            }
-        } catch (TaskListException e) {
-            Alert alert = customAlert.showAlert(e.getMessage());
-            alert.showAndWait();
-            return false;
+        if(cardService.moveDown()) {
+            listController.hardRefresh(listController.getTaskList(), listController.getBoardID());
+            return true;
         }
+        return false;
     }
 
     public boolean deleteTask() {
-        try {
-            TaskList taskList = listController.getTaskList();
-            taskUtils.deleteTask(listController.getBoardID(), taskList.id, task.id);
-            return true;
-        } catch (TaskException e) {
-            Alert alert = customAlert.showAlert(e.getMessage());
-            alert.showAndWait();
-            return false;
-        }
+        return cardService.deleteTask();
     }
 
     public void editTask() {
@@ -388,13 +359,7 @@ public class CardCtrl {
                 Alert alert = customAlert.showAlert("This task already has the selected preset.");
                 alert.showAndWait();
             } else {
-                taskUtils.setPreset(listController.getBoardID(),
-                        listController.getTaskList().id, task.id, preset);
-                task.setTaskPreset(preset);
-                TaskPreset presetChange = task.getTaskPreset();
-                System.out.println(presetChange);
-                System.out.println(presetChange.getBackgroundColor());
-                System.out.println(presetChange.getFontColor());
+                TaskPreset presetChange = cardService.setPreset(preset);
                 cardPane.setStyle("-fx-background-color: #"
                         + presetChange.getBackgroundColor().substring(2, 8) + ";");
             }

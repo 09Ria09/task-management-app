@@ -8,10 +8,8 @@ import com.google.inject.Inject;
 import commons.SubTask;
 import commons.Task;
 import javafx.scene.control.Alert;
-import javafx.stage.Modality;
 
 import java.util.List;
-import java.util.Objects;
 
 public class SubCardService {
 
@@ -34,8 +32,13 @@ public class SubCardService {
         this.task = task;
     }
 
+    public void showAlert(final SubTaskException e) {
+        Alert alert = customAlert.showAlert(e.getMessage());
+        alert.showAndWait();
+    }
 
-    public boolean setSubTaskName(final String newName) throws Exception {
+
+    public boolean setSubTaskName(final String newName) {
         try {
             if (!newName.equals(subTask.getName()) || !newName.equals("")) {
                 subTaskUtils.renameSubTask(this.boardID, this.listID,
@@ -44,7 +47,8 @@ public class SubCardService {
             }
             return false;
         } catch (SubTaskException e) {
-            throw new RuntimeException(e);
+            showAlert(e);
+            return false;
         }
     }
 
@@ -53,14 +57,11 @@ public class SubCardService {
             subTaskUtils.completeSubTask(this.boardID, this.listID,
                     this.task.id, subTask.id, checked);
         } catch (SubTaskException e) {
-            Alert alert = customAlert.showAlert(e.getMessage());
-            alert.showAndWait();
-        } catch (Exception e){
-            System.out.println(e.getMessage());
+            showAlert(e);
         }
     }
 
-    public boolean moveUp(final String text) {
+    public boolean moveUp() {
         try {
             List<SubTask> subTasks = task.getSubtasks();
             int index = subTasks.indexOf(subTask);
@@ -72,18 +73,40 @@ public class SubCardService {
             } else {
                 return false;
             }
-        }catch (Exception e){
-            var alert = new Alert(Alert.AlertType.ERROR);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setHeaderText("Oops, something went wrong!");
-            alert.setContentText("We're sorry :( something went wrong : "+ e.getMessage());
-            alert.showAndWait();
+        }catch (SubTaskException e){
+            showAlert(e);
             return false;
         }
     }
 
-    public void moveDown() {
+    public boolean moveDown() {
+        try {
+            List<SubTask> subTasks = task.getSubtasks();
+            int index = subTasks.indexOf(subTask);
+            System.out.println(task.getSubtasks().size());
+            if (index < task.getSubtasks().size() - 1) {
+                subTaskUtils.reorderSubTask(this.boardID, this.listID,
+                        task.id, subTask.id, index + 1);
+                task.reorderSubTasks(subTask.id, index + 1);
+                return true;
+            } else {
+                return false;
+            }
+        }catch (SubTaskException e){
+            showAlert(e);
+            return false;
+        }
+    }
 
+    public boolean deleteSubTask() {
+        try {
+            subTaskUtils.deleteSubTask(this.boardID, this.listID,
+                    this.task.id, subTask.id);
+            return true;
+        } catch (SubTaskException e) {
+            showAlert(e);
+            return false;
+        }
     }
 
 }
