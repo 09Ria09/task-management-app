@@ -20,6 +20,7 @@ import javafx.scene.layout.*;
 import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
 import javafx.scene.control.Button;
+import javafx.util.Pair;
 import objects.CardCell;
 
 import java.io.IOException;
@@ -239,9 +240,7 @@ public class ListCtrl implements Initializable {
                     TaskList updatedList = taskListUtils.getTaskList(listCtrl.boardID, taskList.id);
                     Optional<Task> optionalTask =
                             updatedList.getTaskById(updatedList.findHighestTaskID());
-                    if(optionalTask.isPresent()) {
-                        draggedTask = optionalTask.get();
-                    }
+                    optionalTask.ifPresent(task -> draggedTask = task);
                     taskListUtils.reorderTask(listCtrl.boardID, taskList.id,
                             draggedTask.id, indexToDrop);
 
@@ -274,7 +273,9 @@ public class ListCtrl implements Initializable {
                             Node card = cardLoader.load();
                             cardCtrl = cardLoader.getController();
                             cardCtrl.initialize(task, controller,
-                                    customAlert, boardOverviewCtrl, networkUtils, mainCtrl);
+                                    customAlert, new Pair<>(boardOverviewCtrl, mainCtrl),
+                                    networkUtils,
+                                    this.isSelected() && list.focusedProperty().get());
                             setGraphic(card);
                             cardCellMap.put(task.id, this);
                         } catch (IOException e) {
@@ -295,9 +296,15 @@ public class ListCtrl implements Initializable {
             });
             return cell;
         });
+        list.focusedProperty().addListener(((observable, oldValue, newValue) -> {
+            if(!isEditing)
+                initialize(location, resources);
+        }));
         setShortcuts(cards);
 
     }
+
+    public boolean isEditing = false;
 
     private void setShortcuts(final List<CardCell> cards) {
         vBox.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
@@ -307,7 +314,12 @@ public class ListCtrl implements Initializable {
                 for (CardCell c : cards) {
                     if (c.isSelected()) {
                         if (event.getCode() == KeyCode.ENTER) {
-                            c.getController().editTask();
+                            if(!c.getController().isEditing())
+                                c.getController().editTask();
+                            else {
+                                c.getController().handleEditTitle(event);
+                                isEditing = false;
+                            }
                         } else if (event.isShiftDown()) {
                             System.out.println("Shift is down");
                             if (event.getCode() == KeyCode.UP) {

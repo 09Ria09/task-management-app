@@ -1,19 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.Tooltip?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.shape.Line?>
-<?import javafx.scene.shape.Rectangle?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="root" maxHeight="130.0" minHeight="130.0" prefHeight="120.0" prefWidth="311.0" style="-fx-background-color: transparent; -fx-border-radius: 20px; -fx-background-radius: 20px;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.CardCtrl">
+<AnchorPane fx:id="root" maxHeight="130.0" minHeight="130.0" prefHeight="120.0" prefWidth="311.0" style="-fx-background-color: transparent; -fx-border-radius: 20px; -fx-background-radius: 20px;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.CardCtrl">
    <children>
       <AnchorPane id="cardPane" fx:id="cardPane" layoutY="0.5" maxHeight="120.0" maxWidth="300.0" minHeight="120.0" minWidth="300.0" onMouseEntered="#onHover" onMouseExited="#onUnhover" prefHeight="120.0" prefWidth="300.0" style="-fx-background-radius: 15px; -fx-border-radius: 15px; -fx-background-color: #CBD2D0;" stylesheets="@../styles/card.css" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
          <Label fx:id="title" layoutX="11.0" layoutY="5.0" maxHeight="50.0" maxWidth="200.0" minHeight="50.0" minWidth="200.0" prefHeight="43.0" prefWidth="173.0" style="-fx-font-weight: bold; -fx-background-color: transparent; -fx-font-size: 18px;" text="Title" AnchorPane.bottomAnchor="65.0">
@@ -22,7 +15,7 @@
             </font>
          </Label>
          <StackPane fx:id="progressPane" alignment="CENTER_LEFT" layoutX="14.0" layoutY="70.0" prefHeight="13.0" prefWidth="215.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="70.0">
-            <Rectangle arcHeight="10.0" arcWidth="10.0" fill="#fcf7f7" height="11.0" stroke="TRANSPARENT" strokeType="INSIDE" width="215.0" />
+            <Rectangle arcHeight="10.0" arcWidth="10.0" fill="#fcf7f7" height="10.0" stroke="TRANSPARENT" strokeType="INSIDE" width="215.0" />
             <Rectangle fx:id="progressBar" arcHeight="10.0" arcWidth="10.0" fill="DODGERBLUE" height="10.0" stroke="TRANSPARENT" strokeType="INSIDE" width="50.0" />
          </StackPane>
          <Button fx:id="editButton" maxHeight="20.0" maxWidth="20.0" mnemonicParsing="false" onAction="#editTask" onMouseEntered="#onHoverEdit" onMouseExited="#onUnhoverEdit" pickOnBounds="false" prefHeight="20.0" prefWidth="20.0" style="-fx-background-color: transparent;" textFill="WHITE" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="85.0">

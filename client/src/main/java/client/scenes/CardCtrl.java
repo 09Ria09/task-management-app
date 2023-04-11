@@ -12,22 +12,19 @@ import commons.Tag;
 import commons.Task;
 import commons.TaskList;
 import commons.TaskPreset;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Pair;
 
 import javax.inject.Inject;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class CardCtrl {
     private Task task;
@@ -74,8 +71,6 @@ public class CardCtrl {
     private TaskUtils taskUtils;
     private CustomAlert customAlert;
 
-    private boolean isEditing = false;
-
     /**
      * This initializes the card using a task
      *
@@ -84,35 +79,45 @@ public class CardCtrl {
     @Inject
     public void initialize(final Task task, final ListCtrl listCtrl,
                             final CustomAlert customAlert,
-                           final BoardOverviewCtrl boardOverviewCtrl,
-                           final NetworkUtils networkUtils, final MainCtrl mainCtrl) {
+                           final Pair<BoardOverviewCtrl, MainCtrl> controllers,
+                           final NetworkUtils networkUtils,
+                           final boolean selected) {
         this.listController = listCtrl;
         this.customAlert = customAlert;
-        this.mainCtrl = mainCtrl;
+        this.mainCtrl = controllers.getValue();
         this.networkUtils = networkUtils;
         this.taskListUtils = networkUtils.getTaskListUtils();
         this.taskUtils = networkUtils.getTaskUtils();
         this.tagUtils = networkUtils.getTagUtils();
-        this.boardOverviewCtrl = boardOverviewCtrl;
+        this.boardOverviewCtrl = controllers.getKey();
         this.setTask(task);
         this.onUnhover();
         tagList.setHgap(5.00);
         tagList.setVgap(5.00);
         cardPane.setOnMouseEntered(event -> onHover());
         cardPane.setOnMouseExited(event -> onUnhover());
-        editTitleTextField.addEventHandler(KeyEvent.KEY_PRESSED, this::handleEditTitle);
         TaskPreset preset = task.getTaskPreset();
         cardPane.setStyle(cardPane.getStyle() + "-fx-background-color: #" +
                 preset.getBackgroundColor().substring(2) + ";");
         cardPane.setFocusTraversable(true);
         root.setOnKeyPressed(this::handleKeyboardInput);
-        title.setTextFill(Color.valueOf(preset.getFontColor()));
+        setSelected(selected);
+    }
+
+    public void setSelected(final boolean selected){
+        Color textFill = Color.valueOf(task.getTaskPreset().getFontColor());
+        if(selected)
+            textFill = textFill.invert();
+        title.setTextFill(textFill);
     }
 
     public void handleKeyboardInput(final KeyEvent event){
+        System.out.println("event handled : " + event.getCode() + " -> " + task.getName());
         if (event.getCode() == KeyCode.E) {
-            edit();
+            System.out.println("It is an E !");
+            listController.isEditing = true;
             event.consume();
+            edit();
         }
         else if (event.getCode() == KeyCode.DELETE || event.getCode() == KeyCode.BACK_SPACE) {
             deleteTask();
@@ -142,14 +147,26 @@ public class CardCtrl {
     }
 
     public void edit(){
-        isEditing = true;
         editTitleTextField.setVisible(true);
         editTitleTextField.setManaged(true);
         editTitleTextField.requestFocus();
+        System.out.println("edit " + task.getName());
         editTitleTextField.setText(title.getText());
+        editTitleTextField.setEditable(false);
+        Timer t = new Timer();
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    editTitleTextField.setEditable(true);
+                    t.purge();
+                });
+            }
+        }, 100);
     }
 
-    private void handleEditTitle(final KeyEvent event) {
+    public void handleEditTitle(final KeyEvent event) {
+        System.out.println("Title: " + event.getCode());
         if (event.getCode() == KeyCode.ENTER) {
             String newTitle = editTitleTextField.getText().trim();
             if (!newTitle.isEmpty()) {
@@ -166,13 +183,12 @@ public class CardCtrl {
             }
             editTitleTextField.setVisible(false);
             editTitleTextField.setManaged(false);
-            isEditing = false;
             event.consume();
         }
     }
 
-    public boolean getEditing() {
-        return isEditing;
+    public boolean isEditing() {
+        return editTitleTextField.isVisible();
     }
     public void setTask(final Task task) {
         this.task = task;

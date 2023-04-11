@@ -12,4 +12,9 @@ public class CardCell extends ListCell<Task> {
         return cardCtrl;
     }
 
+    @Override
+    public void updateSelected(final boolean selected) {
+        super.updateSelected(selected);
+        this.cardCtrl.setSelected(selected);
+    }
 }
