@@ -19,14 +19,13 @@ import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
-import javafx.util.Pair;
 import javafx.scene.control.Button;
+import javafx.util.Pair;
+import objects.CardCell;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class ListCtrl implements Initializable {
     private static final DataFormat taskCustom = new DataFormat("task.custom");
@@ -34,7 +33,7 @@ public class ListCtrl implements Initializable {
 
     private final CustomAlert customAlert;
     @FXML
-    ListView<Task> list;
+    public ListView<Task> list;
     @FXML
     Label title;
     @FXML
@@ -51,6 +50,8 @@ public class ListCtrl implements Initializable {
     HBox createTaskBox;
 
     private int indexToDrop;
+
+    private BoardOverviewCtrl boardOverviewCtrl;
     private Task draggedTask;
     private int totalAmountOfTasks;
     private TaskList taskList;
@@ -60,6 +61,7 @@ public class ListCtrl implements Initializable {
     private TaskUtils taskUtils;
     private BoardUtils boardUtils;
     private ServerUtils server;
+    private NetworkUtils networkUtils;
     @FXML
     TextField simpleTaskNameInput;
     String simpleTaskName;
@@ -67,22 +69,30 @@ public class ListCtrl implements Initializable {
     private final LayoutUtils layoutUtils;
     private final WebSocketUtils webSocketUtils;
 
+    private final TagUtils tagUtils;
 
+    public Map<Long, CardCell> cardCellMap = new HashMap<>();
 
 
 
     @Inject
-    public ListCtrl(final MainCtrl mainCtrl, final TaskListUtils taskListUtils,
-                    final TaskUtils taskUtils, final CustomAlert customAlert,
-                    final BoardUtils boardUtils, final Pair<LayoutUtils,
-            WebSocketUtils> layoutSocketUtils) {
-        this.taskListUtils = taskListUtils;
-        this.taskUtils = taskUtils;
+    public ListCtrl(final MainCtrl mainCtrl,
+                    final CustomAlert customAlert,
+                    final NetworkUtils networkUtils,
+                    final LayoutUtils layoutUtils,
+                    final WebSocketUtils webSocketUtils,
+                    final BoardOverviewCtrl boardOverviewCtrl) {
+        this.networkUtils = networkUtils;
+        this.server = networkUtils.getServerUtils();
+        this.taskListUtils = networkUtils.getTaskListUtils();
+        this.taskUtils = networkUtils.getTaskUtils();
+        this.boardUtils = networkUtils.getBoardUtils();
         this.mainCtrl = mainCtrl;
+        this.tagUtils = networkUtils.getTagUtils();
         this.customAlert = customAlert;
-        this.layoutUtils = layoutSocketUtils.getKey();
-        this.boardUtils = boardUtils;
-        this.webSocketUtils = layoutSocketUtils.getValue();
+        this.layoutUtils = layoutUtils;
+        this.webSocketUtils = webSocketUtils;
+        this.boardOverviewCtrl = boardOverviewCtrl;
     }
 
     public void initialize(){
@@ -230,9 +240,7 @@ public class ListCtrl implements Initializable {
                     TaskList updatedList = taskListUtils.getTaskList(listCtrl.boardID, taskList.id);
                     Optional<Task> optionalTask =
                             updatedList.getTaskById(updatedList.findHighestTaskID());
-                    if(optionalTask.isPresent()) {
-                        draggedTask = optionalTask.get();
-                    }
+                    optionalTask.ifPresent(task -> draggedTask = task);
                     taskListUtils.reorderTask(listCtrl.boardID, taskList.id,
                             draggedTask.id, indexToDrop);
 
@@ -249,9 +257,10 @@ public class ListCtrl implements Initializable {
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
         ListCtrl controller = this;
+        List<CardCell> cards = new ArrayList<>();
         setDragHandlers(controller);
         list.setCellFactory(lv -> {
-            ListCell<Task> cell = new ListCell<>() {
+            CardCell cell = new CardCell(){
                 @Override
                 protected void updateItem(final Task task, final boolean empty) {
                     super.updateItem(task, empty);
@@ -262,31 +271,76 @@ public class ListCtrl implements Initializable {
                         try {
                             var cardLoader = new FXMLLoader(getClass().getResource("Card.fxml"));
                             Node card = cardLoader.load();
-                            CardCtrl cardCtrl = cardLoader.getController();
-                            cardCtrl.initialize(task, controller, taskListUtils,
-                                    customAlert, taskUtils, mainCtrl);
+                            cardCtrl = cardLoader.getController();
+                            cardCtrl.initialize(task, controller,
+                                    customAlert, new Pair<>(boardOverviewCtrl, mainCtrl),
+                                    networkUtils,
+                                    this.isSelected() && list.focusedProperty().get());
                             setGraphic(card);
+                            cardCellMap.put(task.id, this);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
                     }
                 }
             };
+            cards.add(cell);
             cell.setOnDragEntered(event -> {
-                if(cell.getIndex() >= taskList.getTasks().size()) {
-                    indexToDrop = taskList.getTasks().size();
-                } else {
-                    indexToDrop = cell.getIndex();
-                }
+                indexToDrop = Math.min(cell.getIndex(), taskList.getTasks().size());
                 event.consume();
             });
-
             cell.setOnMouseClicked(event -> {
                 if(cell.getIndex() < taskList.getTasks().size() && event.getClickCount() == 2) {
                     mainCtrl.showDetailedTaskView(cell.getItem(), this);
                 }
             });
             return cell;
+        });
+        list.focusedProperty().addListener(((observable, oldValue, newValue) -> {
+            if(!isEditing)
+                initialize(location, resources);
+        }));
+        setShortcuts(cards);
+
+    }
+
+    public boolean isEditing = false;
+
+    private void setShortcuts(final List<CardCell> cards) {
+        vBox.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.ENTER
+                    || (event.isShiftDown()
+                    && (event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN))) {
+                for (CardCell c : cards) {
+                    if (c.isSelected()) {
+                        if (event.getCode() == KeyCode.ENTER) {
+                            if(!c.getController().isEditing())
+                                c.getController().editTask();
+                            else {
+                                c.getController().handleEditTitle(event);
+                                isEditing = false;
+                            }
+                        } else if (event.isShiftDown()) {
+                            System.out.println("Shift is down");
+                            if (event.getCode() == KeyCode.UP) {
+                                c.getController().moveUp();
+                                event.consume();
+                            } else if (event.getCode() == KeyCode.DOWN) {
+                                c.getController().moveDown();
+                                event.consume();
+                            }
+                        }
+                        event.consume();
+                    }
+                }
+            }
+        });
+
+        vBox.setOnKeyPressed((event) -> {
+            for(CardCell c : cards)
+                if(c.isSelected()) {
+                    c.getController().handleKeyboardInput(event);
+                }
         });
     }
 

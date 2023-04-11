@@ -28,6 +28,9 @@ public class BoardService {
         }
     }
 
+    public Board getBoard(final long boardId) throws BoardException {
+        return boardUtils.getBoard(boardId);
+    }
     public void stop() {
         boardUtils.stop();
     }

@@ -20,6 +20,7 @@ import java.util.function.Consumer;
 
 public class CreateListCtrl {
 
+    private final NetworkUtils networkUtils;
     private final ServerUtils server;
     private final TaskListUtils listUtils;
     private final BoardOverviewCtrl boardOverviewCtrl;
@@ -50,18 +51,19 @@ public class CreateListCtrl {
      * Constructor
      */
     @Inject
-    public CreateListCtrl(final TaskListUtils listUtils,
+    public CreateListCtrl(final NetworkUtils networkUtils,
                           final BoardOverviewCtrl boardOverviewCtrl, final MainCtrl mainCtrl,
                           final CustomAlert customAlert, final LayoutUtils layoutUtils,
-                          final WebSocketUtils webSocketUtils, final BoardUtils boardUtils) {
-        this.server = listUtils.getServer();
-        this.listUtils = listUtils;
+                          final WebSocketUtils webSocketUtils) {
+        this.networkUtils = networkUtils;
+        this.server = networkUtils.getServerUtils();
+        this.listUtils = networkUtils.getTaskListUtils();
+        this.boardUtils = networkUtils.getBoardUtils();
         this.boardOverviewCtrl = boardOverviewCtrl;
         this.mainCtrl = mainCtrl;
         this.customAlert = customAlert;
         this.layoutUtils = layoutUtils;
         this.webSocketUtils = webSocketUtils;
-        this.boardUtils=boardUtils;
     }
 
     public void initialize(){

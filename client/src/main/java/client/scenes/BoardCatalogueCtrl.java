@@ -2,7 +2,8 @@ package client.scenes;
 
 import client.CustomAlert;
 import client.customExceptions.BoardException;
-import client.utils.BoardUtils;
+import client.services.BoardService;
+import client.utils.NetworkUtils;
 import client.utils.ServerUtils;
 import client.utils.WebSocketUtils;
 import com.google.inject.Inject;
@@ -25,9 +26,11 @@ import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
 public class BoardCatalogueCtrl implements Initializable {
-    ServerUtils serverUtils;
+
     WebSocketUtils webSocketUtils;
-    BoardUtils boardUtils;
+    BoardService boardService;
+    NetworkUtils networkUtils;
+    ServerUtils serverUtils;
     MainCtrl mainCtrl;
     EditBoardCtrl editBoardCtrl;
     CustomAlert customAlert;
@@ -37,24 +40,30 @@ public class BoardCatalogueCtrl implements Initializable {
     TabPane catalogue;
 
     @Inject
-    public BoardCatalogueCtrl(final ServerUtils serverUtils, final WebSocketUtils webSocketUtils,
-                              final BoardUtils boardUtils, final MainCtrl mainCtrl,
-                              final CustomAlert customAlert, final EditBoardCtrl editBoardCtrl){
-        this.serverUtils=serverUtils;
+    public BoardCatalogueCtrl(final WebSocketUtils webSocketUtils,
+                              final MainCtrl mainCtrl, final NetworkUtils networkUtils,
+                              final CustomAlert customAlert, final EditBoardCtrl editBoardCtrl,
+                              final BoardService boardService){
+        this.networkUtils = networkUtils;
         this.webSocketUtils = webSocketUtils;
-        this.boardUtils=boardUtils;
+        this.serverUtils=networkUtils.getServerUtils();
+        this.boardService = boardService;
         this.mainCtrl=mainCtrl;
         this.customAlert=customAlert;
         this.editBoardCtrl=editBoardCtrl;
         boardsMap=new HashMap<>();
     }
 
+    public WebSocketUtils getWebSocketUtils() {
+        return webSocketUtils;
+    }
+
     /** Initializes the catalogue */
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
         var joinBoardLoader = new FXMLLoader(getClass().getResource("JoinBoard.fxml"));
-        joinBoardLoader.setControllerFactory(type -> new JoinBoardCtrl(serverUtils, mainCtrl,
-            customAlert, boardUtils, this, webSocketUtils ));
+        joinBoardLoader.setControllerFactory(type -> new JoinBoardCtrl(networkUtils, mainCtrl,
+            customAlert, this, webSocketUtils ));
         try {
             Node joinBoard = joinBoardLoader.load();
             var tab=new Tab("Add Board +", joinBoard);
@@ -88,11 +97,10 @@ public class BoardCatalogueCtrl implements Initializable {
      */
     public void addBoard(final long boardId) throws BoardException{
         try {
-            Board board = boardUtils.getBoard(boardId);
+            Board board = boardService.getBoard(boardId);
             var tab = new Tab(board.getName());
             tab.setContent(createBoardOverview(board, tab));
             catalogue.getTabs().add(catalogue.getTabs().size() - 1, tab);
-            //TODO: sort them alphabetically
             boardsMap.put(boardId, tab);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -103,7 +111,7 @@ public class BoardCatalogueCtrl implements Initializable {
             throws IOException {
         var boardLoader = new FXMLLoader(getClass().getResource("BoardOverview.fxml"));
         BoardOverviewCtrl boardOverviewCtrl = new BoardOverviewCtrl(mainCtrl,
-                customAlert, boardUtils, this, editBoardCtrl, webSocketUtils);
+                customAlert, networkUtils, this, editBoardCtrl, webSocketUtils);
         boardOverviewCtrl.setCurrentBoardId(board.id);
         boardOverviewCtrl.setTab(tab);
         boardLoader.setControllerFactory(type -> boardOverviewCtrl);
@@ -172,7 +180,7 @@ public class BoardCatalogueCtrl implements Initializable {
 
         for(Map.Entry<Long, Tab> e : boardsMap.entrySet()){
             try {
-                Board board = boardUtils.getBoard(e.getKey());
+                Board board = boardService.getBoard(e.getKey());
                 e.getValue().setContent(createBoardOverview(board, e.getValue()));
             } catch (IOException ex) {
                 System.out.println("Error while refreshing boards: " + ex.getMessage());

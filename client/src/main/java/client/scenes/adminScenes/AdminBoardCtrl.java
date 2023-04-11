@@ -83,7 +83,7 @@ public class AdminBoardCtrl {
         boardTableView.setItems(FXCollections.observableArrayList(boards));
     }
 
-    private void deleteBoard(final Board board, final boolean adminAction) {
+    public void deleteBoard(final Board board, final boolean adminAction) {
         try {
             Platform.runLater(() -> {
                 boardTableView.getItems().remove(board);
@@ -94,7 +94,6 @@ public class AdminBoardCtrl {
         }
     }
     public void addBoard(final Board board) {
-        System.out.println("Adding board " + board.getName());
         Platform.runLater(() -> {
             boardTableView.getItems().add(board);
         });
@@ -119,7 +118,7 @@ public class AdminBoardCtrl {
     }
 
     @FXML
-    private void goBack() {
+    public void goBack() {
         boardService.stop();
         mainCtrl.showBoardCatalogue();
     }

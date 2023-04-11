@@ -14,6 +14,11 @@ public class MockMainCtrl extends MainCtrl {
     }
 
     @Override
+    public void populateBoardCatalogue() {
+        //hi
+    }
+
+    @Override
     public void showWrongServer() {
         called.add("showWrongServer");
     }

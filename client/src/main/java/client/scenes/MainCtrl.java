@@ -15,6 +15,7 @@
  */
 package client.scenes;
 
+
 import client.sceneManagement.BoardScenes;
 import client.sceneManagement.ListScenes;
 import client.sceneManagement.ServerScenes;
@@ -27,11 +28,17 @@ import client.scenes.connectScenes.UnexpectedErrorCtrl;
 import client.scenes.connectScenes.WrongServerCtrl;
 import commons.Board;
 import commons.Task;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import java.io.IOException;
+import java.util.Objects;
 
 
 public class MainCtrl {
@@ -79,6 +86,7 @@ public class MainCtrl {
     private Scene adminLogin;
     private Scene adminBoards;
 
+    private Popup shortcutsPopup;
 
 
     /**
@@ -95,16 +103,12 @@ public class MainCtrl {
                 .image.Image("file:src/main/resources/client/images/icon.png"));
         primaryStage.setMinHeight(720);
         primaryStage.setMinWidth(1380);
-
         this.createTaskCtrl = taskScenes.getCreateTask().getKey();
         this.createTask = new Scene(taskScenes.getCreateTask().getValue());
         this.detailedTaskViewCtrl = taskScenes.getDetailedTaskView().getKey();
         this.detailedTaskView = new Scene(taskScenes.getDetailedTaskView().getValue());
-
         this.createListCtrl = listScenes.getCreateList().getKey();
         this.createList = new Scene(listScenes.getCreateList().getValue());
-
-
         this.selectServerCtrl = serverScenes.getSelectServer().getKey();
         this.selectServer = new Scene(serverScenes.getSelectServer().getValue());
         this.wrongServerCtrl = serverScenes.getWrongServer().getKey();
@@ -113,16 +117,13 @@ public class MainCtrl {
         this.serverTimeout = new Scene(serverScenes.getServerTimeout().getValue());
         this.unexpectedErrorCtrl = serverScenes.getUnexpectedError().getKey();
         this.unexpectedError = new Scene(serverScenes.getUnexpectedError().getValue());
-
         this.boardCatalogueCtrl=boardCatalogue.getKey();
         this.boardCatalogue=new Scene(boardCatalogue.getValue());
         primaryStage.setOnCloseRequest(e-> {
             boardCatalogue.getKey().close();
         });
-
         this.colorManagementViewCtrl = boardScenes.getColorManagementView().getKey();
         this.colorManagementView = new Scene(boardScenes.getColorManagementView().getValue());
-
         this.editBoardCtrl = boardScenes.getEditBoard().getKey();
         this.editBoard = new Scene(boardScenes.getEditBoard().getValue());
         this.tagOverviewCtrl = boardScenes.getTagOverview().getKey();
@@ -134,17 +135,26 @@ public class MainCtrl {
 
         showSelectServer();
         primaryStage.show();
+        shortcutsPopup = new Popup();
+        try {
+            Pane helpMenuContent = FXMLLoader.load(Objects
+                    .requireNonNull(getClass().getResource("Help.fxml")));
+            shortcutsPopup.getContent().add(helpMenuContent);
+            shortcutsPopup.setAutoHide(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void showAdminLogin() {
         primaryStage.setTitle("Talio: Admin Portal");
-        resize();
+        setShortcutsPopup(adminLogin);
         primaryStage.setScene(adminLogin);
     }
 
     public void showAdminBoard() {
         primaryStage.setTitle("Talio: Admin Boards");
-        resize();
+        setShortcutsPopup(adminBoards);
         primaryStage.setScene(adminBoards);
     }
 
@@ -154,7 +164,7 @@ public class MainCtrl {
     public void showCreateList(final long boardId) {
         primaryStage.setTitle("Talio: Create List");
         createListCtrl.setBoardId(boardId);
-        resize();
+        setShortcutsPopup(createList);
         primaryStage.setScene(createList);
     }
 
@@ -163,7 +173,7 @@ public class MainCtrl {
      */
     public void showBoardCatalogue() {
         primaryStage.setTitle("Talio");
-        resize();
+        setShortcutsPopup(boardCatalogue);
         primaryStage.setScene(boardCatalogue);
         boardCatalogueCtrl.createWebSockets();
         boardCatalogueCtrl.refresh();
@@ -171,7 +181,7 @@ public class MainCtrl {
 
     public void showEditBoard() {
         primaryStage.setTitle("Talio: Edit Board");
-        resize();
+        setShortcutsPopup(editBoard);
         primaryStage.setScene(editBoard);
     }
 
@@ -180,7 +190,7 @@ public class MainCtrl {
      */
     public void showCreateTask(final ListCtrl ctrl) {
         primaryStage.setTitle("Talio: Create Task");
-        resize();
+        setShortcutsPopup(createTask);
         createTaskCtrl.setListCtrl(ctrl);
         primaryStage.setScene(createTask);
     }
@@ -191,7 +201,7 @@ public class MainCtrl {
      */
     public void showSelectServer() {
         primaryStage.setTitle("Talio: Select Your Server");
-        resize();
+        setShortcutsPopup(selectServer);
         primaryStage.setScene(selectServer);
     }
     /**
@@ -199,16 +209,15 @@ public class MainCtrl {
      */
     public void showWrongServer() {
         primaryStage.setTitle("Talio: server not found");
-        resize();
+        setShortcutsPopup(wrongServer);
         primaryStage.setScene(wrongServer);
-
     }
     /**
      * Shows the server timeout scene.
      */
     public void showTimeout() {
         primaryStage.setTitle("Talio: server timed out");
-        resize();
+        setShortcutsPopup(serverTimeout);
         primaryStage.setScene(serverTimeout);
     }
     /**
@@ -216,7 +225,7 @@ public class MainCtrl {
      */
     public void showUnexpectedError() {
         primaryStage.setTitle("Talio: unexpected error");
-        resize();
+        setShortcutsPopup(unexpectedError);
         primaryStage.setScene(unexpectedError);
     }
 
@@ -224,7 +233,7 @@ public class MainCtrl {
         primaryStage.setTitle("Talio: color management view");
         colorManagementViewCtrl.setBoard(board);
         colorManagementViewCtrl.populateTaskColorPresetList();
-        resize();
+        setShortcutsPopup(colorManagementView);
         primaryStage.setScene(colorManagementView);
     }
 
@@ -235,21 +244,18 @@ public class MainCtrl {
 
     public void showDetailedTaskView(final Task task, final ListCtrl listController) {
         primaryStage.setTitle("Talio: Detailed Task View");
-        resize();
+        setShortcutsPopup(detailedTaskView);
         primaryStage.setScene(detailedTaskView);
-        detailedTaskViewCtrl.setMainCtrl(this);
         detailedTaskViewCtrl.setListController(listController);
         detailedTaskViewCtrl.setTask(task);
         detailedTaskViewCtrl.registerWebSockets();
     }
 
-    private void resize(){
-        // primaryStage.setHeight(primaryStage.getHeight());
-        // primaryStage.setWidth(primaryStage.getWidth());
-    }
+
 
     public void showTagOverview(final Board board) {
         primaryStage.setTitle("Talio: Tag Overview");
+        setShortcutsPopup(tagOverview);
         tagOverviewCtrl.setBoard(board);
         primaryStage.setScene(tagOverview);
     }
@@ -258,5 +264,15 @@ public class MainCtrl {
         popup.show(primaryStage);
     }
 
-
+    private void setShortcutsPopup(final Scene scene) {
+        scene.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.SLASH && event.isShiftDown()) {
+                if (shortcutsPopup.isShowing()) {
+                    shortcutsPopup.hide();
+                } else {
+                    shortcutsPopup.show(primaryStage);
+                }
+            }
+        });
+    }
 }

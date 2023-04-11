@@ -3,6 +3,7 @@ package client.scenes;
 import client.CustomAlert;
 import client.customExceptions.BoardException;
 import client.utils.BoardUtils;
+import client.utils.NetworkUtils;
 import client.utils.ServerUtils;
 import client.utils.WebSocketUtils;
 import com.google.inject.Inject;
@@ -27,6 +28,8 @@ public class JoinBoardCtrl {
 
     private final WebSocketUtils webSocketUtils;
 
+    private final NetworkUtils networkUtils;
+
     @FXML
     private TextField inviteKeyInput;
 
@@ -40,16 +43,18 @@ public class JoinBoardCtrl {
     private Button createButton;
 
     @Inject
-    public JoinBoardCtrl(final ServerUtils server, final MainCtrl mainCtrl,
-                         final CustomAlert customAlert, final BoardUtils boardUtils,
+    public JoinBoardCtrl(final NetworkUtils networkUtils,
+                        final MainCtrl mainCtrl,
+                         final CustomAlert customAlert,
                          final BoardCatalogueCtrl boardCatalogueCtrl,
                          final WebSocketUtils webSocketUtils) {
         this.boardCatalogueCtrl = boardCatalogueCtrl;
-        this.server = server;
         this.customAlert = customAlert;
-        this.boardUtils = boardUtils;
         this.mainCtrl = mainCtrl;
         this.webSocketUtils = webSocketUtils;
+        this.networkUtils = networkUtils;
+        this.server = networkUtils.getServerUtils();
+        this.boardUtils = networkUtils.getBoardUtils();
     }
 
     public void adminLogin() {

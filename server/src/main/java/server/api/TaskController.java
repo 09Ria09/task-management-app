@@ -114,7 +114,7 @@ public class TaskController {
                 return ResponseEntity.badRequest().build();
             }
             Task task = taskService.renameTask(boardid, listid, taskid, name);
-            messages.convertAndSend("/topic/" + boardid + "/" + listid + "/modifytask",
+            messages.convertAndSend("/topic/" + boardid + "/modifytask",
                     taskService.getTask(boardid, listid, taskid));
             return ResponseEntity.ok(task);
         }
@@ -165,7 +165,7 @@ public class TaskController {
                 return ResponseEntity.badRequest().build();
             }
             Task task = taskService.editDescription(boardid, listid, taskid, description);
-            messages.convertAndSend("/topic/" + boardid + "/" + listid + "/modifytask",
+            messages.convertAndSend("/topic/" + boardid + "/modifytask",
                     taskService.getTask(boardid, listid, taskid));
             return ResponseEntity.ok(task);
         }
@@ -186,7 +186,7 @@ public class TaskController {
                 return ResponseEntity.badRequest().build();
             }
             Task task = taskService.setPreset(boardid, listid, taskid, preset);
-            messages.convertAndSend("/topic/" + boardid + "/" + listid + "/modifytask",
+            messages.convertAndSend("/topic/" + boardid + "/modifytask",
                     taskService.getTask(boardid, listid, taskid));
             return ResponseEntity.ok(task);
         }

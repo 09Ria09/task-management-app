@@ -212,10 +212,6 @@ public class Board {
             res = res + tag.toString() + "\n";
         }
 
-        res = res + "Members:\n";
-        for(String member : this.boardMembers) {
-            res = res + member + "\n";
-        }
 
         return res;
     }

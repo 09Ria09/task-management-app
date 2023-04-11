@@ -31,6 +31,9 @@
    <bottom>
       <HBox alignment="CENTER" prefHeight="74.0" prefWidth="800.0" style="-fx-border-width: 2px 0px 0px 0px; -fx-border-color: #999;">
          <Button maxHeight="25.0" maxWidth="100.0" minHeight="25.0" minWidth="100.0" onAction="#goBack" style="-fx-font-weight: bold; -fx-text-fill: white; -fx-background-color: #4969e1;" text="Go Back" HBox.hgrow="ALWAYS" />
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
       </HBox>
    </bottom>
    <top>

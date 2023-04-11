@@ -3,10 +3,7 @@ package client.scenes;
 import client.CustomAlert;
 import client.customExceptions.BoardException;
 import client.customExceptions.TagException;
-import client.utils.BoardUtils;
-import client.utils.ServerUtils;
-import client.utils.TagUtils;
-import client.utils.WebSocketUtils;
+import client.utils.*;
 import com.google.inject.Inject;
 import commons.Board;
 import commons.Tag;
@@ -26,6 +23,7 @@ import java.util.function.Consumer;
 
 public class CreateTaskCtrl {
 
+    private final NetworkUtils networkUtils;
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
     private ListCtrl listCtrl;
@@ -52,17 +50,18 @@ public class CreateTaskCtrl {
 
     //this sets up the server, mainctrl and listctrl variables
     @Inject
-    public CreateTaskCtrl(final ServerUtils server, final MainCtrl mainCtrl,
+    public CreateTaskCtrl(final MainCtrl mainCtrl,
                           final BoardCatalogueCtrl boardCatalogueCtrl,
-                          final TagUtils tagUtils, final CustomAlert customAlert,
-                          final WebSocketUtils webSocketUtils, final BoardUtils boardUtils) {
+                          final CustomAlert customAlert,
+                          final WebSocketUtils webSocketUtils, final NetworkUtils networkUtils) {
         this.mainCtrl = mainCtrl;
-        this.server = server;
         this.boardCatalogueCtrl=boardCatalogueCtrl;
-        this.tagUtils = tagUtils;
         this.customAlert = customAlert;
         this.webSocketUtils = webSocketUtils;
-        this.boardUtils = boardUtils;
+        this.networkUtils = networkUtils;
+        this.server = networkUtils.getServerUtils();
+        this.tagUtils = networkUtils.getTagUtils();
+        this.boardUtils = networkUtils.getBoardUtils();
     }
 
     private void setTagsList() {

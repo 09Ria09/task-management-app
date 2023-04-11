@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.CustomAlert;
 import client.utils.BoardUtils;
+import client.utils.NetworkUtils;
 import client.utils.ServerUtils;
 import client.utils.WebSocketUtils;
 import com.google.inject.Inject;
@@ -23,6 +24,7 @@ public class EditBoardCtrl {
     private final CustomAlert customAlert;
     private final WebSocketUtils webSocketUtils;
 
+    private final NetworkUtils networkUtils;
 
     private Board board;
 
@@ -31,12 +33,14 @@ public class EditBoardCtrl {
 
     //this sets up the server and mainctrl variables
     @Inject
-    public EditBoardCtrl(final ServerUtils server, final MainCtrl mainCtrl,
-                         final BoardUtils boardUtils, final CustomAlert customAlert,
+    public EditBoardCtrl(final NetworkUtils networkUtils,
+                        final MainCtrl mainCtrl,
+                         final CustomAlert customAlert,
                          final WebSocketUtils webSocketUtils) {
         this.mainCtrl = mainCtrl;
-        this.server = server;
-        this.boardUtils = boardUtils;
+        this.networkUtils = networkUtils;
+        this.server = networkUtils.getServerUtils();
+        this.boardUtils = networkUtils.getBoardUtils();
         this.customAlert = customAlert;
         this.webSocketUtils = webSocketUtils;
     }

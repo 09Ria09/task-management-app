@@ -1,7 +1,10 @@
 package client.scenes;
 
 import client.CustomAlert;
+import client.customExceptions.TagException;
 import client.customExceptions.TaskException;
+import client.utils.NetworkUtils;
+import client.utils.TagUtils;
 import client.utils.TaskListUtils;
 import client.customExceptions.TaskListException;
 import client.utils.TaskUtils;
@@ -9,27 +12,34 @@ import commons.Tag;
 import commons.Task;
 import commons.TaskList;
 import commons.TaskPreset;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Pair;
 
 import javax.inject.Inject;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class CardCtrl {
     private Task task;
+
+    private BoardOverviewCtrl boardOverviewCtrl;
+
     @FXML
     public Label title;
 
     @FXML
     private Button editButton;
+
+    private TagUtils tagUtils;
+    @FXML
+    private TextField editTitleTextField;
 
     @FXML
     private Button deleteButton;
@@ -39,7 +49,6 @@ public class CardCtrl {
 
     @FXML
     private Rectangle progressBar;
-
     @FXML
     private StackPane progressPane;
 
@@ -47,48 +56,88 @@ public class CardCtrl {
     private ImageView descIcon;
 
     @FXML
-    private ImageView arrowIcon;
-
-    @FXML
     private FlowPane tagList;
 
     @FXML
-    private Pane cardPane;
+    private AnchorPane cardPane;
+    @FXML
+    private AnchorPane root;
 
     private MainCtrl mainCtrl;
     private ListCtrl listController;
+
+    private NetworkUtils networkUtils;
     private TaskListUtils taskListUtils;
     private TaskUtils taskUtils;
     private CustomAlert customAlert;
 
     /**
      * This initializes the card using a task
+     *
      * @param task the task used for initialization
      */
     @Inject
     public void initialize(final Task task, final ListCtrl listCtrl,
-                           final TaskListUtils listUtils, final CustomAlert customAlert,
-                           final TaskUtils taskUtils, final MainCtrl mainCtrl) {
+                            final CustomAlert customAlert,
+                           final Pair<BoardOverviewCtrl, MainCtrl> controllers,
+                           final NetworkUtils networkUtils,
+                           final boolean selected) {
         this.listController = listCtrl;
-        this.taskListUtils = listUtils;
         this.customAlert = customAlert;
-        this.taskUtils = taskUtils;
-        this.mainCtrl = mainCtrl;
+        this.mainCtrl = controllers.getValue();
+        this.networkUtils = networkUtils;
+        this.taskListUtils = networkUtils.getTaskListUtils();
+        this.taskUtils = networkUtils.getTaskUtils();
+        this.tagUtils = networkUtils.getTagUtils();
+        this.boardOverviewCtrl = controllers.getKey();
         this.setTask(task);
         this.onUnhover();
-
         tagList.setHgap(5.00);
         tagList.setVgap(5.00);
-
+        cardPane.setOnMouseEntered(event -> onHover());
+        cardPane.setOnMouseExited(event -> onUnhover());
         TaskPreset preset = task.getTaskPreset();
-        cardPane.setStyle(cardPane.getStyle() +"-fx-background-color: #" +
-            preset.getBackgroundColor().substring(2) + ";");
-        title.setStyle(title.getStyle()+ "-fx-text-fill: #" +
-            preset.getFontColor().substring(2) + ";");
+        cardPane.setStyle(cardPane.getStyle() + "-fx-background-color: #" +
+                preset.getBackgroundColor().substring(2) + ";");
+        cardPane.setFocusTraversable(true);
+        root.setOnKeyPressed(this::handleKeyboardInput);
+        setSelected(selected);
+    }
+
+    public void setSelected(final boolean selected){
+        Color textFill = Color.valueOf(task.getTaskPreset().getFontColor());
+        if(selected)
+            textFill = textFill.invert();
+        title.setTextFill(textFill);
+    }
+
+    public void handleKeyboardInput(final KeyEvent event){
+        System.out.println("event handled : " + event.getCode() + " -> " + task.getName());
+        if (event.getCode() == KeyCode.E) {
+            System.out.println("It is an E !");
+            listController.isEditing = true;
+            event.consume();
+            edit();
+        }
+        else if (event.getCode() == KeyCode.DELETE || event.getCode() == KeyCode.BACK_SPACE) {
+            deleteTask();
+        }
+        else if (event.getCode() == KeyCode.T) {
+            addTag();
+            event.consume();
+        }
+        else if (event.getCode() == KeyCode.C) {
+            setPreset();
+            event.consume();
+        }
+    }
+
+    public Label getTitle() {
+        return title;
     }
 
     private void setTags(final List<Tag> tags) {
-        for(Tag tag : tags) {
+        for (Tag tag : tags) {
             Pane tagPane = new Pane();
             tagPane.setPrefSize(60, 10);
             tagPane.setStyle("-fx-background-radius: 5px; -fx-border-radius: 5px;" +
@@ -97,40 +146,65 @@ public class CardCtrl {
         }
     }
 
+    public void edit(){
+        editTitleTextField.setVisible(true);
+        editTitleTextField.setManaged(true);
+        editTitleTextField.requestFocus();
+        System.out.println("edit " + task.getName());
+        editTitleTextField.setText(title.getText());
+        editTitleTextField.setEditable(false);
+        Timer t = new Timer();
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    editTitleTextField.setEditable(true);
+                    t.purge();
+                });
+            }
+        }, 100);
+    }
+
+    public void handleEditTitle(final KeyEvent event) {
+        System.out.println("Title: " + event.getCode());
+        if (event.getCode() == KeyCode.ENTER) {
+            String newTitle = editTitleTextField.getText().trim();
+            if (!newTitle.isEmpty()) {
+                title.setText(newTitle);
+                task.setName(newTitle);
+                try {
+                    this.taskUtils.renameTask(listController.getBoardID(),
+                            listController.getTaskList().id,
+                            task.getId(), this.editTitleTextField.getText());
+                } catch (TaskException e) {
+                    Alert alert = customAlert.showAlert(e.getMessage());
+                    alert.showAndWait();
+                }
+            }
+            editTitleTextField.setVisible(false);
+            editTitleTextField.setManaged(false);
+            event.consume();
+        }
+    }
+
+    public boolean isEditing() {
+        return editTitleTextField.isVisible();
+    }
     public void setTask(final Task task) {
         this.task = task;
-        if(Objects.equals(this.task.getDescription(), "")) {
+        if (Objects.equals(this.task.getDescription(), "")) {
             this.descButton.setDisable(true);
             descIcon.setVisible(false);
         }
-        if(this.task.getTags() != null) {
+
+        if (this.task.getTags() != null) {
             setTags(this.task.getTags());
         }
-        if(this.taskUtils.getProgress(task) < 0)
+        if (this.taskUtils.getProgress(task) < 0)
             this.progressPane.setVisible(false);
         else
-            this.progressBar.setWidth(this.taskUtils.getProgress(task)*215.0D);
+            this.progressBar.setWidth(this.taskUtils.getProgress(task) * 215.0D);
         this.title.setText(task.getName());
-    }
-
-    /**
-     * @param o an object
-     * @return true if the object provided is the same to this object
-     */
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CardCtrl cardCtrl = (CardCtrl) o;
-        return Objects.equals(task, cardCtrl.task);
-    }
-
-    /**
-     * @return the hashCode of this object
-     */
-    @Override
-    public int hashCode() {
-        return Objects.hash(task);
     }
 
     /**
@@ -153,7 +227,7 @@ public class CardCtrl {
             } else {
                 return false;
             }
-        }catch (TaskListException e){
+        } catch (TaskListException e) {
             Alert alert = customAlert.showAlert(e.getMessage());
             alert.showAndWait();
             return false;
@@ -192,7 +266,7 @@ public class CardCtrl {
             TaskList taskList = listController.getTaskList();
             taskUtils.deleteTask(listController.getBoardID(), taskList.id, task.id);
             return true;
-        } catch (TaskException e){
+        } catch (TaskException e) {
             Alert alert = customAlert.showAlert(e.getMessage());
             alert.showAndWait();
             return false;
@@ -207,18 +281,11 @@ public class CardCtrl {
         return task;
     }
 
-    public TaskUtils getTaskUtils() {
-        return taskUtils;
-    }
-
-    public ListCtrl getListController() {
-        return listController;
-    }
 
     /**
      * When the card is hovered, the edit and delete buttons are shown
      */
-    public void onHover(){
+    public void onHover() {
         this.editButton.setOpacity(1.0d);
         this.deleteButton.setOpacity(1.0d);
     }
@@ -226,7 +293,7 @@ public class CardCtrl {
     /**
      * When the card is not hovered, the edit and delete buttons are hidden
      */
-    public void onUnhover(){
+    public void onUnhover() {
         this.editButton.setOpacity(0.0d);
         this.deleteButton.setOpacity(0.0d);
     }
@@ -234,42 +301,103 @@ public class CardCtrl {
     /**
      * When the edit button is hovered, the background is set to grey.
      */
-    public void onHoverEdit(){
+    public void onHoverEdit() {
         this.editButton.setStyle("-fx-background-color: #BBBBBB;");
     }
 
     /**
      * When the edit button is not hovered, the background is set to transparent.
      */
-    public void onUnhoverEdit(){
+    public void onUnhoverEdit() {
         this.editButton.setStyle("-fx-background-color: transparent;");
     }
 
     /**
      * When the delete button is hovered, the background is set to grey.
      */
-    public void onHoverDelete(){
+    public void onHoverDelete() {
         this.deleteButton.setStyle("-fx-background-color: #BBBBBB;");
     }
 
     /**
      * When the delete button is not hovered, the background is set to transparent.
      */
-    public void onUnhoverDelete(){
+    public void onUnhoverDelete() {
         this.deleteButton.setStyle("-fx-background-color: transparent;");
     }
 
     /**
      * When the description button is hovered, the background is set to grey.
      */
-    public void onHoverDesc(){
+    public void onHoverDesc() {
         this.descButton.setStyle("-fx-background-color: #BBBBBB;");
     }
 
     /**
      * When the delete button is not hovered, the background is set to transparent.
      */
-    public void onUnhoverDesc(){
+    public void onUnhoverDesc() {
         this.descButton.setStyle("-fx-background-color: transparent;");
+    }
+
+    public void addTag() {
+        List<Tag> boardTags = boardOverviewCtrl.getBoard().getTags();
+        if (boardTags.isEmpty()) {
+            Alert alert = customAlert.showAlert("There are no tags on this board.");
+            alert.showAndWait();
+            return;
+        }
+
+        ChoiceDialog<Tag> dialog = new ChoiceDialog<>(boardTags.get(0), boardTags);
+        dialog.setTitle("Add Tag");
+        dialog.setHeaderText(null);
+        dialog.setContentText("Select a tag:");
+        Optional<Tag> result = dialog.showAndWait();
+        result.ifPresent(tag -> {
+            if (task.getTags().contains(tag)) {
+                Alert alert = customAlert.showAlert("This task already has the selected tag.");
+                alert.showAndWait();
+            } else {
+                try {
+                    tagUtils.addTaskTag(listController.getBoardID(),
+                            listController.getTaskList().id, task.id, tag);
+                    task.getTags().add(tag);
+                    Pane tagPane = new Pane();
+                    tagPane.setPrefSize(60, 10);
+                    tagPane.setStyle("-fx-background-radius: 5px; -fx-border-radius: 5px;" +
+                            " -fx-background-color: #" + tag.getColorBackground() + ";");
+                    tagList.getChildren().add(tagPane);
+                } catch (TagException e) {
+                    Alert alert = customAlert.showAlert(e.getMessage());
+                    alert.showAndWait();
+                }
+            }
+        });
+    }
+
+    public void setPreset() {
+        List<TaskPreset> boardColors = boardOverviewCtrl.getBoard().getTaskPresets();
+
+        ChoiceDialog<TaskPreset> dialog = new ChoiceDialog<>(boardColors.get(0), boardColors);
+        dialog.setTitle("Change preset");
+        dialog.setHeaderText(null);
+        dialog.setContentText("Select a preset:");
+        Optional<TaskPreset> result = dialog.showAndWait();
+        result.ifPresent(preset -> {
+            if (task.getTaskPreset().equals(preset)) {
+                Alert alert = customAlert.showAlert("This task already has the selected preset.");
+                alert.showAndWait();
+            } else {
+                taskUtils.setPreset(listController.getBoardID(),
+                        listController.getTaskList().id, task.id, preset);
+                task.setTaskPreset(preset);
+                TaskPreset presetChange = task.getTaskPreset();
+                System.out.println(presetChange);
+                System.out.println(presetChange.getBackgroundColor());
+                System.out.println(presetChange.getFontColor());
+                cardPane.setStyle("-fx-background-color: #"
+                        + presetChange.getBackgroundColor().substring(2, 8) + ";");
+            }
+        });
     }
 }

@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.CustomAlert;
 import client.utils.BoardUtils;
+import client.utils.NetworkUtils;
 import com.google.inject.Inject;
 import commons.Board;
 import commons.TaskPreset;
@@ -29,13 +30,16 @@ public class TaskColorPresetCardCtrl {
     BoardUtils boardUtils;
     private Board board;
     private CustomAlert customAlert;
+
+    private final NetworkUtils networkUtils;
     private ColorManagementViewCtrl colorManagementViewCtrl;
 
     @Inject
-    public TaskColorPresetCardCtrl(final BoardUtils boardUtils, final Board board,
+    public TaskColorPresetCardCtrl(final NetworkUtils networkUtils, final Board board,
                                    final CustomAlert customAlert,
                                    final ColorManagementViewCtrl colorManagementViewCtrl) {
-        this.boardUtils = boardUtils;
+        this.networkUtils = networkUtils;
+        this.boardUtils = networkUtils.getBoardUtils();
         this.board = board;
         this.customAlert = customAlert;
         this.colorManagementViewCtrl = colorManagementViewCtrl;

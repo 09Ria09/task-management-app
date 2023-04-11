@@ -25,8 +25,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SceneManagementTest {
     @Test
     public void testGetEditBoard() {
-        EditBoardCtrl editBoardCtrl = new EditBoardCtrl(new ServerUtils(), new MainCtrl(),
-                new BoardUtils(new ServerUtils()), new CustomAlert(), new WebSocketUtils(new ServerUtils()));
+        EditBoardCtrl editBoardCtrl = new EditBoardCtrl(new NetworkUtils(null, null, null, null, null, null),
+                null, null, null);
         Pair<EditBoardCtrl, Parent> editBoardCtrlParentPair = new Pair<EditBoardCtrl, Parent>(editBoardCtrl,
                 new Parent() {});
         BoardScenes boardScenes = new BoardScenes(editBoardCtrlParentPair, null, null);
@@ -35,8 +35,9 @@ public class SceneManagementTest {
 
     @Test
     public void testGetColorManagementView() throws BoardException {
-        ColorManagementViewCtrl colorManagementViewCtrl = new ColorManagementViewCtrl(new ServerUtils(), new MainCtrl(),
-                new BoardUtils(new ServerUtils()), new WebSocketUtils(new ServerUtils()), new CustomAlert());
+        ColorManagementViewCtrl colorManagementViewCtrl = new ColorManagementViewCtrl(null,
+                new NetworkUtils(null, null, null, null, null, null),
+                null, null);
         Pair<ColorManagementViewCtrl, Parent> colorManagementViewCtrlParentPair = new Pair<ColorManagementViewCtrl,
                 Parent>(colorManagementViewCtrl, new Parent() {});
         BoardScenes boardScenes = new BoardScenes(null, colorManagementViewCtrlParentPair, null);
@@ -45,9 +46,8 @@ public class SceneManagementTest {
 
     @Test
     public void testGetTagOverview() {
-        TagOverviewCtrl tagOverviewCtrl = new TagOverviewCtrl(new TagUtils(new ServerUtils()), new CustomAlert(),
-                new BoardUtils(new ServerUtils()), new MainCtrl(), new WebSocketUtils(new ServerUtils()),
-                new LayoutUtils());
+        TagOverviewCtrl tagOverviewCtrl = new TagOverviewCtrl(null, null, null, null,
+                new NetworkUtils(null, null, null, null, null, null));
         Pair<TagOverviewCtrl, Parent> tagOverviewCtrlParentPair = new Pair<TagOverviewCtrl,
                 Parent>(tagOverviewCtrl, new Parent() {});
         BoardScenes boardScenes = new BoardScenes(null, null, tagOverviewCtrlParentPair);
@@ -57,17 +57,15 @@ public class SceneManagementTest {
     @Test
     public void testGetCreateList() {
         TaskListUtils taskListUtils = new TaskListUtils(new ServerUtils());
-        EditBoardCtrl editBoardCtrl = new EditBoardCtrl(new ServerUtils(), new MainCtrl(),
-                new BoardUtils(new ServerUtils()), new CustomAlert(), new WebSocketUtils(new ServerUtils()));
-        BoardCatalogueCtrl boardCatalogueCtrl = new BoardCatalogueCtrl(new ServerUtils(),
-                new WebSocketUtils(new ServerUtils()), new BoardUtils(new ServerUtils()), new MainCtrl(),
-                new CustomAlert(), editBoardCtrl);
-        BoardOverviewCtrl boardOverviewCtrl = new BoardOverviewCtrl(new MainCtrl(), new CustomAlert(),
-                new BoardUtils(new ServerUtils()), boardCatalogueCtrl, editBoardCtrl,
+        EditBoardCtrl editBoardCtrl = new EditBoardCtrl(new NetworkUtils(null, null, null, null, null, null),
+                null, null, null);
+        BoardCatalogueCtrl boardCatalogueCtrl = new BoardCatalogueCtrl(null, null,
+                new NetworkUtils(null, null, null, null, null, null), null, null, null);
+        BoardOverviewCtrl boardOverviewCtrl = new BoardOverviewCtrl(null, null,
+                new NetworkUtils(null, null, null, null, null, null), null, null,
                 new WebSocketUtils(new ServerUtils()));
-        CreateListCtrl createListCtrl = new CreateListCtrl(taskListUtils, boardOverviewCtrl,
-                new MainCtrl(), new CustomAlert(), new LayoutUtils(), new WebSocketUtils(new ServerUtils()),
-                new BoardUtils(new ServerUtils()));
+        CreateListCtrl createListCtrl = new CreateListCtrl(new NetworkUtils(null, null, null, null, null, null),
+                boardOverviewCtrl, new MainCtrl(), null, null, null);
         Pair<CreateListCtrl, Parent> createListCtrlParentPair = new Pair<CreateListCtrl,
                 Parent>(createListCtrl, new Parent() {});
         ListScenes listScenes = new ListScenes(createListCtrlParentPair);
@@ -116,7 +114,7 @@ public class SceneManagementTest {
 
     @Test
     public void testGetAdminLogin() {
-        AdminLoginCtrl controller = new AdminLoginCtrl(null, null, null, null);
+        AdminLoginCtrl controller = new AdminLoginCtrl(null, new NetworkUtils(null, null, null, null, null, null), null);
         Pair<AdminLoginCtrl, Parent> controllerPair = new Pair<AdminLoginCtrl,
                 Parent>(controller, new Parent() {});
         ServerScenes serverScenes = new ServerScenes(null, null, null,
@@ -136,7 +134,7 @@ public class SceneManagementTest {
 
     @Test
     public void testGetCreateTask() {
-        CreateTaskCtrl controller = new CreateTaskCtrl(null, null, null, null, null, null, null);
+        CreateTaskCtrl controller = new CreateTaskCtrl(null, null, null, null, new NetworkUtils(null, null, null, null, null, null));
         Pair<CreateTaskCtrl, Parent> controllerPair = new Pair<CreateTaskCtrl,
                 Parent>(controller, new Parent() {});
         TaskScenes taskScenes = new TaskScenes(controllerPair, null);
@@ -145,8 +143,8 @@ public class SceneManagementTest {
 
     @Test
     public void testGetDetailedTaskView() {
-        DetailedTaskViewCtrl controller = new DetailedTaskViewCtrl(null, null, null,
-                null, null, null, null);
+        DetailedTaskViewCtrl controller = new DetailedTaskViewCtrl(new NetworkUtils(null, null, null, null, null, null), null, null,
+                null);
         Pair<DetailedTaskViewCtrl, Parent> controllerPair = new Pair<DetailedTaskViewCtrl,
                 Parent>(controller, new Parent() {});
         TaskScenes taskScenes = new TaskScenes(null, controllerPair);

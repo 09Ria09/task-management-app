@@ -2,7 +2,7 @@ package client.scenes;
 
 import client.CustomAlert;
 import client.customExceptions.SubTaskException;
-import client.customExceptions.TaskException;
+import client.utils.NetworkUtils;
 import client.utils.SubTaskUtils;
 import client.utils.TaskListUtils;
 import com.google.inject.Inject;
@@ -37,21 +37,23 @@ public class SubCardCtrl {
     private TaskListUtils taskListUtils;
     private CustomAlert customAlert;
     private SubTaskUtils subTaskUtils;
+    private NetworkUtils networkUtils;
     private DetailedTaskViewCtrl detailedTaskViewCtrl;
 
 
     @Inject
     void initialize(final SubTask subTask, final ListCtrl listCtrl,
-                    final TaskListUtils listUtils, final CustomAlert customAlert,
-                     final SubTaskUtils subTaskUtils,
+                    final CustomAlert customAlert,
+                     final NetworkUtils networkUtils,
                     final DetailedTaskViewCtrl detailedTaskViewCtrl
     ) {
         this.subTask= subTask;
         this.text.setText(subTask.getName());
         this.listController = listCtrl;
-        this.taskListUtils = listUtils;
+        this.networkUtils = networkUtils;
         this.customAlert = customAlert;
-        this.subTaskUtils = subTaskUtils;
+        this.subTaskUtils = networkUtils.getSubTaskUtils();
+        this.taskListUtils = networkUtils.getTaskListUtils();
         this.detailedTaskViewCtrl = detailedTaskViewCtrl;
         this.checkbox.setSelected(subTask.isCompleted());
         this.root.setOpacity(subTask.isCompleted() ? 0.5D : 1.0D);
@@ -60,11 +62,6 @@ public class SubCardCtrl {
     public void deleteSubTask() throws SubTaskException {
         subTaskUtils.deleteSubTask(listController.getBoardID(),
                 listController.getTaskList().id, detailedTaskViewCtrl.getTask().id, subTask.id);
-        try {
-            detailedTaskViewCtrl.refreshSubTasks();
-        } catch (TaskException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 //    public void renameSubTask() throws SubTaskException {
@@ -100,7 +97,6 @@ public class SubCardCtrl {
                 subTaskUtils.renameSubTask(listController.getBoardID(),
                         listController.getTaskList().id,
                         detailedTaskViewCtrl.getTask().id, subTask.id, name);
-                detailedTaskViewCtrl.refreshSubTasks();
                 return true;
             }
         } catch (SubTaskException e) {
@@ -124,7 +120,6 @@ public class SubCardCtrl {
                 subTaskUtils.reorderSubTask(boardId,
                         listId, task.id, subTask.id, index - 1);
                 task.reorderSubTasks(subTask.id, index - 1);
-                detailedTaskViewCtrl.refreshSubTasks();
                 if(!Objects.equals(task.getName(), text.getText())){
                     text.setText(text.getText());
                     return true;
@@ -155,7 +150,6 @@ public class SubCardCtrl {
                 subTaskUtils.reorderSubTask(boardId,
                         listId, task.id, subTask.id, index + 1);
                 task.reorderSubTasks(subTask.id, index + 1);
-                detailedTaskViewCtrl.refreshSubTasks();
                 if(!Objects.equals(task.getName(), text.getText())){
                     text.setText(text.getText());
                     return true;

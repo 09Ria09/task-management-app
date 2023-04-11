@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.CustomAlert;
 import client.customExceptions.TagException;
+import client.utils.NetworkUtils;
 import client.utils.TagUtils;
 import com.google.inject.Inject;
 import commons.Board;
@@ -23,15 +24,18 @@ public class TagCardCtrl {
     private Board board;
     private CustomAlert customAlert;
 
+    private NetworkUtils networkUtils;
+
     @Inject
-    public void initialize(final Tag tag, final TagUtils tagUtils,
+    public void initialize(final Tag tag, final NetworkUtils networkUtils,
                            final Board board, final CustomAlert customAlert) {
         this.tag = tag;
         this.tagName.setText(tag.getName());
         this.pane.setStyle("-fx-background-radius: 20px; -fx-border-radius: 20px;" +
                 " -fx-background-color: #" + tag.getColorBackground() + ";");
         this.tagName.setStyle("-fx-text-fill: #" + tag.getColorFont() + ";");
-        this.tagUtils = tagUtils;
+        this.networkUtils = networkUtils;
+        this.tagUtils = networkUtils.getTagUtils();
         this.board = board;
         this.customAlert = customAlert;
     }

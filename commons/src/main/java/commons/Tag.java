@@ -78,10 +78,10 @@ public class Tag implements Serializable {
         return HashCodeBuilder.reflectionHashCode(this);
     }
 
+
     @Override
     public String toString() {
-        return "Tag (" + id + ") : " + name + " -> background=" + colorBackground +
-            " font=" + colorFont;
+        return name;
     }
 
     public long getId() {
