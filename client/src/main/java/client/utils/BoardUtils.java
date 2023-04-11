@@ -222,7 +222,7 @@ public class BoardUtils {
 
     private ExecutorService exec = Executors.newSingleThreadExecutor();
     public void registerForUpdatesBoards(final Consumer<BoardEvent> boardConsumer) {
-        System.out.println("registering for updates");
+
         exec = Executors.newSingleThreadExecutor();
         exec.submit(() -> {
             while (!Thread.interrupted()) {

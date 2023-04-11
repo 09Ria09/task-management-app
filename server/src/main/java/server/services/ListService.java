@@ -52,7 +52,7 @@ public class ListService {
      * @param list the task list that will be added to the board and made persistent.
      */
     public TaskList addList(final long boardID, final TaskList list){
-        System.out.println("add list : " + list.getName());
+
         Board board = getBoard(boardID);
         board.addTaskList(list);
         boardRepository.save(board);

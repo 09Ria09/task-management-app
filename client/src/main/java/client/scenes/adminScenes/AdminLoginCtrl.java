@@ -35,9 +35,7 @@ public class AdminLoginCtrl {
             mainCtrl.showAdminBoard();
             adminBoardCtrl.addAllBoards();
             boardUtils.registerForUpdatesBoards(event -> adminBoardCtrl.solveEvent(event));
-        } else {
-            System.out.println("Password incorrect. Expected " + serverUtils.getAdminKey());
-        }
+        } else {return;}
     }
 
     @FXML

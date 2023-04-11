@@ -104,7 +104,7 @@ public class DetailedTaskViewCtrl {
                 try {
                     this.onFocusLostTaskName();
                 } catch (TaskException e) {
-                    System.out.println(e.getMessage());
+
                 }
             }
         }));
@@ -114,7 +114,7 @@ public class DetailedTaskViewCtrl {
                 try {
                     this.onFocusLostTaskDescription();
                 } catch (TaskException e) {
-                    System.out.println(e.getMessage());
+
                 }
             }
         }));

@@ -10,8 +10,6 @@ import commons.Task;
 import commons.TaskList;
 import commons.TaskPreset;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ListView;
-import javafx.stage.Modality;
 
 public class DetailedTaskViewService {
 

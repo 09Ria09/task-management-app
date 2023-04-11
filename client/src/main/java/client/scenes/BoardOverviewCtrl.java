@@ -141,7 +141,7 @@ public class BoardOverviewCtrl {
                     changeColor);
         }
         catch(BoardException e){
-            System.out.println(e.getMessage());
+            System.out.println("Error during websocket registration : " + e.getMessage());
         }
     }
 

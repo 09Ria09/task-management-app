@@ -76,7 +76,7 @@ class TaskListTest {
         TaskList taskList = new TaskList("List1");
         taskList.addTask(task1);
         taskList.addTask(task2);
-        System.out.println(taskList.toString());
+
         assertEquals("TaskList (" + taskList.id + ") : " + taskList.getName() +
                         "\n" + task1.toString() + "\n" + task2.toString() + "\n"
                 , taskList.toString());

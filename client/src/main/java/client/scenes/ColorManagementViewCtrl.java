@@ -141,7 +141,7 @@ public class ColorManagementViewCtrl implements Initializable {
     }
 
     public void back() throws BoardException {
-        System.out.println(board.getBoardColorScheme().toString());
+
         boardUtils.setBoardColorScheme(board.id, board.getBoardColorScheme());
         mainCtrl.showBoardCatalogue();
     }

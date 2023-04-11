@@ -53,7 +53,7 @@ public class TaskColorPresetCardCtrl {
         name.setText(taskPreset.getName());
         backgroundColorPicker.setValue(Color.valueOf(taskPreset.getBackgroundColor()));
         fontColorPicker.setValue(Color.valueOf(taskPreset.getFontColor()));
-        System.out.println(taskPreset);
+
     }
 
     /**

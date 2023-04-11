@@ -8,7 +8,6 @@ import client.services.DetailedTaskViewService;
 import client.utils.NetworkUtils;
 import client.utils.TagUtils;
 import client.utils.TaskListUtils;
-import client.customExceptions.TaskListException;
 import client.utils.TaskUtils;
 import commons.Tag;
 import commons.Task;
@@ -117,9 +116,9 @@ public class CardCtrl {
     }
 
     public void handleKeyboardInput(final KeyEvent event){
-        System.out.println("event handled : " + event.getCode() + " -> " + task.getName());
+
         if (event.getCode() == KeyCode.E) {
-            System.out.println("It is an E !");
+
             listController.isEditing = true;
             event.consume();
             edit();
@@ -155,7 +154,7 @@ public class CardCtrl {
         editTitleTextField.setVisible(true);
         editTitleTextField.setManaged(true);
         editTitleTextField.requestFocus();
-        System.out.println("edit " + task.getName());
+
         editTitleTextField.setText(title.getText());
         editTitleTextField.setEditable(false);
         Timer t = new Timer();
@@ -171,7 +170,7 @@ public class CardCtrl {
     }
 
     public void handleEditTitle(final KeyEvent event) {
-        System.out.println("Title: " + event.getCode());
+
         if (event.getCode() == KeyCode.ENTER) {
             String newTitle = editTitleTextField.getText().trim();
             if (!newTitle.isEmpty()) {

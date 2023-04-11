@@ -135,8 +135,8 @@ public class TagController {
             addedTag = tagService.getBoardTags(boardid).stream()
                     .filter(x -> x.equals(finalAddedTag))
                     .findAny().orElse(null);
-            System.out.println(addedTag != null);
-            System.out.println(addedTag);
+
+
             messages.convertAndSend("/topic/" + boardid + "/addtag", addedTag);
             return ResponseEntity.ok(addedTag);
         } catch(NoSuchElementException e) {

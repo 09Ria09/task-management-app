@@ -83,7 +83,7 @@ public class SubCardService {
         try {
             List<SubTask> subTasks = task.getSubtasks();
             int index = subTasks.indexOf(subTask);
-            System.out.println(task.getSubtasks().size());
+
             if (index < task.getSubtasks().size() - 1) {
                 subTaskUtils.reorderSubTask(this.boardID, this.listID,
                         task.id, subTask.id, index + 1);
